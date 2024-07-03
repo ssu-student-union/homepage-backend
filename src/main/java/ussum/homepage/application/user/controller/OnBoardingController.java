@@ -9,12 +9,12 @@ import ussum.homepage.application.user.service.dto.response.UserResponse;
 import ussum.homepage.global.ApiResponse;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/onboarding")
+@RequestMapping("/onboarding")
 @RestController
 public class OnBoardingController {
     private final OnBoardingService onBoardingService;
 
-    @PostMapping("/academyinformation")
+    @PostMapping("/academy-information")
     public ApiResponse<?> createUserOnBoarding(@RequestHeader("token") String accessToekn,
                                                @RequestBody OnBoardingRequest request){
         onBoardingService.getUserOnBoarding(accessToekn, request);

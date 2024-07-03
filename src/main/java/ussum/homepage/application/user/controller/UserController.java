@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ussum.homepage.application.user.service.UserService;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 @RestController
 public class UserController {
     private final UserService userService;

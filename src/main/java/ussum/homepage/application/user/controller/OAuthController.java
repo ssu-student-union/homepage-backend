@@ -11,12 +11,12 @@ import ussum.homepage.application.user.service.dto.response.UserOAuthResponse;
 import ussum.homepage.global.ApiResponse;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/oauth")
+@RequestMapping("/auth")
 @RestController
 public class OAuthController {
     private final OAuthService oAuthService;
 
-    @GetMapping("/page")
+    @GetMapping("/oauth")
     public void LoginPage(HttpServletResponse response) throws Exception{
         response.sendRedirect(oAuthService.getKakaoLogin());
     }
