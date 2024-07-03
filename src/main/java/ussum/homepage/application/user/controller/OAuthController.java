@@ -23,8 +23,7 @@ public class OAuthController {
 
     @GetMapping("/callback")
     public ApiResponse<UserOAuthResponse> callback(@RequestParam("code") String code){
-        String accessToken = oAuthService.getAccessToken(code);
-        return ApiResponse.onSuccess(oAuthService.getUserInfo(accessToken));
+        return ApiResponse.onSuccess(oAuthService.signIn(code));
     }
 
 }
