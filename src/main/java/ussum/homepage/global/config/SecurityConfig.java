@@ -26,7 +26,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 //    private static final String[] whiteList = {"/**"};
-    private static final String[] whiteList = {"/api/oauth/**"};
+    private static final String[] whiteList = {"/auth/**", "/onboarding/**"};
 
     @Bean
     public PasswordEncoder passwordEncoder() {
