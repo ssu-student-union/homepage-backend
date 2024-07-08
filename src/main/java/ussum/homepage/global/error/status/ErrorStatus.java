@@ -53,10 +53,19 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_ORDER(HttpStatus.FORBIDDEN,"ENUM_007","유효하지 않은 ORDER입니다."),
     INVALID_ACTION(HttpStatus.FORBIDDEN,"ENUM_008","유효하지 않은 ACTION입니다."),
 
-
-
-    //Token 관련 에러
-    INVALID_TOKEN(HttpStatus.BAD_REQUEST,"TOKEN_001","토큰이 올바르지 않습니다."),
+    /**
+     * 401 Unauthorized, Token 관련 에러
+     */
+    INVALID_TOKEN(HttpStatus.BAD_REQUEST,"TOKEN_000","토큰이 올바르지 않습니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"TOKEN_001", "리소스 접근 권한이 없습니다."),
+    INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN_002", "액세스 토큰의 형식이 올바르지 않습니다. Bearer 타입을 확인해 주세요."),
+    INVALID_ACCESS_TOKEN_VALUE(HttpStatus.UNAUTHORIZED, "TOKEN_003", "액세스 토큰의 값이 올바르지 않습니다."),
+    EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN_004", "액세스 토큰이 만료되었습니다. 재발급 받아주세요."),
+    INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN_005", "리프레시 토큰의 형식이 올바르지 않습니다."),
+    INVALID_REFRESH_TOKEN_VALUE(HttpStatus.UNAUTHORIZED, "TOKEN_006", "리프레시 토큰의 값이 올바르지 않습니다."),
+    EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN_007", "리프레시 토큰이 만료되었습니다. 다시 로그인해 주세요."),
+    NOT_MATCH_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN_008", "일치하지 않는 리프레시 토큰입니다."),
+    INVALID_AUTH_CODE(HttpStatus.UNAUTHORIZED, "TOKEN_009", "인증을 실패했습니다."),
 
     //Body 에러
     INVALID_BODY(HttpStatus.BAD_REQUEST, "BODY_ERROR", "Body가 올바르지 않습니다.");

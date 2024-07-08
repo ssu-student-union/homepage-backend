@@ -30,9 +30,29 @@ dependencies {
     //validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-
 	//security
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	//jwt
+	implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'com.auth0:jwks-rsa:0.21.1'
+
+	//csv
+//	implementation 'com.opencsv:opencsv:5.5'
+
+	//spring-batch
+//	implementation 'org.springframework.boot:spring-boot-starter-batch'
+
+	//webClient
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	//redis, 2.3.1.RELEASE'
+//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	//lombok
 	compileOnly 'org.projectlombok:lombok'

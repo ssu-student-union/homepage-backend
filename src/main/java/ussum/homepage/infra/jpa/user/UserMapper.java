@@ -12,6 +12,7 @@ public class UserMapper {
                 userEntity.getName(),
                 userEntity.getStudentId(),
                 userEntity.getProfileImage(),
+                userEntity.getKakaoId(),
                 userEntity.getCreatedAt(),
                 userEntity.getUpdatedAt()
         );
@@ -22,6 +23,7 @@ public class UserMapper {
                 user.getId(),
                 user.getName(),
                 user.getStudentId(),
+                user.getKakaoId(),
                 user.getProfileImage()
         );
     }

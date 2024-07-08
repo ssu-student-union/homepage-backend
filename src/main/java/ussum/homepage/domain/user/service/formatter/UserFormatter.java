@@ -13,6 +13,6 @@ public class UserFormatter implements ussum.homepage.domain.user.service.UserFor
     @Override
     public UserResponse format(Long userId) {
         final User user = userReader.getUserWithId(userId);
-        return UserResponse.of(user);
+        return UserResponse.of(user, true); // format을 사용한다는 것 자체가 처음 로그인해서 onBoarding을 한다는거.
     }
 }
