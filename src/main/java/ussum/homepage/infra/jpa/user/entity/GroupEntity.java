@@ -4,7 +4,7 @@ import lombok.*;
 import ussum.homepage.infra.jpa.BaseEntity;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "`groups`")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GroupEntity extends BaseEntity {
