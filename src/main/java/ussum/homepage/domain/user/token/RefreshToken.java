@@ -1,4 +1,4 @@
-package ussum.homepage.domain.user;
+package ussum.homepage.domain.user.token;
 
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
