@@ -9,4 +9,8 @@ public interface BoardAclRepository {
     BoardAcl update(BoardAcl boardAcl);
     Optional<BoardAcl> findById(Long boardAclId);
     void delete(BoardAcl boardAcl);
+
+    List<BoardAcl> findByBoardIdDsl(Long boardId);
+
+    Optional<BoardAcl> findByIdDsl(Long boardAclId);
 }
