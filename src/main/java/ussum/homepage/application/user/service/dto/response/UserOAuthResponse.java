@@ -11,7 +11,7 @@ public record UserOAuthResponse(
         Long studentId,
         Boolean isFirst,
         String accessToken,
-        String refreshToken,
+        String refreshToken, // refreshToken을 돌려 줄 이유가 있을까?
         String profileImage,
         String createdAt
 ) {
