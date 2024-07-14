@@ -15,7 +15,7 @@ import ussum.homepage.global.ApiResponse;
 @RestController
 public class CommentController {
     private CommentService commentService;
-    @GetMapping("/board/{boardCode}/posts/{postId}/comments")
+    @GetMapping("/boards/{boardCode}/posts/{postId}/comments")
     public ApiResponse<PostCommentListResponse> getPostCommentList(@PathVariable(name = "boardCode") String boardCode,
                                                              @PathVariable(name = "postId") Long postId,
                                                              @RequestParam(name = "page") int page,
