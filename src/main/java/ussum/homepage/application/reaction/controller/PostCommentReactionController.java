@@ -20,5 +20,10 @@ public class PostCommentReactionController {
         return ApiResponse.onSuccess(commentReaction);
     }
 
-
+    @DeleteMapping("/boards/posts/comments/{commentId}/reactions")
+    public ApiResponse<PostCommentReactionResponse> deletePostCommentReaction(@PathVariable(name = "commentId") Long commentId,
+                                                                              @RequestBody PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
+        postCommentReactionService.deletePostCommentReaction(commentId,postCommentReactionCreateRequest);
+        return ApiResponse.onSuccess(null);
+    }
 }

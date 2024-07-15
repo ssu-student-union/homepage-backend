@@ -5,10 +5,11 @@ import ussum.homepage.domain.reaction.PostCommentReaction;
 public record PostCommentReactionCreateRequest(
         String reaction
 ) {
-    public PostCommentReaction toDomain(Long postCommentId) {
+    public PostCommentReaction toDomain(Long postCommentId, Long userId) {
         return PostCommentReaction.of(
                 null,
                 postCommentId,
+                userId,
                 reaction);
     }
 }
