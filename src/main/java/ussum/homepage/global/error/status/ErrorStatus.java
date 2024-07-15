@@ -55,6 +55,7 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_TARGET(HttpStatus.FORBIDDEN,"ENUM_006","유효하지 않은 TARGET입니다."),
     INVALID_ORDER(HttpStatus.FORBIDDEN,"ENUM_007","유효하지 않은 ORDER입니다."),
     INVALID_ACTION(HttpStatus.FORBIDDEN,"ENUM_008","유효하지 않은 ACTION입니다."),
+    INVALID_COMMENT_TYPE(HttpStatus.FORBIDDEN,"ENUM_009","유효하지 않은 COMMENT TYPE입니다."),
 
     /**
      * 401 Unauthorized, Token 관련 에러
