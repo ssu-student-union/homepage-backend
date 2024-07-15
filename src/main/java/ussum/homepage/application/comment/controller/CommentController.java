@@ -20,7 +20,7 @@ public class CommentController {
                                                              @PathVariable(name = "postId") Long postId,
                                                              @RequestParam(name = "page") int page,
                                                              @RequestParam(name = "take") int take,
-                                                             @RequestParam(name = "type") String type) {
+                                                             @RequestParam(required = false, name = "type") String type) {
         PostCommentListResponse comments = commentService.getCommentList(boardCode, postId, page, take, type);
         return ApiResponse.onSuccess(comments);
     }
