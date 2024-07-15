@@ -23,15 +23,19 @@ public class PostCommentReactionEntity {
     @JoinColumn(name = "post_comment_id")
     private PostCommentEntity postCommentEntity;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity userEntity;
+
     @Enumerated(EnumType.STRING)
     private Reaction reaction;
 
-    public static PostCommentReactionEntity of(Long id, PostCommentEntity postCommentEntity, Reaction reaction) {
-        return new PostCommentReactionEntity(id, postCommentEntity, reaction);
+    public static PostCommentReactionEntity of(Long id, PostCommentEntity postCommentEntity,UserEntity userEntity, Reaction reaction) {
+        return new PostCommentReactionEntity(id, postCommentEntity, userEntity, reaction);
     }
 
     public static PostCommentReactionEntity from(Long id) {
-        return new PostCommentReactionEntity(id, null, null);
+        return new PostCommentReactionEntity(id, null, null, null);
     }
 
 }
