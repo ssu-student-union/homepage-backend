@@ -48,7 +48,7 @@ public class PostCommentReactionRepositoryImpl implements PostCommentReactionRep
         UserEntity userEntity = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
-        return postCommentReactionJpaRepository.findByPostCommentEntityAndUserEntityAndReaction(postCommentEntity, userEntity, Reaction.getEnumRactionFromStringReaction(reaction))
+        return postCommentReactionJpaRepository.findByPostCommentEntityAndUserEntityAndReaction(postCommentEntity, userEntity, Reaction.getEnumReactionFromStringReaction(reaction))
                 .map(postCommentReactionMapper::toDomain);
     }
 
