@@ -22,6 +22,8 @@ public class PostCommentEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
+    @Enumerated(EnumType.STRING)
+    private CommentType type;
     private LocalDateTime lastEditedAt;
 
     public PostCommentEntity(Long id, String content, PostEntity postEntity, UserEntity userEntity, LocalDateTime lastEditedAt) {
@@ -35,4 +37,9 @@ public class PostCommentEntity {
     public static PostCommentEntity of(Long id, String content, PostEntity postEntity, UserEntity userEntity, LocalDateTime lastEditedAt){
         return new PostCommentEntity(id, content, postEntity, userEntity, lastEditedAt);
     }
+
+    public static PostCommentEntity from(Long id) {
+        return new PostCommentEntity(id, null, null, null, null);
+    }
+
 }
