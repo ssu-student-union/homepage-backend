@@ -13,6 +13,7 @@ import ussum.homepage.infra.jpa.reaction.repository.PostCommentReactionJpaReposi
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static ussum.homepage.global.error.status.ErrorStatus.POST_COMMENT_NOT_FOUND;
@@ -50,6 +51,13 @@ public class PostCommentReactionRepositoryImpl implements PostCommentReactionRep
 
         return postCommentReactionJpaRepository.findByPostCommentEntityAndUserEntityAndReaction(postCommentEntity, userEntity, Reaction.getEnumReactionFromStringReaction(reaction))
                 .map(postCommentReactionMapper::toDomain);
+    }
+
+    @Override
+    public List<PostCommentReaction> findAllPostCommentByCommentId(Long commentId) {
+        return postCommentReactionJpaRepository.findAllByPostCommentId(commentId)
+                .stream().map(postCommentReactionMapper::toDomain)
+                .toList();
     }
 
 }

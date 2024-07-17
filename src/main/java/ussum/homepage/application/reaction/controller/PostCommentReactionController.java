@@ -14,16 +14,17 @@ public class PostCommentReactionController {
     private final PostCommentReactionService postCommentReactionService;
 
     @PostMapping("/boards/posts/comments/{commentId}/reactions")
-    public ApiResponse<PostCommentReactionResponse> createPostCommentReaction(@PathVariable(name = "commentId") Long commentId,
+    public ApiResponse<Void> createPostCommentReaction(@PathVariable(name = "commentId") Long commentId,
                                                                               @RequestBody PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
         PostCommentReactionResponse commentReaction = postCommentReactionService.createCommentReaction(commentId, postCommentReactionCreateRequest);
-        return ApiResponse.onSuccess(commentReaction);
+//        return ApiResponse.onSuccess(commentReaction);
+        return ApiResponse.onSuccess(null);
     }
 
     @DeleteMapping("/boards/posts/comments/{commentId}/reactions")
-    public ApiResponse<PostCommentReactionResponse> deletePostCommentReaction(@PathVariable(name = "commentId") Long commentId,
+    public ApiResponse<Void> deletePostCommentReaction(@PathVariable(name = "commentId") Long commentId,
                                                                               @RequestBody PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
-        postCommentReactionService.deletePostCommentReaction(commentId,postCommentReactionCreateRequest);
+        postCommentReactionService.deletePostCommentReaction(commentId, postCommentReactionCreateRequest);
         return ApiResponse.onSuccess(null);
     }
 }
