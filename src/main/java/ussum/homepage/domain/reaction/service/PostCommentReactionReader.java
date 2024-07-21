@@ -18,12 +18,4 @@ public class PostCommentReactionReader {
         return postCommentReactionRepository.findByCommentIdAndUserId(commentId, userId, reaction)
                 .orElseThrow(() -> new PostCommentReactionException(POST_COMMENT_REACTION_NOT_FOUND));
     }
-
-
-    public void validatePostCommentReactionByCommentIdAndUserId(Long commentId, Long userId, String reaction) {
-        postCommentReactionRepository.findByCommentIdAndUserId(commentId, userId, reaction)
-                .ifPresent(postCommentReaction -> {
-                    throw new PostCommentReactionException(POST_COMMENT_REACTION_IS_ALREADY_EXIST);
-                });
-    }
 }
