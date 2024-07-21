@@ -1,6 +1,7 @@
 package ussum.homepage.infra.utils;
 
 
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,6 @@ import ussum.homepage.domain.user.UserRepository;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -72,9 +71,9 @@ public class CsvUtils {
     }
 
     // 온보딩 정보 받은 후, 이름 대학 학부가 학번을 기반한 레코드와 동일한지 true, false로 만들어진 json 리턴
-    public CsvOnBoardingResponse getOnBoardingResponseFromCsv(OnBoardingRequest request, MultipartFile file){
+    public CsvOnBoardingResponse getOnBoardingResponseFromCsv(OnBoardingRequest request, S3ObjectInputStream inputStream){
         try {
-            InputStreamReader reader = new InputStreamReader(file.getInputStream());
+            InputStreamReader reader = new InputStreamReader(inputStream);
             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withHeader());
 
             for (CSVRecord record : csvParser) {
