@@ -19,4 +19,11 @@ public class PostReactionController {
         PostReactionResponse postReaction = postReactionService.createPostReaction(postId, postReactionCreateRequest);
         return ApiResponse.onSuccess(null);
     }
+
+    @DeleteMapping("/boards/posts/{postId}/reactions")
+    public ApiResponse<Void> deletePostReaction(@PathVariable(name = "postId") Long postId,
+                                                @RequestBody PostReactionCreateRequest postReactionCreateRequest) {
+        postReactionService.deletePostReaction(postId, postReactionCreateRequest);
+        return ApiResponse.onSuccess(null);
+    }
 }
