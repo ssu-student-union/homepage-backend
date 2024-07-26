@@ -6,7 +6,6 @@ import ussum.homepage.domain.reaction.PostCommentReaction;
 import ussum.homepage.domain.reaction.PostCommentReactionRepository;
 import ussum.homepage.domain.reaction.exception.PostCommentReactionException;
 
-import static ussum.homepage.global.error.status.ErrorStatus.POST_COMMENT_REACTION_IS_ALREADY_EXIST;
 import static ussum.homepage.global.error.status.ErrorStatus.POST_COMMENT_REACTION_NOT_FOUND;
 
 @Service
