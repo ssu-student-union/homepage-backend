@@ -1,7 +1,6 @@
 package ussum.homepage.application.reaction.service.dto.request;
 
 import ussum.homepage.domain.postlike.PostReaction;
-import ussum.homepage.domain.reaction.PostCommentReaction;
 
 public record PostReactionCreateRequest(
         String reaction
