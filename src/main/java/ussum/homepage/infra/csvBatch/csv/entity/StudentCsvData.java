@@ -23,9 +23,10 @@ public class StudentCsvData {
     // 전화번호?
     private String studentEmail;
 
-    public static StudentCsvData of(Long studentId, String studentName, String groupName,
+    public static StudentCsvData of(Long STID, Long studentId, String studentName, String groupName,
                                    String major, String studentStatus, String studentGroup, String studentEmail) {
         return StudentCsvData.builder()
+                .STID(STID)
                 .studentId(studentId)
                 .studentName(studentName)
                 .groupName(groupName)

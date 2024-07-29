@@ -7,7 +7,9 @@ import lombok.*;
 기본 생성자에서 문제가 발생하여 class 사용
  */
 @Getter
+@Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StudentCsvDto {
     private Long STID;
