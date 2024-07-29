@@ -41,9 +41,7 @@ public class PostCommentReactionService {
     @Transactional
     public void deletePostCommentReaction(Long commentId, PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
         Long userId = 1L; //여기에 userId 추출하는 거 추가
-//        PostCommentReaction postCommentReaction = postCommentReactionReader.getPostCommentReactionWithCommentIdAndUserId(commentId, userId, postCommentReactionCreateRequest.reaction());
-        postCommentReactionModifier.deletePostCommentReaction(commentId, userId, postCommentReactionCreateRequest.reaction());
-//        postCommentReactionModifier.deletePostCommentReaction(postCommentReaction.getPostCommentId(), postCommentReaction.getUserId(),
-//                postCommentReaction.getReactionType());
+        PostCommentReaction postCommentReaction = postCommentReactionReader.getPostCommentReactionWithCommentIdAndUserId(commentId, userId, postCommentReactionCreateRequest.reaction());
+        postCommentReactionModifier.deletePostCommentReaction(postCommentReaction);
     }
 }
