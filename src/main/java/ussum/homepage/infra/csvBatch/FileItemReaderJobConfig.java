@@ -29,10 +29,10 @@ public class FileItemReaderJobConfig {
     }
 
     @Bean
-    public Step studentDataLoadStep(JobRepository jobRepository, PlatformTransactionManager transactionManager
-    ) {
+    public Step studentDataLoadStep(JobRepository jobRepository,
+                                    PlatformTransactionManager transactionManager) {
         return new StepBuilder("studentDataLoadStep", jobRepository)
-                .<StudentCsvDto, StudentCsvData>chunk(1000, transactionManager)
+                .<StudentCsvDto, StudentCsvDto>chunk(1000, transactionManager)
                 .reader(csvReader.csvFileItemReader())
                 .writer(csvWriter)
                 .build();
