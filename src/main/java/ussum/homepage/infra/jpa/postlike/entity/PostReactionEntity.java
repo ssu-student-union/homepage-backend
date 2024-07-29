@@ -1,7 +1,9 @@
 package ussum.homepage.infra.jpa.postlike.entity;
 import jakarta.persistence.*;
 import lombok.*;
+import ussum.homepage.infra.jpa.comment.entity.PostCommentEntity;
 import ussum.homepage.infra.jpa.post.entity.PostEntity;
+import ussum.homepage.infra.jpa.reaction.entity.PostCommentReactionEntity;
 import ussum.homepage.infra.jpa.user.entity.GroupEntity;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 
@@ -9,6 +11,7 @@ import ussum.homepage.infra.jpa.user.entity.UserEntity;
 @Table(name = "post_reaction")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class PostReactionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +25,7 @@ public class PostReactionEntity {
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
+    public static PostReactionEntity of(Long id,  Reaction reaction, PostEntity postEntity, UserEntity userEntity) {
+        return new PostReactionEntity(id, reaction, postEntity, userEntity);
+    }
 }
