@@ -1,5 +1,7 @@
 package ussum.homepage.global;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import ussum.homepage.global.error.code.BaseCode;
 import ussum.homepage.global.error.status.SuccessStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -18,6 +20,10 @@ public class ApiResponse<T> {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final T data;
+
+    public static <T> ResponseEntity<ApiResponse<?>> success(T data) {
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.onSuccess(data));
+    }
 
     public static <T> ApiResponse<T> onSuccess(T data) {
         return new ApiResponse<>(
