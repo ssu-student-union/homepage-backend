@@ -18,11 +18,7 @@ public class UserReader {
     public User getUserWithId(Long userId){
         return userRepository.findById(userId).orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
     }
-
-    public Optional<User> findBykakaoId(Long kakaoId) {
+    public Optional<User> getUserWithKakaoId(String kakaoId){
         return userRepository.findBykakaoId(kakaoId);
     }
-
-
-
 }

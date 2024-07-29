@@ -7,6 +7,7 @@ import ussum.homepage.application.user.service.dto.request.OnBoardingRequest;
 import ussum.homepage.application.user.service.dto.request.UserRequest;
 import ussum.homepage.application.user.service.dto.response.UserResponse;
 import ussum.homepage.global.ApiResponse;
+import ussum.homepage.global.config.auth.UserId;
 
 @RequiredArgsConstructor
 @RequestMapping("/onboarding")
@@ -15,9 +16,9 @@ public class OnBoardingController {
     private final OnBoardingService onBoardingService;
 
     @PostMapping("/academy-information")
-    public ApiResponse<?> createUserOnBoarding(@RequestHeader("token") String accessToekn,
+    public ApiResponse<?> createUserOnBoarding(@UserId Long userId,
                                                @RequestBody OnBoardingRequest request){
-        onBoardingService.getUserOnBoarding(accessToekn, request);
+        onBoardingService.getUserOnBoarding(userId, request);
         return ApiResponse.onSuccess(null);
     }
 }

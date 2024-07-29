@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class OnBoardingRequest {
     private String name;
-    private Long studentId;
+    private String studentId;
 }
