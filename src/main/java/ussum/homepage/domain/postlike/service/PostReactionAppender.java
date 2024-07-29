@@ -12,7 +12,6 @@ import ussum.homepage.domain.postlike.PostReactionRepository;
 public class PostReactionAppender {
     private final PostReactionRepository postReactionRepository;
 
-    @Transactional
     public PostReaction createPostReaction(PostReaction postReaction) {
         return postReactionRepository.save(postReaction);
     }
