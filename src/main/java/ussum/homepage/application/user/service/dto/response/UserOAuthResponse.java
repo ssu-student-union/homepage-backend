@@ -23,6 +23,7 @@ public record UserOAuthResponse(
                 .isFirst(isFirst)
                 .accessToken(tokenInfo.getAccessToken())
                 .refreshToken(tokenInfo.getRefreshToken())
+                .profileImage(user.getProfileImage())
                 .createdAt(null)
                 .build();
     }
