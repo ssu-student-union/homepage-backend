@@ -10,6 +10,7 @@ import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.response.PostListResponse;
 import ussum.homepage.application.post.service.dto.response.PostResponse;
 import ussum.homepage.global.ApiResponse;
+import ussum.homepage.global.config.auth.UserId;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,9 +34,9 @@ public class PostController {
     }
 
     @PostMapping("/{boardCode}/posts")
-    public ApiResponse<?> createBoardPost(@PathVariable(name = "boardCode") String boardCode,
+    public ApiResponse<?> createBoardPost(@UserId Long userId, @PathVariable(name = "boardCode") String boardCode,
                                           @RequestBody PostCreateRequest postCreateRequest) {
-        postService.createPost(boardCode,postCreateRequest);
+        postService.createPost(userId, boardCode,postCreateRequest);
         return ApiResponse.onSuccess(null);
     }
 
