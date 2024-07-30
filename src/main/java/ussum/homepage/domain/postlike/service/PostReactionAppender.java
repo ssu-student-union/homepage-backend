@@ -10,7 +10,7 @@ import ussum.homepage.domain.postlike.PostReactionRepository;
 public class PostReactionAppender {
     private final PostReactionRepository postReactionRepository;
 
-    public void createPostReaction(PostReaction postReaction) {
-        postReactionRepository.save(postReaction);
+    public PostReaction createPostReaction(PostReaction postReaction) {
+        return postReactionRepository.save(postReaction);
     }
 }

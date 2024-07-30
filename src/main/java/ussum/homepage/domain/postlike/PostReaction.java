@@ -16,6 +16,7 @@ public class PostReaction {
     private Long postId;
     private Long userId;
 
+
     public static PostReaction of(Long id,
                                   String reaction,
                                          Long postId,
@@ -24,5 +25,6 @@ public class PostReaction {
     }
     public void updateReaction(PostReaction newReaction) {
         this.reaction = newReaction.getReaction();
+
     }
 }

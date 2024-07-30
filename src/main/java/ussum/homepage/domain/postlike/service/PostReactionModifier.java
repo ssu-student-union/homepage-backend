@@ -1,4 +1,4 @@
-package ussum.homepage.domain.reaction.service;
+package ussum.homepage.domain.postlike.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

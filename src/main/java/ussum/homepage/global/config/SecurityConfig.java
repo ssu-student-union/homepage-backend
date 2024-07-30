@@ -26,8 +26,15 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-//    private static final String[] whiteList = {"/**"};
-    private static final String[] whiteList = {"/auth/**", "/onboarding/**"};
+    //    private static final String[] whiteList = {"/**"};
+    private static final String[] whiteList = {
+            "/auth/**",
+            "/onboarding/**",
+            "/swagger-ui/**",
+            "/swagger-resources/**",
+            "/v3/api-docs/**"
+    };
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

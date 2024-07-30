@@ -1,4 +1,4 @@
-package ussum.homepage.infra.jpa.reaction;
+package ussum.homepage.infra.jpa.postlike;
 
 import org.springframework.stereotype.Component;
 import ussum.homepage.domain.postlike.PostReaction;
@@ -9,12 +9,12 @@ import ussum.homepage.infra.jpa.user.entity.UserEntity;
 
 @Component
 public class PostReactionMapper {
-    public PostReaction toDomain(PostReactionEntity postReactionEntity) {
+    public PostReaction toDomain(PostReactionEntity postReaction) {
         return PostReaction.of(
-                postReactionEntity.getId(),
-                postReactionEntity.getReaction().getStringReaction(),
-                postReactionEntity.getPostEntity().getId(),
-                postReactionEntity.getUserEntity().getId()
+            postReaction.getId(),
+                postReaction.getReaction().getStringReaction(),
+                postReaction.getPostEntity().getId(),
+                postReaction.getUserEntity().getId()
         );
     }
 

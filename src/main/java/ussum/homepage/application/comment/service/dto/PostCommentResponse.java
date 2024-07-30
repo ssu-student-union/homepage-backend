@@ -10,16 +10,18 @@ public record PostCommentResponse(
         UserResponse author,
         String content,
         String type,
-        String lastEditedAt
+        String lastEditedAt,
+        Integer likeCount
 
 ) {
-    public static PostCommentResponse of(PostComment postComment, PostResponse postResponse, UserResponse userResponse,String type){
+    public static PostCommentResponse of(PostComment postComment, PostResponse postResponse, UserResponse userResponse, String type, Integer likeCount) {
         return new PostCommentResponse(
                 postComment.getId(),
                 postResponse,
                 userResponse,
                 postComment.getContent(),
                 type,
-                postComment.getLastEditedAt());
+                postComment.getLastEditedAt(),
+                likeCount);
     }
 }
