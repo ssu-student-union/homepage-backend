@@ -8,7 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ussum.homepage.global.config.auth.UserAuthentication;
 import ussum.homepage.global.error.code.BaseErrorCode;
 import ussum.homepage.global.error.exception.InvalidValueException;
 import ussum.homepage.global.error.exception.UnauthorizedException;
@@ -19,36 +23,30 @@ import java.io.IOException;
 /*
 Jwt 관련 exception 처리 filter
  */
-@Slf4j
+@RequiredArgsConstructor
 public class JwtExceptionFilter extends OncePerRequestFilter {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final String AUTHORIZATION = "Authorization";
+    private static final String BEARER = "Bearer ";
+    private final JwtTokenProvider jwtProvider;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try {
-            filterChain.doFilter(request, response);
-        }catch (UnauthorizedException e){
-            handleUnauthorizedException(response, e);
-        }catch (Exception e){
-            handleException(response);
+        final String accessToken = getAccessTokenFromHttpServletRequest(request);
+        jwtProvider.validateAccessToken(accessToken);
+        final Long userId = jwtProvider.getSubject(accessToken);
+        setAuthentication(request, userId);
+        filterChain.doFilter(request, response);
+    }
+    private String getAccessTokenFromHttpServletRequest(HttpServletRequest request) {
+        String accessToken = request.getHeader(AUTHORIZATION);
+        if (StringUtils.hasText(accessToken) && accessToken.startsWith(BEARER)) {
+            return accessToken.substring(BEARER.length());
         }
+        throw new UnauthorizedException(ErrorStatus.INVALID_ACCESS_TOKEN);
     }
 
-    private void handleUnauthorizedException(HttpServletResponse response, Exception e) throws IOException {
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding("utf-8");
-        if (e instanceof UnauthorizedException ue) {
-            response.setStatus(ue.getErrorReason().getHttpStatus().value());
-            response.getWriter().write(objectMapper.writeValueAsString(ue.getErrorReason().getHttpStatus().value()));
-        } else if (e instanceof InvalidValueException ie) {
-            response.setStatus(ie.getErrorReason().getHttpStatus().value());
-            response.getWriter().write(objectMapper.writeValueAsString(ie.getErrorReason().getHttpStatus().value()));
-        }
-    }
-
-    private void handleException(HttpServletResponse response) throws IOException {
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setCharacterEncoding("utf-8");
-        response.setStatus(ErrorStatus._INTERNAL_SERVER_ERROR.getHttpStatus().value());
-        response.getWriter().write(objectMapper.writeValueAsString((ErrorStatus._INTERNAL_SERVER_ERROR.getHttpStatus().value())));
+    private void setAuthentication(HttpServletRequest request, Long userId) {
+        UserAuthentication authentication = new UserAuthentication(userId, null, null);
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

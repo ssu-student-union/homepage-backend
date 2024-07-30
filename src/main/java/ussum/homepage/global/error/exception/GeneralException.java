@@ -6,9 +6,18 @@ import ussum.homepage.global.error.code.BaseErrorCode;
 import ussum.homepage.global.error.dto.ErrorReasonDto;
 
 @Getter
-@AllArgsConstructor
 public class GeneralException extends RuntimeException {
-    private BaseErrorCode baseErrorCode;
+    private final BaseErrorCode baseErrorCode;
+
+    public GeneralException(String message, BaseErrorCode baseErrorCode){
+        super(message);
+        this.baseErrorCode = baseErrorCode;
+    }
+
+    public GeneralException(BaseErrorCode baseErrorCode){
+        super(baseErrorCode.getReason().getMessage());
+        this.baseErrorCode = baseErrorCode;
+    }
 
     public ErrorReasonDto getErrorReason() {
         return this.baseErrorCode.getReason();

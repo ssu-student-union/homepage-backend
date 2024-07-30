@@ -14,15 +14,15 @@ public class UserEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Long studentId;
-    private String studentStatus;
-    private Long kakaoId;
+    private String studentId;
+    private String kakaoId;
     private String profileImage;
+    private String refreshToken;
 
-    public static UserEntity of(Long id, String name, Long studentId, String studentStatus, Long kakaoId, String profileImage) {
-        return new UserEntity(id, name, studentId, studentStatus, kakaoId, profileImage);
+    public static UserEntity of(Long id, String name, String studentId, String kakaoId, String profileImage,String refreshToken) {
+        return new UserEntity(id, name, studentId, kakaoId, profileImage, refreshToken);
     }
     public static UserEntity from(Long id){
-        return new UserEntity(id, null, null, null, null, null);
+        return new UserEntity(id, null,null, null, null,null);
     }
 }

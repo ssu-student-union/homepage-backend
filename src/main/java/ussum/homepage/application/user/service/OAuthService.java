@@ -37,17 +37,24 @@ public class OAuthService {
     public UserOAuthResponse signIn(String code) {
         String kakaoToken = kakaoApiProvider.getAccessToken(code);
         KakaoUserInfoResponseDto userInfo = kakaoApiProvider.getUserInfo(kakaoToken);
-        Optional<User> optionalUser = userReader.findBykakaoId(userInfo.getId());
+        Optional<User> optionalUser = userReader.getUserWithKakaoId(Long.toString(userInfo.getId()));
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            return UserOAuthResponse.of(user, issueAccessTokenAndRefreshToken(user), Objects.isNull(user.getStudentId()));
+            JwtTokenInfo tokenInfo = issueAccessTokenAndRefreshToken(user);
+            updateRefreshToken(tokenInfo.getRefreshToken(), user);
+            return UserOAuthResponse.of(user, tokenInfo, Objects.isNull(user.getStudentId()));
         }else {
             // 사용자가 존재하지 않거나 예외가 발생한 경우에는 새로운 사용자로 처리
             User savedUser = saveUser(userInfo);
             JwtTokenInfo tokenInfo = issueAccessTokenAndRefreshToken(savedUser);
             Boolean isFirstLogin = Objects.isNull(savedUser.getStudentId());
+            updateRefreshToken(tokenInfo.getRefreshToken(), savedUser);
             return UserOAuthResponse.of(savedUser, tokenInfo, isFirstLogin);
         }
+    }
+    private void updateRefreshToken(String refreshToken, User user) {
+        user.updateRefreshToken(refreshToken);
+        userModifier.save(user);
     }
 
     private User saveUser(KakaoUserInfoResponseDto userInfo) {
@@ -58,7 +65,7 @@ public class OAuthService {
     }
 
     private User getUserByKakaoUserInfo(KakaoUserInfoResponseDto userInfo) {
-        Optional<User> optionalUser = userReader.findBykakaoId(userInfo.getId());
+        Optional<User> optionalUser = userReader.getUserWithKakaoId(Long.toString(userInfo.getId()));
         return optionalUser.orElseGet(() -> User.createUser(userInfo));
     }
 
