@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import ussum.homepage.global.config.CorsConfig;
+import ussum.homepage.global.config.auth.ExceptionHandlerFilter;
 import ussum.homepage.global.jwt.*;
 
 @RequiredArgsConstructor
@@ -61,7 +62,7 @@ public class SecurityConfig {
                         authorizationManagerRequestMatcherRegistry.anyRequest().authenticated()) // 일단 추가
                 .addFilter(corsConfig.corsFilter())
                 .addFilterBefore(new JwtFilter(provider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtExceptionFilter(), JwtFilter.class)
+                .addFilterBefore(new ExceptionHandlerFilter(), JwtFilter.class)
                 .build();
     }
 

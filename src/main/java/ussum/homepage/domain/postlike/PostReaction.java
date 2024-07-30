@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import ussum.homepage.domain.reaction.PostCommentReaction;
 import ussum.homepage.infra.jpa.post.entity.PostEntity;
 import ussum.homepage.infra.jpa.postlike.entity.Reaction;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
@@ -11,14 +12,19 @@ import ussum.homepage.infra.jpa.user.entity.UserEntity;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostReaction {
     private Long id;
+    private String reaction;
     private Long postId;
     private Long userId;
-    private String reactionType;
+
 
     public static PostReaction of(Long id,
-                                  Long postId,
-                                  Long userId,
-                                  String reactionType) {
-        return new PostReaction(id, postId, userId, reactionType);
+                                  String reaction,
+                                         Long postId,
+                                         Long userId) {
+        return new PostReaction(id, reaction, postId, userId);
+    }
+    public void updateReaction(PostReaction newReaction) {
+        this.reaction = newReaction.getReaction();
+
     }
 }
