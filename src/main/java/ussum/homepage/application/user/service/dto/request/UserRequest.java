@@ -5,7 +5,7 @@ import ussum.homepage.domain.user.User;
 public record UserRequest(
         Long id,
         String name,
-        Long studentId,
+        String studentId,
         String profileImage
 ) {
     public User toDomain(){
@@ -14,6 +14,7 @@ public record UserRequest(
                 name,
                 studentId,
                 profileImage,
+                null,
                 null,
                 null,
                 null

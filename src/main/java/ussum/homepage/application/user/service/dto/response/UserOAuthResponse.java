@@ -8,7 +8,7 @@ import ussum.homepage.global.jwt.JwtTokenInfo;
 public record UserOAuthResponse(
         Long id,
         String name,
-        Long studentId,
+        String studentId,
         Boolean isFirst,
         String accessToken,
         String refreshToken,

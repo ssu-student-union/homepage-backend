@@ -24,10 +24,8 @@ public class OnBoardingService {
     private final UserReader userReader;
 
     @Transactional
-    public void getUserOnBoarding(String accessToken, OnBoardingRequest request){
-        Long kakaoId = provider.getSubject(accessToken);
-        Optional<User> optionalUser = userReader.findBykakaoId(kakaoId);
-        User user = optionalUser.get();
+    public void getUserOnBoarding(Long userId, OnBoardingRequest request){
+        User user = userReader.getUserWithId(userId);
         user.updateOnBoardingUser(request);
         userModifier.save(user);
     }

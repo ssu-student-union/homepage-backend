@@ -49,11 +49,11 @@ public class PostService {
         );
     }
 
-    public void createPost(String boardCode,PostCreateRequest postCreateRequest) {
+    public void createPost(Long userId, String boardCode,PostCreateRequest postCreateRequest) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Category category = categoryReader.getCategoryWithCode(postCreateRequest.categoryCode());
         //user도 찾아 와야 하지 않을까
-        User user = userReader.getUserWithId(1L);
+        User user = userReader.getUserWithId(userId);
 
         postAppender.createPost(postCreateRequest.toDomain(board, user, category));
     }

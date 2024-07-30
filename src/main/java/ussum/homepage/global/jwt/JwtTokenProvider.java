@@ -34,14 +34,10 @@ public class JwtTokenProvider {
     }
 
     public String createAccessToken(User user){
-        // 유저 정보를 담기 위해 claim 사용
-        Claims claims = Jwts.claims();
-        claims.put("id", user.getId());
 
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, "access_token")
-                .setClaims(claims)
-                .setSubject(String.valueOf(user.getKakaoId()))
+                .setSubject(String.valueOf(user.getId()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -49,13 +45,10 @@ public class JwtTokenProvider {
     }
 
     public String createRefreshToken(User user){
-        Claims claims = Jwts.claims();
-        claims.put("id", user.getId());
 
         return Jwts.builder()
                 .setHeaderParam(Header.TYPE, "refresh_token")
-                .setClaims(claims)
-                .setSubject(String.valueOf(user.getKakaoId()))
+                .setSubject(String.valueOf(user.getId()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRE_TIME))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

@@ -5,7 +5,7 @@ import ussum.homepage.domain.user.User;
 public record UserResponse(
         Long id,
         String name,
-        Long studentId,
+        String studentId,
         Boolean isFirst,
         String profileImage,
         String createdAt

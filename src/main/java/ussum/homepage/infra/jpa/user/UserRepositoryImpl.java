@@ -25,7 +25,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public Optional<User> findBykakaoId(Long kakaoId){
+    public Optional<User> findBykakaoId(String kakaoId){
         return userJpaRepository.findByKakaoId(kakaoId).map(userMapper::toDomain);
     }
 }

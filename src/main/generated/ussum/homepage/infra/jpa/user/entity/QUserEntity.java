@@ -26,13 +26,15 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Long> kakaoId = createNumber("kakaoId", Long.class);
+    public final StringPath kakaoId = createString("kakaoId");
 
     public final StringPath name = createString("name");
 
     public final StringPath profileImage = createString("profileImage");
 
-    public final NumberPath<Long> studentId = createNumber("studentId", Long.class);
+    public final StringPath refreshToken = createString("refreshToken");
+
+    public final StringPath studentId = createString("studentId");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

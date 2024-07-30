@@ -30,6 +30,8 @@ public class QPostCommentEntity extends EntityPathBase<PostCommentEntity> {
 
     public final ussum.homepage.infra.jpa.post.entity.QPostEntity postEntity;
 
+    public final EnumPath<CommentType> type = createEnum("type", CommentType.class);
+
     public final ussum.homepage.infra.jpa.user.entity.QUserEntity userEntity;
 
     public QPostCommentEntity(String variable) {
