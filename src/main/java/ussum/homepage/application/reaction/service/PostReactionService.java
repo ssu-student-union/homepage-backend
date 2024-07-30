@@ -24,6 +24,7 @@ public class PostReactionService {
     private final PostReactionAppender postReactionAppender;
     private final PostReactionModifier postReactionModifier;
     private final PostReactionManager postReactionManager;
+    private final PostReactionReader postReactionReader;
     private final PostReactionFormatter postReactionFormatter;
 
     @Transactional
