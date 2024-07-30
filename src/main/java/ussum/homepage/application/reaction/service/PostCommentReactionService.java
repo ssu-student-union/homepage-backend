@@ -16,7 +16,7 @@ import ussum.homepage.domain.reaction.service.PostCommentReactionReader;
 
 @Service
 @RequiredArgsConstructor
-//@Transactional(readOnly = true)
+@Transactional(readOnly = true)
 public class PostCommentReactionService {
     private final PostCommentReader postCommentReader;
     private final PostCommentReactionAppender postCommentReactionAppender;
@@ -25,6 +25,7 @@ public class PostCommentReactionService {
     private final PostCommentReactionFormatter postCommentReactionFormatter;
     private final PostCommentReactionReader postCommentReactionReader;
 
+    @Transactional
     public PostCommentReactionResponse createPostCommentReaction(Long commentId, PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
         PostComment postComment = postCommentReader.getPostComment(commentId);
         Long userId = 1L; //여기에 userId 추출하는 거 추가
