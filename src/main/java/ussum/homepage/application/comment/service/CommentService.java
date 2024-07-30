@@ -15,6 +15,7 @@ import ussum.homepage.domain.comment.service.PostCommentAppender;
 import ussum.homepage.domain.comment.service.PostCommentFormatter;
 import ussum.homepage.domain.comment.service.PostCommentModifier;
 import ussum.homepage.domain.comment.service.PostCommentReader;
+import ussum.homepage.domain.comment.service.formatter.TriFunction;
 import ussum.homepage.domain.post.service.formatter.PostFormatter;
 import ussum.homepage.domain.user.service.formatter.UserFormatter;
 
@@ -29,7 +30,7 @@ public class CommentService {
     private final PostCommentAppender postCommentAppender;
     private final PostCommentModifier postCommentModifier;
     public PostCommentListResponse getCommentList(String boardCode, Long postId, int page, int take, String type){
-        Page<PostComment> commentList = postCommentReader.getPostCommentList(setPageable(page,take),postId);
+        Page<PostComment> commentList = postCommentReader.getPostCommentList(setPageable(page, take), postId);
         return PostCommentListResponse.of(commentList, commentList.getTotalElements(), postCommentFormatter::format, type);
     }
     public PostCommentResponse createComment(Long userId, String boardCode, Long postId, PostCommentCreateRequest postCommentCreateRequest){

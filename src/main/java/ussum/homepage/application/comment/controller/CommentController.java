@@ -14,13 +14,13 @@ import ussum.homepage.global.ApiResponse;
 @RequestMapping
 @RestController
 public class CommentController {
-    private CommentService commentService;
-    @GetMapping("/board/{boardCode}/posts/{postId}/comments")
+    private final CommentService commentService;
+    @GetMapping("/boards/{boardCode}/posts/{postId}/comments")
     public ApiResponse<PostCommentListResponse> getPostCommentList(@PathVariable(name = "boardCode") String boardCode,
                                                              @PathVariable(name = "postId") Long postId,
                                                              @RequestParam(name = "page") int page,
                                                              @RequestParam(name = "take") int take,
-                                                             @RequestParam(name = "type") String type) {
+                                                             @RequestParam(required = false, name = "type") String type) {
         PostCommentListResponse comments = commentService.getCommentList(boardCode, postId, page, take, type);
         return ApiResponse.onSuccess(comments);
     }

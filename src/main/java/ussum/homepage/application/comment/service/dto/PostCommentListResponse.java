@@ -13,7 +13,7 @@ public record PostCommentListResponse(
 ) {
     public static PostCommentListResponse of(Page<PostComment> postComments, Long total, TriFunction<Long, Long, String, PostCommentResponse> formatter, String type){
         return new PostCommentListResponse(
-                postComments.map(postComment -> formatter.apply(postComment.getId(),postComment.getUserId(), type)).toList(),
+                postComments.map(postComment -> formatter.apply(postComment.getPostId(), postComment.getUserId(), type)).toList(),
                 Math.toIntExact(total)
         );
     }

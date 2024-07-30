@@ -11,7 +11,14 @@ import ussum.homepage.infra.jpa.user.entity.UserEntity;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostReaction {
     private Long id;
-    private String reaction;
     private Long postId;
     private Long userId;
+    private String reactionType;
+
+    public static PostReaction of(Long id,
+                                  Long postId,
+                                  Long userId,
+                                  String reactionType) {
+        return new PostReaction(id, postId, userId, reactionType);
+    }
 }
