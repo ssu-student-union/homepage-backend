@@ -1,4 +1,4 @@
-package ussum.homepage.infra.csvBatch.csv.entity;
+package ussum.homepage.domain.csv_user;
 
 import lombok.*;
 
@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class StudentCsvDto {
+public class StudentCsv {
     private Long STID;
     private Long studentId;
     private String studentName;
@@ -21,4 +21,10 @@ public class StudentCsvDto {
     private String studentGroup; // 학생그룹의 의미
     // 전화번호?
     private String studentEmail;
+
+    public static StudentCsv of(Long STID, Long studentId, String studentName, String groupName,
+                                String major, String studentStatus, String studentGroup, String studentEmail) {
+        return new StudentCsv(STID, studentId, studentName, groupName,
+                major, studentStatus, studentGroup, studentEmail);
+    }
 }

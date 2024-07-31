@@ -1,4 +1,4 @@
-package ussum.homepage.infra.csvBatch.csv.entity;
+package ussum.homepage.infra.jpa.csv_user.entity;
 
 
 import jakarta.persistence.*;
@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-public class StudentCsvData {
+public class StudentCsvEntity {
     // STID / 학번 / 성명 / 대학 / 학과(부) / 학적상 / 학생그룹 / (전화번호) / (전자메일)
     @Id
     private Long STID;
@@ -23,9 +23,9 @@ public class StudentCsvData {
     // 전화번호?
     private String studentEmail;
 
-    public static StudentCsvData of(Long STID, Long studentId, String studentName, String groupName,
-                                   String major, String studentStatus, String studentGroup, String studentEmail) {
-        return StudentCsvData.builder()
+    public static StudentCsvEntity of(Long STID, Long studentId, String studentName, String groupName,
+                                      String major, String studentStatus, String studentGroup, String studentEmail) {
+        return ussum.homepage.infra.jpa.csv_user.entity.StudentCsvEntity.builder()
                 .STID(STID)
                 .studentId(studentId)
                 .studentName(studentName)
