@@ -36,10 +36,6 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final StringPath studentId = createString("studentId");
 
-    public final StringPath studentStatus = createString("studentStatus");
-
-    public final StringPath studentStatus = createString("studentStatus");
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 

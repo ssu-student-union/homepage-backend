@@ -1,4 +1,4 @@
-package ussum.homepage.infra.csvBatch.csv.entity;
+package ussum.homepage.infra.jpa.csv_user.entity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -10,14 +10,14 @@ import com.querydsl.core.types.Path;
 
 
 /**
- * QStudentCsvData is a Querydsl query type for StudentCsvData
+ * QStudentCsvEntity is a Querydsl query type for StudentCsvEntity
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QStudentCsvData extends EntityPathBase<StudentCsvData> {
+public class QStudentCsvEntity extends EntityPathBase<StudentCsvEntity> {
 
-    private static final long serialVersionUID = -2116096709L;
+    private static final long serialVersionUID = 1910442335L;
 
-    public static final QStudentCsvData studentCsvData = new QStudentCsvData("studentCsvData");
+    public static final QStudentCsvEntity studentCsvEntity = new QStudentCsvEntity("studentCsvEntity");
 
     public final StringPath groupName = createString("groupName");
 
@@ -35,16 +35,16 @@ public class QStudentCsvData extends EntityPathBase<StudentCsvData> {
 
     public final StringPath studentStatus = createString("studentStatus");
 
-    public QStudentCsvData(String variable) {
-        super(StudentCsvData.class, forVariable(variable));
+    public QStudentCsvEntity(String variable) {
+        super(StudentCsvEntity.class, forVariable(variable));
     }
 
-    public QStudentCsvData(Path<? extends StudentCsvData> path) {
+    public QStudentCsvEntity(Path<? extends StudentCsvEntity> path) {
         super(path.getType(), path.getMetadata());
     }
 
-    public QStudentCsvData(PathMetadata metadata) {
-        super(StudentCsvData.class, metadata);
+    public QStudentCsvEntity(PathMetadata metadata) {
+        super(StudentCsvEntity.class, metadata);
     }
 
 }
