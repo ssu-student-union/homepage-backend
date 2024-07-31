@@ -32,7 +32,6 @@ public interface PostJpaRepository extends JpaRepository<PostEntity,Long> {
                     WHERE pe.boardEntity = :board 
                     AND (:q IS NULL OR pe.title LIKE %:q% OR pe.content LIKE %:q%)
                     AND (:categoryCode IS NULL OR pe.categoryEntity.majorCode = :categoryCode)
-                    AND pe.deletedAt IS NULL
                     ORDER BY pe.id DESC
             """)
     Page<PostEntity> findBySearchCriteria(Pageable pageable,

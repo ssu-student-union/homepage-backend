@@ -16,7 +16,7 @@ public class PostCommentReactionController {
     @PostMapping("/boards/posts/comments/{commentId}/reactions")
     public ApiResponse<Void> createPostCommentReaction(@PathVariable(name = "commentId") Long commentId,
                                                                               @RequestBody PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
-        PostCommentReactionResponse commentReaction = postCommentReactionService.createCommentReaction(commentId, postCommentReactionCreateRequest);
+        PostCommentReactionResponse commentReaction = postCommentReactionService.createPostCommentReaction(commentId, postCommentReactionCreateRequest);
 //        return ApiResponse.onSuccess(commentReaction);
         return ApiResponse.onSuccess(null);
     }
