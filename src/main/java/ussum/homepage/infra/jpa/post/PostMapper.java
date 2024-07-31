@@ -25,7 +25,6 @@ public class PostMapper {
                 postEntity.getCreatedAt(),
                 postEntity.getUpdatedAt(),
                 postEntity.getLastEditedAt(),
-                postEntity.getDeletedAt(),
                 postEntity.getUserEntity().getId(),
                 postEntity.getBoardEntity().getId(),
                 postEntity.getCategoryEntity().getId()
@@ -33,19 +32,15 @@ public class PostMapper {
     }
 
     public PostEntity toEntity(Post post, UserEntity user, BoardEntity board, CategoryEntity category) {
-//        PostEntity from = PostEntity.from(post.getId());
-//        LocalDateTime lastEditedAt = post.getLastEditedAt() != null ? LocalDateTime.parse(post.getLastEditedAt()) : null;
-//        LocalDateTime deletedAt = post.getDeletedAt() != null ? LocalDateTime.parse(post.getDeletedAt()) : null;
         LocalDateTime lastEditedAt = null;
-        LocalDateTime deletedAt = null;
+//        LocalDateTime deletedAt = null;
 
         if (post.getLastEditedAt() != null && !"null".equals(post.getLastEditedAt())) {
             lastEditedAt = LocalDateTime.parse(post.getLastEditedAt());
         }
-
-        if (post.getDeletedAt() != null && !"null".equals(post.getDeletedAt())) {
-            deletedAt = LocalDateTime.parse(post.getDeletedAt());
-        }
+//        if (post.getDeletedAt() != null && !"null".equals(post.getDeletedAt())) {
+//            deletedAt = LocalDateTime.parse(post.getDeletedAt());
+//        }
 
         return PostEntity.of(
                 post.getId(),
@@ -54,7 +49,6 @@ public class PostMapper {
                 post.getViewCount(),
                 post.getThumbnailImage(),
                 lastEditedAt,
-                deletedAt,
                 user,
                 board,
                 category

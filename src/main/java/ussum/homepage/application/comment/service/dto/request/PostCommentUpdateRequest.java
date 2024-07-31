@@ -2,6 +2,8 @@ package ussum.homepage.application.comment.service.dto.request;
 
 import ussum.homepage.domain.comment.PostComment;
 
+import java.time.LocalDateTime;
+
 public record PostCommentUpdateRequest(
         String content
 ) {
@@ -11,7 +13,8 @@ public record PostCommentUpdateRequest(
                 content,
                 postId,
                 userId,
-                null
+                String.valueOf(LocalDateTime.now())
         );
     }
+
 }

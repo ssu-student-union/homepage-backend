@@ -16,7 +16,7 @@ import ussum.homepage.domain.reaction.service.PostCommentReactionReader;
 
 @Service
 @RequiredArgsConstructor
-//@Transactional(readOnly = true)
+@Transactional(readOnly = true)
 public class PostCommentReactionService {
     private final PostCommentReader postCommentReader;
     private final PostCommentReactionAppender postCommentReactionAppender;
@@ -25,7 +25,8 @@ public class PostCommentReactionService {
     private final PostCommentReactionFormatter postCommentReactionFormatter;
     private final PostCommentReactionReader postCommentReactionReader;
 
-    public PostCommentReactionResponse createCommentReaction(Long commentId, PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
+    @Transactional
+    public PostCommentReactionResponse createPostCommentReaction(Long commentId, PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
         PostComment postComment = postCommentReader.getPostComment(commentId);
         Long userId = 1L; //여기에 userId 추출하는 거 추가
         postCommentReactionManager.validatePostCommentReactionByCommentIdAndUserId(commentId, userId, postCommentReactionCreateRequest.reaction()); //해당 유저가 해당 댓글에 좋아요를 이미 눌렀는지 안눌렀는지 검증
@@ -41,9 +42,7 @@ public class PostCommentReactionService {
     @Transactional
     public void deletePostCommentReaction(Long commentId, PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
         Long userId = 1L; //여기에 userId 추출하는 거 추가
-//        PostCommentReaction postCommentReaction = postCommentReactionReader.getPostCommentReactionWithCommentIdAndUserId(commentId, userId, postCommentReactionCreateRequest.reaction());
-        postCommentReactionModifier.deletePostCommentReaction(commentId, userId, postCommentReactionCreateRequest.reaction());
-//        postCommentReactionModifier.deletePostCommentReaction(postCommentReaction.getPostCommentId(), postCommentReaction.getUserId(),
-//                postCommentReaction.getReactionType());
+        PostCommentReaction postCommentReaction = postCommentReactionReader.getPostCommentReactionWithCommentIdAndUserId(commentId, userId, postCommentReactionCreateRequest.reaction());
+        postCommentReactionModifier.deletePostCommentReaction(postCommentReaction);
     }
 }

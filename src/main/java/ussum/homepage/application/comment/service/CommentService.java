@@ -33,6 +33,7 @@ public class CommentService {
         Page<PostComment> commentList = postCommentReader.getPostCommentList(setPageable(page, take), postId);
         return PostCommentListResponse.of(commentList, commentList.getTotalElements(), postCommentFormatter::format, type);
     }
+    @Transactional
     public PostCommentResponse createComment(Long userId, String boardCode, Long postId, PostCommentCreateRequest postCommentCreateRequest){
         PostComment postComment = postCommentAppender.createPostComment(postCommentCreateRequest.toDomain(userId,postId));
         return postCommentFormatter.format(postComment.getPostId(), postComment.getUserId(), null);

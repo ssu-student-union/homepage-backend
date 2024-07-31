@@ -25,7 +25,7 @@ public class Post {
     private String createdAt;
     private String updatedAt;
     private String lastEditedAt;
-    private String deletedAt;
+//    private String deletedAt;
     private Long userId;
     private Long boardId;
     private Long categoryId;
@@ -38,12 +38,12 @@ public class Post {
                           LocalDateTime createdAt,
                           LocalDateTime updatedAt,
                           LocalDateTime lastEditedAt,
-                          LocalDateTime deletedAt,
+//                          LocalDateTime deletedAt,
                           Long userId,
                           Long boardId,
                           Long categoryId) {
         return new Post(id, title, content, viewCount, thumbnailImage, String.valueOf(createdAt),
-                String.valueOf(updatedAt), String.valueOf(lastEditedAt), String.valueOf(deletedAt),
+                String.valueOf(updatedAt), String.valueOf(lastEditedAt),
                 userId, boardId, categoryId);
     }
 }
