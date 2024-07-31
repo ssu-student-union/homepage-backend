@@ -1,4 +1,4 @@
-package ussum.homepage.infra.csvBatch;
+package ussum.homepage.infra.csvBatch.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -11,8 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 import ussum.homepage.infra.csvBatch.csv.CSVReader;
 import ussum.homepage.infra.csvBatch.csv.CSVWriter;
-import ussum.homepage.infra.csvBatch.csv.entity.StudentCsvData;
-import ussum.homepage.infra.csvBatch.csv.entity.StudentCsvDto;
+import ussum.homepage.domain.csv_user.StudentCsv;
 
 @RequiredArgsConstructor
 @Configuration
@@ -32,7 +31,7 @@ public class FileItemReaderJobConfig {
     public Step studentDataLoadStep(JobRepository jobRepository,
                                     PlatformTransactionManager transactionManager) {
         return new StepBuilder("studentDataLoadStep", jobRepository)
-                .<StudentCsvDto, StudentCsvDto>chunk(1000, transactionManager)
+                .<StudentCsv, StudentCsv>chunk(1000, transactionManager)
                 .reader(csvReader.csvFileItemReader())
                 .writer(csvWriter)
                 .build();
