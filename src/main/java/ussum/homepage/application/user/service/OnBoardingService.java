@@ -3,29 +3,41 @@ package ussum.homepage.application.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.user.service.dto.request.OnBoardingRequest;
+import ussum.homepage.application.user.service.dto.response.OnBoardingResponse;
+import ussum.homepage.domain.csv_user.StudentCsv;
+import ussum.homepage.domain.csv_user.StudentCsvRepository;
+import ussum.homepage.domain.csv_user.service.StudentCsvModifier;
+import ussum.homepage.domain.csv_user.service.StudentCsvReader;
 import ussum.homepage.domain.user.User;
-import ussum.homepage.domain.user.service.UserFormatter;
-import ussum.homepage.domain.user.service.UserAppender;
 import ussum.homepage.domain.user.service.UserModifier;
 import ussum.homepage.domain.user.service.UserReader;
-import ussum.homepage.global.jwt.JwtTokenProvider;
+import ussum.homepage.global.error.exception.GeneralException;
+import ussum.homepage.infra.jpa.csv_user.StudentCsvMapper;
 
 import java.util.Optional;
 
+import static ussum.homepage.global.error.status.ErrorStatus.USER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class OnBoardingService {
-    private final JwtTokenProvider provider;
-    private final UserAppender userAppender;
-    private final UserFormatter userFormatter;
     private final UserModifier userModifier;
     private final UserReader userReader;
+    private final StudentCsvReader studentCsvReader;
+    private final StudentCsvModifier studentCsvModifier;
 
-    @Transactional
-    public void getUserOnBoarding(Long userId, OnBoardingRequest request){
+    public void saveUserOnBoarding(Long userId, OnBoardingRequest request){
         User user = userReader.getUserWithId(userId);
+        String studentId = request.getStudentId();
+        StudentCsv studentCsv = studentCsvReader.getStudentWithStudentId(Long.valueOf(studentId),request)
+                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
+
+        /*
+        TO DO // MemberEntity, GroupEntity 연결
+         */
         user.updateOnBoardingUser(request);
         userModifier.save(user);
     }

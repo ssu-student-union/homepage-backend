@@ -5,15 +5,15 @@ import ussum.homepage.application.user.service.dto.request.OnBoardingRequest;
 
 @Builder
 public record OnBoardingResponse(
-        String name,
-        Long studentId,
-        String groupName,
-        String major
+        boolean name,
+        boolean studentId,
+        boolean groupName,
+        boolean major
 ) {
-    public static OnBoardingResponse of(OnBoardingRequest request, String groupName, String major) {
+    public static OnBoardingResponse of(boolean name, boolean studentId, boolean groupName, boolean major) {
         return OnBoardingResponse.builder()
-                .name(request.getName())
-                .studentId(request.getStudentId())
+                .name(name)
+                .studentId(studentId)
                 .groupName(groupName)
                 .major(major)
                 .build();
