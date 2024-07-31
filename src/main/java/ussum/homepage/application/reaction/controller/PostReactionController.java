@@ -10,12 +10,8 @@ import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import ussum.homepage.application.reaction.service.PostReactionService;
 import ussum.homepage.application.reaction.service.dto.request.PostReactionCreateRequest;
 import ussum.homepage.application.reaction.service.dto.response.PostReactionResponse;
-import ussum.homepage.global.ApiResponse;
 
 
 @RequiredArgsConstructor
@@ -25,7 +21,7 @@ import ussum.homepage.global.ApiResponse;
 public class PostReactionController {
     private final PostReactionService postReactionService;
 
-    @PostMapping("/toggle")
+    @PostMapping("/toggle/{postId}")
     public ResponseEntity<ApiResponse<?>> togglePostReaction(@UserId Long userId, @PathVariable(name = "postId")Long postId, @RequestBody CreatePostReactionReq createPostReactionReq) {
         postReactionService.postReactionToggle(userId, postId, createPostReactionReq);
         return ApiResponse.success(null);
