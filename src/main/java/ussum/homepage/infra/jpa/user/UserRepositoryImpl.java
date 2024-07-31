@@ -20,7 +20,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findByStudentId(Long studentId) { return userJpaRepository.findByStudentId(studentId).map(userMapper::toDomain); }
+    public Optional<User> findByStudentId(String studentId) { return userJpaRepository.findByStudentId(studentId).map(userMapper::toDomain); }
 
     @Override
     public User save(User user) {
