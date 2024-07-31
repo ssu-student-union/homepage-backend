@@ -21,7 +21,7 @@ public class StudentCsvMapper {
     }
 
     public StudentCsvEntity toEntity(StudentCsv studentCsv) {
-        return ussum.homepage.infra.jpa.csv_user.entity.StudentCsvEntity.of(
+        return StudentCsvEntity.of(
                 studentCsv.getSTID(),
                 studentCsv.getStudentId(),
                 studentCsv.getStudentName(),
