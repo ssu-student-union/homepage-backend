@@ -38,7 +38,7 @@ out/
 
 ### Yml ###
 **/src/main/resources/application.yml
-**/src/main/resources/csv/**
+**/src/main/resources/**
 
 
 .DS_Store

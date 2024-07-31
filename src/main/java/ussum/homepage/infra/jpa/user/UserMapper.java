@@ -4,6 +4,9 @@ import org.springframework.stereotype.Component;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class UserMapper {
     public User toDomain(UserEntity userEntity) {
@@ -13,6 +16,7 @@ public class UserMapper {
                 userEntity.getStudentId(),
                 userEntity.getProfileImage(),
                 userEntity.getKakaoId(),
+                userEntity.getStudentStatus(),
                 userEntity.getCreatedAt(),
                 userEntity.getUpdatedAt(),
                 userEntity.getRefreshToken()
@@ -24,6 +28,7 @@ public class UserMapper {
                 user.getId(),
                 user.getName(),
                 user.getStudentId(),
+                user.getStudentStatus(),
                 user.getKakaoId(),
                 user.getProfileImage(),
                 user.getRefreshToken()

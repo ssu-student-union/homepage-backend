@@ -2,12 +2,11 @@ package ussum.homepage.global.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.Data;
 import org.springframework.stereotype.Component;
-import ussum.homepage.domain.user.Member;
 import ussum.homepage.domain.user.User;
+import ussum.homepage.domain.user.token.RefreshToken;
+import ussum.homepage.domain.user.token.TokenRepository;
 import ussum.homepage.global.error.exception.UnauthorizedException;
-
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -17,6 +16,7 @@ import static ussum.homepage.global.error.status.ErrorStatus.*;
 @Component
 public class JwtTokenProvider {
     private JwtProperties properties;
+    private TokenRepository tokenRepository;
 
     private String SECRET;
     private int ACCESS_TOKEN_EXPIRE_TIME;
@@ -46,13 +46,17 @@ public class JwtTokenProvider {
 
     public String createRefreshToken(User user){
 
-        return Jwts.builder()
+        String refreshToken = Jwts.builder()
                 .setHeaderParam(Header.TYPE, "refresh_token")
                 .setSubject(String.valueOf(user.getId()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRE_TIME))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
+
+        RefreshToken token = RefreshToken.of(user.getId(), refreshToken);
+        tokenRepository.save(token);
+        return refreshToken;
     }
 
     private Key getSigningKey() {

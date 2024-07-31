@@ -42,6 +42,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	implementation 'com.auth0:jwks-rsa:0.21.1'
 
+	//csv
+	implementation 'com.opencsv:opencsv:5.9'
+	implementation 'org.apache.commons:commons-csv:1.8'
+
+	//s3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 	//spring-batch
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 
@@ -49,7 +56,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 	//redis, 2.3.1.RELEASE'
-//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	//lombok
 	compileOnly 'org.projectlombok:lombok'
