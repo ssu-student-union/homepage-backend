@@ -16,7 +16,6 @@ public class UserMapper {
                 userEntity.getStudentId(),
                 userEntity.getProfileImage(),
                 userEntity.getKakaoId(),
-                userEntity.getStudentStatus(),
                 userEntity.getCreatedAt(),
                 userEntity.getUpdatedAt(),
                 userEntity.getRefreshToken()
@@ -28,7 +27,6 @@ public class UserMapper {
                 user.getId(),
                 user.getName(),
                 user.getStudentId(),
-                user.getStudentStatus(),
                 user.getKakaoId(),
                 user.getProfileImage(),
                 user.getRefreshToken()
