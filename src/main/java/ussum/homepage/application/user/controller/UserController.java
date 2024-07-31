@@ -15,10 +15,4 @@ import ussum.homepage.global.ApiResponse;
 @RestController
 public class UserController {
     private final UserService userService;
-
-    @PostMapping("/csv-studentstatus")
-    public ApiResponse<Void> csvCheckStudentStatus(@RequestParam("file") MultipartFile file) {
-        userService.updateStudentStatus(file);
-        return ApiResponse.onSuccess(null);
-    }
 }
