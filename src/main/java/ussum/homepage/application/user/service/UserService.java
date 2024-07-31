@@ -11,9 +11,4 @@ import ussum.homepage.domain.user.service.UserReader;
 @Transactional
 public class UserService {
     private final UserReader userReader;
-
-
-    public void updateStudentStatus(MultipartFile file) {
-
-    }
 }
