@@ -28,7 +28,7 @@ public class S3utils {
     /*
     bucket내의 파일은 하나만 존재.
      */
-    public String uploadFile(MultipartFile file) throws IOException {
+    public String uploadFile(MultipartFile file) {
         String originalFilename = file.getOriginalFilename();
 
         // 기존 파일 삭제, 계속 같은 파일 이름으로 업로드한다고 가정.
@@ -40,13 +40,12 @@ public class S3utils {
         metadata.setContentLength(file.getSize());
         metadata.setContentType(file.getContentType());
 
-        amazonS3.putObject(bucket, originalFilename, file.getInputStream(), metadata);
+        try {
+            amazonS3.putObject(bucket, originalFilename, file.getInputStream(), metadata);
+        } catch (IOException e) {
+            throw new RuntimeException("파일을 업로드하는데 실패하셨습니다.", e);
+        }
         return amazonS3.getUrl(bucket, originalFilename).toString();
-    }
-
-    public S3ObjectInputStream getFile(String fileName)  { // 삭제 필요
-        S3Object s3Object = amazonS3.getObject(bucket, fileName);
-        return s3Object.getObjectContent();
     }
 
     public void getFileToProject(String fileName)  {
