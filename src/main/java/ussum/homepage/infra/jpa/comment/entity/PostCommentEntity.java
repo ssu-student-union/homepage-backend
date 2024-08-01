@@ -1,7 +1,9 @@
 package ussum.homepage.infra.jpa.comment.entity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.LastModifiedDate;
 import ussum.homepage.domain.comment.PostComment;
+import ussum.homepage.infra.jpa.BaseEntity;
 import ussum.homepage.infra.jpa.post.entity.PostEntity;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 
@@ -24,6 +26,8 @@ public class PostCommentEntity {
     private UserEntity userEntity;
     @Enumerated(EnumType.STRING)
     private CommentType type;
+
+    @LastModifiedDate
     private LocalDateTime lastEditedAt;
 
     public PostCommentEntity(Long id, String content, PostEntity postEntity, UserEntity userEntity, LocalDateTime lastEditedAt) {

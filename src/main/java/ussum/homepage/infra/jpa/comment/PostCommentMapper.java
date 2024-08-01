@@ -20,12 +20,16 @@ public class PostCommentMapper {
                 );
     }
     public PostCommentEntity toEntity(PostComment postComment){
+        LocalDateTime lastEditedAt = null;
+        if (postComment.getLastEditedAt() != null) {
+            lastEditedAt = LocalDateTime.parse(postComment.getLastEditedAt());
+        }
         return PostCommentEntity.of(
                 postComment.getId(),
                 postComment.getContent(),
                 PostEntity.from(postComment.getPostId()),
                 UserEntity.from(postComment.getUserId()),
-                LocalDateTime.parse(postComment.getLastEditedAt())
+                lastEditedAt
         );
     }
 }

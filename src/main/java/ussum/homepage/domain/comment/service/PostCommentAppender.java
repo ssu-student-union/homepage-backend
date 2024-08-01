@@ -10,7 +10,7 @@ import ussum.homepage.domain.comment.PostCommentRepository;
 @RequiredArgsConstructor
 public class PostCommentAppender {
     private final PostCommentRepository postCommentRepository;
-    @Transactional
+
     public PostComment createPostComment(PostComment postComment){
         return postCommentRepository.save(postComment);
     }

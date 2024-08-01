@@ -1,6 +1,7 @@
 package ussum.homepage.infra.jpa.comment;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -8,6 +9,9 @@ import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.PostCommentRepository;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.infra.jpa.comment.repository.PostCommentJpaRepository;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static ussum.homepage.global.error.status.ErrorStatus.POST_COMMENT_NOT_FOUND;
 

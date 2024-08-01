@@ -11,7 +11,6 @@ import ussum.homepage.domain.reaction.PostCommentReactionRepository;
 public class PostCommentReactionAppender {
     private final PostCommentReactionRepository postCommentReactionRepository;
 
-    @Transactional
     public PostCommentReaction createPostCommentReaction(PostCommentReaction postCommentReaction) {
         return postCommentReactionRepository.save(postCommentReaction);
     }

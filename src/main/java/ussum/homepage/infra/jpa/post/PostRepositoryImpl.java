@@ -27,14 +27,19 @@ import ussum.homepage.infra.jpa.user.entity.MajorCode;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static ussum.homepage.global.error.status.ErrorStatus.*;
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.increaseViewCount;
+
 import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
 import static ussum.homepage.infra.jpa.postlike.entity.QPostReactionEntity.postReactionEntity;
 import static ussum.homepage.infra.jpa.post.entity.QBoardEntity.boardEntity;
+
+import static ussum.homepage.infra.jpa.post.entity.PostEntity.updateLastEditedAt;
+
 
 @Repository
 @RequiredArgsConstructor
@@ -63,6 +68,7 @@ public class PostRepositoryImpl implements PostRepository {
     public Optional<Post> findByBoardIdAndIdForEditAndDelete(Long boardId, Long postId) {
         BoardEntity boardEntity = boardJpaRepository.findById(boardId).orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
         Optional<PostEntity> post = postJpaRepository.findByBoardEntityAndId(boardEntity, postId);
+        updateLastEditedAt(post.get());
         return post.map(postMapper::toDomain);
     }
 

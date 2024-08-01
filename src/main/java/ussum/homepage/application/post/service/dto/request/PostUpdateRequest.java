@@ -20,9 +20,8 @@ public record PostUpdateRequest(
                 post.getViewCount(),
                 thumbnailImage,
                 LocalDateTime.parse(post.getCreatedAt()),
-                null,
+                LocalDateTime.parse(post.getUpdatedAt()),
                 LocalDateTime.now(),
-                null,
                 post.getUserId(),
                 board.getId(),
                 category.getId()

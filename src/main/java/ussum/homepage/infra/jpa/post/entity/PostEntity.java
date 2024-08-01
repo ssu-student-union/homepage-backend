@@ -1,14 +1,11 @@
 package ussum.homepage.infra.jpa.post.entity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-import org.springframework.cglib.core.Local;
+import org.springframework.data.annotation.LastModifiedDate;
 import ussum.homepage.infra.jpa.BaseEntity;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "post")
@@ -23,8 +20,9 @@ public class PostEntity extends BaseEntity {
     private String content;
     private Integer viewCount;
     private String thumbnailImage;
+
     private LocalDateTime lastEditedAt;
-    private LocalDateTime deletedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
@@ -36,18 +34,19 @@ public class PostEntity extends BaseEntity {
     private CategoryEntity categoryEntity;
 
     public static PostEntity from(Long id){
-        return new PostEntity(id,null,null,null,null,null,null,null,null,null);
+        return new PostEntity(id,null,null,null,null,null,null,null,null);
     }
 
     public static PostEntity of(Long id, String title, String content, Integer viewCount, String thumbnailImage,
-                                LocalDateTime lastEditedAt, LocalDateTime deletedAt, UserEntity user, BoardEntity board, CategoryEntity category) {
-        return new PostEntity(id, title, content, viewCount, thumbnailImage, lastEditedAt, deletedAt, user, board, category);
+                                LocalDateTime lastEditedAt, UserEntity user, BoardEntity board, CategoryEntity category) {
+        return new PostEntity(id, title, content, viewCount, thumbnailImage, lastEditedAt, user, board, category);
     }
 
     public static void increaseViewCount(PostEntity post) {
         post.viewCount += 1;
-        LocalDateTime updatedAt = post.getUpdatedAt();
-        updatedAt = LocalDateTime.now();
     }
 
+    public static void updateLastEditedAt(PostEntity post) {
+        post.lastEditedAt = LocalDateTime.now();
+    }
 }
