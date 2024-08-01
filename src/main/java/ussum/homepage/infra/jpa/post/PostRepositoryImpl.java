@@ -1,10 +1,12 @@
 package ussum.homepage.infra.jpa.post;
 
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
-import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.global.error.exception.GeneralException;
@@ -19,13 +21,13 @@ import ussum.homepage.infra.jpa.user.entity.MajorCode;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static ussum.homepage.global.error.status.ErrorStatus.*;
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.increaseViewCount;
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.updateLastEditedAt;
+import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
 
 @Repository
 @RequiredArgsConstructor
@@ -35,6 +37,7 @@ public class PostRepositoryImpl implements PostRepository {
     private final CategoryJpaRepository categoryJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final PostMapper postMapper;
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public Optional<Post> findById(Long postId) {
@@ -102,13 +105,40 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Page<Post> findBySearchCriteria(Pageable pageable,String boardCode, String q, String categoryCode) {
+    public Page<Post> findBySearchCriteria(Pageable pageable, String boardCode, String q, String categoryCode) {
         BoardEntity boardEntity = boardJpaRepository.findByBoardCode(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode))
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
-        return postJpaRepository.findBySearchCriteria(
-                pageable,
-                boardEntity,
-                q.isEmpty() ? null : q,
-                categoryCode.isEmpty() ? null : MajorCode.getEnumMajorCodeFromStringMajorCode(categoryCode)).map(postMapper::toDomain);
+
+        MajorCode enumMajorCodeFromStringMajorCode = MajorCode.getEnumMajorCodeFromStringMajorCode(categoryCode);
+
+        List<PostEntity> content = queryFactory
+                .selectFrom(postEntity)
+                .where(postEntity.boardEntity.eq(boardEntity)
+                        .and(postEntity.categoryEntity.majorCode.eq(enumMajorCodeFromStringMajorCode))
+                        .and(postEntity.title.containsIgnoreCase(q)
+                                .or(postEntity.content.containsIgnoreCase(q))))
+                .orderBy(postEntity.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(postEntity.boardEntity.eq(boardEntity)
+                        .and(postEntity.categoryEntity.majorCode.eq(enumMajorCodeFromStringMajorCode))
+                        .and(postEntity.title.containsIgnoreCase(q)
+                                .or(postEntity.content.containsIgnoreCase(q)))
+                );
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount)
+                .map(postMapper::toDomain);
+
+//        return postJpaRepository.findBySearchCriteria(
+//                pageable,
+//                boardEntity,
+//                /*q.isEmpty() ? null : */q,
+//                /*categoryCode.isEmpty() ? null : */MajorCode.getEnumMajorCodeFromStringMajorCode(categoryCode))
+//                .map(postMapper::toDomain);
     }
 }

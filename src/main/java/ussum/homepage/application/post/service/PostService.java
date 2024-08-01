@@ -70,7 +70,7 @@ public class PostService {
 
     public PostListResponse searchPost(Pageable pageable, String boardCode, String q, String categoryCode) {
         Page<Post> searchPost = postReader.getPostListBySearch(pageable, boardCode, q, categoryCode);
-        return PostListResponse.of(searchPost.getContent(), (int) searchPost.getTotalElements(),
+        return PostListResponse.of(searchPost.getContent(), /*(int) searchPost.getTotalElements()*/ searchPost.getContent().size(),
                 postFormatter::format);
     }
 }
