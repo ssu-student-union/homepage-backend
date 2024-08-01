@@ -5,14 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import ussum.homepage.application.post.service.dto.response.SimplePostDto;
+import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
+import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.BoardRepository;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.global.error.exception.GeneralException;
-
-import java.util.List;
 
 import static ussum.homepage.global.error.status.ErrorStatus.BOARD_NOT_FOUND;
 import static ussum.homepage.global.error.status.ErrorStatus.POST_NOT_FOUND;
@@ -26,7 +25,7 @@ public class PostReader {
         return postRepository.findAllWithBoard(pageable, boardCode);
     }
 
-    public Page<SimplePostDto> findSimplePostDtoListByBoardCode(String boardCode, Pageable pageable){
+    public Page<SimplePostResponse> findSimplePostDtoListByBoardCode(String boardCode, Pageable pageable){
         return postRepository.findPostDtoListByBoardCode(boardCode, pageable);
     }
 

@@ -10,11 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
-import ussum.homepage.application.post.service.dto.response.SimplePostDto;
-import ussum.homepage.domain.post.Board;
+import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
+import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
-import ussum.homepage.domain.postlike.PostReaction;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.BoardEntity;
@@ -27,7 +26,6 @@ import ussum.homepage.infra.jpa.user.entity.MajorCode;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -128,21 +126,9 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Page<SimplePostDto> findPostDtoListByBoardCode(String boardCode, Pageable pageable) {
-//        List<SimplePostDto> contents = queryFactory
-//                .select(Projections.constructor(SimplePostDto.class,
-//                        postEntity,
-//                        postReactionEntity.countDistinct()
-//                        ))
-//                .from(postEntity)
-//                .leftJoin(postEntity, postReactionEntity.postEntity)
-//                .leftJoin(postReactionEntity.postEntity.boardEntity, boardEntity)
-//                .where(
-//                        eqBoardCode(boardCode)
-//                )
-//                .fetch();
+    public Page<SimplePostResponse> findPostDtoListByBoardCode(String boardCode, Pageable pageable) {
 
-        List<SimplePostDto> contents = queryFactory
+        List<SimplePostResponse> contents = queryFactory
                 .select(Projections.constructor(SimplePostDto.class,
                         postEntity,
                         postReactionEntity.countDistinct().castToNum(Long.class)
@@ -152,14 +138,22 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(postEntity.boardEntity, boardEntity)
                 .where(eqBoardCode(boardCode))
                 .groupBy(postEntity)
-                .fetch();
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch()
+                .stream()
+                .map(simplePostDto -> SimplePostResponse.of(
+                        postMapper.toDomain(simplePostDto.postEntity()),
+                        Math.toIntExact(simplePostDto.likeCount())))
+                .toList();
 
         JPAQuery<Long> countQuery = queryFactory
                 .select(boardEntity.boardCode.countDistinct())
                 .from(postEntity)
                 .leftJoin(postReactionEntity).on(postReactionEntity.postEntity.eq(postEntity))
                 .leftJoin(postEntity.boardEntity, boardEntity)
-                .where(eqBoardCode(boardCode));
+                .where(eqBoardCode(boardCode))
+                .groupBy(postEntity);
         return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchCount);
     }
     private BooleanExpression eqBoardCode(String boardCode) {
