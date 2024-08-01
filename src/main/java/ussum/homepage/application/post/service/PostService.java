@@ -30,7 +30,6 @@ public class PostService {
     private final BoardReader boardReader;
     private final CategoryReader categoryReader;
     private final UserReader userReader;
-
     private final PostReader postReader;
     private final PostFormatter postFormatter;
     private final PostAppender postAppender;
@@ -40,7 +39,7 @@ public class PostService {
     public PostListResponse getPostList(Pageable pageable, String boardCode) {
 //        Board board = boardReader.getBoardWithBoardCode(boardCode);
         Page<Post> postList = postReader.getPostList(pageable, boardCode);
-        return PostListResponse.of(postList.getContent(), (int) postList.getTotalElements(), postFormatter::format);
+        return PostListResponse.of(postList.getContent(), (int) postList.getTotalElements(), postList.getNumberOfElements(), postFormatter::format);
     }
 
     public PostResponse getPost(String boardCode, Long postId) {
@@ -70,8 +69,8 @@ public class PostService {
 
     public PostListResponse searchPost(Pageable pageable, String boardCode, String q, String categoryCode) {
         Page<Post> searchPost = postReader.getPostListBySearch(pageable, boardCode, q, categoryCode);
-        return PostListResponse.of(searchPost.getContent(), /*(int) searchPost.getTotalElements()*/ searchPost.getContent().size(),
-                postFormatter::format);
+        return PostListResponse.of(searchPost.getContent(), (int) searchPost.getTotalElements(), searchPost.getNumberOfElements(), postFormatter::format);
     }
+
 }
 
