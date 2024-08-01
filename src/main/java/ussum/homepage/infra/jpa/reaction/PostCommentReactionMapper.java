@@ -23,7 +23,7 @@ public class PostCommentReactionMapper {
                 postCommentReaction.getId(),
                 PostCommentEntity.from(postCommentReaction.getPostCommentId()),
                 UserEntity.from(postCommentReaction.getUserId()),
-                Reaction.getEnumReactionFromStringReaction(postCommentReaction.getReactionType())
+                Reaction.getEnumReactionFromStringReaction(postCommentReaction.getReaction())
         );
     }
 
