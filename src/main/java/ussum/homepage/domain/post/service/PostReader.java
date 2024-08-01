@@ -48,7 +48,6 @@ public class PostReader {
     }
 
     public Page<Post> getPostListBySearch(Pageable pageable, String boardCode, String q, String categoryCode) {
-        return postRepository.findBySearchCriteria(
-                pageable, boardCode, q, categoryCode);
+        return postRepository.findBySearchCriteria(pageable, boardCode, q, categoryCode);
     }
 }

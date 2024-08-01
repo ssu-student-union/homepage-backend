@@ -7,13 +7,13 @@ import java.util.function.Function;
 
 public record PostListResponse(
         List<PostResponse> posts,
-        Integer total
+        Integer totalElements,
+        Integer numberOfElements
 ) {
-    public static PostListResponse of(List<Post> posts, Integer total, Function<Long, PostResponse> formatter) {
+    public static PostListResponse of(List<Post> posts, Integer totalElements, Integer numberOfElements, Function<Long, PostResponse> formatter) {
         return new PostListResponse(
                 posts.stream()
                         .map(post -> formatter.apply(post.getId()))
-                        .toList(), total);
+                        .toList(), totalElements, numberOfElements);
     }
-
 }

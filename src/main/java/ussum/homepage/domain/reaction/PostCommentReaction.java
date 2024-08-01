@@ -11,12 +11,16 @@ public class PostCommentReaction {
     private Long id;
     private Long postCommentId;
     private Long userId;
-    private String reactionType;
+    private String reaction;
 
     public static PostCommentReaction of(Long id,
                                          Long postCommentId,
                                          Long userId,
-                                         String reactionType) {
-        return new PostCommentReaction(id, postCommentId, userId, reactionType);
+                                         String reaction) {
+        return new PostCommentReaction(id, postCommentId, userId, reaction);
+    }
+
+    public void updateCommentReaction(PostCommentReaction newReaction) {
+        this.reaction = newReaction.getReaction();
     }
 }

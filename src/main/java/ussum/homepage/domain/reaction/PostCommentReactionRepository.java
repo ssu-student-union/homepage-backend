@@ -8,5 +8,6 @@ public interface PostCommentReactionRepository {
     void delete(PostCommentReaction postCommentReaction);
     Optional<PostCommentReaction> findByCommentIdAndUserId(Long commentId, Long userId, String reaction);
     List<PostCommentReaction> findAllPostCommentByCommentId(Long commentId);
+    Optional<PostCommentReaction> findByUserIdAndCommentId(Long userId, Long commentId);
 }
 

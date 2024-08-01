@@ -3,9 +3,12 @@ package ussum.homepage.application.reaction.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ussum.homepage.application.reaction.service.dto.request.CreatePostCommentReactionReq;
+import ussum.homepage.application.reaction.service.dto.request.CreatePostReactionReq;
 import ussum.homepage.application.reaction.service.dto.request.PostCommentReactionCreateRequest;
 import ussum.homepage.application.reaction.service.dto.response.PostCommentReactionResponse;
 import ussum.homepage.domain.comment.PostComment;
+import ussum.homepage.domain.postlike.PostReaction;
 import ussum.homepage.domain.reaction.service.PostCommentReactionManager;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.reaction.PostCommentReaction;
@@ -13,6 +16,8 @@ import ussum.homepage.domain.reaction.service.PostCommentReactionAppender;
 import ussum.homepage.domain.reaction.service.PostCommentReactionFormatter;
 import ussum.homepage.domain.reaction.service.PostCommentReactionModifier;
 import ussum.homepage.domain.reaction.service.PostCommentReactionReader;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +29,33 @@ public class PostCommentReactionService {
     private final PostCommentReactionManager postCommentReactionManager;
     private final PostCommentReactionFormatter postCommentReactionFormatter;
     private final PostCommentReactionReader postCommentReactionReader;
+
+    @Transactional
+    public void postCommentReactionToggle(Long userId, Long commentId, CreatePostCommentReactionReq createPostCommentReactionReq) {
+        PostCommentReaction newPostCommentReaction = createPostCommentReactionReq.toDomain(commentId, userId);
+        Optional<PostCommentReaction> existingPostCommentReaction = postCommentReactionReader.getPostCommentReactionByUserIdAndCommentId(userId, commentId);
+
+
+        existingPostCommentReaction.ifPresentOrElse(
+                commentReaction -> handleExistingCommentReaction(commentReaction, newPostCommentReaction),
+                () -> createNewCommentReaction(newPostCommentReaction)
+        );
+    }
+
+    private void handleExistingCommentReaction(PostCommentReaction existingReaction, PostCommentReaction newReaction) {
+        if (existingReaction.getReaction().equals(newReaction.getReaction())) {
+            postCommentReactionModifier.deletePostCommentReaction(existingReaction);
+        } else {
+            postCommentReactionModifier.updatePostCommentReaction(existingReaction, newReaction);
+        }
+    }
+
+
+
+
+    private void createNewCommentReaction(PostCommentReaction newCommentReaction) {
+        postCommentReactionAppender.createPostCommentReaction(newCommentReaction);
+    }
 
     @Transactional
     public PostCommentReactionResponse createPostCommentReaction(Long commentId, PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
