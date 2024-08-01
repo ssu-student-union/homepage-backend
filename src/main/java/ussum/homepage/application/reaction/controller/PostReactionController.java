@@ -42,10 +42,10 @@ public class PostReactionController {
             
             """)
     @PostMapping("/boards/posts/{postId}/reactions")
-    public ApiResponse<Void> createPostReaction(@PathVariable(name = "postId") Long postId,
+    public ResponseEntity<ApiResponse<?>> createPostReaction(@PathVariable(name = "postId") Long postId,
                                                 @RequestBody PostReactionCreateRequest postReactionCreateRequest) {
-        PostReactionResponse postReaction = postReactionService.createPostReaction(postId, postReactionCreateRequest);
-        return ApiResponse.onSuccess(null);
+        postReactionService.createPostReaction(postId, postReactionCreateRequest);
+        return ApiResponse.success(null);
     }
 
     @Operation(summary = "게시물 반응 삭제 api", description = """
@@ -55,10 +55,10 @@ public class PostReactionController {
             
             """)
     @DeleteMapping("/boards/posts/{postId}/reactions")
-    public ApiResponse<Void> deletePostReaction(@UserId Long userId, @PathVariable(name = "postId") Long postId,
+    public ResponseEntity<ApiResponse<?>> deletePostReaction(@UserId Long userId, @PathVariable(name = "postId") Long postId,
                                                 @RequestBody PostReactionCreateRequest postReactionCreateRequest) {
         postReactionService.deletePostReaction(userId, postId, postReactionCreateRequest);
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.success(null);
 
     }
 }

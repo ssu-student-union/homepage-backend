@@ -29,24 +29,24 @@ public class PostCommentReactionController {
             """)
     @PostMapping("/toggle/posts/{commentId}")
     public ResponseEntity<ApiResponse<?>> togglePostCommentReaction(@UserId Long userId,
-                                                             @PathVariable(name = "commentId") Long commentId,
-                                                             @RequestBody CreatePostCommentReactionReq createPostCommentReactionReq) {
+                                                                    @PathVariable(name = "commentId") Long commentId,
+                                                                    @RequestBody CreatePostCommentReactionReq createPostCommentReactionReq) {
         postCommentReactionService.postCommentReactionToggle(userId, commentId, createPostCommentReactionReq);
-        return ApiResponse.success(null);
+        return ApiResponse.success("배현서 박정우 11번가 입사를 축하드립니다.");
     }
 
     @Operation(summary = "게시물 댓글 반응 생성 api", description = """
             게시물 댓글 반응을 등록하기 위한 api입니다.
             
-            요청 json으로 like 또는 unlike를 받습니다.
+            요청 json으로 like 또는 unlike를 
+            받습니다.
             
             """)
     @PostMapping("/boards/posts/comments/{commentId}/reactions")
-    public ApiResponse<Void> createPostCommentReaction(@PathVariable(name = "commentId") Long commentId,
-                                                                              @RequestBody PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
-        PostCommentReactionResponse commentReaction = postCommentReactionService.createPostCommentReaction(commentId, postCommentReactionCreateRequest);
-//        return ApiResponse.onSuccess(commentReaction);
-        return ApiResponse.onSuccess(null);
+    public ResponseEntity<ApiResponse<?>> createPostCommentReaction(@PathVariable(name = "commentId") Long commentId,
+                                                                    @RequestBody PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
+        postCommentReactionService.createPostCommentReaction(commentId, postCommentReactionCreateRequest);
+        return ApiResponse.success(null);
     }
 
     @Operation(summary = "게시물 댓글 반응 삭제 api", description = """
@@ -56,9 +56,9 @@ public class PostCommentReactionController {
             
             """)
     @DeleteMapping("/boards/posts/comments/{commentId}/reactions")
-    public ApiResponse<Void> deletePostCommentReaction(@PathVariable(name = "commentId") Long commentId,
-                                                                              @RequestBody PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
+    public ResponseEntity<ApiResponse<?>> deletePostCommentReaction(@PathVariable(name = "commentId") Long commentId,
+                                                                    @RequestBody PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
         postCommentReactionService.deletePostCommentReaction(commentId, postCommentReactionCreateRequest);
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.success(null);
     }
 }
