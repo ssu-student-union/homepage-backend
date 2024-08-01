@@ -1,10 +1,13 @@
 package ussum.homepage.infra.jpa.post;
 
 import org.springframework.stereotype.Component;
+import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
+import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.user.User;
+import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.BoardEntity;
 import ussum.homepage.infra.jpa.post.entity.CategoryEntity;
@@ -12,6 +15,7 @@ import ussum.homepage.infra.jpa.post.entity.PostEntity;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 public class PostMapper {
@@ -53,6 +57,10 @@ public class PostMapper {
                 board,
                 category
         );
+    }
+
+    public TopLikedPostListResponse toTopLikedPostListResponse(List<SimplePostResponse> postResponseList, PageInfo pageInfo){
+        return TopLikedPostListResponse.of(postResponseList, pageInfo);
     }
 
 }

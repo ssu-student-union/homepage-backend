@@ -33,8 +33,6 @@ public class QPostEntity extends EntityPathBase<PostEntity> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final DateTimePath<java.time.LocalDateTime> deletedAt = createDateTime("deletedAt", java.time.LocalDateTime.class);
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final DateTimePath<java.time.LocalDateTime> lastEditedAt = createDateTime("lastEditedAt", java.time.LocalDateTime.class);
