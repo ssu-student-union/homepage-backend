@@ -2,6 +2,8 @@ package ussum.homepage.domain.post;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import ussum.homepage.application.post.service.dto.response.SimplePostDto;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -15,4 +17,5 @@ public interface PostRepository {
     Post save(Post post);
     void delete(Post post);
     Page<Post> findBySearchCriteria(Pageable pageable,String boardCode, String q, String categoryCode);
+    Page<SimplePostDto> findPostDtoListByBoardCode(String boardCode, Pageable pageable);
 }
