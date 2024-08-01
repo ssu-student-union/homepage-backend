@@ -1,5 +1,7 @@
 package ussum.homepage.infra.jpa.post;
 
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
+import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
+import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.global.error.exception.GeneralException;
@@ -26,8 +30,14 @@ import java.util.Optional;
 
 import static ussum.homepage.global.error.status.ErrorStatus.*;
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.increaseViewCount;
+
+import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
+import static ussum.homepage.infra.jpa.postlike.entity.QPostReactionEntity.postReactionEntity;
+import static ussum.homepage.infra.jpa.post.entity.QBoardEntity.boardEntity;
+
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.updateLastEditedAt;
 import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
+
 
 @Repository
 @RequiredArgsConstructor
@@ -140,5 +150,40 @@ public class PostRepositoryImpl implements PostRepository {
 //                /*q.isEmpty() ? null : */q,
 //                /*categoryCode.isEmpty() ? null : */MajorCode.getEnumMajorCodeFromStringMajorCode(categoryCode))
 //                .map(postMapper::toDomain);
+    }
+
+    @Override
+    public Page<SimplePostResponse> findPostDtoListByBoardCode(String boardCode, Pageable pageable) {
+
+        List<SimplePostResponse> contents = queryFactory
+                .select(Projections.constructor(SimplePostDto.class,
+                        postEntity,
+                        postReactionEntity.countDistinct().castToNum(Long.class)
+                ))
+                .from(postEntity)
+                .leftJoin(postReactionEntity).on(postReactionEntity.postEntity.eq(postEntity))
+                .leftJoin(postEntity.boardEntity, boardEntity)
+                .where(eqBoardCode(boardCode))
+                .groupBy(postEntity)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch()
+                .stream()
+                .map(simplePostDto -> SimplePostResponse.of(
+                        postMapper.toDomain(simplePostDto.postEntity()),
+                        Math.toIntExact(simplePostDto.likeCount())))
+                .toList();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(boardEntity.boardCode.countDistinct())
+                .from(postEntity)
+                .leftJoin(postReactionEntity).on(postReactionEntity.postEntity.eq(postEntity))
+                .leftJoin(postEntity.boardEntity, boardEntity)
+                .where(eqBoardCode(boardCode))
+                .groupBy(postEntity);
+        return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchCount);
+    }
+    private BooleanExpression eqBoardCode(String boardCode) {
+        return boardCode != null ? boardEntity.boardCode.eq(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode)) : null;
     }
 }

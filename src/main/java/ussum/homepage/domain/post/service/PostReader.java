@@ -4,14 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ussum.homepage.application.post.service.dto.request.PostSearchRequest;
+
+import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
+import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.BoardRepository;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.global.error.exception.GeneralException;
-
-import java.util.List;
 
 import static ussum.homepage.global.error.status.ErrorStatus.BOARD_NOT_FOUND;
 import static ussum.homepage.global.error.status.ErrorStatus.POST_NOT_FOUND;
@@ -23,6 +23,10 @@ public class PostReader {
     private final BoardRepository boardRepository;
     public Page<Post> getPostList(Pageable pageable, String boardCode) {
         return postRepository.findAllWithBoard(pageable, boardCode);
+    }
+
+    public Page<SimplePostResponse> findSimplePostDtoListByBoardCode(String boardCode, Pageable pageable){
+        return postRepository.findPostDtoListByBoardCode(boardCode, pageable);
     }
 
     public Post getPostWithId(Long postId) {

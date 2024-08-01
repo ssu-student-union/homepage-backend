@@ -10,6 +10,7 @@ import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.response.PostListResponse;
 import ussum.homepage.application.post.service.dto.response.PostResponse;
+import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
 
@@ -25,6 +26,14 @@ public class PostController {
                                                            @PathVariable(name = "boardCode") String boardCode) {
 
         PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
+        return ApiResponse.success(postList);
+    }
+
+    @GetMapping("/{boardCode}/posts/top-liked")
+    public ResponseEntity<ApiResponse<?>> getTopLikedBoardPostList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
+                                                           @PathVariable(name = "boardCode") String boardCode) {
+
+        TopLikedPostListResponse postList = postService.getTopLikedPostList(page, take, boardCode);
         return ApiResponse.success(postList);
     }
 
