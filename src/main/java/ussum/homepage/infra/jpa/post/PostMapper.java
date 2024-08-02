@@ -8,10 +8,7 @@ import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.global.common.PageInfo;
-import ussum.homepage.infra.jpa.post.entity.BoardCode;
-import ussum.homepage.infra.jpa.post.entity.BoardEntity;
-import ussum.homepage.infra.jpa.post.entity.CategoryEntity;
-import ussum.homepage.infra.jpa.post.entity.PostEntity;
+import ussum.homepage.infra.jpa.post.entity.*;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 
 import java.time.LocalDateTime;
@@ -26,6 +23,7 @@ public class PostMapper {
                 postEntity.getContent(),
                 postEntity.getViewCount(),
                 postEntity.getThumbnailImage(),
+                postEntity.getStatus().getStringStatus(),
                 postEntity.getCreatedAt(),
                 postEntity.getUpdatedAt(),
                 postEntity.getLastEditedAt(),
@@ -52,6 +50,7 @@ public class PostMapper {
                 post.getContent(),
                 post.getViewCount(),
                 post.getThumbnailImage(),
+                Status.getEnumStatusFromStringStatus(post.getStatus()),
                 lastEditedAt,
                 user,
                 board,
