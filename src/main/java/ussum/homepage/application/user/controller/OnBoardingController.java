@@ -1,6 +1,7 @@
 package ussum.homepage.application.user.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.user.service.OnBoardingService;
@@ -17,10 +18,10 @@ public class OnBoardingController {
     private final OnBoardingService onBoardingService;
 
     @PostMapping("/academy-information")
-    public ApiResponse<?> createUserOnBoarding(@UserId Long userId,
-                                               @RequestBody OnBoardingRequest request){
+    public ResponseEntity<ApiResponse<?>> createUserOnBoarding(@UserId Long userId,
+                                                              @RequestBody OnBoardingRequest request){
         onBoardingService.saveUserOnBoarding(userId, request);
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.success(null);
     }
 
 }
