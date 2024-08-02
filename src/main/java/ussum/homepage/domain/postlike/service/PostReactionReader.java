@@ -28,5 +28,9 @@ public class PostReactionReader {
                 .orElseThrow(() -> new PostReactionException(POST_REACTION_NOT_FOUND));
     }
 
+    public Integer countPostReactionsByType(Long postId, String reactionType) {
+        return postReactionRepository.countByPostIdAndReactionType(postId, reactionType);
+    }
+
 
 }
