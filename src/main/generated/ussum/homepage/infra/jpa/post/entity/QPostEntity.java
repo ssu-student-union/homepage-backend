@@ -37,6 +37,8 @@ public class QPostEntity extends EntityPathBase<PostEntity> {
 
     public final DateTimePath<java.time.LocalDateTime> lastEditedAt = createDateTime("lastEditedAt", java.time.LocalDateTime.class);
 
+    public final EnumPath<Status> status = createEnum("status", Status.class);
+
     public final StringPath thumbnailImage = createString("thumbnailImage");
 
     public final StringPath title = createString("title");

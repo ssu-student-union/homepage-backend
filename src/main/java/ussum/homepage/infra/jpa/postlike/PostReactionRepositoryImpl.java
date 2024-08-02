@@ -48,6 +48,20 @@ public class PostReactionRepositoryImpl implements PostReactionRepository {
     }
 
     @Override
+    public Integer countByPostIdAndReactionType(Long postId, String reaction) {
+        Long count = queryFactory
+                .select(postReactionEntity.count())
+                .from(postReactionEntity)
+                .where(
+                        postReactionEntity.postEntity.id.eq(postId),
+                        postReactionEntity.reaction.eq(Reaction.getEnumReactionFromStringReaction(reaction))
+                )
+                .fetchOne();
+
+        return Optional.ofNullable(count).map(Long::intValue).orElse(0);
+    }
+
+    @Override
     public Optional<PostReaction> findByPostIdAndUserId(Long postId, Long userId, String reaction) {
         PostEntity postEntity = postJpaRepository.findById(postId)
                 .orElseThrow(() -> new PostException(POST_NOT_FOUND));
