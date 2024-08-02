@@ -21,11 +21,12 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/{boardCode}/posts")
-    public ApiResponse<PostListResponse> getBoardPostsList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
+    public ResponseEntity<ApiResponse<?>> getBoardPostsList(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                            @RequestParam(value = "take") int take,
                                                            @PathVariable(name = "boardCode") String boardCode) {
 
         PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
-        return ApiResponse.onSuccess(postList);
+        return ApiResponse.success(postList);
     }
 
     @GetMapping("/{boardCode}/posts/top-liked")
@@ -37,39 +38,45 @@ public class PostController {
     }
 
     @GetMapping("/{boardCode}/posts/{postId}")
-    public ApiResponse<PostResponse> getBoardPost(@PathVariable(name = "boardCode") String boardCode,
-                                                  @PathVariable(name = "postId") Long postId) {
+    public ResponseEntity<ApiResponse<?>> getBoardPost(@PathVariable(name = "boardCode") String boardCode,
+                                                       @PathVariable(name = "postId") Long postId) {
 
-        return ApiResponse.onSuccess(postService.getPost(boardCode, postId));
+        PostResponse post = postService.getPost(boardCode, postId);
+        return ApiResponse.success(post);
     }
 
     @PostMapping("/{boardCode}/posts")
-    public ApiResponse<?> createBoardPost(@UserId Long userId, @PathVariable(name = "boardCode") String boardCode,
-                                          @RequestBody PostCreateRequest postCreateRequest) {
+    public ResponseEntity<ApiResponse<?>> createBoardPost(@UserId Long userId,
+                                                          @PathVariable(name = "boardCode") String boardCode,
+                                                          @RequestBody PostCreateRequest postCreateRequest) {
         postService.createPost(userId, boardCode,postCreateRequest);
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.success(null);
     }
 
     @PatchMapping("/{boardCode}/posts/{postId}")
-    public ApiResponse<PostResponse> editBoardPost(@PathVariable(name = "boardCode") String boardCode, @PathVariable(name = "postId") Long postId,
-                                                   @RequestBody PostUpdateRequest postUpdateRequest) {
+    public ResponseEntity<ApiResponse<?>> editBoardPost(@PathVariable(name = "boardCode") String boardCode,
+                                                        @PathVariable(name = "postId") Long postId,
+                                                        @RequestBody PostUpdateRequest postUpdateRequest) {
         PostResponse post = postService.editPost(boardCode,postId, postUpdateRequest);
-        return ApiResponse.onSuccess(post);
+        return ApiResponse.success(post);
     }
 
     @DeleteMapping("/{boardCode}/posts/{postId}")
-    public ApiResponse<?> deleteBoardPost(@PathVariable(name = "boardCode") String boardCode, @PathVariable(name = "postId") Long postId) {
+    public ResponseEntity<ApiResponse<?>> deleteBoardPost(@PathVariable(name = "boardCode") String boardCode,
+                                                          @PathVariable(name = "postId") Long postId) {
         postService.deletePost(boardCode, postId);
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.success(null);
     }
 
     @GetMapping("/{boardCode}/posts/search")
-    public ApiResponse<PostListResponse> searchBoardPost(@RequestParam(value = "q") String q, @RequestParam(value = "categorycode") String categoryCode,
-                                                    @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
-                                                    @PathVariable String boardCode) {
-        return ApiResponse.onSuccess(postService.searchPost(
-                PageRequest.of(page, take, Sort.by("id").descending()), boardCode, q, categoryCode)
-        );
+    public ResponseEntity<ApiResponse<?>> searchBoardPost(@RequestParam(value = "q") String q,
+                                                          @RequestParam(value = "categoryCode") String categoryCode,
+                                                          @RequestParam(value = "page", defaultValue = "0") int page,
+                                                          @RequestParam(value = "take") int take,
+                                                          @PathVariable String boardCode) {
+
+        PostListResponse postList = postService.searchPost(PageRequest.of(page, take, Sort.by("id").descending()), boardCode, q, categoryCode);
+        return ApiResponse.success(postList);
     }
 
 
