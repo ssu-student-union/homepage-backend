@@ -24,7 +24,7 @@ public interface PostJpaRepository extends JpaRepository<PostEntity,Long> {
     Page<PostEntity> findAllByBoard(Pageable pageable, @Param("board") BoardEntity board);
     Optional<PostEntity> findByBoardEntityAndId(BoardEntity boardEntity, Long id);
     @Query("SELECT p FROM PostEntity p WHERE p.boardEntity.id = :boardId")
-    List<PostEntity> findAllByBoardId(@Param("boardId") Long boardId);
+    Page<PostEntity> findAllByBoardId(@Param("boardId") Long boardId, Pageable pageable);
 
     @Query("""
                     SELECT pe

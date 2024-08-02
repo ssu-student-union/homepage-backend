@@ -25,6 +25,10 @@ public class PostReader {
         return postRepository.findAllWithBoard(pageable, boardCode);
     }
 
+    public Page<Post> getPostListByBoardId(Long boardId, Pageable pageable) {
+        return postRepository.findAllByBoardId(boardId, pageable);
+    }
+
     public Page<SimplePostResponse> findSimplePostDtoListByBoardCode(String boardCode, Pageable pageable){
         return postRepository.findPostDtoListByBoardCode(boardCode, pageable);
     }
