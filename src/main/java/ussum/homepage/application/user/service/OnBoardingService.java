@@ -38,7 +38,7 @@ public class OnBoardingService {
         /*
         TO DO // MemberEntity, GroupEntity 연결
          */
-        user.updateOnBoardingUser(request);
+        user.updateOnBoardingUser(request); // 이 메소드 수정 필요
         userModifier.save(user);
     }
 }
