@@ -11,7 +11,7 @@ public record UserOAuthResponse(
         String studentId,
         Boolean isFirst,
         String accessToken,
-        String refreshToken,
+        String refreshToken, // refreshToken을 돌려 줄 이유가 있을까?
         String profileImage,
         String createdAt
 ) {
@@ -23,6 +23,7 @@ public record UserOAuthResponse(
                 .isFirst(isFirst)
                 .accessToken(tokenInfo.getAccessToken())
                 .refreshToken(tokenInfo.getRefreshToken())
+                .profileImage(user.getProfileImage())
                 .createdAt(null)
                 .build();
     }

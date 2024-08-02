@@ -6,6 +6,7 @@ import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.UserRepository;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,6 +18,9 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findById(Long userId) {
         return userJpaRepository.findById(userId).map(userMapper::toDomain);
     }
+
+    @Override
+    public Optional<User> findByStudentId(String studentId) { return userJpaRepository.findByStudentId(studentId).map(userMapper::toDomain); }
 
     @Override
     public User save(User user) {

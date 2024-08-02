@@ -78,6 +78,9 @@ public enum ErrorStatus implements BaseErrorCode {
     NOT_MATCH_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN_008", "일치하지 않는 리프레시 토큰입니다."),
     INVALID_AUTH_CODE(HttpStatus.UNAUTHORIZED, "TOKEN_009", "인증을 실패했습니다."),
 
+    //온보딩에러
+    INVALID_ONBOARDING_REQUEST(HttpStatus.BAD_REQUEST,"ONBOARDING_001","온보딩 정보가 올바르지 않습니다."),
+
     //Body 에러
     INVALID_BODY(HttpStatus.BAD_REQUEST, "BODY_ERROR", "Body가 올바르지 않습니다.");
 

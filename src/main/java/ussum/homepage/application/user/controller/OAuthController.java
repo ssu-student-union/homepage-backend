@@ -2,6 +2,7 @@ package ussum.homepage.application.user.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,8 +23,8 @@ public class OAuthController {
     }
 
     @GetMapping("/callback")
-    public ApiResponse<UserOAuthResponse> callback(@RequestParam("code") String code){
-        return ApiResponse.onSuccess(oAuthService.signIn(code));
+    public ResponseEntity<ApiResponse<?>> callback(@RequestParam("code") String code){
+        return ApiResponse.success(oAuthService.signIn(code));
     }
 
 }

@@ -9,4 +9,6 @@ import lombok.NoArgsConstructor;
 public class OnBoardingRequest {
     private String name;
     private String studentId;
+    private String groupName;
+    private String major;
 }
