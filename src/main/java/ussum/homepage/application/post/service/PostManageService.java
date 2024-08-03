@@ -5,12 +5,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.response.postList.*;
+import ussum.homepage.application.user.service.UserService;
 import ussum.homepage.domain.post.Board;
+import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.service.BoardReader;
+import ussum.homepage.domain.post.service.CategoryReader;
+import ussum.homepage.domain.post.service.PostAppender;
 import ussum.homepage.domain.post.service.PostReader;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
+import ussum.homepage.domain.user.User;
+import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 
 import java.util.List;
@@ -26,7 +33,10 @@ public class PostManageService {
 
     private final BoardReader boardReader;
     private final PostReader postReader;
+    private final CategoryReader categoryReader;
+    private final UserReader userReader;
     private final PostReactionReader postReactionReader;
+    private final PostAppender postAppender;
 
     private final Map<String, BiFunction<Post, Integer, ? extends PostListResDto>> postResponseMap = Map.of(
             "공지사항게시판", (post, ignored) -> NoticePostResponse.of(post),
@@ -60,6 +70,15 @@ public class PostManageService {
                 .toList();
 
         return PostListRes.of(responseList, pageInfo);
+    }
+
+    public Long createPost(Long userId, String boardCode, PostCreateRequest postCreateRequest) {
+        Board board = boardReader.getBoardWithBoardCode(boardCode);
+        Category category = categoryReader.getCategoryWithCode(postCreateRequest.categoryCode());
+        //user도 찾아 와야 하지 않을까
+        User user = userReader.getUserWithId(userId);
+
+
     }
 }
 //스위치 사용 로직
