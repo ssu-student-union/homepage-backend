@@ -57,12 +57,13 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_MAJORCODE(HttpStatus.FORBIDDEN,"ENUM_002","유효하지 않은 MAJORCODE입니다."),
     INVALID_REACTION(HttpStatus.FORBIDDEN,"ENUM_003","유효하지 않은 REACTION입니다."),
     INVALID_BOARDCODE(HttpStatus.FORBIDDEN,"ENUM_004","유효하지 않은 BOARDCODE입니다."),
-    INVALID_TYPE(HttpStatus.FORBIDDEN,"ENUM_005","유효하지 않은 TYPE입니다."),
-    INVALID_TARGET(HttpStatus.FORBIDDEN,"ENUM_006","유효하지 않은 TARGET입니다."),
-    INVALID_ORDER(HttpStatus.FORBIDDEN,"ENUM_007","유효하지 않은 ORDER입니다."),
-    INVALID_ACTION(HttpStatus.FORBIDDEN,"ENUM_008","유효하지 않은 ACTION입니다."),
-    INVALID_COMMENT_TYPE(HttpStatus.FORBIDDEN,"ENUM_009","유효하지 않은 COMMENT TYPE입니다."),
-    INVALID_STATUS(HttpStatus.FORBIDDEN,"ENUM_010","유효하지 않은 STATUS입니다."),
+    INVALID_CATEGORY_CODE(HttpStatus.FORBIDDEN,"ENUM_005","유효하지 않은 CATEGORYCODE입니다."),
+    INVALID_TYPE(HttpStatus.FORBIDDEN,"ENUM_006","유효하지 않은 TYPE입니다."),
+    INVALID_TARGET(HttpStatus.FORBIDDEN,"ENUM_007","유효하지 않은 TARGET입니다."),
+    INVALID_ORDER(HttpStatus.FORBIDDEN,"ENUM_008","유효하지 않은 ORDER입니다."),
+    INVALID_ACTION(HttpStatus.FORBIDDEN,"ENUM_009","유효하지 않은 ACTION입니다."),
+    INVALID_COMMENT_TYPE(HttpStatus.FORBIDDEN,"ENUM_010","유효하지 않은 COMMENT TYPE입니다."),
+    INVALID_STATUS(HttpStatus.FORBIDDEN,"ENUM_011","유효하지 않은 STATUS입니다."),
 
     /**
      * 401 Unauthorized, Token 관련 에러

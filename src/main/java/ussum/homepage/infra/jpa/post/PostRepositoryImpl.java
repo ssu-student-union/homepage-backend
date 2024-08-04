@@ -14,10 +14,7 @@ import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.global.error.exception.GeneralException;
-import ussum.homepage.infra.jpa.post.entity.BoardCode;
-import ussum.homepage.infra.jpa.post.entity.BoardEntity;
-import ussum.homepage.infra.jpa.post.entity.CategoryEntity;
-import ussum.homepage.infra.jpa.post.entity.PostEntity;
+import ussum.homepage.infra.jpa.post.entity.*;
 import ussum.homepage.infra.jpa.post.repository.BoardJpaRepository;
 import ussum.homepage.infra.jpa.post.repository.CategoryJpaRepository;
 import ussum.homepage.infra.jpa.post.repository.PostJpaRepository;
@@ -118,12 +115,12 @@ public class PostRepositoryImpl implements PostRepository {
         BoardEntity boardEntity = boardJpaRepository.findByBoardCode(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode))
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
-        MajorCode enumMajorCodeFromStringMajorCode = MajorCode.getEnumMajorCodeFromStringMajorCode(categoryCode);
+        CategoryCode enumCategoryCodeFromStringCategoryCode = CategoryCode.getEnumCategoryCodeFromStringCategoryCode(categoryCode);
 
         List<PostEntity> content = queryFactory
                 .selectFrom(postEntity)
                 .where(postEntity.boardEntity.eq(boardEntity)
-                        .and(postEntity.categoryEntity.majorCode.eq(enumMajorCodeFromStringMajorCode))
+                        .and(postEntity.categoryEntity.categoryCode.eq(enumCategoryCodeFromStringCategoryCode))
                         .and(postEntity.title.containsIgnoreCase(q)
                                 .or(postEntity.content.containsIgnoreCase(q))))
                 .orderBy(postEntity.id.desc())
@@ -135,7 +132,7 @@ public class PostRepositoryImpl implements PostRepository {
                 .select(postEntity.count())
                 .from(postEntity)
                 .where(postEntity.boardEntity.eq(boardEntity)
-                        .and(postEntity.categoryEntity.majorCode.eq(enumMajorCodeFromStringMajorCode))
+                        .and(postEntity.categoryEntity.categoryCode.eq(enumCategoryCodeFromStringCategoryCode))
                         .and(postEntity.title.containsIgnoreCase(q)
                                 .or(postEntity.content.containsIgnoreCase(q)))
                 );

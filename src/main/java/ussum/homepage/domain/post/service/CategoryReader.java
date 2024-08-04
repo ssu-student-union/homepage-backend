@@ -14,7 +14,7 @@ public class CategoryReader {
     private final CategoryRepository categoryRepository;
 
     public Category getCategoryWithCode(String categoryCode) {
-        return categoryRepository.findByMajorCode(categoryCode)
+        return categoryRepository.findByCategoryCode(categoryCode)
                 .orElseThrow(() -> new GeneralException(CATEGORY_NOT_FOUND));
     }
 

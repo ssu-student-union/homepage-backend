@@ -5,6 +5,7 @@ import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Category;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.BoardEntity;
+import ussum.homepage.infra.jpa.post.entity.CategoryCode;
 import ussum.homepage.infra.jpa.post.entity.CategoryEntity;
 import ussum.homepage.infra.jpa.user.entity.MajorCode;
 
@@ -13,7 +14,7 @@ public class CategoryMapper {
     public Category toDomain(CategoryEntity categoryEntity){
         return Category.of(
                 categoryEntity.getId(),
-                String.valueOf(categoryEntity.getMajorCode()),
+                String.valueOf(categoryEntity.getCategoryCode()),
                 categoryEntity.getName(),
                 categoryEntity.getBoardEntity().getId(),
                 categoryEntity.getCreatedAt(),
@@ -25,7 +26,7 @@ public class CategoryMapper {
         CategoryEntity from = CategoryEntity.from(category.getId());
         return CategoryEntity.of(
                 category.getId(),
-                MajorCode.getEnumMajorCodeFromStringMajorCode(category.getMajorCode()),
+                CategoryCode.getEnumCategoryCodeFromStringCategoryCode(category.getCategoryCode()),
                 category.getName(),
                 from.getBoardEntity()
         );
