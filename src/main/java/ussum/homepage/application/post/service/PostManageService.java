@@ -1,32 +1,42 @@
 package ussum.homepage.application.post.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ussum.homepage.application.post.service.dto.response.postDetail.*;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 import ussum.homepage.domain.post.Board;
+import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
+import ussum.homepage.domain.post.PostFile;
 import ussum.homepage.domain.post.service.BoardReader;
+import ussum.homepage.domain.post.service.CategoryReader;
+import ussum.homepage.domain.post.service.PostFileReader;
 import ussum.homepage.domain.post.service.PostReader;
+import ussum.homepage.domain.post.service.formatter.PostDetailFunction;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
+import ussum.homepage.domain.user.User;
+import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
+import ussum.homepage.global.error.exception.GeneralException;
+import ussum.homepage.global.error.status.ErrorStatus;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.function.Function;
-
-import static ussum.homepage.global.error.status.ErrorStatus.POST_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PostManageService {
-
     private final BoardReader boardReader;
     private final PostReader postReader;
     private final PostReactionReader postReactionReader;
+    private final CategoryReader categoryReader;
+    private final UserReader userReader;
+    private final PostFileReader postFileReader;
 
     private final Map<String, BiFunction<Post, Integer, ? extends PostListResDto>> postResponseMap = Map.of(
             "공지사항게시판", (post, ignored) -> NoticePostResponse.of(post),
@@ -34,6 +44,14 @@ public class PostManageService {
             "제휴게시판", (post, ignored) -> PartnerPostResponse.of(post),
             "감사기구게시판", (post, ignored) -> AuditPostResponseDto.of(post),
             "청원게시판", PetitionPostResponse::of
+    );
+
+    private final Map<String, PostDetailFunction<Post, String, Integer, String, String, String, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
+            "공지사항게시판", (post, authorName, ignored, categoryName, imageList, fileList) -> NoticePostDetailResponse.of(post, authorName, categoryName, imageList, fileList),
+            "분실물게시판", (post, authorName, ignored, categoryName, imageList, another_ignored) -> LostPostDetailResponse.of(post, authorName, categoryName, imageList),
+            "제휴게시판", (post, authorName, ignored, categoryName, imageList, fileList) -> PartnerPostDetailResponse.of(post, authorName, categoryName, imageList, fileList),
+            "감사기구게시판", (post, authorName, ignored, categoryName, imageList, fileList) -> AuditPostDetailResponse.of(post, authorName, categoryName, imageList, fileList),
+            "청원게시판", (post, authorName, likeCount, petitionStatus, imageList, ignored) -> PetitionPostDetailResponse.of(post, authorName, likeCount, petitionStatus)
     );
 
     public PostListRes<?> getPostList(int page, int take, String boardCode) {
@@ -60,6 +78,46 @@ public class PostManageService {
                 .toList();
 
         return PostListRes.of(responseList, pageInfo);
+    }
+
+
+    @Transactional
+    public PostDetailRes<?> getPost(String boardCode, Long postId) {
+        Board board = boardReader.getBoardWithBoardCode(boardCode);
+        Post post = postReader.getPostWithBoardCode(board.getBoardCode(), postId);
+        Category category = categoryReader.getCategoryById(post.getCategoryId());
+        User user = userReader.getUserWithId(post.getUserId());
+
+        List<PostFile> postFileList = postFileReader.getPostFileListByPostId(post.getId());
+        List<String> imageList = postFileList.stream()
+                .filter(postFile -> "image".equals(postFile.getTypeName()))
+                .map(PostFile::getUrl)
+                .toList();
+
+        System.out.println("imageList = " + imageList);
+
+        List<String> fileList = postFileList.stream()
+                .filter(postFile -> "file".equals(postFile.getTypeName()))
+                .map(PostFile::getUrl)
+                .toList();
+
+        PostDetailFunction<Post, String, Integer, String, String, String, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
+
+        if (responseFunction == null) {
+            throw new GeneralException(ErrorStatus.INVALID_BOARDCODE);
+        }
+
+        PostDetailResDto response = null;
+        if (board.getName().equals("청원게시판")) {
+            Integer likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
+            response = responseFunction.apply(post, user.getName(), likeCount, category.getName(), imageList, null);
+        } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판")) {
+            response = responseFunction.apply(post, user.getName(), null, category.getName(), imageList, fileList);
+        } else if (board.getName().equals("분실물게시판")) {
+            response = responseFunction.apply(post, user.getName(), null, category.getName(), imageList, null); //분실물 게시판은 파일첨부 제외
+        }
+
+        return PostDetailRes.of(response);
     }
 }
 //스위치 사용 로직

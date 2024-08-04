@@ -26,10 +26,10 @@ public class Post {
     private String createdAt;
     private String updatedAt;
     private String lastEditedAt;
-//    private String deletedAt;
     private Long userId;
     private Long boardId;
     private Long categoryId;
+
 
     public static Post of(Long id,
                           String title,
@@ -40,7 +40,6 @@ public class Post {
                           LocalDateTime createdAt,
                           LocalDateTime updatedAt,
                           LocalDateTime lastEditedAt,
-//                          LocalDateTime deletedAt,
                           Long userId,
                           Long boardId,
                           Long categoryId) {
