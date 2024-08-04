@@ -11,7 +11,7 @@ public class NoticePostResponse extends PostListResDto{
     private final String status;
 
     @Builder
-    private NoticePostResponse(String postId, String title, String content, String date, String thumbNail, String status) {
+    private NoticePostResponse(Long postId, String title, String content, String date, String thumbNail, String status) {
         super(postId, title, content, date);
         this.thumbNail = thumbNail;
         this.status = status;
@@ -19,7 +19,7 @@ public class NoticePostResponse extends PostListResDto{
 
     public static NoticePostResponse of(Post post) {
         return NoticePostResponse.builder()
-                .postId(post.getId().toString())
+                .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .date(post.getCreatedAt().toString())

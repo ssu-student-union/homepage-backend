@@ -12,7 +12,7 @@ public class PetitionPostResponse extends PostListResDto{
     private final String status;
 
     @Builder
-    private PetitionPostResponse(String postId, String title, String content, String date, Integer likeCount, String status) {
+    private PetitionPostResponse(Long postId, String title, String content, String date, Integer likeCount, String status) {
         super(postId, title, content, date);
         this.likeCount = likeCount;
         this.status = status;
@@ -20,7 +20,7 @@ public class PetitionPostResponse extends PostListResDto{
 
     public static PetitionPostResponse of(Post post, Integer likeCount) {
         return PetitionPostResponse.builder()
-                .postId(post.getId().toString())
+                .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .date(post.getCreatedAt().toString())
