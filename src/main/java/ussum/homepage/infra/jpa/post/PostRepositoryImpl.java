@@ -18,7 +18,6 @@ import ussum.homepage.infra.jpa.post.entity.*;
 import ussum.homepage.infra.jpa.post.repository.BoardJpaRepository;
 import ussum.homepage.infra.jpa.post.repository.CategoryJpaRepository;
 import ussum.homepage.infra.jpa.post.repository.PostJpaRepository;
-import ussum.homepage.infra.jpa.user.entity.MajorCode;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
@@ -26,14 +25,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static ussum.homepage.global.error.status.ErrorStatus.*;
-import static ussum.homepage.infra.jpa.post.entity.PostEntity.increaseViewCount;
 
+import static ussum.homepage.infra.jpa.post.entity.PostEntity.increaseViewCount;
 import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
 import static ussum.homepage.infra.jpa.postlike.entity.QPostReactionEntity.postReactionEntity;
 import static ussum.homepage.infra.jpa.post.entity.QBoardEntity.boardEntity;
 
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.updateLastEditedAt;
-import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
 
 
 @Repository

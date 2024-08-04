@@ -12,17 +12,23 @@ import static ussum.homepage.global.error.status.ErrorStatus.INVALID_CATEGORY_CO
 @Getter
 public enum CategoryCode {
     //분실물 카테고리(분실문 현황, 분실 신고)
-    LOST_STATUS("lost_status"),
-    LOST_REPORT("lost_report"),
+    LOST_STATUS("LOST_STATUS"),
+    LOST_REPORT("LOST_REPORT"),
 
     //제휴안내 카테고리(의료, 문화, 뷰티, 건강, 음식, 교육, 주거)
-    MEDICAL("medical"),
-    CULTURE("culture"),
-    BEAUTY("beauty"),
-    HEALTH("health"),
-    FOOD("food"),
-    EDUCATION("education"),
-    HOUSING("housing");
+    MEDICAL("MEDICAL"),
+    CULTURE("CULTURE"),
+    BEAUTY("BEAUTY"),
+    HEALTH("HEALTH"),
+    FOOD("FOOD"),
+    EDUCATION("EDUCATION"),
+    HOUSING("HOUSING"),
+
+    //청원 카테고리(진행중, 접수완료, 답변완료 ,종료됨)
+    PROGRESS("PROGRESS"),
+    RECEIVED("RECEIVED"),
+    ANSWERED("ANSWERED"),
+    COMPLETED("COMPLETED");
 
     private final String stringCategoryCode;
     public static CategoryCode getEnumCategoryCodeFromStringCategoryCode(String stringCategoryCode) {
