@@ -32,7 +32,7 @@ public class PostCommentReactionController {
                                                                     @PathVariable(name = "commentId") Long commentId,
                                                                     @RequestBody CreatePostCommentReactionReq createPostCommentReactionReq) {
         postCommentReactionService.postCommentReactionToggle(userId, commentId, createPostCommentReactionReq);
-        return ApiResponse.success("배현서 박정우 11번가 입사를 축하드립니다.");
+        return ApiResponse.success("댓글에 성공적으로 반응하였습니다.");
     }
 
     @Operation(summary = "게시물 댓글 반응 생성 api", description = """
