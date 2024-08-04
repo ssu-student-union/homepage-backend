@@ -15,26 +15,21 @@ import ussum.homepage.domain.comment.service.PostCommentAppender;
 import ussum.homepage.domain.comment.service.PostCommentFormatter;
 import ussum.homepage.domain.comment.service.PostCommentModifier;
 import ussum.homepage.domain.comment.service.PostCommentReader;
-import ussum.homepage.domain.comment.service.formatter.TriFunction;
-import ussum.homepage.domain.post.service.formatter.PostFormatter;
-import ussum.homepage.domain.user.service.formatter.UserFormatter;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CommentService {
-    private final PostFormatter postFormatter;
-    private final UserFormatter userFormatter;
     private final PostCommentReader postCommentReader;
     private final PostCommentFormatter postCommentFormatter;
     private final PostCommentAppender postCommentAppender;
     private final PostCommentModifier postCommentModifier;
-    public PostCommentListResponse getCommentList(String boardCode, Long postId, int page, int take, String type){
+    public PostCommentListResponse getCommentList(/*String boardCode,*/ Long postId, int page, int take, String type){
         Page<PostComment> commentList = postCommentReader.getPostCommentList(setPageable(page, take), postId);
         return PostCommentListResponse.of(commentList, commentList.getTotalElements(), postCommentFormatter::format, type);
     }
     @Transactional
-    public PostCommentResponse createComment(Long userId, String boardCode, Long postId, PostCommentCreateRequest postCommentCreateRequest){
+    public PostCommentResponse createComment(Long userId, /*String boardCode,*/ Long postId, PostCommentCreateRequest postCommentCreateRequest){
         PostComment postComment = postCommentAppender.createPostComment(postCommentCreateRequest.toDomain(userId,postId));
         return postCommentFormatter.format(postComment.getPostId(), postComment.getUserId(), null);
     }
