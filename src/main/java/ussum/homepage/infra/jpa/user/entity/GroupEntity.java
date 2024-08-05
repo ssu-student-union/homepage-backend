@@ -11,8 +11,10 @@ public class GroupEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Enumerated(EnumType.STRING)
-    private MajorCode majorCode;
+    private GroupCode groupCode;
+
     private String name;
 
 }
