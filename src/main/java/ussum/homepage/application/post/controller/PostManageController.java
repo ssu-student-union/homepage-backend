@@ -24,4 +24,12 @@ public class PostManageController {
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
         return ApiResponse.success(postManageService.getPostList(page, take, boardCode));
     }
+
+    @GetMapping("/{boardCode}/posts/{postId}")
+    public ResponseEntity<ApiResponse<?>> getBoardPost(@PathVariable(name = "boardCode") String boardCode,
+                                                       @PathVariable(name = "postId") Long postId) {
+
+        return ApiResponse.success(postManageService.getPost(boardCode, postId));
+    }
+
 }

@@ -5,6 +5,7 @@ import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.user.User;
+import ussum.homepage.infra.jpa.post.entity.Status;
 import ussum.homepage.infra.jpa.user.entity.MajorCode;
 
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public record PostCreateRequest(
                 content,
                 1,
                 thumbNailImage,
-                null,
+                "새로운",
                 null,
                 null,
                 null,

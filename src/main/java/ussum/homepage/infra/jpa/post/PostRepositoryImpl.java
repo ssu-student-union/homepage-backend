@@ -14,14 +14,10 @@ import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.global.error.exception.GeneralException;
-import ussum.homepage.infra.jpa.post.entity.BoardCode;
-import ussum.homepage.infra.jpa.post.entity.BoardEntity;
-import ussum.homepage.infra.jpa.post.entity.CategoryEntity;
-import ussum.homepage.infra.jpa.post.entity.PostEntity;
+import ussum.homepage.infra.jpa.post.entity.*;
 import ussum.homepage.infra.jpa.post.repository.BoardJpaRepository;
 import ussum.homepage.infra.jpa.post.repository.CategoryJpaRepository;
 import ussum.homepage.infra.jpa.post.repository.PostJpaRepository;
-import ussum.homepage.infra.jpa.user.entity.MajorCode;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
@@ -29,14 +25,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static ussum.homepage.global.error.status.ErrorStatus.*;
-import static ussum.homepage.infra.jpa.post.entity.PostEntity.increaseViewCount;
 
+import static ussum.homepage.infra.jpa.post.entity.PostEntity.increaseViewCount;
 import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
 import static ussum.homepage.infra.jpa.postlike.entity.QPostReactionEntity.postReactionEntity;
 import static ussum.homepage.infra.jpa.post.entity.QBoardEntity.boardEntity;
 
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.updateLastEditedAt;
-import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
 
 
 @Repository
@@ -118,12 +113,12 @@ public class PostRepositoryImpl implements PostRepository {
         BoardEntity boardEntity = boardJpaRepository.findByBoardCode(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode))
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
-        MajorCode enumMajorCodeFromStringMajorCode = MajorCode.getEnumMajorCodeFromStringMajorCode(categoryCode);
+        CategoryCode enumCategoryCodeFromStringCategoryCode = CategoryCode.getEnumCategoryCodeFromStringCategoryCode(categoryCode);
 
         List<PostEntity> content = queryFactory
                 .selectFrom(postEntity)
                 .where(postEntity.boardEntity.eq(boardEntity)
-                        .and(postEntity.categoryEntity.majorCode.eq(enumMajorCodeFromStringMajorCode))
+                        .and(postEntity.categoryEntity.categoryCode.eq(enumCategoryCodeFromStringCategoryCode))
                         .and(postEntity.title.containsIgnoreCase(q)
                                 .or(postEntity.content.containsIgnoreCase(q))))
                 .orderBy(postEntity.id.desc())
@@ -135,7 +130,7 @@ public class PostRepositoryImpl implements PostRepository {
                 .select(postEntity.count())
                 .from(postEntity)
                 .where(postEntity.boardEntity.eq(boardEntity)
-                        .and(postEntity.categoryEntity.majorCode.eq(enumMajorCodeFromStringMajorCode))
+                        .and(postEntity.categoryEntity.categoryCode.eq(enumCategoryCodeFromStringCategoryCode))
                         .and(postEntity.title.containsIgnoreCase(q)
                                 .or(postEntity.content.containsIgnoreCase(q)))
                 );

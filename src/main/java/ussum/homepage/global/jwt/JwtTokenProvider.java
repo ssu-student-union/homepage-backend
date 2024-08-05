@@ -35,13 +35,15 @@ public class JwtTokenProvider {
 
     public String createAccessToken(User user){
 
-        return Jwts.builder()
+        String accessToken = Jwts.builder()
                 .setHeaderParam(Header.TYPE, "access_token")
                 .setSubject(String.valueOf(user.getId()))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
+        System.out.println("accessToken = " + accessToken);
+        return accessToken;
     }
 
     public String createRefreshToken(User user){
@@ -55,7 +57,7 @@ public class JwtTokenProvider {
                 .compact();
 
         RefreshToken token = RefreshToken.of(user.getId(), refreshToken);
-        tokenRepository.save(token);
+//        tokenRepository.save(token);
         return refreshToken;
     }
 

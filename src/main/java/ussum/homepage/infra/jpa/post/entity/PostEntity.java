@@ -44,7 +44,7 @@ public class PostEntity extends BaseEntity {
     }
 
     public static void increaseViewCount(PostEntity post) {
-        post.viewCount += 1;
+        post.viewCount = post.getViewCount() == null ? 1 : post.viewCount + 1;
     }
 
     public static void updateLastEditedAt(PostEntity post) {

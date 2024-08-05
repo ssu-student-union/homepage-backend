@@ -10,8 +10,8 @@ import static ussum.homepage.global.error.status.ErrorStatus.INVALID_COMMENT_TYP
 @RequiredArgsConstructor
 @Getter
 public enum CommentType {
-    GENERAL("general"),
-    QNA("qna");
+    GENERAL("GENERAL"),
+    QNA("QNA");
     private final String stringCommentType;
     public static CommentType getEnumCommentTypeFromStringCommentType(String stringCommentType) {
         return Arrays.stream(values())

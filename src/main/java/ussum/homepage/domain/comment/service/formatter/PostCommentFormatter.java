@@ -20,7 +20,6 @@ public class PostCommentFormatter implements ussum.homepage.domain.comment.servi
     private final UserFormatter userFormatter;
     @Override
     public PostCommentResponse format(Long postId, Long userId, String type){
-        userId = 1L; //테스트를 위한 임시 userId
         final PostComment postComment = postCommentReader.getPostCommentWithPostIdAndUserId(postId, userId);
         Integer likeCountOfPostComment = postCommentReactionManager.getLikeCountOfPostComment(postComment.getId());
         return PostCommentResponse.of(postComment, postFormatter.format(postComment.getPostId()), userFormatter.format(postComment.getUserId()), type, likeCountOfPostComment);

@@ -3,6 +3,7 @@ package ussum.homepage.infra.jpa.post.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ussum.homepage.domain.post.Board;
@@ -31,7 +32,7 @@ public interface PostJpaRepository extends JpaRepository<PostEntity,Long> {
                     FROM PostEntity pe
                     WHERE pe.boardEntity = :board 
                     AND (:q IS NULL OR pe.title LIKE %:q% OR pe.content LIKE %:q%)
-                    AND (:categoryCode IS NULL OR pe.categoryEntity.majorCode = :categoryCode)
+                    AND (:categoryCode IS NULL OR pe.categoryEntity.categoryCode = :categoryCode)
                     ORDER BY pe.id DESC
             """)
     Page<PostEntity> findBySearchCriteria(Pageable pageable,

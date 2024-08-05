@@ -6,15 +6,16 @@ import ussum.homepage.global.error.exception.InvalidValueException;
 
 import java.util.Arrays;
 
-import static ussum.homepage.global.error.status.ErrorStatus.INVALID_BOARDCODE;
 import static ussum.homepage.global.error.status.ErrorStatus.INVALID_STATUS;
 
 @RequiredArgsConstructor
 @Getter
 public enum Status {
     NEW("새로운"),
-    TEST("긴급");
+    TEST("긴급"),
+    GENERAL("일반");
     private final String stringStatus;
+
     public static Status getEnumStatusFromStringStatus(String stringStatus) {
         return Arrays.stream(values())
                 .filter(status -> status.stringStatus.equals(stringStatus))
@@ -22,3 +23,4 @@ public enum Status {
                 .orElseThrow(() -> new InvalidValueException(INVALID_STATUS));
     }
 }
+
