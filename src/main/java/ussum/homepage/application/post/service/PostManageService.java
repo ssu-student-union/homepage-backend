@@ -94,8 +94,6 @@ public class PostManageService {
                 .map(PostFile::getUrl)
                 .toList();
 
-        System.out.println("imageList = " + imageList);
-
         List<String> fileList = postFileList.stream()
                 .filter(postFile -> "file".equals(postFile.getTypeName()))
                 .map(PostFile::getUrl)
