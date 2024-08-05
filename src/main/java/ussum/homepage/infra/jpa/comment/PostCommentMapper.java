@@ -2,6 +2,7 @@ package ussum.homepage.infra.jpa.comment;
 
 import org.springframework.stereotype.Component;
 import ussum.homepage.domain.comment.PostComment;
+import ussum.homepage.infra.jpa.comment.entity.CommentType;
 import ussum.homepage.infra.jpa.comment.entity.PostCommentEntity;
 import ussum.homepage.infra.jpa.post.entity.PostEntity;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
@@ -16,8 +17,9 @@ public class PostCommentMapper {
                 postCommentEntity.getContent(),
                 postCommentEntity.getPostEntity().getId(),
                 postCommentEntity.getUserEntity().getId(),
+                String.valueOf(postCommentEntity.getCommentType()),
                 String.valueOf(postCommentEntity.getLastEditedAt())
-                );
+        );
     }
     public PostCommentEntity toEntity(PostComment postComment){
         LocalDateTime lastEditedAt = null;
@@ -29,6 +31,7 @@ public class PostCommentMapper {
                 postComment.getContent(),
                 PostEntity.from(postComment.getPostId()),
                 UserEntity.from(postComment.getUserId()),
+                CommentType.getEnumCommentTypeFromStringCommentType(postComment.getCommentType()),
                 lastEditedAt
         );
     }

@@ -11,6 +11,7 @@ public record PostCommentCreateRequest(
                 content,
                 postId,
                 userId,
+                null,
                 null
         );
     }

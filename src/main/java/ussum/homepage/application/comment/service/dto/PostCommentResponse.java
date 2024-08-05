@@ -6,21 +6,19 @@ import ussum.homepage.domain.comment.PostComment;
 
 public record PostCommentResponse(
         Long id,
-        PostResponse post,
-        UserResponse author,
+        String authorName,
         String content,
-        String type,
+        String commentType,
         String lastEditedAt,
         Integer likeCount
 
 ) {
-    public static PostCommentResponse of(PostComment postComment, PostResponse postResponse, UserResponse userResponse, String type, Integer likeCount) {
+    public static PostCommentResponse of(PostComment postComment, String authorName, String commentType, Integer likeCount) {
         return new PostCommentResponse(
                 postComment.getId(),
-                postResponse,
-                userResponse,
+                authorName,
                 postComment.getContent(),
-                type,
+                commentType,
                 postComment.getLastEditedAt(),
                 likeCount);
     }
