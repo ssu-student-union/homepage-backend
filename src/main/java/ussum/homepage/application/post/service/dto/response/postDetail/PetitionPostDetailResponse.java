@@ -10,14 +10,14 @@ public class PetitionPostDetailResponse extends PostDetailResDto {
     private final String status;
 
     @Builder
-    private PetitionPostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt,
+    private PetitionPostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt, Boolean isAuthor,
                                        Integer likeCount, String status) {
-        super(postId, categoryName, authorName, title, content, createdAt);
+        super(postId, categoryName, authorName, title, content, createdAt, isAuthor);
         this.likeCount = likeCount;
         this.status = status;
     }
 
-    public static PetitionPostDetailResponse of(Post post, String authorName, Integer likeCount, String petitionStatus) {
+    public static PetitionPostDetailResponse of(Post post, Boolean isAuthor, String authorName, Integer likeCount, String petitionStatus) {
         return PetitionPostDetailResponse.builder()
                 .postId(post.getId())
                 .categoryName(petitionStatus)
@@ -25,6 +25,7 @@ public class PetitionPostDetailResponse extends PostDetailResDto {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
+                .isAuthor(isAuthor)
                 .likeCount(likeCount)
                 .status(petitionStatus)
                 .build();

@@ -12,14 +12,14 @@ public class NoticePostDetailResponse extends PostDetailResDto {
     private final List<String> fileList;
 
     @Builder
-    private NoticePostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt,
+    private NoticePostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt, Boolean isAuthor,
                                      List<String> imageList, List<String> fileList) {
-        super(postId, categoryName, authorName, title, content, createdAt);
+        super(postId, categoryName, authorName, title, content, createdAt, isAuthor);
         this.imageList = imageList;
         this.fileList = fileList;
     }
 
-    public static NoticePostDetailResponse of(Post post, String authorName, String categoryName, List<String> imageList, List<String> fileList) {
+    public static NoticePostDetailResponse of(Post post, Boolean isAuthor, String authorName, String categoryName, List<String> imageList, List<String> fileList) {
         return NoticePostDetailResponse.builder()
                 .postId(post.getId())
                 .authorName(authorName)
@@ -27,8 +27,10 @@ public class NoticePostDetailResponse extends PostDetailResDto {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
+                .isAuthor(isAuthor)
                 .imageList(imageList)
                 .fileList(fileList)
                 .build();
     }
+
 }

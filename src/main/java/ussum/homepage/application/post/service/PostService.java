@@ -52,11 +52,11 @@ public class PostService {
 
     public PostResponse getPost(String boardCode, Long postId) {
         return postFormatter.format(
-                postReader.getPostWithBoardCode(boardCode, postId).getId()
+                postReader.getPostWithBoardCodeAndPostId(boardCode, postId).getId()
         );
     }
 
-    public void createPost(Long userId, String boardCode,PostCreateRequest postCreateRequest) {
+    public void createPost(Long userId, String boardCode, PostCreateRequest postCreateRequest) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Category category = categoryReader.getCategoryWithCode(postCreateRequest.categoryCode());
         //user도 찾아 와야 하지 않을까

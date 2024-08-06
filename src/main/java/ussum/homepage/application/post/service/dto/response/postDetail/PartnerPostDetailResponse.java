@@ -12,14 +12,14 @@ public class PartnerPostDetailResponse extends PostDetailResDto {
     private final List<String> fileList;
 
     @Builder
-    private PartnerPostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt,
+    private PartnerPostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt, Boolean isAuthor,
                                       List<String> imageList, List<String> fileList) {
-        super(postId, categoryName, authorName, title, content, createdAt);
+        super(postId, categoryName, authorName, title, content, createdAt, isAuthor);
         this.imageList = imageList;
         this.fileList = fileList;
     }
 
-    public static PartnerPostDetailResponse of(Post post, String authorName, String categoryName, List<String> imageList, List<String> fileList) {
+    public static PartnerPostDetailResponse of(Post post, Boolean isAuthor, String authorName, String categoryName, List<String> imageList, List<String> fileList) {
         return PartnerPostDetailResponse.builder()
                 .postId(post.getId())
                 .categoryName(categoryName)
@@ -27,8 +27,10 @@ public class PartnerPostDetailResponse extends PostDetailResDto {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
+                .isAuthor(isAuthor)
                 .imageList(imageList)
                 .fileList(fileList)
                 .build();
     }
+
 }

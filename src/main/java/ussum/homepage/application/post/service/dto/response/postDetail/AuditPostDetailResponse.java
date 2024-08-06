@@ -12,14 +12,14 @@ public class AuditPostDetailResponse extends PostDetailResDto {
     private final List<String> fileList;
 
     @Builder
-    private AuditPostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt,
+    private AuditPostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt, Boolean isAuthor,
                                     List<String> imageList, List<String> fileList) {
-        super(postId, categoryName, authorName, title, content, createdAt);
+        super(postId, categoryName, authorName, title, content, createdAt, isAuthor);
         this.imageList = imageList;
         this.fileList = fileList;
     }
 
-    public static PostDetailResDto of(Post post, String authorName, String categoryName, List<String> imageList, List<String> fileList) {
+    public static PostDetailResDto of(Post post, Boolean isAuthor, String authorName, String categoryName, List<String> imageList, List<String> fileList) {
         return AuditPostDetailResponse.builder()
                 .postId(post.getId())
                 .categoryName(categoryName)
@@ -27,8 +27,10 @@ public class AuditPostDetailResponse extends PostDetailResDto {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
+                .isAuthor(isAuthor)
                 .imageList(imageList)
                 .fileList(fileList)
                 .build();
     }
+
 }
