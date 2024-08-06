@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ussum.homepage.application.post.service.dto.request.PostUserRequest;
 import ussum.homepage.application.post.service.dto.response.postDetail.*;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 import ussum.homepage.domain.post.Board;
@@ -83,15 +84,14 @@ public class PostManageService {
 
 
     @Transactional
-    public PostDetailRes<?> getPost(Long userId, String boardCode, Long postId) {
+    public PostDetailRes<?> getPost(PostUserRequest postUserRequest, String boardCode, Long postId) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post post = postReader.getPostWithBoardCodeAndPostId(boardCode, postId);
         Category category = categoryReader.getCategoryById(post.getCategoryId());
         User user = userReader.getUserWithId(post.getUserId());
 
-        Boolean isAuthor = userId == post.getUserId() ? true : false;
-//        Boolean isAuthor = (userId != null && userId.equals(post.getUserId()));
-
+        Long userId = (postUserRequest != null) ? postUserRequest.userId() : null;
+        Boolean isAuthor = (userId != null && userId.equals(post.getUserId()));
 
         List<PostFile> postFileList = postFileReader.getPostFileListByPostId(post.getId());
         List<String> imageList = postFileList.stream()
