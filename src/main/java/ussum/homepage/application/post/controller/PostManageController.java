@@ -22,10 +22,10 @@ public class PostManageController {
         return ApiResponse.success(postManageService.getPostList(page, take, boardCode));
     }
 
-    @PostMapping("/{boardCode}/posts/{postId}")
+    @GetMapping("/{boardCode}/posts/{postId}")
     public ResponseEntity<ApiResponse<?>> getBoardPost(@PathVariable(name = "boardCode") String boardCode,
                                                        @PathVariable(name = "postId") Long postId,
-                                                       @RequestBody(required = false) PostUserRequest postUserRequest) {
+                                                       @ModelAttribute PostUserRequest postUserRequest) {
 
         return ApiResponse.success(postManageService.getPost(postUserRequest, boardCode, postId));
     }
