@@ -39,7 +39,7 @@ public class PostCommentFormatter implements ussum.homepage.domain.comment.servi
 
         List<PostReplyComment> postReplyComments = postReplyCommentReader.getPostReplyCommentListWithCommentId(postComment.getId());
         List<PostReplyCommentResponse> postReplyCommentResponses = postReplyComments.stream()
-                .map(replyComment -> postReplyCommentFormatter.format(replyComment.getId(), replyComment.getUserId()))
+                .map(postReplyCommentFormatter::format)
                 .toList();
 
         return PostCommentResponse.of(postComment, user.getName(), postComment.getCommentType(), likeCountOfPostComment, postReplyCommentResponses);

@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CommentManageService {
+public class PostCommentManageService {
     private final PostCommentReader postCommentReader;
     private final PostCommentFormatter postCommentFormatter;
 

@@ -7,5 +7,5 @@ import java.util.Optional;
 public interface PostReplyCommentRepository {
     List<PostReplyComment> findAllByCommentId(Long commentId);
     Optional<PostReplyComment> findById(Long replyCommentId);
-
+    PostReplyComment save(PostReplyComment postReplyComment);
 }

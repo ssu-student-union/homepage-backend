@@ -29,4 +29,9 @@ public class PostReplyCommentRepositoryImpl implements PostReplyCommentRepositor
         return postReplyCommentJpaRepository.findById(replyCommentId).map(postReplyCommentMapper::toDomain);
     }
 
+    @Override
+    public PostReplyComment save(PostReplyComment postReplyComment) {
+        return postReplyCommentMapper.toDomain(postReplyCommentJpaRepository.save(postReplyCommentMapper.toEntity(postReplyComment)));
+    }
+
 }
