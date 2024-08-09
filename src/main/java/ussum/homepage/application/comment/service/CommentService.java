@@ -46,17 +46,17 @@ public class CommentService {
             commentType = CommentType.OFFICIAL.getStringCommentType();
         }
 
-        PostComment postComment = postCommentAppender.createPostComment(postCommentCreateRequest.toDomain(userId, postId));
-        return postCommentFormatter.format(postComment.getPostId(), postComment.getUserId(), commentType);
+        PostComment postComment = postCommentAppender.createPostComment(postCommentCreateRequest.toDomain(userId, postId, commentType));
+        return postCommentFormatter.format(postComment);
     }
 
     @Transactional
     public PostCommentResponse editComment(Long userId, Long postId, Long commentId, PostCommentUpdateRequest postCommentUpdateRequest){
         PostComment postComment = postCommentReader.getPostComment(commentId);
         PostComment editedPostComment = postCommentModifier.updateComment(postComment, userId, postId, commentId, postCommentUpdateRequest);
-//        PostComment postComment = postCommentModifier.updateComment(userId, postId, commentId, postCommentUpdateRequest);
-//        return postCommentFormatter.format(postComment.getPostId(), postComment.getUserId(), null);
-        return postCommentFormatter.format(editedPostComment.getPostId(), editedPostComment.getUserId(), editedPostComment.getCommentType());
+//        PostComment postComment = postCommentModifier.updateComment(userId, postId, commentId, , postCommentUpdateRequest);
+//        return postCommentFormatter.format(postComment.getPostId(), postComment.getUserId(), postComment.getCommentType());
+        return postCommentFormatter.format(editedPostComment);
     }
 
     @Transactional

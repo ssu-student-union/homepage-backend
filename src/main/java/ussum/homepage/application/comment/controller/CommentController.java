@@ -36,7 +36,6 @@ public class CommentController {
     }
     @PatchMapping("/boards/posts/{postId}/comments/{commentId}")
     public ResponseEntity<ApiResponse<?>> editPostComment(@UserId Long userId,
-                                                          /*@PathVariable(name = "boardCode") String boardCode,*/
                                                           @PathVariable(name = "postId") Long postId,
                                                           @PathVariable(name = "commentId") Long commentId,
                                                           @RequestBody PostCommentUpdateRequest postCommentUpdateRequest) {

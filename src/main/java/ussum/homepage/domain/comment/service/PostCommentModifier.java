@@ -12,6 +12,9 @@ public class PostCommentModifier {
     private final PostCommentRepository postCommentRepository;
     private final PostCommentReader postCommentReader;
 
+//    public PostComment updateComment(Long userId, Long postId, Long commentId, String commentType, PostCommentUpdateRequest postCommentUpdateRequest) {
+//        return postCommentRepository.update(postCommentUpdateRequest.toDomain(commentId, postId, userId, commentType));
+//    }
     public PostComment updateComment(PostComment postComment, Long userId, Long postId, Long commentId, PostCommentUpdateRequest postCommentUpdateRequest) {
         return postCommentRepository.update(postCommentUpdateRequest.toDomain(postComment, commentId, postId, userId));
     }
