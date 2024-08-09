@@ -56,9 +56,9 @@ public class PostCommentReactionController {
             
             """)
     @DeleteMapping("/boards/posts/comments/{commentId}/reactions")
-    public ResponseEntity<ApiResponse<?>> deletePostCommentReaction(@PathVariable(name = "commentId") Long commentId,
+    public ResponseEntity<ApiResponse<?>> deletePostCommentReaction(@UserId Long userId, @PathVariable(name = "commentId") Long commentId,
                                                                     @RequestBody PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
-        postCommentReactionService.deletePostCommentReaction(commentId, postCommentReactionCreateRequest);
+        postCommentReactionService.deletePostCommentReaction(commentId, userId, postCommentReactionCreateRequest);
         return ApiResponse.success(null);
     }
 }

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "post_comment")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostCommentEntity {
+public class PostCommentEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
