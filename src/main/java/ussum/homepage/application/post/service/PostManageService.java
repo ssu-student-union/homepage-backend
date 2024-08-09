@@ -94,15 +94,9 @@ public class PostManageService {
         Boolean isAuthor = (userId != null && userId.equals(post.getUserId()));
 
         List<PostFile> postFileList = postFileReader.getPostFileListByPostId(post.getId());
-        List<String> imageList = postFileList.stream()
-                .filter(postFile -> "image".equals(postFile.getTypeName()))
-                .map(PostFile::getUrl)
-                .toList();
+        List<String> imageList = postFileReader.getPostImageListByFileType(postFileList);
+        List<String> fileList = postFileReader.getPostFileListByFileType(postFileList);
 
-        List<String> fileList = postFileList.stream()
-                .filter(postFile -> "file".equals(postFile.getTypeName()))
-                .map(PostFile::getUrl)
-                .toList();
 
         PostDetailFunction<Post, Boolean, String, Integer, String, String, String, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
 

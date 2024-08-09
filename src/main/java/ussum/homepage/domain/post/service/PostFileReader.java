@@ -16,4 +16,20 @@ public class PostFileReader {
         return postFileRepository.findAllByPostId(postId);
     }
 
+
+    private List<String> getPostFileUrlsByType(List<PostFile> postFileList, String type) {
+        return postFileList.stream()
+                .filter(postFile -> type.equals(postFile.getTypeName()))
+                .map(PostFile::getUrl)
+                .toList();
+    }
+
+    public List<String> getPostImageListByFileType(List<PostFile> postFileList) {
+        return getPostFileUrlsByType(postFileList, "image");
+    }
+
+    public List<String> getPostFileListByFileType(List<PostFile> postFileList) {
+        return getPostFileUrlsByType(postFileList, "file");
+    }
+
 }
