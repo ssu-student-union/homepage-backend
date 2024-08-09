@@ -1,4 +1,4 @@
-package ussum.homepage.infra.jpa.user.entity;
+package ussum.homepage.infra.jpa.group.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +22,9 @@ public enum GroupCode {
 
     //선거관리위원회
     VOTE_COMMITTEE("VOTE_COMMITTEE"),
+
+    //감사위원회
+    AUDIT_COMMITTEE("AUDIT_COMMITTEE"),
 
     //단과대학생회
     COLLEGE_UNION("COLLEGE_UNION"),

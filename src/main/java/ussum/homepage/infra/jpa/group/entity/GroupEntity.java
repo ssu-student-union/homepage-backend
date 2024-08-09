@@ -1,4 +1,4 @@
-package ussum.homepage.infra.jpa.user.entity;
+package ussum.homepage.infra.jpa.group.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import ussum.homepage.infra.jpa.BaseEntity;
@@ -7,6 +7,7 @@ import ussum.homepage.infra.jpa.BaseEntity;
 @Table(name = "`groups`")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class GroupEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,4 +18,11 @@ public class GroupEntity extends BaseEntity {
 
     private String name;
 
+    public static GroupEntity of(Long id, GroupCode groupCode, String name) {
+        return new GroupEntity(id, groupCode, name);
+    }
+
+    public static GroupEntity from(Long id) {
+        return new GroupEntity(id, null, null);
+    }
 }
