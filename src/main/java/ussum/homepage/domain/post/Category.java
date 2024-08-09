@@ -1,10 +1,8 @@
 package ussum.homepage.domain.post;
-import jakarta.persistence.*;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import ussum.homepage.infra.jpa.post.entity.BoardEntity;
-import ussum.homepage.infra.jpa.user.entity.MajorCode;
 
 import java.time.LocalDateTime;
 

@@ -11,13 +11,14 @@ import java.time.LocalDateTime;
 
 @Component
 public class PostCommentMapper {
-    public PostComment toDomain(PostCommentEntity postCommentEntity){
+    public PostComment toDomain(PostCommentEntity postCommentEntity) {
         return PostComment.of(
                 postCommentEntity.getId(),
                 postCommentEntity.getContent(),
                 postCommentEntity.getPostEntity().getId(),
                 postCommentEntity.getUserEntity().getId(),
                 String.valueOf(postCommentEntity.getCommentType()),
+                String.valueOf(postCommentEntity.getCreatedAt()),
                 String.valueOf(postCommentEntity.getLastEditedAt())
         );
     }

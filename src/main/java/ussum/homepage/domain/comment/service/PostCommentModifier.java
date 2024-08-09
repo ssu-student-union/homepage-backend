@@ -11,8 +11,9 @@ import ussum.homepage.domain.comment.PostCommentRepository;
 public class PostCommentModifier {
     private final PostCommentRepository postCommentRepository;
     private final PostCommentReader postCommentReader;
-    public PostComment updateComment(Long userId, Long postId, Long commentId, PostCommentUpdateRequest postCommentUpdateRequest){
-        return postCommentRepository.update(postCommentUpdateRequest.toDomain(commentId,postId,userId));
+
+    public PostComment updateComment(PostComment postComment, Long userId, Long postId, Long commentId, PostCommentUpdateRequest postCommentUpdateRequest) {
+        return postCommentRepository.update(postCommentUpdateRequest.toDomain(postComment, commentId, postId, userId));
     }
     public void deleteComment(Long commentId){
         postCommentRepository.delete(postCommentReader.getPostComment(commentId));

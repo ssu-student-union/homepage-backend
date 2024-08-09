@@ -2,7 +2,6 @@ package ussum.homepage.infra.jpa.post.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import ussum.homepage.infra.jpa.BaseEntity;
-import ussum.homepage.infra.jpa.user.entity.MajorCode;
 
 @Entity
 @Table(name = "category")

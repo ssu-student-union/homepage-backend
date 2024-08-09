@@ -1,8 +1,8 @@
-package ussum.homepage.application.comment.service.dto;
+package ussum.homepage.application.comment.service.dto.response;
 
-import ussum.homepage.application.post.service.dto.response.PostResponse;
-import ussum.homepage.application.user.service.dto.response.UserResponse;
 import ussum.homepage.domain.comment.PostComment;
+
+import java.util.List;
 
 public record PostCommentResponse(
         Long id,
@@ -10,16 +10,17 @@ public record PostCommentResponse(
         String content,
         String commentType,
         String lastEditedAt,
-        Integer likeCount
-
+        Integer likeCount,
+        List<PostReplyCommentResponse> postReplyComments
 ) {
-    public static PostCommentResponse of(PostComment postComment, String authorName, String commentType, Integer likeCount) {
+    public static PostCommentResponse of(PostComment postComment, String authorName, String commentType, Integer likeCount, List<PostReplyCommentResponse> postReplyComments) {
         return new PostCommentResponse(
                 postComment.getId(),
                 authorName,
                 postComment.getContent(),
                 commentType,
                 postComment.getLastEditedAt(),
-                likeCount);
+                likeCount,
+                postReplyComments);
     }
 }

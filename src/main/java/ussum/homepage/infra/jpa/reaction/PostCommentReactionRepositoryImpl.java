@@ -22,7 +22,6 @@ import java.util.Optional;
 import static ussum.homepage.global.error.status.ErrorStatus.POST_COMMENT_NOT_FOUND;
 import static ussum.homepage.global.error.status.ErrorStatus.USER_NOT_FOUND;
 import static ussum.homepage.infra.jpa.comment.entity.QPostCommentEntity.postCommentEntity;
-import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
 import static ussum.homepage.infra.jpa.reaction.entity.QPostCommentReactionEntity.postCommentReactionEntity;
 import static ussum.homepage.infra.jpa.user.entity.QUserEntity.userEntity;
 
@@ -65,12 +64,12 @@ public class PostCommentReactionRepositoryImpl implements PostCommentReactionRep
     }
 
     @Override
-    public Optional<PostCommentReaction> findByCommentIdAndUserId(Long commentId, Long userId, String reaction) {
-        PostCommentEntity postCommentEntity = postCommentJpaRepository.findById(commentId)
-                .orElseThrow(() -> new PostCommentReactionException(POST_COMMENT_NOT_FOUND));
-
+    public Optional<PostCommentReaction> findByUserIdAndCommentIdAndReaction(Long userId, Long commentId, String reaction) {
         UserEntity userEntity = userJpaRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+
+        PostCommentEntity postCommentEntity = postCommentJpaRepository.findById(commentId)
+                .orElseThrow(() -> new PostCommentReactionException(POST_COMMENT_NOT_FOUND));
 
         return postCommentReactionJpaRepository.findByPostCommentEntityAndUserEntityAndReaction(postCommentEntity, userEntity, Reaction.getEnumReactionFromStringReaction(reaction))
                 .map(postCommentReactionMapper::toDomain);

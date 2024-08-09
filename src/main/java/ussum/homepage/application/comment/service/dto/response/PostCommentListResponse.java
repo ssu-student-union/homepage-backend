@@ -1,4 +1,4 @@
-package ussum.homepage.application.comment.service.dto;
+package ussum.homepage.application.comment.service.dto.response;
 
 import org.springframework.data.domain.Page;
 import ussum.homepage.domain.comment.PostComment;

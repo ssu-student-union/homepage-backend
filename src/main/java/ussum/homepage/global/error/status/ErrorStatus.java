@@ -34,6 +34,9 @@ public enum ErrorStatus implements BaseErrorCode {
     //PostComment 관련 에러
     POST_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_COMMENT_001","댓글을 찾을 수 없습니다."),
 
+    //PostReplyComment 관련 에러
+    POST_REPLY_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_REPLY_COMMENT_001","대댓글을 찾을 수 없습니다."),
+
     //PostCommentReaction 관련 에러
     POST_COMMENT_REACTION_IS_ALREADY_EXIST(HttpStatus.BAD_REQUEST,"POST_COMMENT_REACTION_001","이미 댓글반응이 존재합니다."),
     POST_COMMENT_REACTION_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_COMMENT_REACTION_002","댓글반응을 찾을 수 없습니다."),
@@ -53,17 +56,18 @@ public enum ErrorStatus implements BaseErrorCode {
     //Role 관련 에러
     ROLE_PERMISSION_DENIED(HttpStatus.FORBIDDEN,"ROLE_001","필요한 Role을 가지고 있지 않습니다."),
     //enum class
-    INVALID_ROLE(HttpStatus.FORBIDDEN,"ENUM_001","유효하지 않은 Role입니다."),
-    INVALID_MAJORCODE(HttpStatus.FORBIDDEN,"ENUM_002","유효하지 않은 MAJORCODE입니다."),
-    INVALID_REACTION(HttpStatus.FORBIDDEN,"ENUM_003","유효하지 않은 REACTION입니다."),
-    INVALID_BOARDCODE(HttpStatus.FORBIDDEN,"ENUM_004","유효하지 않은 BOARDCODE입니다."),
-    INVALID_CATEGORY_CODE(HttpStatus.FORBIDDEN,"ENUM_005","유효하지 않은 CATEGORYCODE입니다."),
-    INVALID_TYPE(HttpStatus.FORBIDDEN,"ENUM_006","유효하지 않은 TYPE입니다."),
-    INVALID_TARGET(HttpStatus.FORBIDDEN,"ENUM_007","유효하지 않은 TARGET입니다."),
-    INVALID_ORDER(HttpStatus.FORBIDDEN,"ENUM_008","유효하지 않은 ORDER입니다."),
-    INVALID_ACTION(HttpStatus.FORBIDDEN,"ENUM_009","유효하지 않은 ACTION입니다."),
-    INVALID_COMMENT_TYPE(HttpStatus.FORBIDDEN,"ENUM_010","유효하지 않은 COMMENT TYPE입니다."),
-    INVALID_STATUS(HttpStatus.FORBIDDEN,"ENUM_011","유효하지 않은 STATUS입니다."),
+    INVALID_ROLE(HttpStatus.BAD_REQUEST,"ENUM_001","유효하지 않은 Role입니다."),
+    INVALID_MAJORCODE(HttpStatus.BAD_REQUEST,"ENUM_002","유효하지 않은 MAJORCODE입니다."),
+    INVALID_MEMBERCODE(HttpStatus.BAD_REQUEST,"ENUM_003","유효하지 않은 MEMBERCODE입니다."),
+    INVALID_REACTION(HttpStatus.BAD_REQUEST,"ENUM_004","유효하지 않은 REACTION입니다."),
+    INVALID_BOARDCODE(HttpStatus.BAD_REQUEST,"ENUM_005","유효하지 않은 BOARDCODE입니다."),
+    INVALID_CATEGORY_CODE(HttpStatus.BAD_REQUEST,"ENUM_006","유효하지 않은 CATEGORYCODE입니다."),
+    INVALID_TYPE(HttpStatus.BAD_REQUEST,"ENUM_007","유효하지 않은 TYPE입니다."),
+    INVALID_TARGET(HttpStatus.BAD_REQUEST,"ENUM_008","유효하지 않은 TARGET입니다."),
+    INVALID_ORDER(HttpStatus.BAD_REQUEST,"ENUM_000","유효하지 않은 ORDER입니다."),
+    INVALID_ACTION(HttpStatus.BAD_REQUEST,"ENUM_010","유효하지 않은 ACTION입니다."),
+    INVALID_COMMENT_TYPE(HttpStatus.BAD_REQUEST,"ENUM_011","유효하지 않은 COMMENT TYPE입니다."),
+    INVALID_STATUS(HttpStatus.BAD_REQUEST,"ENUM_012","유효하지 않은 STATUS입니다."),
 
     /**
      * 401 Unauthorized, Token 관련 에러

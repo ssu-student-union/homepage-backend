@@ -12,6 +12,7 @@ public record PostCommentCreateRequest(
                 postId,
                 userId,
                 null,
+                null,
                 null
         );
     }

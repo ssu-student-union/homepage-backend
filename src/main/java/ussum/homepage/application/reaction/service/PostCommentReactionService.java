@@ -50,9 +50,6 @@ public class PostCommentReactionService {
         }
     }
 
-
-
-
     private void createNewCommentReaction(PostCommentReaction newCommentReaction) {
         postCommentReactionAppender.createPostCommentReaction(newCommentReaction);
     }
@@ -72,9 +69,9 @@ public class PostCommentReactionService {
     }
 
     @Transactional
-    public void deletePostCommentReaction(Long commentId, PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
-        Long userId = 1L; //여기에 userId 추출하는 거 추가
-        PostCommentReaction postCommentReaction = postCommentReactionReader.getPostCommentReactionWithCommentIdAndUserId(commentId, userId, postCommentReactionCreateRequest.reaction());
+    public void deletePostCommentReaction(Long commentId, Long userId, PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
+//        Long userId = 1L; //여기에 userId 추출하는 거 추가
+        PostCommentReaction postCommentReaction = postCommentReactionReader.getPostCommentReactionWithCommentIdAndUserIdAndReaction(commentId, userId, postCommentReactionCreateRequest.reaction());
         postCommentReactionModifier.deletePostCommentReaction(postCommentReaction);
     }
 }
