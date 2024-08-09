@@ -14,9 +14,8 @@ import ussum.homepage.global.config.auth.UserId;
 public class PostReplyCommentController {
     private final PostReplyCommentService postReplyCommentService;
 
-    @PostMapping("/board/posts/comments/{commentId}")
+    @PostMapping("/board/posts/comments/{commentId}/reply-comments")
     public ResponseEntity<ApiResponse<?>> createPostReplyComment(@UserId Long userId,
-//                                                                 @PathVariable(name = "postId") Long postId,
                                                                  @PathVariable(name = "commentId") Long commentId,
                                                                  @RequestBody PostReplyCommentCreateRequest postReplyCommentCreateRequest) {
         postReplyCommentService.createReplyComment(userId, commentId, postReplyCommentCreateRequest);
