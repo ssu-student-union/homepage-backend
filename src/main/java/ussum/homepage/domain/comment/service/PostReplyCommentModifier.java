@@ -1,0 +1,17 @@
+package ussum.homepage.domain.comment.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import ussum.homepage.application.comment.service.dto.request.PostReplyCommentUpdateRequest;
+import ussum.homepage.domain.comment.PostReplyComment;
+import ussum.homepage.domain.comment.PostReplyCommentRepository;
+
+@Service
+@RequiredArgsConstructor
+public class PostReplyCommentModifier {
+    private final PostReplyCommentRepository postReplyCommentRepository;
+
+    public PostReplyComment updatePostReplyComment(PostReplyComment postReplyComment, Long userId, Long commentId, PostReplyCommentUpdateRequest postReplyCommentUpdateRequest) {
+        return postReplyCommentRepository.update(postReplyCommentUpdateRequest.toDomain(postReplyComment, userId, commentId));
+    }
+}

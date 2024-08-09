@@ -8,4 +8,5 @@ public interface PostReplyCommentRepository {
     List<PostReplyComment> findAllByCommentId(Long commentId);
     Optional<PostReplyComment> findById(Long replyCommentId);
     PostReplyComment save(PostReplyComment postReplyComment);
+    PostReplyComment update(PostReplyComment domain);
 }
