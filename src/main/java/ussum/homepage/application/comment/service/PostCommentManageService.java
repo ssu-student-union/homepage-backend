@@ -24,6 +24,11 @@ public class PostCommentManageService {
                 .map(postCommentFormatter::format)
                 .toList();
 
-        return CommentListResponse.of(postCommentResponses, postCommentResponses.size());
+        // 전체 댓글 수 + 각 댓글의 대댓글 수
+        Integer totalCommentCount = postCommentResponses.size() + postCommentResponses.stream()
+                .mapToInt(postCommentResponse -> postCommentResponse.postReplyComments().size())
+                .sum();
+
+        return CommentListResponse.of(postCommentResponses, totalCommentCount);
     }
 }
