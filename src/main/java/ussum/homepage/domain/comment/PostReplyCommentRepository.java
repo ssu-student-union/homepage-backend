@@ -9,4 +9,5 @@ public interface PostReplyCommentRepository {
     Optional<PostReplyComment> findById(Long replyCommentId);
     PostReplyComment save(PostReplyComment postReplyComment);
     PostReplyComment update(PostReplyComment domain);
+    void delete(PostReplyComment postReplyComment);
 }

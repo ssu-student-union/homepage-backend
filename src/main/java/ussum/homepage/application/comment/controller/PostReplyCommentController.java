@@ -32,4 +32,12 @@ public class PostReplyCommentController {
         PostReplyCommentResponse postReplyComment = postReplyCommentService.editReplyComment(userId, commentId, replyCommentId, postReplyCommentUpdateRequest);
         return ApiResponse.success(postReplyComment);
     }
+
+    @DeleteMapping("/board/posts/comments/reply-comments/{reply-commentId}")
+    public ResponseEntity<ApiResponse<?>> deletePostReplyComment(@UserId Long userId,
+//                                                                 @PathVariable(name = "commentId") Long commentId,
+                                                                 @PathVariable(name = "reply-commentId") Long replyCommentId) {
+        postReplyCommentService.deleteReplyComment(userId, replyCommentId);
+        return ApiResponse.success(null);
+    }
 }

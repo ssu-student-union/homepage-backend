@@ -10,8 +10,13 @@ import ussum.homepage.domain.comment.PostReplyCommentRepository;
 @RequiredArgsConstructor
 public class PostReplyCommentModifier {
     private final PostReplyCommentRepository postReplyCommentRepository;
+    private final PostReplyCommentReader postReplyCommentReader;
 
     public PostReplyComment updatePostReplyComment(PostReplyComment postReplyComment, Long userId, Long commentId, PostReplyCommentUpdateRequest postReplyCommentUpdateRequest) {
         return postReplyCommentRepository.update(postReplyCommentUpdateRequest.toDomain(postReplyComment, userId, commentId));
+    }
+
+    public void deletePostReplyComment(Long replyCommentId) {
+        postReplyCommentRepository.delete(postReplyCommentReader.getPostReplyComment(replyCommentId));
     }
 }

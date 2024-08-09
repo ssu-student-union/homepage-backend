@@ -35,6 +35,11 @@ public class PostReplyCommentRepositoryImpl implements PostReplyCommentRepositor
     }
 
     @Override
+    public void delete(PostReplyComment postReplyComment) {
+        postReplyCommentJpaRepository.delete(postReplyCommentMapper.toEntity(postReplyComment));
+    }
+
+    @Override
     public PostReplyComment update(PostReplyComment postReplyComment) {
         return postReplyCommentMapper.toDomain(postReplyCommentJpaRepository.save(postReplyCommentMapper.toEntity(postReplyComment)));
     }

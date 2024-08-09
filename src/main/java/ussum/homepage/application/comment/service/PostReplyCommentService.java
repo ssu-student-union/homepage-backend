@@ -31,4 +31,9 @@ public class PostReplyCommentService {
         PostReplyComment postReplyComment = postReplyCommentReader.getPostReplyComment(replyCommentId);
         return postReplyCommentFormatter.format(postReplyCommentModifier.updatePostReplyComment(postReplyComment, userId, commentId, postReplyCommentUpdateRequest));
     }
+
+    @Transactional
+    public void deleteReplyComment(Long userId, Long replyCommentId) {
+        postReplyCommentModifier.deletePostReplyComment(replyCommentId); //일단은 자기것만 삭제
+    }
 }
