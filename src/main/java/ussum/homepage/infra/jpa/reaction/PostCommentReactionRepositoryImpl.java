@@ -79,6 +79,7 @@ public class PostCommentReactionRepositoryImpl implements PostCommentReactionRep
     public List<PostCommentReaction> findAllPostCommentByCommentId(Long commentId) {
         return postCommentReactionJpaRepository.findAllByPostCommentId(commentId)
                 .stream().map(postCommentReactionMapper::toDomain)
+                .filter(postCommentReaction -> postCommentReaction.getReaction().equals("like"))
                 .toList();
     }
 

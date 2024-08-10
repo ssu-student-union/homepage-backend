@@ -1,13 +1,11 @@
 package ussum.homepage.infra.jpa.reaction;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ussum.homepage.domain.reaction.PostReplyCommentReaction;
 import ussum.homepage.domain.reaction.PostReplyCommentReactionRepository;
 import ussum.homepage.domain.reaction.exception.PostCommentException;
 import ussum.homepage.domain.user.exception.UserNotFoundException;
-import ussum.homepage.infra.jpa.comment.PostReplyCommentMapper;
 import ussum.homepage.infra.jpa.comment.entity.PostReplyCommentEntity;
 import ussum.homepage.infra.jpa.comment.repository.PostReplyCommentJpaRepository;
 import ussum.homepage.infra.jpa.reaction.repository.PostReplyCommentReactionJpaRepository;
@@ -28,14 +26,13 @@ public class PostReplyCommentReactionRepositoryImpl implements PostReplyCommentR
     private final PostReplyCommentReactionMapper postReplyCommentReactionMapper;
     private final UserJpaRepository userJpaRepository;
     private final PostReplyCommentJpaRepository postReplyCommentJpaRepository;
-    private final PostReplyCommentMapper postReplyCommentMapper;
-    private final JPAQueryFactory queryFactory;
 
     @Override
     public List<PostReplyCommentReaction> findAllByReplyCommentId(Long replyCommentId) {
         return postReplyCommentReactionJpaRepository.findAllByPostReplyCommentId(replyCommentId)
-                .stream()
-                .map(postReplyCommentReactionMapper::toDomain).toList();
+                .stream().map(postReplyCommentReactionMapper::toDomain)
+                .filter(postReplyCommentReaction -> postReplyCommentReaction.getReaction().equals("like"))
+                .toList();
     }
 
     @Override
