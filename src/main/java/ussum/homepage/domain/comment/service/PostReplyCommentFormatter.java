@@ -5,6 +5,6 @@ import ussum.homepage.application.comment.service.dto.response.PostReplyCommentR
 import ussum.homepage.domain.comment.PostReplyComment;
 
 public interface PostReplyCommentFormatter {
-//    PostReplyCommentResponse format(Long commentId, Long userId);
-    PostReplyCommentResponse format(PostReplyComment postReplyComment);
+    //    PostReplyCommentResponse format(Long commentId, Long userId);
+    PostReplyCommentResponse format(PostReplyComment postReplyComment, Long userId);
 }

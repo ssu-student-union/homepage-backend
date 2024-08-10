@@ -55,15 +55,14 @@ public class PostCommentReactionService {
     }
 
     @Transactional
-    public PostCommentReactionResponse createPostCommentReaction(Long commentId, PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
+    public PostCommentReactionResponse createPostCommentReaction(Long userId, Long commentId, PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
         PostComment postComment = postCommentReader.getPostComment(commentId);
-        Long userId = 1L; //여기에 userId 추출하는 거 추가
         postCommentReactionManager.validatePostCommentReactionByCommentIdAndUserId(commentId, userId, postCommentReactionCreateRequest.reaction()); //해당 유저가 해당 댓글에 좋아요를 이미 눌렀는지 안눌렀는지 검증
         PostCommentReaction postCommentReaction = postCommentReactionAppender.createPostCommentReaction(postCommentReactionCreateRequest.toDomain(commentId, userId));
         return postCommentReactionFormatter.format(
                 postCommentReaction.getId(),
                 commentId,
-                postComment.getPostId(), postComment.getUserId(), /**postComment.getType(),**/null,
+                postComment.getPostId(), postComment.getUserId(), postComment.getCommentType(),
                 postCommentReactionCreateRequest.reaction()
         );
     }

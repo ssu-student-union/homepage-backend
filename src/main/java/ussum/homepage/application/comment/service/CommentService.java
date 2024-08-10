@@ -47,7 +47,7 @@ public class CommentService {
         }
 
         PostComment postComment = postCommentAppender.createPostComment(postCommentCreateRequest.toDomain(userId, postId, commentType));
-        return postCommentFormatter.format(postComment);
+        return postCommentFormatter.format(postComment, userId);
     }
 
     @Transactional
@@ -56,7 +56,7 @@ public class CommentService {
         PostComment editedPostComment = postCommentModifier.updateComment(postComment, userId, postId, commentId, postCommentUpdateRequest);
 //        PostComment postComment = postCommentModifier.updateComment(userId, postId, commentId, , postCommentUpdateRequest);
 //        return postCommentFormatter.format(postComment.getPostId(), postComment.getUserId(), postComment.getCommentType());
-        return postCommentFormatter.format(editedPostComment);
+        return postCommentFormatter.format(editedPostComment, userId);
     }
 
     @Transactional

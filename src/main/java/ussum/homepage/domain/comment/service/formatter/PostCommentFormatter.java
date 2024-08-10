@@ -29,19 +29,21 @@ public class PostCommentFormatter implements ussum.homepage.domain.comment.servi
     @Override
     public PostCommentResponse format(Long postId, Long userId, String commentType) {
         PostComment postComment = postCommentReader.getPostCommentWithPostIdAndUserId(postId, userId);
-        return format(postComment);
+        return format(postComment, userId);
     }
 
     @Override
-    public PostCommentResponse format(PostComment postComment) {
+    public PostCommentResponse format(PostComment postComment, Long userId) {
         Integer likeCountOfPostComment = postCommentReactionManager.getLikeCountOfPostComment(postComment.getId());
         User user = userReader.getUserWithId(postComment.getUserId());
 
         List<PostReplyComment> postReplyComments = postReplyCommentReader.getPostReplyCommentListWithCommentId(postComment.getId());
         List<PostReplyCommentResponse> postReplyCommentResponses = postReplyComments.stream()
-                .map(postReplyCommentFormatter::format)
+                .map(replyComment -> postReplyCommentFormatter.format(replyComment, userId))
                 .toList();
 
-        return PostCommentResponse.of(postComment, user.getName(), postComment.getCommentType(), likeCountOfPostComment, postReplyCommentResponses);
+        Boolean isAuthor = userId != null && userId.equals(postComment.getUserId());
+
+        return PostCommentResponse.of(postComment, user.getName(), postComment.getCommentType(), likeCountOfPostComment, isAuthor, postReplyCommentResponses);
     }
 }

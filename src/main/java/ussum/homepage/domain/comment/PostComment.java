@@ -14,6 +14,7 @@ public class PostComment {
     private String commentType;
     private String createdAt;
     private String lastEditedAt;
+
     public static PostComment of(Long id,
                                  String content,
                                  Long postId,

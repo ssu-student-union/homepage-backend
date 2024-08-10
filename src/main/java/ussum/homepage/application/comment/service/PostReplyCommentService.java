@@ -23,13 +23,13 @@ public class PostReplyCommentService {
     public PostReplyCommentResponse createReplyComment(Long userId, Long commentId, PostReplyCommentCreateRequest postReplyCommentCreateRequest) {
         PostReplyComment postReplyComment = postReplyCommentAppender.createPostReplyComment(postReplyCommentCreateRequest.toDomain(userId, commentId));
 //        return postReplyCommentFormatter.format(postReplyComment.getCommentId(), postReplyComment.getUserId());
-        return postReplyCommentFormatter.format(postReplyComment);
+        return postReplyCommentFormatter.format(postReplyComment, userId);
     }
 
     @Transactional
     public PostReplyCommentResponse editReplyComment(Long userId, Long commentId, Long replyCommentId, PostReplyCommentUpdateRequest postReplyCommentUpdateRequest) {
         PostReplyComment postReplyComment = postReplyCommentReader.getPostReplyComment(replyCommentId);
-        return postReplyCommentFormatter.format(postReplyCommentModifier.updatePostReplyComment(postReplyComment, userId, commentId, postReplyCommentUpdateRequest));
+        return postReplyCommentFormatter.format(postReplyCommentModifier.updatePostReplyComment(postReplyComment, userId, commentId, postReplyCommentUpdateRequest), userId);
     }
 
     @Transactional
