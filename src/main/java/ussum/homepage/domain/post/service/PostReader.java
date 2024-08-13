@@ -37,7 +37,7 @@ public class PostReader {
         return postRepository.findById(postId).orElseThrow(()-> new GeneralException(POST_NOT_FOUND));
     }
 
-    public Post getPostWithBoardCode(String boardCode,Long postId) {
+    public Post getPostWithBoardCodeAndPostId(String boardCode, Long postId) {
         Board board = boardRepository.findByBoardCode(boardCode).orElseThrow(
                 () -> new GeneralException(BOARD_NOT_FOUND));
 

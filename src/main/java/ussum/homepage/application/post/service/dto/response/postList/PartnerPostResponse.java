@@ -11,7 +11,7 @@ public class PartnerPostResponse extends PostListResDto{
     private final String status;
 
     @Builder
-    private PartnerPostResponse(String postId, String title, String content, String date, String thumbNail, String status) {
+    private PartnerPostResponse(Long postId, String title, String content, String date, String thumbNail, String status) {
         super(postId, title, content, date);
         this.thumbNail = thumbNail;
         this.status = status;
@@ -19,7 +19,7 @@ public class PartnerPostResponse extends PostListResDto{
 
     public static PartnerPostResponse of(Post post) {
         return PartnerPostResponse.builder()
-                .postId(post.getId().toString())
+                .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .date(post.getCreatedAt().toString())

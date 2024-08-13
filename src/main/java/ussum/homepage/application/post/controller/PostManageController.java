@@ -1,13 +1,10 @@
 package ussum.homepage.application.post.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ussum.homepage.application.post.service.PostManageService;
-import ussum.homepage.application.post.service.PostService;
-import ussum.homepage.application.post.service.dto.response.PostListResponse;
+import ussum.homepage.application.post.service.dto.request.PostUserRequest;
 import ussum.homepage.global.ApiResponse;
 
 @RestController
@@ -24,4 +21,13 @@ public class PostManageController {
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
         return ApiResponse.success(postManageService.getPostList(page, take, boardCode));
     }
+
+    @GetMapping("/{boardCode}/posts/{postId}")
+    public ResponseEntity<ApiResponse<?>> getBoardPost(@PathVariable(name = "boardCode") String boardCode,
+                                                       @PathVariable(name = "postId") Long postId,
+                                                       @ModelAttribute PostUserRequest postUserRequest) {
+
+        return ApiResponse.success(postManageService.getPost(postUserRequest, boardCode, postId));
+    }
+
 }

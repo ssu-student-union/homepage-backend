@@ -4,12 +4,12 @@ import lombok.Getter;
 
 @Getter
 public abstract class PostListResDto {
-    protected String postId;
+    protected Long postId;
     protected String title;
     protected String content;
     protected String date;
 
-    protected PostListResDto(String postId, String title, String content, String date) {
+    protected PostListResDto(Long postId, String title, String content, String date) {
         this.postId = postId;
         this.title = title;
         this.content = content;

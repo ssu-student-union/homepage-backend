@@ -19,7 +19,7 @@ public class PostCommentReactionFormatter implements ussum.homepage.domain.react
     public PostCommentReactionResponse format(Long id, Long postCommentId, Long postId, Long userId, String type, String reaction) {
         return PostCommentReactionResponse.of(
                 id,
-                postCommentFormatter.format(postId, userId, null),
+                postCommentFormatter.format(null, userId), //일단 지금은 필요없는 코드, 보류
                 userFormatter.format(userId),
                 reaction
         );
