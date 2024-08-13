@@ -3,10 +3,12 @@ package ussum.homepage.infra.jpa.post.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ussum.homepage.infra.jpa.post.entity.BoardEntity;
 import ussum.homepage.infra.jpa.post.entity.CategoryCode;
+import ussum.homepage.infra.jpa.post.entity.OngoingStatus;
 import ussum.homepage.infra.jpa.post.entity.PostEntity;
 
 import java.util.Optional;

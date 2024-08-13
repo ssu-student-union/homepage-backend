@@ -17,6 +17,6 @@ public class Category {
     private String updatedAt;
 
     public static Category of(Long id, String categoryCode, String name, Long boardId, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        return new Category(id, String.valueOf(categoryCode), name, boardId, String.valueOf(createdAt), String.valueOf(updatedAt));
+        return new Category(id, categoryCode, name, boardId, String.valueOf(createdAt), String.valueOf(updatedAt));
     }
 }

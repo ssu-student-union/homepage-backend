@@ -23,6 +23,7 @@ public class Post {
     private Integer viewCount;
     private String thumbnailImage;
     private String status;
+    private String onGoingStatus;
     private String createdAt;
     private String updatedAt;
     private String lastEditedAt;
@@ -37,13 +38,14 @@ public class Post {
                           Integer viewCount,
                           String thumbnailImage,
                           String status,
+                          String onGoingStatus,
                           LocalDateTime createdAt,
                           LocalDateTime updatedAt,
                           LocalDateTime lastEditedAt,
                           Long userId,
                           Long boardId,
                           Long categoryId) {
-        return new Post(id, title, content, viewCount, thumbnailImage, status, String.valueOf(createdAt),
+        return new Post(id, title, content, viewCount, thumbnailImage, status, onGoingStatus, String.valueOf(createdAt),
                 String.valueOf(updatedAt), String.valueOf(lastEditedAt),
                 userId, boardId, categoryId);
     }

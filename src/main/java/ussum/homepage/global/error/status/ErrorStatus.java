@@ -30,6 +30,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //Post 관련 에러
     POST_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_001","게시글을 찾을 수 없습니다."),
+    POST_ONGOING_STATUS_IS_NOT_UPDATED(HttpStatus.INTERNAL_SERVER_ERROR,"POST_002","게시글 진행상태를 업데이트 하지 못했습니다."),
 
     //PostComment 관련 에러
     POST_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_COMMENT_001","댓글을 찾을 수 없습니다."),
@@ -68,6 +69,7 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_ACTION(HttpStatus.BAD_REQUEST,"ENUM_010","유효하지 않은 ACTION입니다."),
     INVALID_COMMENT_TYPE(HttpStatus.BAD_REQUEST,"ENUM_011","유효하지 않은 COMMENT TYPE입니다."),
     INVALID_STATUS(HttpStatus.BAD_REQUEST,"ENUM_012","유효하지 않은 STATUS입니다."),
+    INVALID_ONGOING_STATUS(HttpStatus.BAD_REQUEST,"ENUM_013","유효하지 않은 ONGOING_STATUS입니다."),
 
     /**
      * 401 Unauthorized, Token 관련 에러

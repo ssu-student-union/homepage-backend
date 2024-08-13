@@ -20,6 +20,7 @@ public record PostUpdateRequest(
                 post.getViewCount(),
                 thumbnailImage,
                 post.getStatus(),
+                post.getOnGoingStatus(),
                 LocalDateTime.parse(post.getCreatedAt()),
                 LocalDateTime.parse(post.getUpdatedAt()),
                 LocalDateTime.now(),

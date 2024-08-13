@@ -178,7 +178,18 @@ public class PostRepositoryImpl implements PostRepository {
                 .groupBy(postEntity);
         return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchCount);
     }
+
     private BooleanExpression eqBoardCode(String boardCode) {
         return boardCode != null ? boardEntity.boardCode.eq(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode)) : null;
+    }
+
+    @Override
+    public Post updatePostOngoingStatus(Long postId, String onGoingStatus) {
+        return postJpaRepository.findById(postId)
+                .map(postEntity -> {
+                    postEntity.updateStatus(OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus(onGoingStatus));
+                    return postMapper.toDomain(postJpaRepository.save(postEntity));
+                })
+                .orElseThrow(() -> new PostException(POST_ONGOING_STATUS_IS_NOT_UPDATED));
     }
 }
