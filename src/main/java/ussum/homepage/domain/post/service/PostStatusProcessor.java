@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.member.service.MemberManager;
-import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
@@ -18,22 +17,19 @@ public class PostStatusProcessor {
     private final PostRepository postRepository;
     private final PostCommentReader postCommentReader;
     private final PostReactionReader postReactionReader;
-    private final MemberReader memberReader;
     private final MemberManager memberManager;
 
     public String processStatus(Post post) {
         //현재 게시물 상태 checking
-        String currentStatus = post.getOnGoingStatus();
+        String currentStatus = Optional.ofNullable(post.getOnGoingStatus())
+                .orElseThrow(() -> new IllegalStateException("Post status cannot be null"));
         //게시물의 좋아요 수를 미리 가져옴
         Integer likeCountOfPost = postReactionReader.countPostReactionsByType(post.getId(), "like");
-
         switch (currentStatus) {
             case "IN_PROGRESS":
-                handleInProgressStatus(post,likeCountOfPost);
-                break;
+                return handleInProgressStatus(post,likeCountOfPost);
             case "RECEIVED":
-                handleReceivedStatus(post);
-                break;
+                return handleReceivedStatus(post);
         }
         return currentStatus;
     }
