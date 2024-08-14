@@ -16,5 +16,5 @@ public interface PostRepository {
     void delete(Post post);
     Page<Post> findBySearchCriteria(Pageable pageable,String boardCode, String q, String categoryCode);
     Page<SimplePostResponse> findPostDtoListByBoardCode(String boardCode, Pageable pageable);
-    Post updatePostOngoingStatus(Long postId, String onGoingStatus);
+    Post updatePostOngoingStatus(Long postId, String onGoingStatus, Category category);
 }

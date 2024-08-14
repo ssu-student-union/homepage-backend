@@ -10,7 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
+import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.exception.PostException;
+import ussum.homepage.domain.post.service.CategoryReader;
 import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
@@ -44,6 +46,7 @@ public class PostRepositoryImpl implements PostRepository {
     private final UserJpaRepository userJpaRepository;
     private final PostMapper postMapper;
     private final JPAQueryFactory queryFactory;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public Optional<Post> findById(Long postId) {
@@ -184,10 +187,12 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post updatePostOngoingStatus(Long postId, String onGoingStatus) {
+    public Post updatePostOngoingStatus(Long postId, String onGoingStatus, Category category) {
         return postJpaRepository.findById(postId)
                 .map(postEntity -> {
-                    postEntity.updateStatus(OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus(onGoingStatus));
+                    postEntity.updateStatusAndCategoryCode(
+                            OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus(onGoingStatus), categoryMapper.toEntity(category)
+                    );
                     return postMapper.toDomain(postJpaRepository.save(postEntity));
                 })
                 .orElseThrow(() -> new PostException(POST_ONGOING_STATUS_IS_NOT_UPDATED));

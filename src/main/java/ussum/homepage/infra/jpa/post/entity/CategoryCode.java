@@ -25,7 +25,7 @@ public enum CategoryCode {
     HOUSING("HOUSING"),
 
     //청원 카테고리(진행중, 접수완료, 답변완료 ,종료됨)
-    PROGRESS("PROGRESS"),
+    IN_PROGRESS("IN_PROGRESS"),
     RECEIVED("RECEIVED"),
     ANSWERED("ANSWERED"),
     COMPLETED("COMPLETED");
