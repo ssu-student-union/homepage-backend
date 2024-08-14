@@ -21,20 +21,7 @@ public class PostFileAppender {
     }
 
     @Transactional
-    public void save(List<Long> postFileIds, Long postId){
-        postFileIds.stream()
-                .map(postFileRepository::findById)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .forEach(postFile -> {
-                    PostFile updatedPostFile = PostFile.of(
-                            postFile.getId(),
-                            postFile.getTypeName(),
-                            postFile.getUrl(),
-                            postFile.getSize(),
-                            postId
-                    );
-                    postFileRepository.save(updatedPostFile);
-                });
+    public void updatePostIdForIds(List<Long> postFileIds, Long postId) {
+        postFileRepository.updatePostIdForIds(postFileIds, postId);
     }
 }

@@ -7,5 +7,5 @@ public interface PostFileRepository {
     List<PostFile> findAllByPostId(Long postId);
     Optional<PostFile> findById(Long id);
     List<PostFile> saveAll(List<PostFile> postFiles);
-    void save(PostFile postFile);
+    void updatePostIdForIds(List<Long> postFileIds, Long postId);
 }

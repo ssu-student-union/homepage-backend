@@ -45,7 +45,11 @@ public class PostFileRepositoryImpl implements PostFileRepository {
     }
 
     @Override
-    public void save(PostFile postFile) {
-        postFileJpaRepository.save(postFileMapper.toEntity(postFile));
+    public void updatePostIdForIds(List<Long> postFileIds, Long postId) {
+        queryFactory
+                .update(postFileEntity)
+                .set(postFileEntity.postEntity.id, postId)
+                .where(postFileEntity.id.in(postFileIds))
+                .execute();
     }
 }
