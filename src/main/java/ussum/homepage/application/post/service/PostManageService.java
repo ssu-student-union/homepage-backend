@@ -5,16 +5,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
+import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.response.postDetail.*;
+import ussum.homepage.application.post.service.dto.response.postSave.PostCreateResponse;
+import ussum.homepage.application.post.service.dto.response.postSave.PostFileResponse;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostFile;
-import ussum.homepage.domain.post.service.BoardReader;
-import ussum.homepage.domain.post.service.CategoryReader;
-import ussum.homepage.domain.post.service.PostFileReader;
-import ussum.homepage.domain.post.service.PostReader;
+import ussum.homepage.domain.post.service.*;
 import ussum.homepage.domain.post.service.formatter.PostDetailFunction;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.domain.user.User;
@@ -22,10 +24,12 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
+import ussum.homepage.infra.utils.S3utils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +41,10 @@ public class PostManageService {
     private final CategoryReader categoryReader;
     private final UserReader userReader;
     private final PostFileReader postFileReader;
+    private final PostAppender postAppender;
+    private final PostFileAppender postFileAppender;
+    private final PostModifier postModifier;
+    private final S3utils s3utils;
 
     private final Map<String, BiFunction<Post, Integer, ? extends PostListResDto>> postResponseMap = Map.of(
             "공지사항게시판", (post, ignored) -> NoticePostResponse.of(post),
@@ -80,7 +88,6 @@ public class PostManageService {
         return PostListRes.of(responseList, pageInfo);
     }
 
-
     @Transactional
     public PostDetailRes<?> getPost(String boardCode, Long postId) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
@@ -116,6 +123,40 @@ public class PostManageService {
         }
 
         return PostDetailRes.of(response);
+    }
+
+    @Transactional
+    public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
+        Board board = boardReader.getBoardWithBoardCode(boardCode);
+        Category category = categoryReader.getCategoryWithCode(postCreateRequest.categoryCode());
+        User user = userReader.getUserWithId(userId);
+
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board, user, category));
+        postFileAppender.save(postCreateRequest.postFileList(), post.getId());
+        return PostCreateResponse.of(post.getId(), boardCode);
+    }
+
+    @Transactional
+    public List<PostFileResponse> createBoardPostFile(Long userId, String boardCode, MultipartFile[] files, String typeName){
+        List<String> urlList = s3utils.uploadFileWithPath(userId, boardCode, files, typeName);
+        List<PostFile> postFiles = convertUrlsToPostFiles(urlList, typeName);
+        List<PostFile> afterSaveList = postFileAppender.saveAllPostFile(postFiles);
+
+        return afterSaveList.stream()
+                .map(postFile -> PostFileResponse.of(postFile.getId(), postFile.getUrl()))
+                .collect(Collectors.toList());
+    }
+
+    private List<PostFile> convertUrlsToPostFiles(List<String> urlList, String typeName) {
+        return urlList.stream()
+                .map(url -> PostFile.of(null, typeName, url, null, null))
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Long editBoardPost(String boardCode, Long postId, PostUpdateRequest postUpdateRequest){
+        Post post = postModifier.updatePost(boardCode, postId, postUpdateRequest);
+        return post.getId();
     }
 }
 //스위치 사용 로직
