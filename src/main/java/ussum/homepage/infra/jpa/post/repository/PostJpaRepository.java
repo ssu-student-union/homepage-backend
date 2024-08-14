@@ -6,13 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ussum.homepage.domain.post.Board;
-import ussum.homepage.domain.post.Post;
 import ussum.homepage.infra.jpa.post.entity.BoardEntity;
+import ussum.homepage.infra.jpa.post.entity.CategoryCode;
+import ussum.homepage.infra.jpa.post.entity.OngoingStatus;
 import ussum.homepage.infra.jpa.post.entity.PostEntity;
-import ussum.homepage.infra.jpa.user.entity.MajorCode;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface PostJpaRepository extends JpaRepository<PostEntity,Long> {
@@ -38,6 +36,6 @@ public interface PostJpaRepository extends JpaRepository<PostEntity,Long> {
     Page<PostEntity> findBySearchCriteria(Pageable pageable,
                                           @Param("board") BoardEntity board,
                                           @Param("q") String q,
-                                          @Param("categoryCode") MajorCode categoryCode);
+                                          @Param("categoryCode") CategoryCode categoryCode);
 
 }

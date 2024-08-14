@@ -13,37 +13,42 @@ import java.time.LocalDateTime;
 @Table(name = "post_comment")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostCommentEntity {
+public class PostCommentEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String content;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private PostEntity postEntity;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
+
     @Enumerated(EnumType.STRING)
-    private CommentType type;
+    private CommentType commentType;
 
     @LastModifiedDate
     private LocalDateTime lastEditedAt;
 
-    public PostCommentEntity(Long id, String content, PostEntity postEntity, UserEntity userEntity, LocalDateTime lastEditedAt) {
+    public PostCommentEntity(Long id, String content, PostEntity postEntity, UserEntity userEntity, CommentType commentType, LocalDateTime lastEditedAt) {
         this.id = id;
         this.content = content;
         this.postEntity = postEntity;
         this.userEntity = userEntity;
+        this.commentType = commentType;
         this.lastEditedAt = lastEditedAt;
     }
 
-    public static PostCommentEntity of(Long id, String content, PostEntity postEntity, UserEntity userEntity, LocalDateTime lastEditedAt){
-        return new PostCommentEntity(id, content, postEntity, userEntity, lastEditedAt);
+    public static PostCommentEntity of(Long id, String content, PostEntity postEntity, UserEntity userEntity, CommentType commentType, LocalDateTime lastEditedAt) {
+        return new PostCommentEntity(id, content, postEntity, userEntity, commentType, lastEditedAt);
     }
 
     public static PostCommentEntity from(Long id) {
-        return new PostCommentEntity(id, null, null, null, null);
+        return new PostCommentEntity(id, null, null, null, null, null);
     }
 
 }

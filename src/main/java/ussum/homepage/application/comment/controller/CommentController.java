@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ussum.homepage.application.comment.service.CommentService;
-import ussum.homepage.application.comment.service.dto.PostCommentListResponse;
-import ussum.homepage.application.comment.service.dto.PostCommentResponse;
+import ussum.homepage.application.comment.service.dto.response.PostCommentListResponse;
+import ussum.homepage.application.comment.service.dto.response.PostCommentResponse;
 import ussum.homepage.application.comment.service.dto.request.PostCommentCreateRequest;
 import ussum.homepage.application.comment.service.dto.request.PostCommentUpdateRequest;
-import ussum.homepage.application.post.service.dto.BoardListResponse;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
 
@@ -30,15 +29,13 @@ public class CommentController {
     }
     @PostMapping("/boards/posts/{postId}/comments")
     public ResponseEntity<ApiResponse<?>> createPostComment(@UserId Long userId,
-//                                                            @PathVariable(name = "boardCode") String boardCode,
                                                             @PathVariable(name = "postId") Long postId,
                                                             @RequestBody PostCommentCreateRequest postCommentCreateRequest) {
-        PostCommentResponse comment = commentService.createComment(userId, /*boardCode,*/ postId, postCommentCreateRequest);
+        PostCommentResponse comment = commentService.createComment(userId, postId, postCommentCreateRequest);
         return ApiResponse.success(comment);
     }
     @PatchMapping("/boards/posts/{postId}/comments/{commentId}")
     public ResponseEntity<ApiResponse<?>> editPostComment(@UserId Long userId,
-                                                          /*@PathVariable(name = "boardCode") String boardCode,*/
                                                           @PathVariable(name = "postId") Long postId,
                                                           @PathVariable(name = "commentId") Long commentId,
                                                           @RequestBody PostCommentUpdateRequest postCommentUpdateRequest) {

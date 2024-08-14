@@ -1,13 +1,9 @@
 package ussum.homepage.infra.jpa.post;
 
 import org.springframework.stereotype.Component;
-import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Category;
-import ussum.homepage.infra.jpa.post.entity.BoardCode;
-import ussum.homepage.infra.jpa.post.entity.BoardEntity;
 import ussum.homepage.infra.jpa.post.entity.CategoryCode;
 import ussum.homepage.infra.jpa.post.entity.CategoryEntity;
-import ussum.homepage.infra.jpa.user.entity.MajorCode;
 
 @Component
 public class CategoryMapper {

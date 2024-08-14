@@ -33,6 +33,8 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/swagger-resources/**",
             "/v3/api-docs/**"
+            ,"/board/{boardCode}/posts/{postId}"
+            ,"/board/posts/{postId}/comments"
     };
 
 

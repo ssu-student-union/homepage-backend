@@ -1,6 +1,6 @@
 package ussum.homepage.application.reaction.service.dto.response;
 
-import ussum.homepage.application.comment.service.dto.PostCommentResponse;
+import ussum.homepage.application.comment.service.dto.response.PostCommentResponse;
 import ussum.homepage.application.user.service.dto.response.UserResponse;
 
 public record PostCommentReactionResponse(

@@ -7,12 +7,14 @@ import java.time.LocalDateTime;
 public record PostCommentUpdateRequest(
         String content
 ) {
-    public PostComment toDomain(Long commentId, Long postId, Long userId){
+    public PostComment toDomain(PostComment postComment, Long commentId, Long postId, Long userId) {
         return PostComment.of(
                 commentId,
                 content,
                 postId,
                 userId,
+                postComment.getCommentType(),
+                postComment.getCreatedAt(),
                 String.valueOf(LocalDateTime.now())
         );
     }

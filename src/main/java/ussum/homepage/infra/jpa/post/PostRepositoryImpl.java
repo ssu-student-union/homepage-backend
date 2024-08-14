@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
+import ussum.homepage.domain.post.exception.PostException;
 import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
@@ -52,17 +53,17 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public Optional<Post> findByBoardIdAndId(Long boardId, Long postId) {
         BoardEntity boardEntity = boardJpaRepository.findById(boardId).orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
-        Optional<PostEntity> post = postJpaRepository.findByBoardEntityAndId(boardEntity, postId);
-        increaseViewCount(post.get());
-        return post.map(postMapper::toDomain);
+        PostEntity postEntity = postJpaRepository.findByBoardEntityAndId(boardEntity, postId).orElseThrow(() -> new PostException(POST_NOT_FOUND));
+        increaseViewCount(postEntity);
+        return Optional.of(postMapper.toDomain(postEntity));
     }
 
     @Override
     public Optional<Post> findByBoardIdAndIdForEditAndDelete(Long boardId, Long postId) {
         BoardEntity boardEntity = boardJpaRepository.findById(boardId).orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
-        Optional<PostEntity> post = postJpaRepository.findByBoardEntityAndId(boardEntity, postId);
-        updateLastEditedAt(post.get());
-        return post.map(postMapper::toDomain);
+        PostEntity postEntity = postJpaRepository.findByBoardEntityAndId(boardEntity, postId).orElseThrow(() -> new PostException(POST_NOT_FOUND));
+        updateLastEditedAt(postEntity);
+        return Optional.of(postMapper.toDomain(postEntity));
     }
 
     @Override
@@ -177,7 +178,18 @@ public class PostRepositoryImpl implements PostRepository {
                 .groupBy(postEntity);
         return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchCount);
     }
+
     private BooleanExpression eqBoardCode(String boardCode) {
         return boardCode != null ? boardEntity.boardCode.eq(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode)) : null;
+    }
+
+    @Override
+    public Post updatePostOngoingStatus(Long postId, String onGoingStatus) {
+        return postJpaRepository.findById(postId)
+                .map(postEntity -> {
+                    postEntity.updateStatus(OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus(onGoingStatus));
+                    return postMapper.toDomain(postJpaRepository.save(postEntity));
+                })
+                .orElseThrow(() -> new PostException(POST_ONGOING_STATUS_IS_NOT_UPDATED));
     }
 }

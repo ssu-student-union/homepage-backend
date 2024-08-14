@@ -5,12 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
-import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
+import ussum.homepage.application.post.service.dto.request.PostUserRequest;
 import ussum.homepage.application.post.service.dto.response.postDetail.*;
-import ussum.homepage.application.post.service.dto.response.postSave.PostCreateResponse;
-import ussum.homepage.application.post.service.dto.response.postSave.PostFileResponse;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Category;
@@ -24,12 +20,10 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
-import ussum.homepage.infra.utils.S3utils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,10 +35,7 @@ public class PostManageService {
     private final CategoryReader categoryReader;
     private final UserReader userReader;
     private final PostFileReader postFileReader;
-    private final PostAppender postAppender;
-    private final PostFileAppender postFileAppender;
-    private final PostModifier postModifier;
-    private final S3utils s3utils;
+    private final PostStatusProcessor postStatusProcessor;
 
     private final Map<String, BiFunction<Post, Integer, ? extends PostListResDto>> postResponseMap = Map.of(
             "공지사항게시판", (post, ignored) -> NoticePostResponse.of(post),
@@ -54,13 +45,14 @@ public class PostManageService {
             "청원게시판", PetitionPostResponse::of
     );
 
-    private final Map<String, PostDetailFunction<Post, String, Integer, String, String, String, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
-            "공지사항게시판", (post, authorName, ignored, categoryName, imageList, fileList) -> NoticePostDetailResponse.of(post, authorName, categoryName, imageList, fileList),
-            "분실물게시판", (post, authorName, ignored, categoryName, imageList, another_ignored) -> LostPostDetailResponse.of(post, authorName, categoryName, imageList),
-            "제휴게시판", (post, authorName, ignored, categoryName, imageList, fileList) -> PartnerPostDetailResponse.of(post, authorName, categoryName, imageList, fileList),
-            "감사기구게시판", (post, authorName, ignored, categoryName, imageList, fileList) -> AuditPostDetailResponse.of(post, authorName, categoryName, imageList, fileList),
-            "청원게시판", (post, authorName, likeCount, petitionStatus, imageList, ignored) -> PetitionPostDetailResponse.of(post, authorName, likeCount, petitionStatus)
+    private final Map<String, PostDetailFunction<Post, Boolean, String, Integer, String, String, String, String, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
+            "공지사항게시판", (post, isAuthor, authorName, ignored, categoryName, another_ignored, imageList, fileList) -> NoticePostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
+            "분실물게시판", (post, isAuthor, authorName, ignored, categoryName, another_ignored1, imageList, another_ignored2) -> LostPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList),
+            "제휴게시판", (post, isAuthor, authorName, ignored, categoryName, another_ignored, imageList, fileList) -> PartnerPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
+            "감사기구게시판", (post, isAuthor, authorName, ignored, categoryName, another_ignored, imageList, fileList) -> AuditPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
+            "청원게시판", (post, isAuthor, authorName, likeCount, petitionStatus, onGoingStatus, imageList, ignored) -> PetitionPostDetailResponse.of(post, isAuthor, authorName, likeCount, petitionStatus, onGoingStatus)
     );
+
 
     public PostListRes<?> getPostList(int page, int take, String boardCode) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
@@ -88,25 +80,25 @@ public class PostManageService {
         return PostListRes.of(responseList, pageInfo);
     }
 
+
     @Transactional
-    public PostDetailRes<?> getPost(String boardCode, Long postId) {
+    public PostDetailRes<?> getPost(PostUserRequest postUserRequest, String boardCode, Long postId) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
-        Post post = postReader.getPostWithBoardCode(board.getBoardCode(), postId);
+        Post post = postReader.getPostWithBoardCodeAndPostId(boardCode, postId);
+        String postOnGoingStatus = postStatusProcessor.processStatus(post);//게시물 진행상태 check 로직
+        System.out.println("postOnGoingStatus = " + postOnGoingStatus);
         Category category = categoryReader.getCategoryById(post.getCategoryId());
         User user = userReader.getUserWithId(post.getUserId());
 
+        Long userId = (postUserRequest != null) ? postUserRequest.userId() : null;
+        Boolean isAuthor = (userId != null && userId.equals(post.getUserId()));
+
         List<PostFile> postFileList = postFileReader.getPostFileListByPostId(post.getId());
-        List<String> imageList = postFileList.stream()
-                .filter(postFile -> "image".equals(postFile.getTypeName()))
-                .map(PostFile::getUrl)
-                .toList();
+        List<String> imageList = postFileReader.getPostImageListByFileType(postFileList);
+        List<String> fileList = postFileReader.getPostFileListByFileType(postFileList);
 
-        List<String> fileList = postFileList.stream()
-                .filter(postFile -> "file".equals(postFile.getTypeName()))
-                .map(PostFile::getUrl)
-                .toList();
 
-        PostDetailFunction<Post, String, Integer, String, String, String, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
+        PostDetailFunction<Post, Boolean, String, Integer, String, String, String, String, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
 
         if (responseFunction == null) {
             throw new GeneralException(ErrorStatus.INVALID_BOARDCODE);
@@ -115,48 +107,14 @@ public class PostManageService {
         PostDetailResDto response = null;
         if (board.getName().equals("청원게시판")) {
             Integer likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
-            response = responseFunction.apply(post, user.getName(), likeCount, category.getName(), imageList, null);
+            response = responseFunction.apply(post, isAuthor, user.getName(), likeCount, category.getName(), postOnGoingStatus, imageList, null);
         } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판")) {
-            response = responseFunction.apply(post, user.getName(), null, category.getName(), imageList, fileList);
+            response = responseFunction.apply(post, isAuthor, user.getName(), null, category.getName(), null, imageList, fileList);
         } else if (board.getName().equals("분실물게시판")) {
-            response = responseFunction.apply(post, user.getName(), null, category.getName(), imageList, null); //분실물 게시판은 파일첨부 제외
+            response = responseFunction.apply(post, isAuthor, user.getName(), null, category.getName(), null, imageList, null); //분실물 게시판은 파일첨부 제외
         }
 
         return PostDetailRes.of(response);
-    }
-
-    @Transactional
-    public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
-        Board board = boardReader.getBoardWithBoardCode(boardCode);
-        Category category = categoryReader.getCategoryWithCode(postCreateRequest.categoryCode());
-        User user = userReader.getUserWithId(userId);
-
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board, user, category));
-        postFileAppender.save(postCreateRequest.postFileList(), post.getId());
-        return PostCreateResponse.of(post.getId(), boardCode);
-    }
-
-    @Transactional
-    public List<PostFileResponse> createBoardPostFile(Long userId, String boardCode, MultipartFile[] files, String typeName){
-        List<String> urlList = s3utils.uploadFileWithPath(userId, boardCode, files, typeName);
-        List<PostFile> postFiles = convertUrlsToPostFiles(urlList, typeName);
-        List<PostFile> afterSaveList = postFileAppender.saveAllPostFile(postFiles);
-
-        return afterSaveList.stream()
-                .map(postFile -> PostFileResponse.of(postFile.getId(), postFile.getUrl()))
-                .collect(Collectors.toList());
-    }
-
-    private List<PostFile> convertUrlsToPostFiles(List<String> urlList, String typeName) {
-        return urlList.stream()
-                .map(url -> PostFile.of(null, typeName, url, null, null))
-                .collect(Collectors.toList());
-    }
-
-    @Transactional
-    public Long editBoardPost(String boardCode, Long postId, PostUpdateRequest postUpdateRequest){
-        Post post = postModifier.updatePost(boardCode, postId, postUpdateRequest);
-        return post.getId();
     }
 }
 //스위치 사용 로직

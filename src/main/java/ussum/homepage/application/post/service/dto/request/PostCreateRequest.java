@@ -4,14 +4,12 @@ import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.user.User;
-import java.util.List;
 
 public record PostCreateRequest(
         String title,
         String content,
         String categoryCode,
-        String thumbNailImage,
-        List<Long> postFileList
+        String thumbNailImage
 ) {
     public Post toDomain(Board board, User user, Category category) {
         return Post.of(
@@ -21,6 +19,7 @@ public record PostCreateRequest(
                 1,
                 thumbNailImage,
                 "새로운",
+                null,
                 null,
                 null,
                 null,

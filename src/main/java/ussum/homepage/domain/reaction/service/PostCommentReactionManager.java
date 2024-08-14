@@ -13,7 +13,7 @@ public class PostCommentReactionManager {
     private final PostCommentReactionRepository postCommentReactionRepository;
 
     public void validatePostCommentReactionByCommentIdAndUserId(Long commentId, Long userId, String reaction) {
-        postCommentReactionRepository.findByCommentIdAndUserId(commentId, userId, reaction)
+        postCommentReactionRepository.findByUserIdAndCommentIdAndReaction(userId, commentId, reaction)
                 .ifPresent(postCommentReaction -> {
                     throw new PostCommentReactionException(POST_COMMENT_REACTION_IS_ALREADY_EXIST);
                 });
