@@ -62,7 +62,7 @@ public class PostService {
         //user도 찾아 와야 하지 않을까
         User user = userReader.getUserWithId(userId);
 
-        postAppender.createPost(postCreateRequest.toDomain(board, user, category));
+        postAppender.createPost(postCreateRequest.toDomain(board, user, category, null));
     }
 
     public PostResponse editPost(String boardCode,Long postId, PostUpdateRequest postUpdateRequest) {
