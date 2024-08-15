@@ -41,15 +41,11 @@ public class PostManageController {
         return ApiResponse.success(postManageService.createBoardPost(userId, boardCode, postCreateRequest));
     }
 
-    @PostMapping("/{boardCode}/upposts/files")
+    @PostMapping("/{boardCode}/posts/files")
     public ResponseEntity<ApiResponse<?>> createBoardPostFile(@UserId Long userId,
                                                               @PathVariable(name = "boardCode") String boardCode,
-                                                               @RequestPart(value = "files") MultipartFile[] files,
-                                                              @RequestParam(value = "type") String typeName){
-        System.out.println("boardCode = " + boardCode);
-        System.out.println("files = " + files);
-        System.out.println("typeName = " + typeName);
-        System.out.println("userId = " + userId);
+                                                              @RequestPart(value = "files") MultipartFile[] files,
+                                                              @RequestParam(value = "type") String typeName) {
         return ApiResponse.success(postManageService.createBoardPostFile(userId, boardCode, files, typeName));
     }
 
