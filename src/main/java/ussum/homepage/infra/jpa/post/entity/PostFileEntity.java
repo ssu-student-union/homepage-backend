@@ -6,6 +6,7 @@ import lombok.*;
 @Table(name = "post_file")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class PostFileEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +18,10 @@ public class PostFileEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private PostEntity postEntity;
+
+    public static PostFileEntity of(Long id, String typeName, String url, String size, PostEntity postEntity) {
+        return new PostFileEntity(id, typeName, url, size, postEntity);
+    }
 
 }
 

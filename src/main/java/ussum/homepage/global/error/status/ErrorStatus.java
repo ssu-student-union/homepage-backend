@@ -89,6 +89,9 @@ public enum ErrorStatus implements BaseErrorCode {
     //온보딩에러
     INVALID_ONBOARDING_REQUEST(HttpStatus.BAD_REQUEST,"ONBOARDING_001","온보딩 정보가 올바르지 않습니다."),
 
+    //S3에러
+    S3_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"S3_001","S3에 파일 저장이 실패했습니다."),
+
     //Body 에러
     INVALID_BODY(HttpStatus.BAD_REQUEST, "BODY_ERROR", "Body가 올바르지 않습니다.");
 
