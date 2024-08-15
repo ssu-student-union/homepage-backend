@@ -3,20 +3,13 @@ package ussum.homepage.application.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.user.service.dto.request.OnBoardingRequest;
-import ussum.homepage.application.user.service.dto.response.OnBoardingResponse;
 import ussum.homepage.domain.csv_user.StudentCsv;
-import ussum.homepage.domain.csv_user.StudentCsvRepository;
-import ussum.homepage.domain.csv_user.service.StudentCsvModifier;
 import ussum.homepage.domain.csv_user.service.StudentCsvReader;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.service.UserModifier;
 import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.error.exception.GeneralException;
-import ussum.homepage.infra.jpa.csv_user.StudentCsvMapper;
-
-import java.util.Optional;
 
 import static ussum.homepage.global.error.status.ErrorStatus.USER_NOT_FOUND;
 
@@ -27,7 +20,6 @@ public class OnBoardingService {
     private final UserModifier userModifier;
     private final UserReader userReader;
     private final StudentCsvReader studentCsvReader;
-    private final StudentCsvModifier studentCsvModifier;
 
     public void saveUserOnBoarding(Long userId, OnBoardingRequest request){
         User user = userReader.getUserWithId(userId);
@@ -38,7 +30,7 @@ public class OnBoardingService {
         /*
         TO DO // MemberEntity, GroupEntity 연결
          */
-        user.updateOnBoardingUser(request);
+        user.updateOnBoardingUser(request); // 이 메소드 수정 필요
         userModifier.save(user);
     }
 }

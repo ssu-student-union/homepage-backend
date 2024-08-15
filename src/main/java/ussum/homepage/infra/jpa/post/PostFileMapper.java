@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component;
 import ussum.homepage.domain.post.PostFile;
 import ussum.homepage.infra.jpa.post.entity.PostFileEntity;
 
+import java.util.List;
+
 @Component
 public class PostFileMapper {
     public PostFile toDomain(PostFileEntity postFileEntity) {
@@ -12,7 +14,23 @@ public class PostFileMapper {
                 postFileEntity.getTypeName(),
                 postFileEntity.getUrl(),
                 postFileEntity.getSize(),
-                postFileEntity.getPostEntity().getId()
+                null
+        );
+    }
+
+    public List<PostFile> toDomain(List<PostFileEntity> postFileEntities) {
+        return postFileEntities.stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+    public PostFileEntity toEntity(PostFile postFile) {
+        return PostFileEntity.of(
+                postFile.getId(),
+                postFile.getTypeName(),
+                postFile.getUrl(),
+                null,
+                null
         );
     }
 
