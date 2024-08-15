@@ -18,6 +18,7 @@ import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.group.Group;
 import ussum.homepage.domain.group.service.GroupReader;
 import ussum.homepage.domain.member.Member;
+import ussum.homepage.domain.member.service.MemberManager;
 import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.infra.jpa.comment.entity.CommentType;
 
@@ -29,8 +30,8 @@ public class CommentService {
     private final PostCommentFormatter postCommentFormatter;
     private final PostCommentAppender postCommentAppender;
     private final PostCommentModifier postCommentModifier;
-    private final GroupReader groupReader;
     private final MemberReader memberReader;
+    private final MemberManager memberManager;
 
     public PostCommentListResponse getCommentList(Long postId, int page, int take, String type){
         Page<PostComment> commentList = postCommentReader.getPostCommentList(setPageable(page, take), postId);
@@ -39,13 +40,7 @@ public class CommentService {
 
     @Transactional
     public PostCommentResponse createComment(Long userId, Long postId, PostCommentCreateRequest postCommentCreateRequest) {
-        String commentType = CommentType.GENERAL.getStringCommentType();
-        Member member = memberReader.getMemberWithUserId(userId);
-        Group group = groupReader.getGroupByGroupId(member.getGroupId());
-        if (group.getGroupCode().equals("중앙운영위원회")) {
-            commentType = CommentType.OFFICIAL.getStringCommentType();
-        }
-
+        String commentType = memberManager.getCommentType(userId);
         PostComment postComment = postCommentAppender.createPostComment(postCommentCreateRequest.toDomain(userId, postId, commentType));
         return postCommentFormatter.format(postComment, userId);
     }

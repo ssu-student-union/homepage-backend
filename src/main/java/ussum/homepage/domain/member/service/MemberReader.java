@@ -6,6 +6,8 @@ import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.MemberRepository;
 import ussum.homepage.domain.member.exception.MemberNotFoundException;
 
+import java.util.Optional;
+
 import static ussum.homepage.global.error.status.ErrorStatus.MEMBER_NOT_FOUND;
 
 @Service
@@ -16,4 +18,5 @@ public class MemberReader {
     public Member getMemberWithUserId(Long userId) {
         return memberRepository.findByUserId(userId).orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
     }
+
 }

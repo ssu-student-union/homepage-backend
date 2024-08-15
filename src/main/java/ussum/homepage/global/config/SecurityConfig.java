@@ -35,6 +35,7 @@ public class SecurityConfig {
             "/v3/api-docs/**",
 //            "/board/{boardCode}/posts/{postId}",
 //            "/board/posts/{postId}/comments"
+
     };
 
 

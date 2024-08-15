@@ -1,6 +1,7 @@
 package ussum.homepage.infra.jpa.post.entity;
 import jakarta.persistence.*;
 import lombok.*;
+import ussum.homepage.domain.post.Category;
 import ussum.homepage.infra.jpa.BaseEntity;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 
@@ -57,7 +58,8 @@ public class PostEntity extends BaseEntity {
         post.lastEditedAt = LocalDateTime.now();
     }
 
-    public void updateStatus(OngoingStatus newStatus) {
+    public void updateStatusAndCategoryCode(OngoingStatus newStatus, CategoryEntity updatedCategoryEntity) {
         this.ongoingStatus = newStatus;
+        this.categoryEntity = updatedCategoryEntity;
     }
 }
