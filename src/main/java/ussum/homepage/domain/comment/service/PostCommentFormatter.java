@@ -7,5 +7,4 @@ import ussum.homepage.domain.comment.PostComment;
 public interface PostCommentFormatter {
     PostCommentResponse format(Long postId, Long userId, String commentType);
     PostCommentResponse format(PostComment postComment, Long userId);
-
 }

@@ -7,15 +7,18 @@ public record PostOfficialCommentResponse(
         String authorName,
         String content,
         String commentType,
-        String lastEditedAt
+        String createdAt,
+        String lastEditedAt,
+        Boolean isAuthor
 ) {
-    public static PostOfficialCommentResponse of(PostComment postComment, String authorName, String commentType) {
+    public static PostOfficialCommentResponse of(PostComment postComment, String authorName, String commentType, Boolean isAuthor) {
         return new PostOfficialCommentResponse(
                 postComment.getId(),
                 authorName,
                 postComment.getContent(),
                 commentType,
-                postComment.getLastEditedAt()
-        );
+                postComment.getCreatedAt(),
+                postComment.getLastEditedAt(),
+                isAuthor);
     }
 }
