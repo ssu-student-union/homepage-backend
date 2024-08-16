@@ -26,14 +26,13 @@ public class OnBoardingService {
 
     @Transactional
     public void saveUserOnBoarding(Long userId, OnBoardingRequest request){
-        User user = userReader.getUserWithId(userId);
+//        User user = userReader.getUserWithId(userId);
         String studentId = request.getStudentId();
 //        studentCsvReader.getStudentWithStudentId(Long.valueOf(studentId), request)
 //                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
 
         userModifier.updateOnBoardingUser(request);
-        memberAppender.saveMember(Member.of(null, false,
-                request.getMemberCode(), request.getMajorCode(),
-                userId, null));
+        Member member = Member.createMember(false, request.getMemberCode(), request.getMajorCode(), userId);
+        memberAppender.saveMember(member);
     }
 }
