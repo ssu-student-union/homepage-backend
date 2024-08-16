@@ -23,13 +23,14 @@ public class Post {
     private Integer viewCount;
     private String thumbnailImage;
     private String status;
+    private String onGoingStatus;
     private String createdAt;
     private String updatedAt;
     private String lastEditedAt;
-//    private String deletedAt;
     private Long userId;
     private Long boardId;
     private Long categoryId;
+
 
     public static Post of(Long id,
                           String title,
@@ -37,14 +38,14 @@ public class Post {
                           Integer viewCount,
                           String thumbnailImage,
                           String status,
+                          String onGoingStatus,
                           LocalDateTime createdAt,
                           LocalDateTime updatedAt,
                           LocalDateTime lastEditedAt,
-//                          LocalDateTime deletedAt,
                           Long userId,
                           Long boardId,
                           Long categoryId) {
-        return new Post(id, title, content, viewCount, thumbnailImage, status, String.valueOf(createdAt),
+        return new Post(id, title, content, viewCount, thumbnailImage, status, onGoingStatus, String.valueOf(createdAt),
                 String.valueOf(updatedAt), String.valueOf(lastEditedAt),
                 userId, boardId, categoryId);
     }

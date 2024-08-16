@@ -34,8 +34,4 @@ public class User {
                 .profileImage(userInfoResponseDto.getKakaoAccount().getProfile().getProfileImageUrl())
                 .build();
     }
-
-    public void updateOnBoardingUser(OnBoardingRequest request){
-        this.setName(request.getName());
-        this.setStudentId(request.getStudentId());    }
 }

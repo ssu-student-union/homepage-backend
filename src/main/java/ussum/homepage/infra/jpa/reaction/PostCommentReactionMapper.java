@@ -12,8 +12,8 @@ public class PostCommentReactionMapper {
     public PostCommentReaction toDomain(PostCommentReactionEntity postCommentReactionEntity) {
         return PostCommentReaction.of(
                 postCommentReactionEntity.getId(),
-                postCommentReactionEntity.getUserEntity().getId(),
                 postCommentReactionEntity.getPostCommentEntity().getId(),
+                postCommentReactionEntity.getUserEntity().getId(),
                 postCommentReactionEntity.getReaction().getStringReaction()
         );
     }

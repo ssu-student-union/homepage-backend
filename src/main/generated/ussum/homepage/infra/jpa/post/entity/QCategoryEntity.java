@@ -26,12 +26,12 @@ public class QCategoryEntity extends EntityPathBase<CategoryEntity> {
 
     public final QBoardEntity boardEntity;
 
+    public final EnumPath<CategoryCode> categoryCode = createEnum("categoryCode", CategoryCode.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final EnumPath<ussum.homepage.infra.jpa.user.entity.MajorCode> majorCode = createEnum("majorCode", ussum.homepage.infra.jpa.user.entity.MajorCode.class);
 
     public final StringPath name = createString("name");
 

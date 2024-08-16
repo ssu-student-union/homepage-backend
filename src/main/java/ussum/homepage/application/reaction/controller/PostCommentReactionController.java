@@ -32,7 +32,7 @@ public class PostCommentReactionController {
                                                                     @PathVariable(name = "commentId") Long commentId,
                                                                     @RequestBody CreatePostCommentReactionReq createPostCommentReactionReq) {
         postCommentReactionService.postCommentReactionToggle(userId, commentId, createPostCommentReactionReq);
-        return ApiResponse.success("배현서 박정우 11번가 입사를 축하드립니다.");
+        return ApiResponse.success("댓글에 성공적으로 반응하였습니다.");
     }
 
     @Operation(summary = "게시물 댓글 반응 생성 api", description = """
@@ -43,9 +43,10 @@ public class PostCommentReactionController {
             
             """)
     @PostMapping("/boards/posts/comments/{commentId}/reactions")
-    public ResponseEntity<ApiResponse<?>> createPostCommentReaction(@PathVariable(name = "commentId") Long commentId,
+    public ResponseEntity<ApiResponse<?>> createPostCommentReaction(@UserId Long userId,
+                                                                    @PathVariable(name = "commentId") Long commentId,
                                                                     @RequestBody PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
-        postCommentReactionService.createPostCommentReaction(commentId, postCommentReactionCreateRequest);
+        postCommentReactionService.createPostCommentReaction(userId, commentId, postCommentReactionCreateRequest);
         return ApiResponse.success(null);
     }
 
@@ -56,9 +57,10 @@ public class PostCommentReactionController {
             
             """)
     @DeleteMapping("/boards/posts/comments/{commentId}/reactions")
-    public ResponseEntity<ApiResponse<?>> deletePostCommentReaction(@PathVariable(name = "commentId") Long commentId,
+    public ResponseEntity<ApiResponse<?>> deletePostCommentReaction(@UserId Long userId,
+                                                                    @PathVariable(name = "commentId") Long commentId,
                                                                     @RequestBody PostCommentReactionCreateRequest postCommentReactionCreateRequest) {
-        postCommentReactionService.deletePostCommentReaction(commentId, postCommentReactionCreateRequest);
+        postCommentReactionService.deletePostCommentReaction(commentId, userId, postCommentReactionCreateRequest);
         return ApiResponse.success(null);
     }
 }

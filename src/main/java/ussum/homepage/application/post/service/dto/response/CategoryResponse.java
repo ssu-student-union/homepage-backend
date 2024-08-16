@@ -12,7 +12,7 @@ public record CategoryResponse(
     public static CategoryResponse of(Category category) {
         return new CategoryResponse(
                 category.getId(),
-                category.getMajorCode(),
+                category.getCategoryCode(),
                 category.getName()
         );
 

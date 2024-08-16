@@ -13,10 +13,7 @@ public class PostCommentReaction {
     private Long userId;
     private String reaction;
 
-    public static PostCommentReaction of(Long id,
-                                         Long postCommentId,
-                                         Long userId,
-                                         String reaction) {
+    public static PostCommentReaction of(Long id, Long postCommentId, Long userId, String reaction) {
         return new PostCommentReaction(id, postCommentId, userId, reaction);
     }
 

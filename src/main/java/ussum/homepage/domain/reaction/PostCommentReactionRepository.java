@@ -6,8 +6,9 @@ import java.util.Optional;
 public interface PostCommentReactionRepository {
     PostCommentReaction save(PostCommentReaction postCommentReaction);
     void delete(PostCommentReaction postCommentReaction);
-    Optional<PostCommentReaction> findByCommentIdAndUserId(Long commentId, Long userId, String reaction);
     List<PostCommentReaction> findAllPostCommentByCommentId(Long commentId);
+    Optional<PostCommentReaction> findByUserIdAndCommentIdAndReaction(Long userId, Long commentId, String reaction);
     Optional<PostCommentReaction> findByUserIdAndCommentId(Long userId, Long commentId);
+
 }
 

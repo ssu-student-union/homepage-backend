@@ -3,20 +3,15 @@ package ussum.homepage.application.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.user.service.dto.request.OnBoardingRequest;
-import ussum.homepage.application.user.service.dto.response.OnBoardingResponse;
 import ussum.homepage.domain.csv_user.StudentCsv;
-import ussum.homepage.domain.csv_user.StudentCsvRepository;
-import ussum.homepage.domain.csv_user.service.StudentCsvModifier;
 import ussum.homepage.domain.csv_user.service.StudentCsvReader;
+import ussum.homepage.domain.member.Member;
+import ussum.homepage.domain.member.service.MemberAppender;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.service.UserModifier;
 import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.error.exception.GeneralException;
-import ussum.homepage.infra.jpa.csv_user.StudentCsvMapper;
-
-import java.util.Optional;
 
 import static ussum.homepage.global.error.status.ErrorStatus.USER_NOT_FOUND;
 
@@ -24,21 +19,21 @@ import static ussum.homepage.global.error.status.ErrorStatus.USER_NOT_FOUND;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class OnBoardingService {
-    private final UserModifier userModifier;
     private final UserReader userReader;
     private final StudentCsvReader studentCsvReader;
-    private final StudentCsvModifier studentCsvModifier;
+    private final MemberAppender memberAppender;
+    private final UserModifier userModifier;
 
+    @Transactional
     public void saveUserOnBoarding(Long userId, OnBoardingRequest request){
         User user = userReader.getUserWithId(userId);
         String studentId = request.getStudentId();
-        StudentCsv studentCsv = studentCsvReader.getStudentWithStudentId(Long.valueOf(studentId),request)
-                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
+//        studentCsvReader.getStudentWithStudentId(Long.valueOf(studentId), request)
+//                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
 
-        /*
-        TO DO // MemberEntity, GroupEntity 연결
-         */
-        user.updateOnBoardingUser(request);
-        userModifier.save(user);
+        userModifier.updateOnBoardingUser(request);
+        memberAppender.saveMember(Member.of(null, false,
+                request.getMemberCode(), request.getMajorCode(),
+                userId, null));
     }
 }

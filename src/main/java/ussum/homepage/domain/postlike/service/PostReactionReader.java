@@ -20,7 +20,7 @@ public class PostReactionReader {
 
 
     public Optional<PostReaction> getPostReactionByUserIdAndPostId(Long userId, Long postId){
-        return postReactionRepository.findByUserIdAndPostId(userId,postId);
+        return postReactionRepository.findByUserIdAndPostId(userId, postId);
     }
 
     public PostReaction getPostReactionWithPostIdAndUserId(Long postId, Long userId, String reaction) {

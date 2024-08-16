@@ -3,20 +3,22 @@ package ussum.homepage.infra.jpa.post;
 import org.springframework.stereotype.Component;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
-import ussum.homepage.domain.post.Board;
-import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
-import ussum.homepage.domain.user.User;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.infra.jpa.post.entity.*;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class PostMapper {
     public Post toDomain(PostEntity postEntity){
+        String onGoingStatus = Optional.ofNullable(postEntity.getOngoingStatus())
+                .map(OngoingStatus::getStringOnGoingStatus)
+                .orElse(null);
+
         return Post.of(
                 postEntity.getId(),
                 postEntity.getTitle(),
@@ -24,6 +26,7 @@ public class PostMapper {
                 postEntity.getViewCount(),
                 postEntity.getThumbnailImage(),
                 postEntity.getStatus().getStringStatus(),
+                onGoingStatus,
                 postEntity.getCreatedAt(),
                 postEntity.getUpdatedAt(),
                 postEntity.getLastEditedAt(),
@@ -34,15 +37,10 @@ public class PostMapper {
     }
 
     public PostEntity toEntity(Post post, UserEntity user, BoardEntity board, CategoryEntity category) {
-        LocalDateTime lastEditedAt = null;
-//        LocalDateTime deletedAt = null;
-
-        if (post.getLastEditedAt() != null && !"null".equals(post.getLastEditedAt())) {
-            lastEditedAt = LocalDateTime.parse(post.getLastEditedAt());
-        }
-//        if (post.getDeletedAt() != null && !"null".equals(post.getDeletedAt())) {
-//            deletedAt = LocalDateTime.parse(post.getDeletedAt());
-//        }
+        LocalDateTime lastEditedAt = Optional.ofNullable(post.getLastEditedAt())
+                .filter(date -> !"null".equals(date))
+                .map(LocalDateTime::parse)
+                .orElse(null);
 
         return PostEntity.of(
                 post.getId(),
@@ -51,6 +49,7 @@ public class PostMapper {
                 post.getViewCount(),
                 post.getThumbnailImage(),
                 Status.getEnumStatusFromStringStatus(post.getStatus()),
+                OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus(post.getOnGoingStatus()),
                 lastEditedAt,
                 user,
                 board,

@@ -20,7 +20,7 @@ public class PostAppender {
     private final PostAclRepository postAclRepository;
 
     @Transactional
-    public void createPost(Post post) {
-        postRepository.save(post);
+    public Post createPost(Post post) {
+        return postRepository.save(post);
     }
 }

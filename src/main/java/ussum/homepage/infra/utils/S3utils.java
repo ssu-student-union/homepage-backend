@@ -2,22 +2,25 @@ package ussum.homepage.infra.utils;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
-import com.amazonaws.util.IOUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import ussum.homepage.global.error.exception.GeneralException;
+import ussum.homepage.global.error.status.ErrorStatus;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
-@Slf4j
 @Component
 public class S3utils {
     private final AmazonS3 amazonS3;
@@ -48,6 +51,40 @@ public class S3utils {
         return amazonS3.getUrl(bucket, originalFilename).toString();
     }
 
+
+    public List<String> uploadFileWithPath(Long userId, String boardCode, MultipartFile[] files, String typeName) {
+        List<String> uploadedFileUrls = new ArrayList<>();
+        for (MultipartFile file : files) {
+            String fileName = file.getOriginalFilename();
+            String fileExtension = fileName.substring(fileName.lastIndexOf("."));
+            String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
+
+            String folderPath = boardCode + "/" + userId + "/" + typeName + "/";
+            String fileKey = folderPath + uniqueFileName;
+
+            try {
+                File convertedFile = convertMultiPartToFile(file);
+                amazonS3.putObject(new PutObjectRequest(bucket, fileKey, convertedFile));
+                convertedFile.delete(); // 임시 파일 삭제
+
+                String fileUrl = amazonS3.getUrl(bucket, fileKey).toString();
+                uploadedFileUrls.add(fileUrl);
+            } catch (IOException e) {
+                throw new GeneralException(ErrorStatus.S3_ERROR);
+            }
+        }
+
+        return uploadedFileUrls;
+    }
+
+    private File convertMultiPartToFile(MultipartFile file) throws IOException {
+        File convertedFile = new File(file.getOriginalFilename());
+        FileOutputStream fos = new FileOutputStream(convertedFile);
+        fos.write(file.getBytes());
+        fos.close();
+        return convertedFile;
+    }
+
     public void getFileToProject(String fileName)  {
         S3Object s3Object = amazonS3.getObject(bucket, fileName);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
@@ -70,3 +107,5 @@ public class S3utils {
         }
     }
 }
+
+

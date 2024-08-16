@@ -51,6 +51,8 @@ public class KakaoApiProvider {
                 .queryParam("code", code)
                 .build();
 
+        System.out.println("uriComponents = " + uriComponents);
+
         KakaoTokenResponseDto responseDto = WebClient.create().post()
                 .uri(uriComponents.toString())
                 .retrieve()

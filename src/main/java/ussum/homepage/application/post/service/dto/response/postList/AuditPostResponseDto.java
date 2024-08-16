@@ -10,7 +10,7 @@ public class AuditPostResponseDto extends PostListResDto {
     private final String status;
 
     @Builder
-    private AuditPostResponseDto(String postId, String title, String content, String date, String thumbNail, String status) {
+    private AuditPostResponseDto(Long postId, String title, String content, String date, String thumbNail, String status) {
         super(postId, title, content, date);
         this.thumbNail = thumbNail;
         this.status = status;
@@ -18,7 +18,7 @@ public class AuditPostResponseDto extends PostListResDto {
 
     public static AuditPostResponseDto of(Post post) {
         return AuditPostResponseDto.builder()
-                .postId(post.getId().toString())
+                .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .date(post.getCreatedAt().toString())
