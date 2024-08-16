@@ -45,20 +45,24 @@ public class PostStatusProcessor {
     }
 
     /**
-     * '진행중' 청원일 때 30일이내에 좋아요 100개를 달성하지 못하면 '종료됨'
-     * '진행중' 청원일 때 30일이내에 좋아요 100개를 달성하면 '접수된' 청원으로 변경
+     * '진행중' 청원일 때 30일이 지난 시점에 좋아요 100개를 달성하지 못하면 '종료됨'
+     * '진행중' 청원일 때 30일이 지난 시점에 좋아요 100개를 달성하면 '접수된' 청원으로 변경
      */
     private String handleInProgressStatus(Post post, Integer likeCountOfPost) {
         LocalDateTime createdAt = LocalDateTime.parse(post.getCreatedAt());
-        if (LocalDateTime.now().isBefore(createdAt.plusDays(30))) {
-            // 30일 이내에 좋아요 100개를 달성하지 못한 경우
+        // 30일이 경과한 경우
+        if (LocalDateTime.now().isAfter(createdAt.plusDays(30))) {
+            // 30일 동안 좋아요 100개를 달성하지 못한 경우에만 종료됨 상태로 변경
             if (likeCountOfPost < 100) {
                 return updatePostOngoingStatus(post.getId(), "COMPLETED");
-            } else {
+            } else return updatePostOngoingStatus(post.getId(), "RECEIVED");
+        } else {
+            if (likeCountOfPost >= 100) {
                 return updatePostOngoingStatus(post.getId(), "RECEIVED");
-            }
+            } else return "IN_PROGRESS";
         }
-        return "IN_PROGRESS";
+        // 30일 이내면 아직 상태를 변경하지 않음
+//        return "IN_PROGRESS";
     }
 
     /**
