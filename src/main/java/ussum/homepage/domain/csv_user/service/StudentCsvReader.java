@@ -27,8 +27,8 @@ public class StudentCsvReader {
     private void checkStudentRight(OnBoardingRequest request, StudentCsv studentCsv){
         boolean name = request.getName().equals(studentCsv.getStudentName());
         boolean studentId = request.getStudentId().equals(studentCsv.getStudentId());
-        boolean groupName = request.getGroupName().equals(studentCsv.getGroupName());
-        boolean major = request.getMajor().equals(studentCsv.getMajor());
+        boolean groupName = request.getMemberCode().equals(studentCsv.getGroupName());
+        boolean major = request.getMajorCode().equals(studentCsv.getMajor());
 
         if(name && studentId && groupName && major == false){
             throw new GeneralException(ErrorStatus.INVALID_ONBOARDING_REQUEST);

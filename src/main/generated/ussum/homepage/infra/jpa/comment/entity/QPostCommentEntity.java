@@ -22,7 +22,14 @@ public class QPostCommentEntity extends EntityPathBase<PostCommentEntity> {
 
     public static final QPostCommentEntity postCommentEntity = new QPostCommentEntity("postCommentEntity");
 
+    public final ussum.homepage.infra.jpa.QBaseEntity _super = new ussum.homepage.infra.jpa.QBaseEntity(this);
+
+    public final EnumPath<CommentType> commentType = createEnum("commentType", CommentType.class);
+
     public final StringPath content = createString("content");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -30,7 +37,8 @@ public class QPostCommentEntity extends EntityPathBase<PostCommentEntity> {
 
     public final ussum.homepage.infra.jpa.post.entity.QPostEntity postEntity;
 
-    public final EnumPath<CommentType> type = createEnum("type", CommentType.class);
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public final ussum.homepage.infra.jpa.user.entity.QUserEntity userEntity;
 
