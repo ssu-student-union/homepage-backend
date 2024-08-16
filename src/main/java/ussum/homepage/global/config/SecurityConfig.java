@@ -29,7 +29,7 @@ public class SecurityConfig {
     //    private static final String[] whiteList = {"/**"};
     private static final String[] whiteList = {
             "/auth/**",
-            "/onboarding/**",
+//            "/onboarding/**",
             "/swagger-ui/**",
             "/swagger-resources/**",
             "/v3/api-docs/**",
