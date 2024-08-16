@@ -24,4 +24,13 @@ public class Member {
                 .build();
     }
 
+    public static Member createMember(Boolean isAdmin, String memberCode, String majorCode, Long userId) {
+        return Member.builder()
+                .isAdmin(isAdmin)
+                .memberCode(memberCode)
+                .majorCode(majorCode)
+                .userId(userId)
+                .build();
+    }
+
 }

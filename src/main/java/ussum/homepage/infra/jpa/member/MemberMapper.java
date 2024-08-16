@@ -17,18 +17,28 @@ public class MemberMapper {
                 String.valueOf(memberEntity.getMemberCode()),
                 String.valueOf(memberEntity.getMajorCode()),
                 memberEntity.getUserEntity().getId(),
-                memberEntity.getGroupEntity().getId()
+                memberEntity.getGroupEntity() == null ? null : memberEntity.getGroupEntity().getId()
         );
     }
 
     public MemberEntity toEntity(Member member) {
+//        if(member.getGroupId() == null) {
+//            return MemberEntity.nullGroup(
+//                    member.getId(),
+//                    member.getIsAdmin(),
+//                    MemberCode.getEnumMemberCodeFromStringMemberCode(member.getMemberCode()),
+//                    MajorCode.getEnumMajorCodeFromStringMajorCode(member.getMajorCode()),
+//                    UserEntity.from(member.getUserId())
+//            );
+//        }
+
         return MemberEntity.of(
                 member.getId(),
                 member.getIsAdmin(),
                 MemberCode.getEnumMemberCodeFromStringMemberCode(member.getMemberCode()),
                 MajorCode.getEnumMajorCodeFromStringMajorCode(member.getMajorCode()),
                 UserEntity.from(member.getUserId()),
-                GroupEntity.from(member.getGroupId())
+                member.getGroupId() == null ? null : GroupEntity.from(member.getGroupId())
         );
     }
 }
