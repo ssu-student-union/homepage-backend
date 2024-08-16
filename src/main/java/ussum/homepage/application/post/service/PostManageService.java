@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import ussum.homepage.application.comment.service.dto.response.PostOfficialCommentResponse;
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.request.PostUserRequest;
@@ -13,6 +14,9 @@ import ussum.homepage.application.post.service.dto.response.postDetail.*;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 import ussum.homepage.application.post.service.dto.response.postSave.PostCreateResponse;
 import ussum.homepage.application.post.service.dto.response.postSave.PostFileResponse;
+import ussum.homepage.domain.comment.PostComment;
+import ussum.homepage.domain.comment.service.PostCommentReader;
+import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
@@ -25,7 +29,6 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
-import ussum.homepage.infra.jpa.post.entity.OngoingStatus;
 import ussum.homepage.infra.utils.S3utils;
 
 import java.util.List;
@@ -43,11 +46,13 @@ public class PostManageService {
     private final PostReactionReader postReactionReader;
     private final CategoryReader categoryReader;
     private final UserReader userReader;
+    private final PostCommentReader postCommentReader;
     private final PostFileReader postFileReader;
     private final PostAppender postAppender;
     private final PostFileAppender postFileAppender;
     private final PostModifier postModifier;
     private final PostStatusProcessor postStatusProcessor;
+    private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
 
     private final Map<String, BiFunction<Post, Integer, ? extends PostListResDto>> postResponseMap = Map.of(
@@ -58,12 +63,12 @@ public class PostManageService {
             "청원게시판", PetitionPostResponse::of
     );
 
-    private final Map<String, PostDetailFunction<Post, Boolean, String, Integer, String, String, String, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
-            "공지사항게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList) -> NoticePostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
-            "분실물게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, another_ignored) -> LostPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList),
-            "제휴게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList) -> PartnerPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
-            "감사기구게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList) -> AuditPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
-            "청원게시판", (post, isAuthor, authorName, likeCount, onGoingStatus, imageList, ignored) -> PetitionPostDetailResponse.of(post, isAuthor, authorName, likeCount, onGoingStatus, imageList)
+    private final Map<String, PostDetailFunction<Post, Boolean, String, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
+            "공지사항게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList, another_ignored) -> NoticePostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
+            "분실물게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, another_ignored1, another_ignored2) -> LostPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList),
+            "제휴게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList, another_ignored) -> PartnerPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
+            "감사기구게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList, another_ignored) -> AuditPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
+            "청원게시판", (post, isAuthor, authorName, likeCount, onGoingStatus, imageList, ignored, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, authorName, likeCount, onGoingStatus, imageList, postOfficialCommentResponseList)
     );
 
 
@@ -109,7 +114,7 @@ public class PostManageService {
         List<String> fileList = postFileReader.getPostFileListByFileType(postFileList);
 
 
-        PostDetailFunction<Post, Boolean, String, Integer, String, String, String, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
+        PostDetailFunction<Post, Boolean, String, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
 
         if (responseFunction == null) {
             throw new GeneralException(ErrorStatus.INVALID_BOARDCODE);
@@ -119,11 +124,15 @@ public class PostManageService {
         if (board.getName().equals("청원게시판")) {
             Integer likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
             String postOnGoingStatus = postStatusProcessor.processStatus(post);
-            response = responseFunction.apply(post, isAuthor, user.getName(), likeCount, postOnGoingStatus, imageList, null);
+            List<PostComment> officialPostComments = postCommentReader.getCommentListWithPostIdAndCommentType(userId, postId, "OFFICIAL");
+            List<PostOfficialCommentResponse> postOfficialCommentResponses = officialPostComments.stream()
+                    .map(postOfficialComment -> postOfficialCommentFormatter.format(postOfficialComment, userId))
+                    .toList();
+            response = responseFunction.apply(post, isAuthor, user.getName(), likeCount, postOnGoingStatus, imageList, null, postOfficialCommentResponses);
         } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판")) {
-            response = responseFunction.apply(post, isAuthor, user.getName(), null, category.getName(), imageList, fileList);
+            response = responseFunction.apply(post, isAuthor, user.getName(), null, category.getName(), imageList, fileList,null);
         } else if (board.getName().equals("분실물게시판")) {
-            response = responseFunction.apply(post, isAuthor, user.getName(), null, category.getName(), imageList, null); //분실물 게시판은 파일첨부 제외
+            response = responseFunction.apply(post, isAuthor, user.getName(), null, category.getName(), imageList, null, null); //분실물 게시판은 파일첨부 제외
         }
 
         return PostDetailRes.of(response);
@@ -134,7 +143,7 @@ public class PostManageService {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Category category = categoryReader.getCategoryWithCode(postCreateRequest.categoryCode());
         User user = userReader.getUserWithId(userId);
-        String onGoingStatus = Objects.equals(boardCode, "PETITION") ? "IN_PROGRESS" : null;
+        String onGoingStatus = Objects.equals(boardCode, "PETITION") ? category.getCategoryCode() : null;
 
         Post post = postAppender.createPost(postCreateRequest.toDomain(board, user, category, onGoingStatus));
         postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());

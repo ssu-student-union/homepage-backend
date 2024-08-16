@@ -25,4 +25,9 @@ public class MemberRepositoryImpl implements MemberRepository {
                 .map(memberMapper::toDomain)
                 .filter(member -> "CENTRAL_OPERATION_COMMITTEE".equals(member.getMemberCode()));
     }
+
+    @Override
+    public Member save(Member member) {
+        return memberMapper.toDomain(memberJpaRepository.save(memberMapper.toEntity(member)));
+    }
 }

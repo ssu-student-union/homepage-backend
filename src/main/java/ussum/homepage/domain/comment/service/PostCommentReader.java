@@ -6,8 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.PostCommentRepository;
+import ussum.homepage.domain.comment.service.formatter.PostCommentFormatter;
 import ussum.homepage.domain.reaction.exception.PostCommentException;
-import ussum.homepage.domain.reaction.service.PostCommentReactionReader;
 import ussum.homepage.global.error.exception.InvalidValueException;
 
 import java.util.List;
@@ -51,7 +51,11 @@ public class PostCommentReader {
         if (comments.isEmpty()) {
             throw new PostCommentException(POST_COMMENT_NOT_FOUND);
         }
-
         return comments;
     }
+
+    public List<PostComment> getCommentListWithPostIdAndCommentType(Long userId, Long postId, String commentType) {
+        return postCommentRepository.findAllByPostIdAndCommentType(postId, commentType);
+    }
+
 }
