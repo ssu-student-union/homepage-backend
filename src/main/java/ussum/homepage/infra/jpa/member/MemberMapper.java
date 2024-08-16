@@ -2,6 +2,7 @@ package ussum.homepage.infra.jpa.member;
 
 import org.springframework.stereotype.Component;
 import ussum.homepage.domain.member.Member;
+import ussum.homepage.infra.jpa.member.entity.MajorCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.member.entity.MemberEntity;
 import ussum.homepage.infra.jpa.group.entity.GroupEntity;
@@ -14,6 +15,7 @@ public class MemberMapper {
                 memberEntity.getId(),
                 memberEntity.getIsAdmin(),
                 String.valueOf(memberEntity.getMemberCode()),
+                String.valueOf(memberEntity.getMajorCode()),
                 memberEntity.getUserEntity().getId(),
                 memberEntity.getGroupEntity().getId()
         );
@@ -24,6 +26,7 @@ public class MemberMapper {
                 member.getId(),
                 member.getIsAdmin(),
                 MemberCode.getEnumMemberCodeFromStringMemberCode(member.getMemberCode()),
+                MajorCode.getEnumMajorCodeFromStringMajorCode(member.getMajorCode()),
                 UserEntity.from(member.getUserId()),
                 GroupEntity.from(member.getGroupId())
         );

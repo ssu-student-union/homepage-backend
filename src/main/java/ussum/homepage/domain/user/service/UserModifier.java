@@ -2,6 +2,7 @@ package ussum.homepage.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ussum.homepage.application.user.service.dto.request.OnBoardingRequest;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.UserRepository;
 
@@ -12,5 +13,9 @@ public class UserModifier {
 
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    public void updateOnBoardingUser(OnBoardingRequest request){
+        userRepository.updateOnBoardingUser(request);
     }
 }

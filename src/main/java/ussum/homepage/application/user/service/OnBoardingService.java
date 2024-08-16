@@ -12,6 +12,8 @@ import ussum.homepage.application.user.service.dto.request.OnBoardingEmailReques
 import ussum.homepage.application.user.service.dto.request.OnBoardingRequest;
 import ussum.homepage.domain.csv_user.StudentCsv;
 import ussum.homepage.domain.csv_user.service.StudentCsvReader;
+import ussum.homepage.domain.member.Member;
+import ussum.homepage.domain.member.service.MemberAppender;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.exception.OnBoardingMessagingException;
 import ussum.homepage.domain.user.service.UserModifier;
@@ -25,25 +27,26 @@ import static ussum.homepage.global.error.status.ErrorStatus.USER_NOT_FOUND;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class OnBoardingService {
-    private final UserModifier userModifier;
     private final UserReader userReader;
     private final StudentCsvReader studentCsvReader;
     private final JavaMailSender javaMailSender;
+    private final MemberAppender memberAppender;
+    private final UserModifier userModifier;
 
     @Value("${spring.mail.username}")
     private String SENDER_EMAIL_ADDRESS;
 
+    @Transactional
     public void saveUserOnBoarding(Long userId, OnBoardingRequest request){
         User user = userReader.getUserWithId(userId);
         String studentId = request.getStudentId();
-        StudentCsv studentCsv = studentCsvReader.getStudentWithStudentId(Long.valueOf(studentId),request)
-                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
+//        studentCsvReader.getStudentWithStudentId(Long.valueOf(studentId), request)
+//                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
 
-        /*
-        TO DO // MemberEntity, GroupEntity 연결
-         */
-        user.updateOnBoardingUser(request); // 이 메소드 수정 필요
-        userModifier.save(user);
+        userModifier.updateOnBoardingUser(request);
+        memberAppender.saveMember(Member.of(null, false,
+                request.getMemberCode(), request.getMajorCode(),
+                userId, null));
     }
 
     public void sendEmail(OnBoardingEmailRequest onBoardingEmailRequest) {

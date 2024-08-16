@@ -24,11 +24,11 @@ public class QPostFileEntity extends EntityPathBase<PostFileEntity> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath name = createString("name");
-
     public final QPostEntity postEntity;
 
     public final StringPath size = createString("size");
+
+    public final StringPath typeName = createString("typeName");
 
     public final StringPath url = createString("url");
 
