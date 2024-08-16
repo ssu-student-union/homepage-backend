@@ -55,12 +55,7 @@ public class PostCommentReader {
     }
 
     public List<PostComment> getCommentListWithPostIdAndCommentType(Long userId, Long postId, String commentType) {
-        List<PostComment> comments = postCommentRepository.findAllByPostIdAndCommentType(postId, commentType);
-        if (comments.isEmpty()) {
-            throw new PostCommentException(POST_COMMENT_NOT_FOUND);
-        }
-
-        return comments;
+        return postCommentRepository.findAllByPostIdAndCommentType(postId, commentType);
     }
 
 }
