@@ -8,14 +8,15 @@ import ussum.homepage.domain.post.Post;
 
 @Getter
 public class LostPostResponse extends PostListResDto{
+    private final int lostId;
     private final String thumbNail;
 
 
     @Builder
-    private LostPostResponse(String postId, String title, String content, String date, String thumbNail) {
+    private LostPostResponse(String postId, String title, String content, String date, int lostId, String thumbNail) {
         super(postId, title, content, date);
+        this.lostId = lostId;
         this.thumbNail = thumbNail;
-
     }
 
     public static LostPostResponse of(Post post) {
@@ -25,6 +26,7 @@ public class LostPostResponse extends PostListResDto{
                 .content(post.getContent())
                 .date(post.getCreatedAt().toString())
                 .thumbNail(post.getThumbnailImage())
+                .lostId(Math.toIntExact(post.getId()))
                 .build();
     }
 }

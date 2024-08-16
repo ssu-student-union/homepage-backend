@@ -25,6 +25,8 @@ import ussum.homepage.infra.jpa.user.entity.MajorCode;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -153,6 +155,8 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Page<SimplePostResponse> findPostDtoListByBoardCode(String boardCode, Pageable pageable) {
+        //7일 이내거만 확인
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
 
         List<SimplePostResponse> contents = queryFactory
                 .select(Projections.constructor(SimplePostDto.class,
@@ -162,8 +166,10 @@ public class PostRepositoryImpl implements PostRepository {
                 .from(postEntity)
                 .leftJoin(postReactionEntity).on(postReactionEntity.postEntity.eq(postEntity))
                 .leftJoin(postEntity.boardEntity, boardEntity)
-                .where(eqBoardCode(boardCode))
+                .where(eqBoardCode(boardCode)
+                        .and(postEntity.createdAt.after(sevenDaysAgo)))
                 .groupBy(postEntity)
+                .orderBy(postEntity.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch()
@@ -174,12 +180,13 @@ public class PostRepositoryImpl implements PostRepository {
                 .toList();
 
         JPAQuery<Long> countQuery = queryFactory
-                .select(boardEntity.boardCode.countDistinct())
+                .select(postEntity.countDistinct())
                 .from(postEntity)
                 .leftJoin(postReactionEntity).on(postReactionEntity.postEntity.eq(postEntity))
                 .leftJoin(postEntity.boardEntity, boardEntity)
-                .where(eqBoardCode(boardCode))
-                .groupBy(postEntity);
+                .where(eqBoardCode(boardCode)
+                        .and(postEntity.createdAt.after(sevenDaysAgo)));
+
         return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchCount);
     }
     private BooleanExpression eqBoardCode(String boardCode) {
