@@ -18,13 +18,22 @@ public class PostManageController {
 
     private final PostManageService postManageService;
 
-    @GetMapping("/{boardCode}/posts")
+    @GetMapping("/{boardCode}/{groupCode}/posts")
     public ResponseEntity<ApiResponse<?>> getBoardPostsList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
-                                                            @PathVariable(name = "boardCode") String boardCode) {
+                                                            @PathVariable(name = "boardCode") String boardCode, @PathVariable(name = "groupCode") String groupCode) {
 
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
-        return ApiResponse.success(postManageService.getPostList(page, take, boardCode));
+        return ApiResponse.success(postManageService.getPostList(page, take, boardCode, groupCode));
     }
+
+    @GetMapping("data/{majorCategory}/{middleCategory}/{subCategory}/posts")
+    public ResponseEntity<ApiResponse<?>> getDataPostsList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
+                                                            @PathVariable(name = "majorCategory") String majorCategory, @PathVariable(name = "middleCategory") String middleCategory,@PathVariable(name = "subCategory") String subCategory) {
+
+//        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
+        return ApiResponse.success(postManageService.getDataList(page, take, majorCategory, middleCategory, subCategory));
+    }
+
 
     @GetMapping("/{boardCode}/posts/{postId}")
     public ResponseEntity<ApiResponse<?>> getBoardPost(@PathVariable(name = "boardCode") String boardCode,

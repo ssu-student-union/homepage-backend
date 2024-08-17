@@ -12,6 +12,7 @@ public class PostFileEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String typeName;
+    private String subCategory;
     private String url;
     private String size;
 
@@ -19,8 +20,8 @@ public class PostFileEntity {
     @JoinColumn(name = "post_id")
     private PostEntity postEntity;
 
-    public static PostFileEntity of(Long id, String typeName, String url, String size, PostEntity postEntity) {
-        return new PostFileEntity(id, typeName, url, size, postEntity);
+    public static PostFileEntity of(Long id, String typeName, String subCategory, String url, String size, PostEntity postEntity) {
+        return new PostFileEntity(id, typeName, subCategory, url, size, postEntity);
     }
 
 }

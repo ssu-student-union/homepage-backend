@@ -33,6 +33,10 @@ public class PostReader {
         return postRepository.findPostDtoListByBoardCode(boardCode, pageable);
     }
 
+    public Page<Post> getPostListByGroupCodeAndMemberCodeAndSubCategory(String groupCode, String memberCode, String subCategory, Pageable pageable){
+        return postRepository.findAllByGroupCodeAndMemberCodeAndSubCategory(groupCode,memberCode,subCategory, pageable);
+    }
+
     public Post getPostWithId(Long postId) {
         return postRepository.findById(postId).orElseThrow(()-> new GeneralException(POST_NOT_FOUND));
     }

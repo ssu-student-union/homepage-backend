@@ -6,11 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.comment.service.dto.response.PostOfficialCommentResponse;
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.request.PostUserRequest;
+import ussum.homepage.application.post.service.dto.response.DataPostResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.*;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 
@@ -67,7 +69,9 @@ public class PostManageService {
             "분실물게시판", (post, ignored1, ignored2) -> LostPostResponse.of(post),
             "제휴게시판", (post, ignored1, ignored2) -> PartnerPostResponse.of(post),
             "감사기구게시판", (post, ignored1, ignored2) -> AuditPostResponseDto.of(post),
-            "청원게시판", (post, likeCount, ignored2) -> PetitionPostResponse.of(post, likeCount)
+            "청원게시판", (post, likeCount, ignored2) -> PetitionPostResponse.of(post, likeCount),
+            "자료집", (post, likeCount, ignored2) -> DataPostResponse.of(post)
+
     );
 
     private final Map<String, PostDetailFunction<Post, Boolean, String, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
@@ -79,7 +83,7 @@ public class PostManageService {
     );
 
 
-    public PostListRes<?> getPostList(int page, int take, String boardCode) {
+    public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Pageable pageable = PageInfo.of(page, take);
         Page<Post> postList = postReader.getPostListByBoardId(board.getId(), pageable);
@@ -102,6 +106,7 @@ public class PostManageService {
                         case "분실물게시판":
                         case "제휴게시판":
                         case "감사기구게시판":
+                        case "자료집":
                             return responseFunction.apply(post, null, null);
                         case "청원게시판":
                             likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
@@ -114,7 +119,14 @@ public class PostManageService {
 
         return PostListRes.of(responseList, pageInfo);
     }
-
+    public PostListRes<?> getDataList(int page, int take, String majorCategory, String middleCategory, String subCategory){
+        Pageable pageable = PageInfo.of(page, take);
+        Page<Post> postList = postReader.getPostListByGroupCodeAndMemberCodeAndSubCategory(majorCategory, middleCategory, subCategory, pageable);
+        PageInfo pageInfo = PageInfo.of(postList);
+        TriFunction<Post, Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get("자료집");
+        List<? extends PostListResDto> responseList = postList.getContent().stream().map(post -> responseFunction.apply(post, null, null)).toList();
+        return PostListRes.of(responseList, pageInfo);
+    }
 
     @Transactional
     public PostDetailRes<?> getPost(PostUserRequest postUserRequest, String boardCode, Long postId) {
@@ -180,7 +192,7 @@ public class PostManageService {
 
     private List<PostFile> convertUrlsToPostFiles(List<String> urlList, String typeName) {
         return urlList.stream()
-                .map(url -> PostFile.of(null, typeName, url, null, null))
+                .map(url -> PostFile.of(null, typeName,null, url, null, null))
                 .collect(Collectors.toList());
     }
 
