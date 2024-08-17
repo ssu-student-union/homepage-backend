@@ -1,10 +1,10 @@
 package ussum.homepage.infra.jpa.member.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 import ussum.homepage.infra.jpa.BaseEntity;
 import ussum.homepage.infra.jpa.group.entity.GroupEntity;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
-
 
 @Entity
 @Table(name = "member")
@@ -34,9 +34,12 @@ public class MemberEntity extends BaseEntity {
 
     public static MemberEntity of(Long id, Boolean isAdmin, MemberCode memberCode, MajorCode majorCode, UserEntity userEntity, GroupEntity groupEntity) {
         return new MemberEntity(id, isAdmin, memberCode, majorCode, userEntity, groupEntity);
-    } // ?
+    }
+    public static MemberEntity nullGroup(Long id, Boolean isAdmin, MemberCode memberCode, MajorCode majorCode, UserEntity userEntity) {
+        return new MemberEntity(id, isAdmin, memberCode, majorCode, userEntity, null);
+    }
 
     public static MemberEntity from(Long id) {
         return new MemberEntity(id, null, null, null, null, null);
-    } // ?
+    }
 }
