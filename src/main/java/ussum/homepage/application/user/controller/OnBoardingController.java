@@ -26,7 +26,8 @@ public class OnBoardingController {
     }
 
     @PostMapping("/mail")
-    public ResponseEntity<ApiResponse<?>> sendEmail(@RequestBody OnBoardingEmailRequest onBoardingEmailRequest) {
+    public ResponseEntity<ApiResponse<?>> sendEmail(@UserId Long userId,
+                                                    @RequestBody OnBoardingEmailRequest onBoardingEmailRequest) {
         onBoardingService.sendEmail(onBoardingEmailRequest);
         return ApiResponse.success(null);
     }
