@@ -155,7 +155,7 @@ public enum MajorCode {
     MEDIA_MANAGEMENT_DEPARTMENT("MEDIA_MANAGEMENT_DEPARTMENT"),
 
     // 융합특성화자유전공학부
-    INTERDISCIPLINARY_STUDIES_DEPARTMENT("INTERDISCIPLINARY_STUDIES_DEPARTMENT");
+    CONVERGENCE_DEPARTMENT("CONVERGENCE_DEPARTMENT");
 
     private final String stringMajorCode;
     public static MajorCode getEnumMajorCodeFromStringMajorCode(String stringMajorCode) {

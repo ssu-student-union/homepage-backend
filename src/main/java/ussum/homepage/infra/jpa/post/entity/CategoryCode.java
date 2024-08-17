@@ -28,7 +28,31 @@ public enum CategoryCode {
     IN_PROGRESS("IN_PROGRESS"),
     RECEIVED("RECEIVED"),
     ANSWERED("ANSWERED"),
-    COMPLETED("COMPLETED");
+    COMPLETED("COMPLETED"),
+
+    //공지사항 카테고리
+    //중앙 : 총학생회, 중앙운영위원회, 중앙선거관리위원회, 동아리연합회
+    //단과대 : IT대학, 인문대학, 융합특성화자유전공학부, 사회과학대학, 공과대학, 경영대학, 경제통상대학, 자연과학대학, 법과대학
+    STUDENT_COUNCIL("STUDENT_COUNCIL"),
+    CENTRAL_OPERATION_COMMITTEE("CENTRAL_OPERATION_COMMITTEE"),
+    CENTRAL_ELECTION_COMMITTEE("CENTRAL_ELECTION_COMMITTEE"),
+    CLUB_UNION("CLUB_UNION"),
+
+    IT_SCHOOL("IT_SCHOOL"),
+    HUMANITIES_SCHOOL("HUMANITIES_SCHOOL"),
+    CONVERGENCE_SCHOOL("CONVERGENCE_SCHOOL"),
+    SOCIAL_SCIENCES_SCHOOL("SOCIAL_SCIENCES_SCHOOL"),
+    ENGINEERING_SCHOOL("ENGINEERING_SCHOOL"),
+    BUSINESS_SCHOOL("BUSINESS_SCHOOL"),
+    ECONOMICS_TRADE_SCHOOL("ECONOMICS_TRADE_SCHOOL"),
+    NATURAL_SCIENCES_SCHOOL("NATURAL_SCIENCES_SCHOOL"),
+    LAW_SCHOOL("LAW_SCHOOL"),
+
+    //감사기구 카테고리(감사계획, 감사결과, 기타)
+    AUDIT_PLAN("AUDIT_PLAN"),
+    AUDIT_RESULT("AUDIT_RESULT"),
+    OTHERS("OTHERS");
+
 
     private final String stringCategoryCode;
     public static CategoryCode getEnumCategoryCodeFromStringCategoryCode(String stringCategoryCode) {
