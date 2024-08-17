@@ -7,10 +7,14 @@ public record OnBoardingEmailRequest(
         String email,
         String content
 ) {
-    public String toString(OnBoardingEmailRequest onBoardingEmailRequest) {
-        return onBoardingEmailRequest.studentId + "학번과 "
-                + onBoardingEmailRequest.email + " 라는 이메일을 가진 "
-                + onBoardingEmailRequest.name + "님이 "
-                + "메일을 보냈습니다.";
+    public String toEmailSubject() {
+        return "[총학생회 홈페이지 학생인증 문의] " + name;
+    }
+
+    public String toEmailContent() {
+        return "학생명 : " + name + "\n" +
+                "학번 : " + studentId + "\n" +
+                "이메일 : " + email + "\n" +
+                "문의 내용 : " + content;
     }
 }

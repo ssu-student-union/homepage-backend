@@ -54,9 +54,11 @@ public class OnBoardingService {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
             mimeMessageHelper.setTo(SENDER_EMAIL_ADDRESS);
-            mimeMessageHelper.setFrom(onBoardingEmailRequest.email());
-            mimeMessageHelper.setSubject(onBoardingEmailRequest.toString(onBoardingEmailRequest));
-            mimeMessageHelper.setText(onBoardingEmailRequest.content());
+            mimeMessageHelper.setFrom(SENDER_EMAIL_ADDRESS);
+            mimeMessageHelper.setReplyTo(onBoardingEmailRequest.email());
+//            mimeMessageHelper.setFrom(onBoardingEmailRequest.email());
+            mimeMessageHelper.setSubject(onBoardingEmailRequest.toEmailSubject());
+            mimeMessageHelper.setText(onBoardingEmailRequest.toEmailContent());
 
             javaMailSender.send(mimeMessage);
         } catch (MessagingException | OnBoardingMessagingException onBoardingMessagingException) {
