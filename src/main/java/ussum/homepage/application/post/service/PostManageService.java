@@ -38,6 +38,8 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
+import ussum.homepage.infra.jpa.group.entity.GroupCode;
+import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.utils.S3utils;
@@ -102,7 +104,7 @@ public class PostManageService {
         BoardImpl boardImpl = BoardFactory.createBoard(boardCode);
         Pageable pageable = PageInfo.of(page, take);
 
-        Page<Post> postList = boardImpl.getPostList(postReader, groupCode, memberCode, pageable);
+        Page<Post> postList = boardImpl.getPostList(postReader, GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode), MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode), pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 
@@ -138,7 +140,7 @@ public class PostManageService {
     }
     public PostListRes<?> getDataList(int page, int take, String majorCategory, String middleCategory, String subCategory){
         Pageable pageable = PageInfo.of(page, take);
-        Page<Post> postList = postReader.getPostListByGroupCodeAndMemberCodeAndSubCategory(majorCategory, middleCategory, subCategory, pageable);
+        Page<Post> postList = postReader.getPostListByGroupCodeAndMemberCodeAndSubCategory(GroupCode.getEnumGroupCodeFromStringGroupCode(majorCategory), MemberCode.getEnumMemberCodeFromStringMemberCode(middleCategory), subCategory, pageable);
         PageInfo pageInfo = PageInfo.of(postList);
         TriFunction<Post, Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get("자료집");
         List<? extends PostListResDto> responseList = postList.getContent().stream().map(post -> responseFunction.apply(post, null, null)).toList();

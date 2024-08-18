@@ -75,17 +75,17 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Page<Post> findAllByGroupCodeAndMemberCodeAndSubCategory(String groupCode, String memberCode, String subCategory, Pageable pageable) {
+    public Page<Post> findAllByGroupCodeAndMemberCodeAndSubCategory(GroupCode groupCode, MemberCode memberCode, String subCategory, Pageable pageable) {
         BooleanBuilder whereClause = new BooleanBuilder();
 
         if (subCategory != null && !subCategory.isEmpty()) {
             whereClause.and(postFileEntity.subCategory.eq(subCategory));
         }
-        if (memberCode != null && !memberCode.isEmpty()) {
-            whereClause.and(memberEntity.memberCode.eq(MemberCode.valueOf(memberCode)));
+        if (memberCode != null) {
+            whereClause.and(memberEntity.memberCode.eq(memberCode));
         }
-        if (groupCode != null && !groupCode.isEmpty()) {
-            whereClause.and(groupEntity.groupCode.eq(GroupCode.valueOf(groupCode)));
+        if (groupCode != null) {
+            whereClause.and(groupEntity.groupCode.eq(groupCode));
         }
 
         if (whereClause.getValue() == null) {
@@ -123,14 +123,14 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, String groupCode, String memberCode, Pageable pageable) {
+    public Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, GroupCode groupCode, MemberCode memberCode, Pageable pageable) {
         BooleanBuilder whereClause = new BooleanBuilder();
 
-        if (memberCode != null && !memberCode.isEmpty()) {
-            whereClause.and(memberEntity.memberCode.eq(MemberCode.valueOf(memberCode)));
+        if (memberCode != null) {
+            whereClause.and(memberEntity.memberCode.eq(memberCode));
         }
-        if (groupCode != null && !groupCode.isEmpty()) {
-            whereClause.and(groupEntity.groupCode.eq(GroupCode.valueOf(groupCode)));
+        if (groupCode != null) {
+            whereClause.and(groupEntity.groupCode.eq(groupCode));
         }
 
         if (whereClause.getValue() == null) {
