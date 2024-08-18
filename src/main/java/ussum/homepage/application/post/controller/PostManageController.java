@@ -18,12 +18,12 @@ public class PostManageController {
 
     private final PostManageService postManageService;
 
-    @GetMapping("/{boardCode}/{groupCode}/posts")
+    @GetMapping("/{boardCode}/{groupCode}/{memberCode}/posts")
     public ResponseEntity<ApiResponse<?>> getBoardPostsList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
-                                                            @PathVariable(name = "boardCode") String boardCode, @PathVariable(name = "groupCode") String groupCode) {
+                                                            @PathVariable(name = "boardCode") String boardCode, @PathVariable(name = "groupCode") String groupCode, @PathVariable(name = "memberCode") String memberCode) {
 
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
-        return ApiResponse.success(postManageService.getPostList(page, take, boardCode, groupCode));
+        return ApiResponse.success(postManageService.getPostList(page, take, boardCode, groupCode, memberCode));
     }
 
     @GetMapping("data/{majorCategory}/{middleCategory}/{subCategory}/posts")

@@ -19,4 +19,5 @@ public interface PostRepository {
     Page<SimplePostResponse> findPostDtoListByBoardCode(String boardCode, Pageable pageable);
     Post updatePostOngoingStatus(Long postId, String onGoingStatus, Category category);
     Page<Post> findAllByGroupCodeAndMemberCodeAndSubCategory(String groupCode, String memberCode, String subCategory, Pageable pageable);
+    Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boarId, String groupCode, String memberCode, Pageable pageable);
 }

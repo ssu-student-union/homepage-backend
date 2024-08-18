@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.comment.service.dto.response.PostOfficialCommentResponse;
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
@@ -24,14 +23,14 @@ import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
 
-import ussum.homepage.domain.group.Group;
 import ussum.homepage.domain.group.service.GroupReader;
-import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostFile;
 import ussum.homepage.domain.post.service.*;
+import ussum.homepage.domain.post.service.factory.BoardFactory;
+import ussum.homepage.domain.post.service.factory.BoardImpl;
 import ussum.homepage.domain.post.service.formatter.PostDetailFunction;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.domain.user.User;
@@ -46,7 +45,6 @@ import ussum.homepage.infra.utils.S3utils;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static ussum.homepage.global.error.status.ErrorStatus.POST_NOT_FOUND;
@@ -89,10 +87,23 @@ public class PostManageService {
     );
 
 
-    public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode) {
+    public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode, String memberCode) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
+//        Pageable pageable = PageInfo.of(page, take);
+//        Page<Post> postList = null;
+//        if(boardCode.equals("공지사항게시판")){
+//            postList = postReader.getPostListByBoardIdAndGroupCodeAndMemberCode(board.getId(), groupCode, memberCode, pageable);
+//        }else {
+//            postList = postReader.getPostListByBoardId(board.getId(), pageable);
+//        }
+
+
+        //factory 사용 로직
+        BoardImpl boardImpl = BoardFactory.createBoard(boardCode);
         Pageable pageable = PageInfo.of(page, take);
-        Page<Post> postList = postReader.getPostListByBoardId(board.getId(), pageable);
+
+        Page<Post> postList = boardImpl.getPostList(postReader, groupCode, memberCode, pageable);
+
         PageInfo pageInfo = PageInfo.of(postList);
 
         TriFunction<Post, Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get(board.getName());
