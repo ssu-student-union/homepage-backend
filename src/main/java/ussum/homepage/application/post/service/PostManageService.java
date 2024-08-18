@@ -186,7 +186,7 @@ public class PostManageService {
     @Transactional
     public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
-        String onGoingStatus = Objects.equals(boardCode, "PETITION") ? postCreateRequest.categoryCode() : null;
+        String onGoingStatus = Objects.equals(boardCode, "청원게시판") ? postCreateRequest.categoryCode() : null;
 
         Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
         postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());
