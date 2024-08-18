@@ -8,4 +8,5 @@ public interface PostFileRepository {
     Optional<PostFile> findById(Long id);
     List<PostFile> saveAll(List<PostFile> postFiles);
     void updatePostIdForIds(List<Long> postFileIds, Long postId);
+    void updatePostIdAndSubCategoryForIds(List<Long> postFileIds, Long postId, String subCategory);
 }

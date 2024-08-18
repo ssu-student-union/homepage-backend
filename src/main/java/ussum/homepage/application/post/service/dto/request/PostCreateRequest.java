@@ -14,7 +14,7 @@ public record PostCreateRequest(
         String thumbNailImage,
         List<Long> postFileList
 ) {
-    public Post toDomain(Board board, User user, Category category, String OnGoingStatus) {
+    public Post toDomain(Board board, Long userId, Category category, String OnGoingStatus) {
         return Post.of(
                 null,
                 title,
@@ -27,8 +27,26 @@ public record PostCreateRequest(
                 null,
                 null,
                 category,
-                user.getId(), //이건 채워넣어야 함, user쪽 개발되면
+                userId, //이건 채워넣어야 함, user쪽 개발되면
                 board.getId()
+        );
+    }
+
+    public Post toDomain(Long boardId, Long userId, Category category, String OnGoingStatus) {
+        return Post.of(
+                null,
+                title,
+                content,
+                1,
+                thumbNailImage,
+                "새로운",
+                OnGoingStatus,
+                null,
+                null,
+                null,
+                category,
+                userId, //이건 채워넣어야 함, user쪽 개발되면
+                boardId
         );
     }
 

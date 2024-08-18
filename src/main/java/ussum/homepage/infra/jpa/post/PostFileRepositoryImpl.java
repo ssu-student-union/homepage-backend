@@ -52,4 +52,14 @@ public class PostFileRepositoryImpl implements PostFileRepository {
                 .where(postFileEntity.id.in(postFileIds))
                 .execute();
     }
+
+    @Override
+    public void updatePostIdAndSubCategoryForIds(List<Long> postFileIds, Long postId, String subCategory) {
+        queryFactory
+                .update(postFileEntity)
+                .set(postFileEntity.postEntity.id, postId)
+                .set(postFileEntity.subCategory, subCategory)
+                .where(postFileEntity.id.in(postFileIds))
+                .execute();
+    }
 }

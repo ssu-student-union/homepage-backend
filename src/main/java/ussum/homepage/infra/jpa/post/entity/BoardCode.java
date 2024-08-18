@@ -16,7 +16,8 @@ public enum BoardCode {
     NOTICE("NOTICE"),
     LOST("LOST"),
     PARTNER("PARTNER"),
-    PETITION("PETITION");
+    PETITION("PETITION"),
+    DATA("DATA");
 
     private final String stringBoardCode;
     public static BoardCode getEnumBoardCodeFromStringBoardCode(String stringBoardCode) {
