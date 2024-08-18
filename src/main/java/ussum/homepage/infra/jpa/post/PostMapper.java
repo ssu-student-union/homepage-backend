@@ -42,6 +42,10 @@ public class PostMapper {
                 .map(LocalDateTime::parse)
                 .orElse(null);
 
+        OngoingStatus ongoingStatus = Optional.ofNullable(post.getOnGoingStatus())
+                .map(OngoingStatus::getEnumOngoingStatusFromStringOngoingStatus)
+                .orElse(null);
+
         return PostEntity.of(
                 post.getId(),
                 post.getTitle(),
@@ -49,7 +53,7 @@ public class PostMapper {
                 post.getViewCount(),
                 post.getThumbnailImage(),
                 Status.getEnumStatusFromStringStatus(post.getStatus()),
-                OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus(post.getOnGoingStatus()),
+                ongoingStatus,
                 lastEditedAt,
                 Category.getEnumCategoryCodeFromStringCategoryCode(post.getCategory()),
                 user,

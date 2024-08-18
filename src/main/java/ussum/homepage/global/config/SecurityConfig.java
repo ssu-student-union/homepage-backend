@@ -3,6 +3,7 @@ package ussum.homepage.global.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -24,16 +25,18 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    //    private static final String[] whiteList = {"/**"};
+    private static final String[] getWhiteList = {
+            "/board/{boardCode}/posts",
+            "/board/{boardCode}/posts/{postId}",
+            "/board/posts/{postId}/comments"
+    };
+
     private static final String[] whiteList = {
             "/auth/**",
 //            "/onboarding/**",
             "/swagger-ui/**",
             "/swagger-resources/**",
-            "/v3/api-docs/**",
-            "/board/{boardCode}/posts/{postId}",
-            "/board/posts/{postId}/comments"
-
+            "/v3/api-docs/**"
     };
 
     @Bean
@@ -43,7 +46,9 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().requestMatchers(whiteList);
+        return web -> web.ignoring()
+                .requestMatchers(HttpMethod.GET, getWhiteList)
+                .requestMatchers(whiteList);
     }
 
     @Bean
