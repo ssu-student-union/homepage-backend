@@ -56,10 +56,8 @@ public class PostService {
 
     public void createPost(Long userId, String boardCode, PostCreateRequest postCreateRequest) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
-        //user도 찾아 와야 하지 않을까
-        User user = userReader.getUserWithId(userId);
 
-        postAppender.createPost(postCreateRequest.toDomain(board, user, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), null));
+        postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), null));
     }
 
 //    public PostResponse editPost(String boardCode,Long postId, PostUpdateRequest postUpdateRequest) {

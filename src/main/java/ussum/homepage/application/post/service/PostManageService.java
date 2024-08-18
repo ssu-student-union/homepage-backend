@@ -24,6 +24,10 @@ import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
 
+import ussum.homepage.domain.group.Group;
+import ussum.homepage.domain.group.service.GroupReader;
+import ussum.homepage.domain.member.Member;
+import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostFile;
@@ -35,6 +39,7 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
+import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.utils.S3utils;
 
@@ -54,6 +59,8 @@ public class PostManageService {
     private final PostReader postReader;
     private final PostReactionReader postReactionReader;
     private final UserReader userReader;
+    private final MemberReader memberReader;
+    private final GroupReader groupReader;
     private final PostCommentReader postCommentReader;
     private final PostFileReader postFileReader;
     private final PostAppender postAppender;
@@ -168,12 +175,19 @@ public class PostManageService {
     @Transactional
     public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
-        User user = userReader.getUserWithId(userId);
         String onGoingStatus = Objects.equals(boardCode, "PETITION") ? postCreateRequest.categoryCode() : null;
 
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board, user, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
         postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());
         return PostCreateResponse.of(post.getId(), boardCode);
+    }
+
+    @Transactional
+    public PostCreateResponse createDataPost(Long userId, String subCategory, PostCreateRequest postCreateRequest){
+        Board board = boardReader.getBoardWithBoardCode(BoardCode.DATA.getStringBoardCode());
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), null));
+        postFileAppender.updatePostIdAndSubCategoryForIds(postCreateRequest.postFileList(), post.getId(), subCategory);
+        return PostCreateResponse.of(post.getId(), BoardCode.DATA.getStringBoardCode());
     }
 
     @Transactional
