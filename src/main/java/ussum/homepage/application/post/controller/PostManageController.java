@@ -49,6 +49,12 @@ public class PostManageController {
                                                           @RequestBody PostCreateRequest postCreateRequest){
         return ApiResponse.success(postManageService.createBoardPost(userId, boardCode, postCreateRequest));
     }
+    @PostMapping("data/{subCategory}/post")
+    public ResponseEntity<ApiResponse<?>> createDataPost(@UserId Long userId,
+                                                         @PathVariable(name = "subCategory") String subCategory,
+                                                          @RequestBody PostCreateRequest postCreateRequest){
+        return ApiResponse.success(postManageService.createDataPost(userId, subCategory, postCreateRequest));
+    }
 
     @PostMapping("/{boardCode}/files")
     public ResponseEntity<ApiResponse<?>> createBoardPostFile(@UserId Long userId,
