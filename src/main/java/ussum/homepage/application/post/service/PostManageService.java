@@ -99,7 +99,7 @@ public class PostManageService {
 
 
         //factory 사용 로직
-        BoardImpl boardImpl = BoardFactory.createBoard(boardCode);
+        BoardImpl boardImpl = BoardFactory.createBoard(boardCode, board.getId());
         Pageable pageable = PageInfo.of(page, take);
 
         Page<Post> postList = boardImpl.getPostList(postReader, groupCode, memberCode, pageable);
