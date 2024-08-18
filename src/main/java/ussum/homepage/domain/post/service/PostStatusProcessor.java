@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.member.service.MemberManager;
-import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
+import ussum.homepage.infra.jpa.post.entity.Category;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -19,7 +19,6 @@ public class PostStatusProcessor {
     private final PostCommentReader postCommentReader;
     private final PostReactionReader postReactionReader;
     private final MemberManager memberManager;
-    private final CategoryReader categoryReader;
 
     public String processStatus(Post post) {
         //현재 게시물 상태 checking
@@ -40,8 +39,7 @@ public class PostStatusProcessor {
      * 해당 로직은 실제 청원게시물의 OnGoingStatus를 변경하는 로직
      */
     public String updatePostOngoingStatus(Long postId, String onGoingStatus) {
-        Category category = categoryReader.getCategoryWithCode(onGoingStatus);
-        return postRepository.updatePostOngoingStatus(postId, onGoingStatus, category).getOnGoingStatus();
+        return postRepository.updatePostOngoingStatus(postId, onGoingStatus, Category.getEnumCategoryCodeFromStringCategoryCode(onGoingStatus)).getOnGoingStatus();
     }
 
     /**

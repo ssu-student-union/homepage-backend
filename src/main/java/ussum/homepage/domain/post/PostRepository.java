@@ -3,6 +3,7 @@ package ussum.homepage.domain.post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
+import ussum.homepage.infra.jpa.post.entity.Category;
 
 import java.util.Optional;
 

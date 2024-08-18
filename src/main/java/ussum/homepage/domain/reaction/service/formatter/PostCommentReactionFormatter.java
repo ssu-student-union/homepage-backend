@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ussum.homepage.application.reaction.service.dto.response.PostCommentReactionResponse;
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentFormatter;
-import ussum.homepage.domain.post.service.formatter.PostFormatter;
 import ussum.homepage.domain.user.service.formatter.UserFormatter;
 
 @Service

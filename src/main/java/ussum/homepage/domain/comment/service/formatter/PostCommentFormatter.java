@@ -8,7 +8,6 @@ import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.PostReplyComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostReplyCommentReader;
-import ussum.homepage.domain.post.service.formatter.PostFormatter;
 import ussum.homepage.domain.reaction.service.PostCommentReactionManager;
 import ussum.homepage.domain.reaction.service.PostCommentReactionReader;
 import ussum.homepage.domain.user.User;

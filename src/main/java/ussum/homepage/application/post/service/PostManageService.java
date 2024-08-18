@@ -25,7 +25,6 @@ import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
 
 import ussum.homepage.domain.post.Board;
-import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostFile;
 import ussum.homepage.domain.post.service.*;
@@ -36,6 +35,7 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
+import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.utils.S3utils;
 
 import java.util.List;
@@ -54,7 +54,6 @@ public class PostManageService {
     private final PostReader postReader;
     private final PostReactionReader postReactionReader;
     private final UserReader userReader;
-    private final CategoryReader categoryReader;
     private final PostCommentReader postCommentReader;
     private final PostFileReader postFileReader;
     private final PostAppender postAppender;
@@ -132,7 +131,6 @@ public class PostManageService {
     public PostDetailRes<?> getPost(PostUserRequest postUserRequest, String boardCode, Long postId) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post post = postReader.getPostWithBoardCodeAndPostId(boardCode, postId);
-        Category category = categoryReader.getCategoryById(post.getCategoryId());
         User user = userReader.getUserWithId(post.getUserId());
 
         Long userId = (postUserRequest != null) ? postUserRequest.userId() : null;
@@ -159,9 +157,9 @@ public class PostManageService {
                     .toList();
             response = responseFunction.apply(post, isAuthor, user.getName(), likeCount, postOnGoingStatus, imageList, null, postOfficialCommentResponses);
         } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판")) {
-            response = responseFunction.apply(post, isAuthor, user.getName(), null, category.getName(), imageList, fileList,null);
+            response = responseFunction.apply(post, isAuthor, user.getName(), null, post.getCategory(), imageList, fileList,null);
         } else if (board.getName().equals("분실물게시판")) {
-            response = responseFunction.apply(post, isAuthor, user.getName(), null, category.getName(), imageList, null, null); //분실물 게시판은 파일첨부 제외
+            response = responseFunction.apply(post, isAuthor, user.getName(), null, post.getCategory(), imageList, null, null); //분실물 게시판은 파일첨부 제외
         }
 
         return PostDetailRes.of(response);
@@ -170,11 +168,10 @@ public class PostManageService {
     @Transactional
     public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
-        Category category = categoryReader.getCategoryWithCode(postCreateRequest.categoryCode());
         User user = userReader.getUserWithId(userId);
-        String onGoingStatus = Objects.equals(boardCode, "PETITION") ? category.getCategoryCode() : null;
+        String onGoingStatus = Objects.equals(boardCode, "PETITION") ? postCreateRequest.categoryCode() : null;
 
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board, user, category, onGoingStatus));
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board, user, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
         postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());
         return PostCreateResponse.of(post.getId(), boardCode);
     }
