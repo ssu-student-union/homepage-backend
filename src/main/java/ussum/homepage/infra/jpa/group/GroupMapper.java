@@ -2,12 +2,8 @@ package ussum.homepage.infra.jpa.group;
 
 import org.springframework.stereotype.Component;
 import ussum.homepage.domain.group.Group;
-import ussum.homepage.domain.member.Member;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.group.entity.GroupEntity;
-import ussum.homepage.infra.jpa.member.entity.MemberCode;
-import ussum.homepage.infra.jpa.member.entity.MemberEntity;
-import ussum.homepage.infra.jpa.user.entity.UserEntity;
 
 @Component
 public class GroupMapper {

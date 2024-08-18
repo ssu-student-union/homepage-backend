@@ -4,20 +4,23 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import ussum.homepage.domain.post.Post;
+import ussum.homepage.domain.user.User;
 
 @Getter
 public class NoticePostResponse extends PostListResDto{
     private final String thumbNail;
     private final String status;
+    private final String author;
 
     @Builder
-    private NoticePostResponse(Long postId, String title, String content, String date, String thumbNail, String status) {
+    private NoticePostResponse(Long postId, String title, String content, String date, String thumbNail, String status, String author) {
         super(postId, title, content, date);
         this.thumbNail = thumbNail;
         this.status = status;
+        this.author = author;
     }
 
-    public static NoticePostResponse of(Post post) {
+    public static NoticePostResponse of(Post post, User user) {
         return NoticePostResponse.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
@@ -25,6 +28,7 @@ public class NoticePostResponse extends PostListResDto{
                 .date(post.getCreatedAt().toString())
                 .thumbNail(post.getThumbnailImage())
                 .status(post.getStatus())
+                .author(user.getName())
                 .build();
     }
 }

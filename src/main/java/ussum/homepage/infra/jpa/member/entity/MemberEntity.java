@@ -28,7 +28,7 @@ public class MemberEntity extends BaseEntity {
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // 일단  cascade = CascadeType.PERSIST 추가, 영속화 문제 해결
     @JoinColumn(name = "groups_id")
     private GroupEntity groupEntity;
 

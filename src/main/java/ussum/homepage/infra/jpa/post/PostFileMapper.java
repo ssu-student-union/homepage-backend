@@ -12,6 +12,7 @@ public class PostFileMapper {
         return PostFile.of(
                 postFileEntity.getId(),
                 postFileEntity.getTypeName(),
+                postFileEntity.getSubCategory(),
                 postFileEntity.getUrl(),
                 postFileEntity.getSize(),
                 null
@@ -28,6 +29,7 @@ public class PostFileMapper {
         return PostFileEntity.of(
                 postFile.getId(),
                 postFile.getTypeName(),
+                postFile.getSubCategory(),
                 postFile.getUrl(),
                 null,
                 null
