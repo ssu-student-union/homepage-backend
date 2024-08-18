@@ -11,7 +11,6 @@ import ussum.homepage.global.config.auth.UserId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import ussum.homepage.application.reaction.service.dto.request.PostReactionCreateRequest;
-import ussum.homepage.application.reaction.service.dto.response.PostReactionResponse;
 
 
 @RequiredArgsConstructor
@@ -35,18 +34,18 @@ public class PostReactionController {
         return ApiResponse.success(null);
     }
 
-    @Operation(summary = "게시물 반응 생성 api", description = """
-            게시물 반응을 등록하기 위한 api입니다.
-            
-            요청 json으로 like 또는 unlike를 받습니다.
-            
-            """)
-    @PostMapping("/boards/posts/{postId}/reactions")
-    public ResponseEntity<ApiResponse<?>> createPostReaction(@PathVariable(name = "postId") Long postId,
-                                                @RequestBody PostReactionCreateRequest postReactionCreateRequest) {
-        postReactionService.createPostReaction(postId, postReactionCreateRequest);
-        return ApiResponse.success(null);
-    }
+//    @Operation(summary = "게시물 반응 생성 api", description = """
+//            게시물 반응을 등록하기 위한 api입니다.
+//
+//            요청 json으로 like 또는 unlike를 받습니다.
+//
+//            """)
+//    @PostMapping("/boards/posts/{postId}/reactions")
+//    public ResponseEntity<ApiResponse<?>> createPostReaction(@PathVariable(name = "postId") Long postId,
+//                                                @RequestBody PostReactionCreateRequest postReactionCreateRequest) {
+//        postReactionService.createPostReaction(postId, postReactionCreateRequest);
+//        return ApiResponse.success(null);
+//    }
 
     @Operation(summary = "게시물 반응 삭제 api", description = """
             게시물 반응을 삭제하기 위한 api입니다.

@@ -1,15 +1,10 @@
 package ussum.homepage.domain.post;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-import ussum.homepage.infra.jpa.post.entity.BoardEntity;
-import ussum.homepage.infra.jpa.post.entity.CategoryEntity;
-import ussum.homepage.infra.jpa.user.entity.UserEntity;
+import ussum.homepage.infra.jpa.post.entity.Category;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,9 +22,9 @@ public class Post {
     private String createdAt;
     private String updatedAt;
     private String lastEditedAt;
+    private String category;
     private Long userId;
     private Long boardId;
-    private Long categoryId;
 
 
     public static Post of(Long id,
@@ -42,11 +37,11 @@ public class Post {
                           LocalDateTime createdAt,
                           LocalDateTime updatedAt,
                           LocalDateTime lastEditedAt,
+                          Category category,
                           Long userId,
-                          Long boardId,
-                          Long categoryId) {
+                          Long boardId) {
         return new Post(id, title, content, viewCount, thumbnailImage, status, onGoingStatus, String.valueOf(createdAt),
-                String.valueOf(updatedAt), String.valueOf(lastEditedAt),
-                userId, boardId, categoryId);
+                String.valueOf(updatedAt), String.valueOf(lastEditedAt), category.getStringCategoryCode(),
+                userId, boardId);
     }
 }

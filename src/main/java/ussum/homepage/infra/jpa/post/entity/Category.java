@@ -10,7 +10,7 @@ import static ussum.homepage.global.error.status.ErrorStatus.INVALID_CATEGORY_CO
 
 @RequiredArgsConstructor
 @Getter
-public enum CategoryCode {
+public enum Category {
     //분실물 카테고리(분실문 현황, 분실 신고)
     LOST_STATUS("LOST_STATUS"),
     LOST_REPORT("LOST_REPORT"),
@@ -31,7 +31,7 @@ public enum CategoryCode {
     COMPLETED("COMPLETED");
 
     private final String stringCategoryCode;
-    public static CategoryCode getEnumCategoryCodeFromStringCategoryCode(String stringCategoryCode) {
+    public static Category getEnumCategoryCodeFromStringCategoryCode(String stringCategoryCode) {
         return Arrays.stream(values())
                 .filter(boardCode -> boardCode.stringCategoryCode.equals(stringCategoryCode))
                 .findFirst()

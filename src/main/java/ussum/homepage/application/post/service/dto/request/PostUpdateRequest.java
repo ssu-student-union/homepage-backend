@@ -1,8 +1,8 @@
 package ussum.homepage.application.post.service.dto.request;
 
 import ussum.homepage.domain.post.Board;
-import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
+import ussum.homepage.infra.jpa.post.entity.Category;
 
 import java.time.LocalDateTime;
 
@@ -24,9 +24,9 @@ public record PostUpdateRequest(
                 LocalDateTime.parse(post.getCreatedAt()),
                 LocalDateTime.parse(post.getUpdatedAt()),
                 LocalDateTime.now(),
+                category,
                 post.getUserId(),
-                board.getId(),
-                category.getId()
+                board.getId()
         );
     }
 

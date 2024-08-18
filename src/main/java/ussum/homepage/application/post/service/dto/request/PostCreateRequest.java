@@ -1,9 +1,9 @@
 package ussum.homepage.application.post.service.dto.request;
 
 import ussum.homepage.domain.post.Board;
-import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.user.User;
+import ussum.homepage.infra.jpa.post.entity.Category;
 
 import java.util.List;
 
@@ -26,9 +26,9 @@ public record PostCreateRequest(
                 null,
                 null,
                 null,
+                category,
                 user.getId(), //이건 채워넣어야 함, user쪽 개발되면
-                board.getId(),
-                category.getId()
+                board.getId()
         );
     }
 
