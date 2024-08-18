@@ -28,7 +28,8 @@ public class SecurityConfig {
     private static final String[] getWhiteList = {
             "/board/{boardCode}/posts",
             "/board/{boardCode}/posts/{postId}",
-            "/board/posts/{postId}/comments"
+            "/board/posts/{postId}/comments",
+            "/board/{boardCode}/{groupCode}/{memberCode}/posts"
     };
 
     private static final String[] whiteList = {

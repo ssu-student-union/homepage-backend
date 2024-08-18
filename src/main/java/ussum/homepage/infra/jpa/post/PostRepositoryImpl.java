@@ -121,6 +121,52 @@ public class PostRepositoryImpl implements PostRepository {
                 countQuery::fetchOne
         );
     }
+
+    @Override
+    public Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, String groupCode, String memberCode, Pageable pageable) {
+        BooleanBuilder whereClause = new BooleanBuilder();
+
+        if (memberCode != null && !memberCode.isEmpty()) {
+            whereClause.and(memberEntity.memberCode.eq(MemberCode.valueOf(memberCode)));
+        }
+        if (groupCode != null && !groupCode.isEmpty()) {
+            whereClause.and(groupEntity.groupCode.eq(GroupCode.valueOf(groupCode)));
+        }
+
+        if (whereClause.getValue() == null) {
+            throw new IllegalArgumentException("At least one of memberCode, or groupCode must be provided");
+        }
+
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .leftJoin(postEntity.userEntity, userEntity)
+                .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
+                .leftJoin(memberEntity.groupEntity, groupEntity)
+                .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .leftJoin(postEntity.userEntity, userEntity)
+                .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
+                .leftJoin(memberEntity.groupEntity, groupEntity)
+                .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
+                .where(whereClause);
+
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+    }
+
     @Override
     public Page<Post> findAllWithBoard(Pageable pageable, String boardCode) {
         BoardEntity boardEntity = boardJpaRepository.findByBoardCode(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode))
