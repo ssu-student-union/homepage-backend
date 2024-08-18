@@ -50,7 +50,8 @@ public class PostManageController {
     }
 
     @PatchMapping("/{boardCode}/posts/{postId}")
-    public ResponseEntity<ApiResponse<?>> editBoardPost(@PathVariable(name = "boardCode") String boardCode,
+    public ResponseEntity<ApiResponse<?>> editBoardPost(@UserId Long userId,
+                                                        @PathVariable(name = "boardCode") String boardCode,
                                                         @PathVariable(name = "postId") Long postId,
                                                         @RequestBody PostUpdateRequest postUpdateRequest) {
         return ApiResponse.success(postManageService.editBoardPost(boardCode, postId, postUpdateRequest));
