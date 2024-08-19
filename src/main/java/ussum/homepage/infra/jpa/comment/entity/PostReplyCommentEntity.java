@@ -29,7 +29,6 @@ public class PostReplyCommentEntity extends BaseEntity {
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
-    @LastModifiedDate
     private LocalDateTime lastEditedAt;
 
     public PostReplyCommentEntity(Long id, String content, PostCommentEntity postCommentEntity, UserEntity userEntity, LocalDateTime lastEditedAt) {
@@ -46,6 +45,10 @@ public class PostReplyCommentEntity extends BaseEntity {
 
     public static PostReplyCommentEntity from(Long id) {
         return new PostReplyCommentEntity(id, null, null, null, null);
+    }
+
+    public static void updateLastEditedAt(PostReplyCommentEntity postReplyComment) {
+        postReplyComment.lastEditedAt = LocalDateTime.now();
     }
 
 }

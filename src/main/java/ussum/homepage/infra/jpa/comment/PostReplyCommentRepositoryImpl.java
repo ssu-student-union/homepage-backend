@@ -5,10 +5,13 @@ import org.springframework.stereotype.Repository;
 import ussum.homepage.domain.comment.PostReplyComment;
 import ussum.homepage.domain.comment.PostReplyCommentRepository;
 import ussum.homepage.domain.reaction.service.PostReplyCommentReactionReader;
+import ussum.homepage.infra.jpa.comment.entity.PostReplyCommentEntity;
 import ussum.homepage.infra.jpa.comment.repository.PostReplyCommentJpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static ussum.homepage.infra.jpa.comment.entity.PostReplyCommentEntity.updateLastEditedAt;
 
 @Repository
 @RequiredArgsConstructor
@@ -41,6 +44,8 @@ public class PostReplyCommentRepositoryImpl implements PostReplyCommentRepositor
 
     @Override
     public PostReplyComment update(PostReplyComment postReplyComment) {
-        return postReplyCommentMapper.toDomain(postReplyCommentJpaRepository.save(postReplyCommentMapper.toEntity(postReplyComment)));
+        PostReplyCommentEntity postReplyCommentEntity = postReplyCommentMapper.toEntity(postReplyComment);
+        updateLastEditedAt(postReplyCommentEntity);
+        return postReplyCommentMapper.toDomain(postReplyCommentJpaRepository.save(postReplyCommentEntity));
     }
 }
