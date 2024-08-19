@@ -12,10 +12,10 @@ import static ussum.homepage.global.error.status.ErrorStatus.WRONG_TRANSLATED_TO
 @RequiredArgsConstructor
 @Getter
 public enum OngoingStatus {
-    IN_PROGRESS("IN_PROGRESS"),
-    RECEIVED("RECEIVED"),
-    ANSWERED("ANSWERED"),
-    COMPLETED("COMPLETED");
+    IN_PROGRESS("진행중"),
+    RECEIVED("접수완료"),
+    ANSWERED("답변완료"),
+    COMPLETED("종료됨");
 
     private final String stringOnGoingStatus;
 
@@ -26,18 +26,18 @@ public enum OngoingStatus {
                 .orElseThrow(() -> new InvalidValueException(INVALID_ONGOING_STATUS));
     }
 
-    public static String toKorean(String stringOnGoingStatus) {
-        switch (stringOnGoingStatus) {
-            case "IN_PROGRESS":
-                return "진행중";
-            case "RECEIVED":
-                return "접수완료";
-            case "ANSWERED":
-                return "답변완료";
-            case "COMPLETED":
-                return "종료됨";
-            default:
-                throw new InvalidValueException(WRONG_TRANSLATED_TO_KOREAN);
-        }
-    }
+//    public static String toKorean(String stringOnGoingStatus) {
+//        switch (stringOnGoingStatus) {
+//            case "IN_PROGRESS":
+//                return "진행중";
+//            case "RECEIVED":
+//                return "접수완료";
+//            case "ANSWERED":
+//                return "답변완료";
+//            case "COMPLETED":
+//                return "종료됨";
+//            default:
+//                throw new InvalidValueException(WRONG_TRANSLATED_TO_KOREAN);
+//        }
+//    }
 }

@@ -30,7 +30,7 @@ public class PetitionPostDetailResponse extends PostDetailResDto {
                                                 List<PostOfficialCommentResponse> officialCommentList) {
         return PetitionPostDetailResponse.builder()
                 .postId(post.getId())
-                .categoryName(OngoingStatus.toKorean(onGoingStatus))
+                .categoryName(onGoingStatus)
                 .authorName(authorName)
                 .title(post.getTitle())
                 .content(post.getContent())
