@@ -28,8 +28,9 @@ public class PostController {
 //    }
 
     @GetMapping("/{boardCode}/posts/top-liked")
-    public ResponseEntity<ApiResponse<?>> getTopLikedBoardPostList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
-                                                           @PathVariable(name = "boardCode") String boardCode) {
+    public ResponseEntity<ApiResponse<?>> getTopLikedBoardPostList(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                                   @RequestParam(value = "take") int take,
+                                                                   @PathVariable(name = "boardCode") String boardCode) {
 
         TopLikedPostListResponse postList = postService.getTopLikedPostList(page, take, boardCode);
         return ApiResponse.success(postList);

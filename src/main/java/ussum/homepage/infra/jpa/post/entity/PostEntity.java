@@ -27,6 +27,7 @@ public class PostEntity extends BaseEntity {
     private OngoingStatus ongoingStatus;
 
     private LocalDateTime lastEditedAt;
+
     @Enumerated(EnumType.STRING)
     private Category category;
 
