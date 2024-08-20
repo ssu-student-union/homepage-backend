@@ -24,6 +24,7 @@ import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
 
 import ussum.homepage.domain.group.service.GroupReader;
+import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
@@ -38,6 +39,7 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
+import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.utils.S3utils;
@@ -186,9 +188,14 @@ public class PostManageService {
     @Transactional
     public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
-        String onGoingStatus = Objects.equals(boardCode, "청원게시판") ? postCreateRequest.categoryCode() : null;
+        Member member = memberReader.getMemberWithUserId(userId);
 
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
+        String noticeCategory = MemberCode.getEnumMemberCodeFromStringMemberCode(member.getMemberCode()).getStringMemberCode();
+
+        String onGoingStatus = Objects.equals(boardCode, "청원게시판") ? postCreateRequest.categoryCode() : null;
+        String category = Objects.equals(boardCode, "공지사항게시판") ? noticeCategory : postCreateRequest.categoryCode();
+
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(category), onGoingStatus));
         postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());
         return PostCreateResponse.of(post.getId(), boardCode);
     }
