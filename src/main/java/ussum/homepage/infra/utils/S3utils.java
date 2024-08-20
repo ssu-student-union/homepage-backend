@@ -16,9 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Component
@@ -51,15 +49,26 @@ public class S3utils {
         return amazonS3.getUrl(bucket, originalFilename).toString();
     }
 
+    public List<Map<String, String>> uploadFileWithPath(Long userId, String boardCode, MultipartFile[] files, MultipartFile[] images) {
+        List<Map<String, String>> uploadedFileUrls = new ArrayList<>();
 
-    public List<String> uploadFileWithPath(Long userId, String boardCode, MultipartFile[] files, String typeName) {
-        List<String> uploadedFileUrls = new ArrayList<>();
+        // 일반 파일 업로드
+        uploadedFileUrls.addAll(uploadFiles(userId, boardCode, files, "files"));
+
+        // 이미지 파일 업로드
+        uploadedFileUrls.addAll(uploadFiles(userId, boardCode, images, "images"));
+
+        return uploadedFileUrls;
+    }
+
+    private List<Map<String, String>> uploadFiles(Long userId, String boardCode, MultipartFile[] files, String fileType) {
+        List<Map<String, String>> uploadedFileUrls = new ArrayList<>();
         for (MultipartFile file : files) {
             String fileName = file.getOriginalFilename();
             String fileExtension = fileName.substring(fileName.lastIndexOf("."));
             String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
 
-            String folderPath = boardCode + "/" + userId + "/" + typeName + "/";
+            String folderPath = boardCode + "/" + userId + "/" + fileType + "/";
             String fileKey = folderPath + uniqueFileName;
 
             try {
@@ -68,14 +77,18 @@ public class S3utils {
                 convertedFile.delete(); // 임시 파일 삭제
 
                 String fileUrl = amazonS3.getUrl(bucket, fileKey).toString();
-                uploadedFileUrls.add(fileUrl);
+                // Map에 fileType과 fileUrl을 저장
+                Map<String, String> fileData = new HashMap<>();
+                fileData.put("fileType", fileType);
+                fileData.put("url", fileUrl);
+                uploadedFileUrls.add(fileData);
             } catch (IOException e) {
                 throw new GeneralException(ErrorStatus.S3_ERROR);
             }
         }
-
         return uploadedFileUrls;
     }
+
 
     private File convertMultiPartToFile(MultipartFile file) throws IOException {
         File convertedFile = new File(file.getOriginalFilename());
