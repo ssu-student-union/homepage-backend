@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ussum.homepage.application.user.service.OnBoardingService;
+import ussum.homepage.application.user.service.dto.request.OnBoardingEmailRequest;
 import ussum.homepage.application.user.service.dto.request.OnBoardingRequest;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
@@ -16,8 +17,15 @@ public class OnBoardingController {
 
     @PostMapping("/academy-information")
     public ResponseEntity<ApiResponse<?>> createUserOnBoarding(@UserId Long userId,
-                                                              @RequestBody OnBoardingRequest request){
+                                                               @RequestBody OnBoardingRequest request) {
         onBoardingService.saveUserOnBoarding(userId, request);
+        return ApiResponse.success(null);
+    }
+
+    @PostMapping("/mail")
+    public ResponseEntity<ApiResponse<?>> sendEmail(@UserId Long userId,
+                                                    @RequestBody OnBoardingEmailRequest onBoardingEmailRequest) {
+        onBoardingService.sendEmail(onBoardingEmailRequest);
         return ApiResponse.success(null);
     }
 

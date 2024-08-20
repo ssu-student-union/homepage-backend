@@ -1,5 +1,6 @@
 package ussum.homepage.infra.jpa.post;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -10,31 +11,37 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
-import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.exception.PostException;
-import ussum.homepage.domain.post.service.CategoryReader;
+import ussum.homepage.infra.jpa.group.entity.GroupCode;
+import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.infra.jpa.post.entity.*;
 import ussum.homepage.infra.jpa.post.repository.BoardJpaRepository;
-import ussum.homepage.infra.jpa.post.repository.CategoryJpaRepository;
 import ussum.homepage.infra.jpa.post.repository.PostJpaRepository;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static ussum.homepage.global.error.status.ErrorStatus.*;
 
+import static ussum.homepage.infra.jpa.group.entity.QGroupEntity.groupEntity;
+import static ussum.homepage.infra.jpa.member.entity.QMemberEntity.memberEntity;
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.increaseViewCount;
 import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
+import static ussum.homepage.infra.jpa.post.entity.QPostFileEntity.postFileEntity;
 import static ussum.homepage.infra.jpa.postlike.entity.QPostReactionEntity.postReactionEntity;
 import static ussum.homepage.infra.jpa.post.entity.QBoardEntity.boardEntity;
 
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.updateLastEditedAt;
+import static ussum.homepage.infra.jpa.user.entity.QUserEntity.userEntity;
 
 
 @Repository
@@ -42,11 +49,9 @@ import static ussum.homepage.infra.jpa.post.entity.PostEntity.updateLastEditedAt
 public class PostRepositoryImpl implements PostRepository {
     private final PostJpaRepository postJpaRepository;
     private final BoardJpaRepository boardJpaRepository;
-    private final CategoryJpaRepository categoryJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final PostMapper postMapper;
     private final JPAQueryFactory queryFactory;
-    private final CategoryMapper categoryMapper;
 
     @Override
     public Optional<Post> findById(Long postId) {
@@ -70,6 +75,99 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public Page<Post> findAllByGroupCodeAndMemberCodeAndSubCategory(String groupCode, String memberCode, String subCategory, Pageable pageable) {
+        BooleanBuilder whereClause = new BooleanBuilder();
+
+        if (subCategory != null && !subCategory.isEmpty()) {
+            whereClause.and(postFileEntity.subCategory.eq(subCategory));
+        }
+        if (memberCode != null && !memberCode.isEmpty()) {
+            whereClause.and(memberEntity.memberCode.eq(MemberCode.valueOf(memberCode)));
+        }
+        if (groupCode != null && !groupCode.isEmpty()) {
+            whereClause.and(groupEntity.groupCode.eq(GroupCode.valueOf(groupCode)));
+        }
+
+        if (whereClause.getValue() == null) {
+            throw new IllegalArgumentException("At least one of subCategory, memberCode, or groupCode must be provided");
+        }
+
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .leftJoin(postEntity.userEntity, userEntity)
+                .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
+                .leftJoin(memberEntity.groupEntity, groupEntity)
+                .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .leftJoin(postEntity.userEntity, userEntity)
+                .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
+                .leftJoin(memberEntity.groupEntity, groupEntity)
+                .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
+                .where(whereClause);
+
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+    }
+
+    @Override
+    public Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, String groupCode, String memberCode, Pageable pageable) {
+        BooleanBuilder whereClause = new BooleanBuilder();
+
+        if (memberCode != null && !memberCode.isEmpty()) {
+            whereClause.and(memberEntity.memberCode.eq(MemberCode.valueOf(memberCode)));
+        }
+        if (groupCode != null && !groupCode.isEmpty()) {
+            whereClause.and(groupEntity.groupCode.eq(GroupCode.valueOf(groupCode)));
+        }
+
+        if (whereClause.getValue() == null) {
+            throw new IllegalArgumentException("At least one of memberCode, or groupCode must be provided");
+        }
+
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .leftJoin(postEntity.userEntity, userEntity)
+                .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
+                .leftJoin(memberEntity.groupEntity, groupEntity)
+                .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .leftJoin(postEntity.userEntity, userEntity)
+                .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
+                .leftJoin(memberEntity.groupEntity, groupEntity)
+                .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
+                .where(whereClause);
+
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+    }
+
+    @Override
     public Page<Post> findAllWithBoard(Pageable pageable, String boardCode) {
         BoardEntity boardEntity = boardJpaRepository.findByBoardCode(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode))
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
@@ -90,11 +188,8 @@ public class PostRepositoryImpl implements PostRepository {
         BoardEntity boardEntity = boardJpaRepository.findById(post.getBoardId())
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
-        CategoryEntity categoryEntity = categoryJpaRepository.findById(post.getCategoryId())
-                .orElseThrow(() -> new GeneralException(CATEGORY_NOT_FOUND));
-
         return postMapper.toDomain(
-                postJpaRepository.save(postMapper.toEntity(post, userEntity, boardEntity, categoryEntity))
+                postJpaRepository.save(postMapper.toEntity(post, userEntity, boardEntity))
         );
     }
 
@@ -106,10 +201,7 @@ public class PostRepositoryImpl implements PostRepository {
         BoardEntity boardEntity = boardJpaRepository.findById(post.getBoardId())
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
-        CategoryEntity categoryEntity = categoryJpaRepository.findById(post.getCategoryId())
-                .orElseThrow(() -> new GeneralException(CATEGORY_NOT_FOUND));
-
-        postJpaRepository.delete(postMapper.toEntity(post, userEntity, boardEntity, categoryEntity));
+        postJpaRepository.delete(postMapper.toEntity(post, userEntity, boardEntity));
     }
 
     @Override
@@ -117,12 +209,12 @@ public class PostRepositoryImpl implements PostRepository {
         BoardEntity boardEntity = boardJpaRepository.findByBoardCode(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode))
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
-        CategoryCode enumCategoryCodeFromStringCategoryCode = CategoryCode.getEnumCategoryCodeFromStringCategoryCode(categoryCode);
+        Category enumCategoryCodeFromStringCategory = Category.getEnumCategoryCodeFromStringCategoryCode(categoryCode);
 
         List<PostEntity> content = queryFactory
                 .selectFrom(postEntity)
                 .where(postEntity.boardEntity.eq(boardEntity)
-                        .and(postEntity.categoryEntity.categoryCode.eq(enumCategoryCodeFromStringCategoryCode))
+                        .and(postEntity.category.eq(enumCategoryCodeFromStringCategory))
                         .and(postEntity.title.containsIgnoreCase(q)
                                 .or(postEntity.content.containsIgnoreCase(q))))
                 .orderBy(postEntity.id.desc())
@@ -134,7 +226,7 @@ public class PostRepositoryImpl implements PostRepository {
                 .select(postEntity.count())
                 .from(postEntity)
                 .where(postEntity.boardEntity.eq(boardEntity)
-                        .and(postEntity.categoryEntity.categoryCode.eq(enumCategoryCodeFromStringCategoryCode))
+                        .and(postEntity.category.eq(enumCategoryCodeFromStringCategory))
                         .and(postEntity.title.containsIgnoreCase(q)
                                 .or(postEntity.content.containsIgnoreCase(q)))
                 );
@@ -152,6 +244,8 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Page<SimplePostResponse> findPostDtoListByBoardCode(String boardCode, Pageable pageable) {
+        //7일 이내거만 확인
+        LocalDateTime sevenDaysAgo = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
 
         List<SimplePostResponse> contents = queryFactory
                 .select(Projections.constructor(SimplePostDto.class,
@@ -161,8 +255,10 @@ public class PostRepositoryImpl implements PostRepository {
                 .from(postEntity)
                 .leftJoin(postReactionEntity).on(postReactionEntity.postEntity.eq(postEntity))
                 .leftJoin(postEntity.boardEntity, boardEntity)
-                .where(eqBoardCode(boardCode))
+                .where(eqBoardCode(boardCode)
+                        .and(postEntity.createdAt.after(sevenDaysAgo)))
                 .groupBy(postEntity)
+                .orderBy(postEntity.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch()
@@ -173,12 +269,13 @@ public class PostRepositoryImpl implements PostRepository {
                 .toList();
 
         JPAQuery<Long> countQuery = queryFactory
-                .select(boardEntity.boardCode.countDistinct())
+                .select(postEntity.countDistinct())
                 .from(postEntity)
                 .leftJoin(postReactionEntity).on(postReactionEntity.postEntity.eq(postEntity))
                 .leftJoin(postEntity.boardEntity, boardEntity)
-                .where(eqBoardCode(boardCode))
-                .groupBy(postEntity);
+                .where(eqBoardCode(boardCode)
+                        .and(postEntity.createdAt.after(sevenDaysAgo)));
+
         return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchCount);
     }
 
@@ -191,7 +288,7 @@ public class PostRepositoryImpl implements PostRepository {
         return postJpaRepository.findById(postId)
                 .map(postEntity -> {
                     postEntity.updateStatusAndCategoryCode(
-                            OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus(onGoingStatus), categoryMapper.toEntity(category)
+                            OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus(onGoingStatus)
                     );
                     return postMapper.toDomain(postJpaRepository.save(postEntity));
                 })

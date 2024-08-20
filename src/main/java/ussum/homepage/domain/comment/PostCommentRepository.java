@@ -11,6 +11,7 @@ public interface PostCommentRepository {
     List<PostComment> findAllByPostId(Long postId);
     List<PostComment> findAllByPostIdOrderByLikesDesc(Long postId);
     List<PostComment> findAllByPostIdOrderByCreatedAtDesc(Long postId);
+    List<PostComment> findAllByPostIdAndCommentType(Long postId, String commentType);
     Optional<PostComment> findByPostIdAndUserId(Long postId, Long userId);
     Optional<PostComment> findById(Long id);
     PostComment save(PostComment postComment);

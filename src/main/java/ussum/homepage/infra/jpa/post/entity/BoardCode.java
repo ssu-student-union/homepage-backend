@@ -12,11 +12,12 @@ import static ussum.homepage.global.error.status.ErrorStatus.INVALID_BOARDCODE;
 @RequiredArgsConstructor
 @Getter
 public enum BoardCode {
-    AUDIT("AUDIT"),
-    NOTICE("NOTICE"),
-    LOST("LOST"),
-    PARTNER("PARTNER"),
-    PETITION("PETITION");
+    AUDIT("감사기구게시판"),
+    NOTICE("공지사항게시판"),
+    LOST("분실물게시판"),
+    PARTNER("제휴게시판"),
+    PETITION("청원게시판"),
+    DATA("자료집게시판");
 
     private final String stringBoardCode;
     public static BoardCode getEnumBoardCodeFromStringBoardCode(String stringBoardCode) {

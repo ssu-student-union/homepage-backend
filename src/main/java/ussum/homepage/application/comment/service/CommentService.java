@@ -15,12 +15,7 @@ import ussum.homepage.domain.comment.service.PostCommentAppender;
 import ussum.homepage.domain.comment.service.PostCommentFormatter;
 import ussum.homepage.domain.comment.service.PostCommentModifier;
 import ussum.homepage.domain.comment.service.PostCommentReader;
-import ussum.homepage.domain.group.Group;
-import ussum.homepage.domain.group.service.GroupReader;
-import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.service.MemberManager;
-import ussum.homepage.domain.member.service.MemberReader;
-import ussum.homepage.infra.jpa.comment.entity.CommentType;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +25,6 @@ public class CommentService {
     private final PostCommentFormatter postCommentFormatter;
     private final PostCommentAppender postCommentAppender;
     private final PostCommentModifier postCommentModifier;
-    private final MemberReader memberReader;
     private final MemberManager memberManager;
 
     public PostCommentListResponse getCommentList(Long postId, int page, int take, String type){

@@ -24,7 +24,6 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
     @Override
     public Optional<Board> findByBoardCode(String boardCode){
-        System.out.println("boardCode = " + boardCode);
         return boardJpaRepository.findByBoardCode(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode)).map(boardMapper::toDomain);
     }
     @Override

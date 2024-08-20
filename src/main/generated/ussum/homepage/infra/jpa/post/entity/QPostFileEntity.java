@@ -28,6 +28,8 @@ public class QPostFileEntity extends EntityPathBase<PostFileEntity> {
 
     public final StringPath size = createString("size");
 
+    public final StringPath subCategory = createString("subCategory");
+
     public final StringPath typeName = createString("typeName");
 
     public final StringPath url = createString("url");

@@ -30,16 +30,20 @@ public class PostMapper {
                 postEntity.getCreatedAt(),
                 postEntity.getUpdatedAt(),
                 postEntity.getLastEditedAt(),
+                postEntity.getCategory(),
                 postEntity.getUserEntity().getId(),
-                postEntity.getBoardEntity().getId(),
-                postEntity.getCategoryEntity().getId()
+                postEntity.getBoardEntity().getId()
         );
     }
 
-    public PostEntity toEntity(Post post, UserEntity user, BoardEntity board, CategoryEntity category) {
+    public PostEntity toEntity(Post post, UserEntity user, BoardEntity board) {
         LocalDateTime lastEditedAt = Optional.ofNullable(post.getLastEditedAt())
                 .filter(date -> !"null".equals(date))
                 .map(LocalDateTime::parse)
+                .orElse(null);
+
+        OngoingStatus ongoingStatus = Optional.ofNullable(post.getOnGoingStatus())
+                .map(OngoingStatus::getEnumOngoingStatusFromStringOngoingStatus)
                 .orElse(null);
 
         return PostEntity.of(
@@ -49,11 +53,11 @@ public class PostMapper {
                 post.getViewCount(),
                 post.getThumbnailImage(),
                 Status.getEnumStatusFromStringStatus(post.getStatus()),
-                OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus(post.getOnGoingStatus()),
+                ongoingStatus,
                 lastEditedAt,
+                Category.getEnumCategoryCodeFromStringCategoryCode(post.getCategory()),
                 user,
-                board,
-                category
+                board
         );
     }
 

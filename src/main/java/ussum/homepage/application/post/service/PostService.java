@@ -10,7 +10,6 @@ import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.response.*;
 import ussum.homepage.domain.post.Board;
-import ussum.homepage.domain.post.Category;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.service.*;
 import ussum.homepage.domain.user.User;
@@ -18,6 +17,7 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.infra.jpa.post.PostMapper;
 import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
+import ussum.homepage.infra.jpa.post.entity.Category;
 
 import java.util.List;
 
@@ -27,20 +27,18 @@ import java.util.List;
 @Transactional
 public class PostService {
     private final BoardReader boardReader;
-    private final CategoryReader categoryReader;
     private final UserReader userReader;
     private final PostReader postReader;
-    private final PostFormatter postFormatter;
     private final PostAppender postAppender;
     private final PostModifier postModifier;
     private final PostMapper postMapper;
 
 
-    public PostListResponse getPostList(Pageable pageable, String boardCode) {
-//        Board board = boardReader.getBoardWithBoardCode(boardCode);
-        Page<Post> postList = postReader.getPostList(pageable, boardCode);
-        return PostListResponse.of(postList.getContent(), (int) postList.getTotalElements(), postList.getNumberOfElements(), postFormatter::format);
-    }
+//    public PostListResponse getPostList(Pageable pageable, String boardCode) {
+////        Board board = boardReader.getBoardWithBoardCode(boardCode);
+//        Page<Post> postList = postReader.getPostList(pageable, boardCode);
+//        return PostListResponse.of(postList.getContent(), (int) postList.getTotalElements(), postList.getNumberOfElements(), postFormatter::format);
+//    }
 
     public TopLikedPostListResponse getTopLikedPostList(int page, int take, String boardCode){
         Pageable pageable = PageInfo.of(page,take);
@@ -50,35 +48,32 @@ public class PostService {
         return TopLikedPostListResponse.of(simplePostDtoList.getContent(), pageInfo);
     }
 
-    public PostResponse getPost(String boardCode, Long postId) {
-        return postFormatter.format(
-                postReader.getPostWithBoardCodeAndPostId(boardCode, postId).getId()
-        );
-    }
+//    public PostResponse getPost(String boardCode, Long postId) {
+//        return postFormatter.format(
+//                postReader.getPostWithBoardCodeAndPostId(boardCode, postId).getId()
+//        );
+//    }
 
     public void createPost(Long userId, String boardCode, PostCreateRequest postCreateRequest) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
-        Category category = categoryReader.getCategoryWithCode(postCreateRequest.categoryCode());
-        //user도 찾아 와야 하지 않을까
-        User user = userReader.getUserWithId(userId);
 
-        postAppender.createPost(postCreateRequest.toDomain(board, user, category, null));
+        postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), null));
     }
 
-    public PostResponse editPost(String boardCode,Long postId, PostUpdateRequest postUpdateRequest) {
-        return postFormatter.format(
-                postModifier.updatePost(boardCode, postId, postUpdateRequest).getId()
-        );
-    }
+//    public PostResponse editPost(String boardCode,Long postId, PostUpdateRequest postUpdateRequest) {
+//        return postFormatter.format(
+//                postModifier.updatePost(boardCode, postId, postUpdateRequest).getId()
+//        );
+//    }
 
     public void deletePost(String boardCode,Long postId){
         postModifier.deletePost(boardCode, postId);
     }
 
-    public PostListResponse searchPost(Pageable pageable, String boardCode, String q, String categoryCode) {
-        Page<Post> searchPost = postReader.getPostListBySearch(pageable, boardCode, q, categoryCode);
-        return PostListResponse.of(searchPost.getContent(), (int) searchPost.getTotalElements(), searchPost.getNumberOfElements(), postFormatter::format);
-    }
+//    public PostListResponse searchPost(Pageable pageable, String boardCode, String q, String categoryCode) {
+//        Page<Post> searchPost = postReader.getPostListBySearch(pageable, boardCode, q, categoryCode);
+//        return PostListResponse.of(searchPost.getContent(), (int) searchPost.getTotalElements(), searchPost.getNumberOfElements(), postFormatter::format);
+//    }
 
     private List<SimplePostResponse> createSimplePostResponse(List<SimplePostResponse> simplePostDtoList){
         return simplePostDtoList.stream().toList();

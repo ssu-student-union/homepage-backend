@@ -3,6 +3,7 @@ package ussum.homepage.global.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -12,8 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import ussum.homepage.global.config.CorsConfig;
 import ussum.homepage.global.config.auth.ExceptionHandlerFilter;
 import ussum.homepage.global.jwt.*;
 
@@ -26,15 +25,20 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    //    private static final String[] whiteList = {"/**"};
-    private static final String[] whiteList = {
-            "/auth/**",
-            "/swagger-ui/**",
-            "/swagger-resources/**",
-            "/v3/api-docs/**",
-            "/auth/login"
+    private static final String[] getWhiteList = {
+            "/board/{boardCode}/posts",
+            "/board/{boardCode}/posts/{postId}",
+            "/board/posts/{postId}/comments",
+            "/board/{boardCode}/{groupCode}/{memberCode}/posts"
     };
 
+    private static final String[] whiteList = {
+            "/auth/**",
+//            "/onboarding/**",
+            "/swagger-ui/**",
+            "/swagger-resources/**",
+            "/v3/api-docs/**"
+    };
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -43,7 +47,9 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().requestMatchers(whiteList);
+        return web -> web.ignoring()
+                .requestMatchers(HttpMethod.GET, getWhiteList)
+                .requestMatchers(whiteList);
     }
 
     @Bean

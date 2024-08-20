@@ -26,7 +26,7 @@ public class QPostEntity extends EntityPathBase<PostEntity> {
 
     public final QBoardEntity boardEntity;
 
-    public final QCategoryEntity categoryEntity;
+    public final EnumPath<Category> category = createEnum("category", Category.class);
 
     public final StringPath content = createString("content");
 
@@ -71,7 +71,6 @@ public class QPostEntity extends EntityPathBase<PostEntity> {
     public QPostEntity(Class<? extends PostEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.boardEntity = inits.isInitialized("boardEntity") ? new QBoardEntity(forProperty("boardEntity")) : null;
-        this.categoryEntity = inits.isInitialized("categoryEntity") ? new QCategoryEntity(forProperty("categoryEntity"), inits.get("categoryEntity")) : null;
         this.userEntity = inits.isInitialized("userEntity") ? new ussum.homepage.infra.jpa.user.entity.QUserEntity(forProperty("userEntity")) : null;
     }
 
