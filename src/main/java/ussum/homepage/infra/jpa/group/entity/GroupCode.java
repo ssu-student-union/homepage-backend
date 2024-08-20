@@ -2,10 +2,13 @@ package ussum.homepage.infra.jpa.group.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 import ussum.homepage.global.error.exception.InvalidValueException;
 
 import java.util.Arrays;
+import java.util.Optional;
 
+import static ussum.homepage.global.error.status.ErrorStatus.INVALID_GROUP_CODE;
 import static ussum.homepage.global.error.status.ErrorStatus.INVALID_MAJORCODE;
 
 @RequiredArgsConstructor
@@ -80,6 +83,19 @@ public enum GroupCode {
         return Arrays.stream(values())
                 .filter(groupCode -> groupCode.stringGroupCode.equals(stringGroupCode))
                 .findFirst()
-                .orElseThrow(() -> new InvalidValueException(INVALID_MAJORCODE));
+                .orElseThrow(() -> new InvalidValueException(INVALID_GROUP_CODE));
+    }
+
+    public static Optional<GroupCode> fromString(String stringGroupCode) {
+        if (!StringUtils.hasText(stringGroupCode)) {
+            return Optional.empty();
+        }
+        return Arrays.stream(values())
+                .filter(groupCode -> groupCode.stringGroupCode.equals(stringGroupCode))
+                .findFirst();
+    }
+
+    public static GroupCode fromStringOrNull(String stringGroupCode) {
+        return fromString(stringGroupCode).orElse(null);
     }
 }
