@@ -3,10 +3,13 @@ package ussum.homepage.application.user.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ussum.homepage.application.user.service.dto.request.CouncilLoginRequest;
 import ussum.homepage.application.user.service.dto.response.KakaoUserInfoResponseDto;
 import ussum.homepage.application.user.service.dto.response.UserOAuthResponse;
 import ussum.homepage.domain.user.User;
+import ussum.homepage.domain.user.exception.UserNotFoundException;
 import ussum.homepage.domain.user.service.UserModifier;
 import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.external.oauth.KakaoApiProvider;
@@ -52,6 +55,13 @@ public class OAuthService {
             return UserOAuthResponse.of(savedUser, tokenInfo, isFirstLogin);
         }
     }
+
+//    @Transactional
+//    public String councilLogin(CouncilLoginRequest request){
+//
+//    }
+
+
     private void updateRefreshToken(String refreshToken, User user) {
         user.updateRefreshToken(refreshToken);
         userModifier.save(user);
