@@ -10,5 +10,5 @@ public interface UserRepository {
     Optional<User> findByStudentId(String studentId);
     User save(User user);
     Optional<User> findBykakaoId(String kakaoId);
-    void updateOnBoardingUser(OnBoardingRequest request);
+    void updateOnBoardingUser(Long userId, OnBoardingRequest request);
 }

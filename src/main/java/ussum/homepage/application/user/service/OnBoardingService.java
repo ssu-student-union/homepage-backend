@@ -31,7 +31,7 @@ public class OnBoardingService {
 //        studentCsvReader.getStudentWithStudentId(Long.valueOf(studentId), request)
 //                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
 
-        userModifier.updateOnBoardingUser(request);
+        userModifier.updateOnBoardingUser(userId, request);
         Member member = Member.createMember(false, request.getMemberCode(), request.getMajorCode(), userId);
         memberAppender.saveMember(member);
     }

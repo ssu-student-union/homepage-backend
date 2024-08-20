@@ -8,10 +8,8 @@ import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.UserRepository;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
-import static ussum.homepage.infra.jpa.post.entity.QPostFileEntity.postFileEntity;
 import static ussum.homepage.infra.jpa.user.entity.QUserEntity.userEntity;
 
 @Repository
@@ -39,11 +37,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void updateOnBoardingUser(OnBoardingRequest request) {
+    public void updateOnBoardingUser(Long userId, OnBoardingRequest request) {
         queryFactory
                 .update(userEntity)
                 .set(userEntity.studentId, request.getStudentId())
                 .set(userEntity.name, request.getName())
+                .where(userEntity.id.eq(userId))
                 .execute();
     }
 }
