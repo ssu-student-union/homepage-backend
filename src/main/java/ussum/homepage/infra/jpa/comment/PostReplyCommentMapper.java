@@ -7,6 +7,7 @@ import ussum.homepage.infra.jpa.comment.entity.PostReplyCommentEntity;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 public class PostReplyCommentMapper {
@@ -22,10 +23,11 @@ public class PostReplyCommentMapper {
     }
 
     public PostReplyCommentEntity toEntity(PostReplyComment postReplyComment) {
-        LocalDateTime lastEditedAt = null;
-        if (postReplyComment.getLastEditedAt() != null) {
-            lastEditedAt = LocalDateTime.parse(postReplyComment.getLastEditedAt());
-        }
+        LocalDateTime lastEditedAt = Optional.ofNullable(postReplyComment.getLastEditedAt())
+                .filter(date -> !"null".equals(date))
+                .map(LocalDateTime::parse)
+                .orElse(null);
+
         return PostReplyCommentEntity.of(
                 postReplyComment.getId(),
                 postReplyComment.getContent(),

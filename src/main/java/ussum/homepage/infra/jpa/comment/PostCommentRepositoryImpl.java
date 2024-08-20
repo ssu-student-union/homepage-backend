@@ -15,6 +15,7 @@ import ussum.homepage.infra.jpa.comment.repository.PostCommentJpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+import static ussum.homepage.infra.jpa.comment.entity.PostCommentEntity.updateLastEditedAt;
 import static ussum.homepage.infra.jpa.comment.entity.QPostCommentEntity.postCommentEntity;
 
 @Repository
@@ -85,7 +86,9 @@ public class PostCommentRepositoryImpl implements PostCommentRepository {
 
     @Override
     public PostComment update(PostComment postComment){
-        return postCommentMapper.toDomain(postCommentJpaRepository.save(postCommentMapper.toEntity(postComment)));
+        PostCommentEntity postCommentEntity = postCommentMapper.toEntity(postComment);
+        updateLastEditedAt(postCommentEntity);
+        return postCommentMapper.toDomain(postCommentJpaRepository.save(postCommentEntity));
     }
 
     @Override

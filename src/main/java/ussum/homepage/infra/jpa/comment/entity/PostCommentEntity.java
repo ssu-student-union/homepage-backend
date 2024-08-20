@@ -31,7 +31,6 @@ public class PostCommentEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private CommentType commentType;
 
-    @LastModifiedDate
     private LocalDateTime lastEditedAt;
 
     public PostCommentEntity(Long id, String content, PostEntity postEntity, UserEntity userEntity, CommentType commentType, LocalDateTime lastEditedAt) {
@@ -51,4 +50,7 @@ public class PostCommentEntity extends BaseEntity {
         return new PostCommentEntity(id, null, null, null, null, null);
     }
 
+    public static void updateLastEditedAt(PostCommentEntity postComment) {
+        postComment.lastEditedAt = LocalDateTime.now();
+    }
 }
