@@ -20,16 +20,16 @@ import ussum.homepage.global.config.auth.UserId;
 public class CommentController {
     private final CommentService commentService;
 
-    @GetMapping("/posts/{postId}/comments")
-    public ResponseEntity<ApiResponse<?>> getPostCommentList(/*@PathVariable(name = "boardCode") String boardCode,*/
-                                                             @PathVariable(name = "postId") Long postId,
-                                                             @RequestParam(name = "page") int page,
-                                                             @RequestParam(name = "take") int take,
-                                                             @RequestParam(required = false, name = "type") String type) {
-
-        PostCommentListResponse comments = commentService.getCommentList(/*boardCode,*/ postId, page, take, type);
-        return ApiResponse.success(comments);
-    }
+//    @GetMapping("/posts/{postId}/comments")
+//    public ResponseEntity<ApiResponse<?>> getPostCommentList(/*@PathVariable(name = "boardCode") String boardCode,*/
+//                                                             @PathVariable(name = "postId") Long postId,
+//                                                             @RequestParam(name = "page") int page,
+//                                                             @RequestParam(name = "take") int take,
+//                                                             @RequestParam(required = false, name = "type") String type) {
+//
+//        PostCommentListResponse comments = commentService.getCommentList(/*boardCode,*/ postId, page, take, type);
+//        return ApiResponse.success(comments);
+//    }
 
     @Operation(summary = "게시물 댓글 생성 api", description = """
             게시물 댓글을 생성하기 위한 api입니다.
