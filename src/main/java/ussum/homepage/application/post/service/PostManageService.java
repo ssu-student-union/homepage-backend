@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.comment.service.dto.response.PostOfficialCommentResponse;
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
@@ -24,7 +25,6 @@ import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
 
 import ussum.homepage.domain.group.service.GroupReader;
-import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
@@ -39,6 +39,7 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
+import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
@@ -76,7 +77,7 @@ public class PostManageService {
             "제휴게시판", (post, ignored1, ignored2) -> PartnerPostResponse.of(post),
             "감사기구게시판", (post, ignored1, ignored2) -> AuditPostResponseDto.of(post),
             "청원게시판", (post, likeCount, ignored2) -> PetitionPostResponse.of(post, likeCount),
-            "자료집", (post, likeCount, ignored2) -> DataPostResponse.of(post)
+            "자료집게시판", (post, likeCount, ignored2) -> DataPostResponse.of(post)
 
     );
 
@@ -104,7 +105,10 @@ public class PostManageService {
         BoardImpl boardImpl = BoardFactory.createBoard(boardCode, board.getId());
         Pageable pageable = PageInfo.of(page, take);
 
-        Page<Post> postList = boardImpl.getPostList(postReader, groupCode, memberCode, pageable);
+        GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
+        MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
+
+        Page<Post> postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 
@@ -140,9 +144,13 @@ public class PostManageService {
     }
     public PostListRes<?> getDataList(int page, int take, String majorCategory, String middleCategory, String subCategory){
         Pageable pageable = PageInfo.of(page, take);
-        Page<Post> postList = postReader.getPostListByGroupCodeAndMemberCodeAndSubCategory(majorCategory, middleCategory, subCategory, pageable);
+
+        GroupCode groupCodeEnum = StringUtils.hasText(majorCategory) ? GroupCode.getEnumGroupCodeFromStringGroupCode(majorCategory) : null;
+        MemberCode memberCodeEnum = StringUtils.hasText(middleCategory) ? MemberCode.getEnumMemberCodeFromStringMemberCode(middleCategory) : null;
+
+        Page<Post> postList = postReader.getPostListByGroupCodeAndMemberCodeAndSubCategory(groupCodeEnum, memberCodeEnum, subCategory, pageable);
         PageInfo pageInfo = PageInfo.of(postList);
-        TriFunction<Post, Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get("자료집");
+        TriFunction<Post, Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get("자료집게시판");
         List<? extends PostListResDto> responseList = postList.getContent().stream().map(post -> responseFunction.apply(post, null, null)).toList();
         return PostListRes.of(responseList, pageInfo);
     }
@@ -188,14 +196,9 @@ public class PostManageService {
     @Transactional
     public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
-        Member member = memberReader.getMemberWithUserId(userId);
+        String onGoingStatus = Objects.equals(boardCode, "청원게시판") ? postCreateRequest.categoryCode() : postCreateRequest.isNotice() ? Category.EMERGENCY.getStringCategoryCode() : null;
 
-        String noticeCategory = MemberCode.getEnumMemberCodeFromStringMemberCode(member.getMemberCode()).getStringMemberCode();
-
-        String onGoingStatus = Objects.equals(boardCode, "청원게시판") ? postCreateRequest.categoryCode() : null;
-        String category = Objects.equals(boardCode, "공지사항게시판") ? noticeCategory : postCreateRequest.categoryCode();
-
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(category), onGoingStatus));
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
         postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());
         return PostCreateResponse.of(post.getId(), boardCode);
     }

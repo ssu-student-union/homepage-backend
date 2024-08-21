@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 import ussum.homepage.global.error.exception.InvalidValueException;
+import ussum.homepage.infra.jpa.group.entity.GroupCode;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -129,4 +130,16 @@ public enum MemberCode {
                 .orElseThrow(() -> new InvalidValueException(INVALID_MEMBERCODE));
     }
 
+    public static Optional<MemberCode> fromString(String stringMemberCode) {
+        if (!StringUtils.hasText(stringMemberCode)) {
+            return Optional.empty();
+        }
+        return Arrays.stream(values())
+                .filter(memberCode -> memberCode.stringMemberCode.equals(stringMemberCode))
+                .findFirst();
+    }
+
+    public static MemberCode fromStringOrNull(String stringMemberCode) {
+        return fromString(stringMemberCode).orElse(null);
+    }
 }

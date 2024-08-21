@@ -11,6 +11,9 @@ import static ussum.homepage.global.error.status.ErrorStatus.INVALID_CATEGORY_CO
 @RequiredArgsConstructor
 @Getter
 public enum Category {
+    //공지사항 카테고리
+    EMERGENCY("긴급공지"),
+
     //분실물 카테고리(분실문 현황, 분실 신고)
     LOST_STATUS("분실문현황"),
     LOST_REPORT("분실신고"),

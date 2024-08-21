@@ -1,5 +1,6 @@
 package ussum.homepage.application.post.service.dto.request;
 
+import lombok.Builder;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.user.User;
@@ -12,8 +13,17 @@ public record PostCreateRequest(
         String content,
         String categoryCode,
         String thumbNailImage,
+        boolean isNotice,
         List<Long> postFileList
 ) {
+    @Builder
+    public PostCreateRequest {
+    }
+
+    public PostCreateRequest(String title, String content, String categoryCode, String thumbNailImage, List<Long> postFileList) {
+        this(title, content, categoryCode, thumbNailImage, false, postFileList);
+    }
+
     public Post toDomain(Board board, Long userId, Category category, String OnGoingStatus) {
         return Post.of(
                 null,
