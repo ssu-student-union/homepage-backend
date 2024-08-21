@@ -75,22 +75,22 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Page<Post> findAllByGroupCodeAndMemberCodeAndSubCategory(String groupCode, String memberCode, String subCategory, Pageable pageable) {
-        BooleanBuilder whereClause = new BooleanBuilder();
+    public Page<Post> findAllByGroupCodeAndMemberCodeAndSubCategory(GroupCode groupCode, MemberCode memberCode, String subCategory, Pageable pageable) {
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(6L));
 
         if (subCategory != null && !subCategory.isEmpty()) {
             whereClause.and(postFileEntity.subCategory.eq(subCategory));
         }
-        if (memberCode != null && !memberCode.isEmpty()) {
-            whereClause.and(memberEntity.memberCode.eq(MemberCode.valueOf(memberCode)));
+        if (memberCode != null) {
+            whereClause.and(memberEntity.memberCode.eq(memberCode));
         }
-        if (groupCode != null && !groupCode.isEmpty()) {
-            whereClause.and(groupEntity.groupCode.eq(GroupCode.valueOf(groupCode)));
+        if (groupCode != null) {
+            whereClause.and(groupEntity.groupCode.eq(groupCode));
         }
 
-        if (whereClause.getValue() == null) {
-            throw new IllegalArgumentException("At least one of subCategory, memberCode, or groupCode must be provided");
-        }
+//        if (whereClause.getValue() == null) {
+//            throw new IllegalArgumentException("At least one of subCategory, memberCode, or groupCode must be provided");
+//        }
 
         JPAQuery<PostEntity> query = queryFactory
                 .selectFrom(postEntity)
@@ -123,19 +123,19 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, String groupCode, String memberCode, Pageable pageable) {
-        BooleanBuilder whereClause = new BooleanBuilder();
+    public Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, GroupCode groupCode, MemberCode memberCode, Pageable pageable) {
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
 
-        if (memberCode != null && !memberCode.isEmpty()) {
-            whereClause.and(memberEntity.memberCode.eq(MemberCode.valueOf(memberCode)));
+        if (memberCode != null) {
+            whereClause.and(memberEntity.memberCode.eq(memberCode));
         }
-        if (groupCode != null && !groupCode.isEmpty()) {
-            whereClause.and(groupEntity.groupCode.eq(GroupCode.valueOf(groupCode)));
+        if (groupCode != null) {
+            whereClause.and(groupEntity.groupCode.eq(groupCode));
         }
 
-        if (whereClause.getValue() == null) {
-            throw new IllegalArgumentException("At least one of memberCode, or groupCode must be provided");
-        }
+//        if (whereClause.getValue() == null) {
+//            throw new IllegalArgumentException("At least one of memberCode, or groupCode must be provided");
+//        }
 
         JPAQuery<PostEntity> query = queryFactory
                 .selectFrom(postEntity)

@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import ussum.homepage.infra.jpa.post.entity.Category;
+import ussum.homepage.infra.utils.DateUtils;
 
 
 import java.time.LocalDateTime;
@@ -40,7 +41,7 @@ public class Post {
                           Category category,
                           Long userId,
                           Long boardId) {
-        return new Post(id, title, content, viewCount, thumbnailImage, status, onGoingStatus, String.valueOf(createdAt),
+        return new Post(id, title, content, viewCount, thumbnailImage, status, onGoingStatus,  DateUtils.formatToCustomString(createdAt),
                 String.valueOf(updatedAt), String.valueOf(lastEditedAt), category.getStringCategoryCode(),
                 userId, boardId);
     }
