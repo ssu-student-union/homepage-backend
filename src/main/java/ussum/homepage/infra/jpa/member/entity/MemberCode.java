@@ -15,7 +15,7 @@ import static ussum.homepage.global.error.status.ErrorStatus.INVALID_MEMBERCODE;
 @Getter
 public enum MemberCode {
     // 총학생회
-    STUDENT_COUNCIL("총학생회"),
+    STUDENT_UNION("총학생회"),
 
     // 중앙운영위원회
     CENTRAL_OPERATION_COMMITTEE("중앙운영위원회"),

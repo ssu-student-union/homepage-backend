@@ -9,6 +9,7 @@ import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.domain.post.exception.PostException;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.infra.jpa.post.entity.Category;
+import ussum.homepage.infra.utils.DateUtils;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -50,7 +51,8 @@ public class PostStatusProcessor {
      * '진행중' 청원일 때 30일이 지난 시점에 좋아요 100개를 달성하면 '접수된' 청원으로 변경
      */
     private String handleInProgressStatus(Post post, Integer likeCountOfPost) {
-        LocalDateTime createdAt = LocalDateTime.parse(post.getCreatedAt());
+//        LocalDateTime createdAt = LocalDateTime.parse(post.getCreatedAt());
+        LocalDateTime createdAt = DateUtils.parseHourMinSecFromCustomString(post.getCreatedAt());
         // 30일이 경과한 경우
         if (LocalDateTime.now().isAfter(createdAt.plusDays(30))) {
             // 30일 동안 좋아요 100개를 달성하지 못한 경우에만 종료됨 상태로 변경

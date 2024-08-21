@@ -41,8 +41,8 @@ public class Post {
                           Category category,
                           Long userId,
                           Long boardId) {
-        return new Post(id, title, content, viewCount, thumbnailImage, status, onGoingStatus,  DateUtils.formatToCustomString(createdAt),
-                String.valueOf(updatedAt), String.valueOf(lastEditedAt), category.getStringCategoryCode(),
+        return new Post(id, title, content, viewCount, thumbnailImage, status, onGoingStatus,  DateUtils.formatHourMinSecToCustomString(createdAt),
+                DateUtils.formatHourMinSecToCustomString(updatedAt), DateUtils.formatHourMinSecToCustomString(lastEditedAt), category.getStringCategoryCode(),
                 userId, boardId);
     }
 }
