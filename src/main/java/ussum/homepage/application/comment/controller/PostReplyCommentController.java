@@ -1,6 +1,7 @@
 package ussum.homepage.application.comment.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class PostReplyCommentController {
             PostReplyCommentCreateRequest 요청 json에 content 필드를 이용하여 댓글 내용을 작성합니다.
             """)
     @PostMapping("/posts/comments/{commentId}/reply-comments")
-    public ResponseEntity<ApiResponse<?>> createPostReplyComment(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> createPostReplyComment(@Parameter(hidden = true) @UserId Long userId,
                                                                  @PathVariable(name = "commentId") Long commentId,
                                                                  @RequestBody PostReplyCommentCreateRequest postReplyCommentCreateRequest) {
         postReplyCommentService.createReplyComment(userId, commentId, postReplyCommentCreateRequest);
@@ -38,7 +39,7 @@ public class PostReplyCommentController {
             PostReplyCommentUpdateRequest 요청 json에 content 필드를 이용하여 댓글 내용을 작성합니다.
             """)
     @PatchMapping("/posts/comments/{commentId}/reply-comments/{reply-commentId}")
-    public ResponseEntity<ApiResponse<?>> editPostReplyComment(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> editPostReplyComment(@Parameter(hidden = true) @UserId Long userId,
                                                                @PathVariable(name = "commentId") Long commentId,
                                                                @PathVariable(name = "reply-commentId") Long replyCommentId,
                                                                @RequestBody PostReplyCommentUpdateRequest postReplyCommentUpdateRequest) {
@@ -51,7 +52,7 @@ public class PostReplyCommentController {
             요청 url 상에 reply-commentId를 받습니다. 즉, 대댓글 id를 받습니다.
             """)
     @DeleteMapping("/posts/comments/reply-comments/{reply-commentId}")
-    public ResponseEntity<ApiResponse<?>> deletePostReplyComment(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> deletePostReplyComment(@Parameter(hidden = true) @UserId Long userId,
                                                                  @PathVariable(name = "reply-commentId") Long replyCommentId) {
         postReplyCommentService.deleteReplyComment(userId, replyCommentId);
         return ApiResponse.success(null);

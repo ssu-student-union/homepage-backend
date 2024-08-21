@@ -1,5 +1,6 @@
 package ussum.homepage.application.user.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +20,14 @@ public class OnBoardingController {
     private final OnBoardingService onBoardingService;
 
     @PostMapping("/academy-information")
-    public ResponseEntity<ApiResponse<?>> createUserOnBoarding(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> createUserOnBoarding(@Parameter(hidden = true) @UserId Long userId,
                                                                @RequestBody OnBoardingRequest request) {
         onBoardingService.saveUserOnBoarding(userId, request);
         return ApiResponse.success(null);
     }
 
     @PostMapping("/mail")
-    public ResponseEntity<ApiResponse<?>> sendEmail(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> sendEmail(@Parameter(hidden = true) @UserId Long userId,
                                                     @RequestBody OnBoardingEmailRequest onBoardingEmailRequest) {
         onBoardingService.sendEmail(onBoardingEmailRequest);
         return ApiResponse.success(null);

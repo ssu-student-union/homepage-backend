@@ -1,6 +1,7 @@
 package ussum.homepage.application.post.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,20 +66,21 @@ public class PostManageController {
     }
 
     @PostMapping("/{boardCode}/posts")
-    public ResponseEntity<ApiResponse<?>> createBoardPost(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> createBoardPost(@Parameter(hidden = true) @UserId Long userId,
                                                           @PathVariable(name = "boardCode") String boardCode,
                                                           @RequestBody PostCreateRequest postCreateRequest){
         return ApiResponse.success(postManageService.createBoardPost(userId, boardCode, postCreateRequest));
     }
+
     @PostMapping("data/{subCategory}/post")
-    public ResponseEntity<ApiResponse<?>> createDataPost(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> createDataPost(@Parameter(hidden = true) @UserId Long userId,
                                                          @PathVariable(name = "subCategory") String subCategory,
-                                                          @RequestBody PostCreateRequest postCreateRequest){
+                                                         @RequestBody PostCreateRequest postCreateRequest) {
         return ApiResponse.success(postManageService.createDataPost(userId, subCategory, postCreateRequest));
     }
 
     @PostMapping("/{boardCode}/files")
-    public ResponseEntity<ApiResponse<?>> createBoardPostFile(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> createBoardPostFile(@Parameter(hidden = true) @UserId Long userId,
                                                               @PathVariable(name = "boardCode") String boardCode,
                                                               @RequestPart(value = "files") MultipartFile[] files,
                                                               @RequestParam(value = "type") String typeName) {
@@ -86,7 +88,7 @@ public class PostManageController {
     }
 
     @PatchMapping("/{boardCode}/posts/{postId}")
-    public ResponseEntity<ApiResponse<?>> editBoardPost(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> editBoardPost(@Parameter(hidden = true) @UserId Long userId,
                                                         @PathVariable(name = "boardCode") String boardCode,
                                                         @PathVariable(name = "postId") Long postId,
                                                         @RequestBody PostUpdateRequest postUpdateRequest) {
