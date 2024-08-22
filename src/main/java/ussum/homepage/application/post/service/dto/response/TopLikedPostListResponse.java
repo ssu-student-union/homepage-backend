@@ -7,12 +7,12 @@ import ussum.homepage.global.common.PageInfo;
 import java.util.List;
 @Builder(access = AccessLevel.PRIVATE)
 public record TopLikedPostListResponse(
-        List<SimplePostResponse> posts,
+        List<SimplePostResponse> postListResDto,
         PageInfo pageInfo
 ) {
-    public static TopLikedPostListResponse of(List<SimplePostResponse> posts, PageInfo pageInfo){
+    public static TopLikedPostListResponse of(List<SimplePostResponse> postListResDto, PageInfo pageInfo){
         return TopLikedPostListResponse.builder()
-                .posts(posts)
+                .postListResDto(postListResDto)
                 .pageInfo(pageInfo)
                 .build();
     }
