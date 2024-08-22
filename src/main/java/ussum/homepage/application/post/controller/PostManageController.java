@@ -93,6 +93,18 @@ public class PostManageController {
         return ApiResponse.success(postManageService.createDataPost(userId, subCategory, postCreateRequest));
     }
 
+    @Operation(summary = "게시물 생성 시 파일 및 이미지 저장 api", description = """
+            게시물 생성 시 파일 및 이미지 저장하는 api입니다.
+            우선 이 api는 게시물 생성 api를 사용전 미리 호출하여야 합니다. 기본적으로 반환값이 저장된 파일 및 사진의 url이기 때문에
+            이 반환값을 가지고 게시물 생성 api에 있는 dto의 List에 url를 보내주어야 합니다.
+            기본적으로 액세스 토큰을 필요로 합니다.
+            PathVariable로 노션에 있는 boardCode중 하나를 적습니다.
+            s3에 저장할 MultipartFile 형식의 파라미터를 2개 두었습니다.
+            첫번째 파라미터는 files라는 key값으로 보내주면 됩니다.
+            두번째 파라미터는 images라는 key값으로 보내주면 됩니다.
+            이미지와 파일을 경로를 구분하여 저장하기 위해 이러한 방식을 선택했습니다.
+            기본적인 api로직은 받은 파라미터를 통해 파일들을 먼저 s3에 저장하고 db에 순차적으로 생성된 id와 url을 하나의 dto로 이를 List로 반환합니다.
+            """)
     @PostMapping(value = "/{boardCode}/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<?>> createBoardPostFile(@Parameter(hidden = true) @UserId Long userId,
@@ -102,6 +114,7 @@ public class PostManageController {
 
         return ApiResponse.success(postManageService.createBoardPostFile(userId, boardCode, files, images));
     }
+
 
     @PatchMapping("/{boardCode}/posts/{postId}")
     public ResponseEntity<ApiResponse<?>> editBoardPost(@Parameter(hidden = true) @UserId Long userId,
