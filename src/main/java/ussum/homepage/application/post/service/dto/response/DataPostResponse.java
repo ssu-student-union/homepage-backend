@@ -11,8 +11,8 @@ public class DataPostResponse extends PostListResDto {
     private final Boolean isNotice;
 
     @Builder
-    private DataPostResponse(Long postId, String title, /*String content,*/ String date, Boolean isNotice) {
-        super(postId, title, /*content,*/ date);
+    private DataPostResponse(Long postId, String title, /*String content,*/ String date, String category, Boolean isNotice) {
+        super(postId, title, null, date, category);
         this.isNotice = isNotice;
     }
 
