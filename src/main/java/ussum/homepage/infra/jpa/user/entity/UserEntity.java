@@ -17,12 +17,15 @@ public class UserEntity extends BaseEntity {
     private String studentId;
     private String kakaoId;
     private String profileImage;
+    private String accountId;
+    private String password;
     private String refreshToken;
 
-    public static UserEntity of(Long id, String name, String studentId, String kakaoId, String profileImage,String refreshToken) {
-        return new UserEntity(id, name, studentId, kakaoId, profileImage, refreshToken);
+    public static UserEntity of(Long id, String name, String studentId, String kakaoId, String profileImage,
+                                String accountId, String password, String refreshToken) {
+        return new UserEntity(id, name, studentId, kakaoId, profileImage, accountId, password, refreshToken);
     }
     public static UserEntity from(Long id){
-        return new UserEntity(id, null,null, null, null,null);
+        return new UserEntity(id, null,null, null, null, null, null, null);
     }
 }

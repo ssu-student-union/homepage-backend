@@ -1,5 +1,6 @@
 package ussum.homepage.domain.user;
 import lombok.*;
+import ussum.homepage.application.admin.service.dto.request.CouncilSignInRequest;
 import ussum.homepage.application.user.service.dto.request.OnBoardingRequest;
 import ussum.homepage.application.user.service.dto.response.KakaoUserInfoResponseDto;
 
@@ -13,8 +14,10 @@ public class User {
     private Long id;
     private String name;
     private String studentId;
-    private String profileImage;
     private String kakaoId;
+    private String profileImage;
+    private String accountId;
+    private String password;
     private String createdAt;
     private String updatedAt;
     private String refreshToken;
@@ -22,16 +25,23 @@ public class User {
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
-    // 수정 필요
-    public static User of(Long id, String name, String studentId, String profileImage, String kakaoId,
-                          LocalDateTime createdAt, LocalDateTime updatedAt, String refreshToken) {
-        return new User(id, name, studentId, profileImage, kakaoId, String.valueOf(createdAt), String.valueOf(updatedAt), refreshToken);
+
+    public static User of(Long id, String name, String studentId, String kakaoId, String profileImage,
+                          String accountId, String password, LocalDateTime createdAt, LocalDateTime updatedAt, String refreshToken) {
+        return new User(id, name, studentId, kakaoId, profileImage, accountId, password, String.valueOf(createdAt), String.valueOf(updatedAt), refreshToken);
     }
 
     public static User createUser(KakaoUserInfoResponseDto userInfoResponseDto) {
         return User.builder()
                 .kakaoId(Long.toString(userInfoResponseDto.getId()))
                 .profileImage(userInfoResponseDto.getKakaoAccount().getProfile().getProfileImageUrl())
+                .build();
+    }
+
+    public static User createCouncilUser(String accountId, String password){
+        return User.builder()
+                .accountId(accountId)
+                .password(password)
                 .build();
     }
 }
