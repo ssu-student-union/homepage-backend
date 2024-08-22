@@ -2,7 +2,9 @@ package ussum.homepage.application.post.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,16 +23,18 @@ public class PostManageController {
     private final PostManageService postManageService;
     @Operation(summary = "게시판 별 게시물 리스트 조회 api", description = """
             게시판 별 게시물 리스트 조회 시 필요한 데이터를 조회하는 api 입니다.
-            요청으로 boardCode 그리고 queryParam 형식으로 , groupCode(중앙기구, 단과대학생회), memberCode(중앙운영위원회), page(입력 안 할시 첫번째 페이지), take(몇개 가져올지) 값을 넣으면 됩니다.
+            요청으로 boardCode 그리고 queryParam 형식으로 , groupCode(중앙기구, 단과대학생회), memberCode(중앙운영위원회), category(필터링),page(입력 안 할시 첫번째 페이지), take(몇개 가져올지) 값을 넣으면 됩니다.
             공지사항게시판을 사용할때만 groupCode, memberCode에 값을 넣어서 사용하시면 됩니다. 
+            나머지 게시판 필터링은 category에 값을 넣고 사용하시면 됩니다.
             """)
     @GetMapping("/{boardCode}/posts")
     public ResponseEntity<ApiResponse<?>> getBoardPostsList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
                                                             @PathVariable(name = "boardCode") String boardCode, @RequestParam(value = "groupCode", required = false) String groupCode,
-                                                            @RequestParam(value = "memberCode", required = false) String memberCode) {
+                                                            @RequestParam(value = "memberCode",  required = false) String memberCode,
+                                                            @RequestParam(value = "category",  required = false) String category) {
 
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
-        return ApiResponse.success(postManageService.getPostList(page, take, boardCode, groupCode, memberCode));
+        return ApiResponse.success(postManageService.getPostList(page, take, boardCode, groupCode, memberCode, category));
     }
 
     @Operation(summary = "자료집게시판 게시물 리스트 조회 api", description = """
@@ -65,6 +69,16 @@ public class PostManageController {
         return ApiResponse.success(postManageService.getPost(postUserRequest, boardCode, postId));
     }
 
+    @Operation(summary = "게시물 생성 api", description = """
+            게시물 생성 시 사용하는 api입니다.
+            기본적으로 액세스 토큰을 필요로 합니다.
+            PathVariable로 노션에 있는 boardCode중 하나를 적습니다.
+            JSON 형식으로 PostCreateRequest dto를 활용하여 게시글에 적은 값을 전달하면 됩니다.
+            PostCreateRequest dto의 List로 되어있는 변수에 들어가는 값 s3에 저장하고 나온 url입니다. 
+            이 컨트롤러에 있는 "/board/{boardCode}/files" api를 먼저 사용하여 리턴값으로 전달받는 값을 넣어주면 됩니다. 
+            사진이나 파일이 존재하지 않을 시 빈 List로 전달해주시면 됩니다.
+            isNotice는 긴급공지 사항을 나타내는 필드로 맞을시 true, 틀릴시 false를 반환하면 됩니다.
+            """)
     @PostMapping("/{boardCode}/posts")
     public ResponseEntity<ApiResponse<?>> createBoardPost(@Parameter(hidden = true) @UserId Long userId,
                                                           @PathVariable(name = "boardCode") String boardCode,
@@ -79,11 +93,13 @@ public class PostManageController {
         return ApiResponse.success(postManageService.createDataPost(userId, subCategory, postCreateRequest));
     }
 
-    @PostMapping("/{boardCode}/files")
+    @PostMapping(value = "/{boardCode}/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<?>> createBoardPostFile(@Parameter(hidden = true) @UserId Long userId,
                                                               @PathVariable(name = "boardCode") String boardCode,
                                                               @RequestPart(value = "files") MultipartFile[] files,
                                                               @RequestPart(value = "images") MultipartFile[] images) {
+
         return ApiResponse.success(postManageService.createBoardPostFile(userId, boardCode, files, images));
     }
 

@@ -91,7 +91,7 @@ public class PostManageService {
     );
 
 
-    public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode, String memberCode) {
+    public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode, String memberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 //        Pageable pageable = PageInfo.of(page, take);
 //        Page<Post> postList = null;
@@ -108,8 +108,9 @@ public class PostManageService {
 
         GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
         MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
+        Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
 
-        Page<Post> postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, pageable);
+        Page<Post> postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 
@@ -199,8 +200,8 @@ public class PostManageService {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Member member = memberReader.getMemberWithUserId(userId);
         String noticeCategory = MemberCode.valueOf(member.getMemberCode()).getStringMemberCode();
-        String category = Objects.equals(boardCode, "공지사항게시판") ? noticeCategory : postCreateRequest.categoryCode();
-        String onGoingStatus = Objects.equals(boardCode, "청원게시판") ? postCreateRequest.categoryCode() : postCreateRequest.isNotice() ? Category.EMERGENCY.getStringCategoryCode() : null;
+        String category = Objects.equals(boardCode, BoardCode.NOTICE.getStringBoardCode()) ? noticeCategory : postCreateRequest.categoryCode();
+        String onGoingStatus = Objects.equals(boardCode, BoardCode.PETITION.getStringBoardCode()) ? postCreateRequest.categoryCode() : postCreateRequest.isNotice() ? Category.EMERGENCY.getStringCategoryCode() : null;
         
 //        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
         Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(category), onGoingStatus));

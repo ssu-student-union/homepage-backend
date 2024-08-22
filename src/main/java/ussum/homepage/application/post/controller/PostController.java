@@ -1,5 +1,6 @@
 package ussum.homepage.application.post.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -27,6 +28,10 @@ public class PostController {
 //        return ApiResponse.success(postList);
 //    }
 
+    @Operation(summary = "게시판 인기청원 조회 api", description = """
+            게시판 인기청원 조회 시 필요한 데이터를 조회하는 api 입니다.
+            요청으로 boardCode 그리고 qeury param 형식으로 page, take를 입력하시면 됩니다.
+            """)
     @GetMapping("/{boardCode}/posts/top-liked")
     public ResponseEntity<ApiResponse<?>> getTopLikedBoardPostList(@RequestParam(value = "page", defaultValue = "0") int page,
                                                                    @RequestParam(value = "take") int take,

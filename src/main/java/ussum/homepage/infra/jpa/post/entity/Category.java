@@ -2,9 +2,12 @@ package ussum.homepage.infra.jpa.post.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 import ussum.homepage.global.error.exception.InvalidValueException;
+import ussum.homepage.infra.jpa.member.entity.MemberCode;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static ussum.homepage.global.error.status.ErrorStatus.INVALID_CATEGORY_CODE;
 
@@ -62,5 +65,18 @@ public enum Category {
                 .filter(boardCode -> boardCode.stringCategoryCode.equals(stringCategoryCode))
                 .findFirst()
                 .orElseThrow(() -> new InvalidValueException(INVALID_CATEGORY_CODE));
+    }
+
+    public static Optional<Category> fromString(String stringCategoryCode) {
+        if (!StringUtils.hasText(stringCategoryCode)) {
+            return Optional.empty();
+        }
+        return Arrays.stream(values())
+                .filter(category -> category.stringCategoryCode.equals(stringCategoryCode))
+                .findFirst();
+    }
+
+    public static Category fromStringOrNull(String stringCategoryCode) {
+        return fromString(stringCategoryCode).orElse(null);
     }
 }
