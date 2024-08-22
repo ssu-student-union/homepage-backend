@@ -14,9 +14,8 @@ public class LostPostResponse extends PostListResDto{
 
     @Builder
 
-    private LostPostResponse(Long postId, String title, String content, String date, String thumbNail, int lostId) {
-
-        super(postId, title, content, date);
+    private LostPostResponse(Long postId, String title, String date, String thumbNail, int lostId) {
+        super(postId, title, date);
         this.lostId = lostId;
         this.thumbNail = thumbNail;
     }
@@ -25,7 +24,7 @@ public class LostPostResponse extends PostListResDto{
         return LostPostResponse.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
-                .content(post.getContent())
+//                .content(post.getContent())
                 .date(post.getCreatedAt().toString())
                 .thumbNail(post.getThumbnailImage())
                 .lostId(Math.toIntExact(post.getId()))

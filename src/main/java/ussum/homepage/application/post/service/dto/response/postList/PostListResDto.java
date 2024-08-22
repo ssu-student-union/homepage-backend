@@ -6,13 +6,13 @@ import lombok.Getter;
 public abstract class PostListResDto {
     protected Long postId;
     protected String title;
-    protected String content;
+//    protected String content;
     protected String date;
 
-    protected PostListResDto(Long postId, String title, String content, String date) {
+    protected PostListResDto(Long postId, String title, /*String content,*/ String date) {
         this.postId = postId;
         this.title = title;
-        this.content = content;
+//        this.content = content;
         this.date = date;
     }
 }

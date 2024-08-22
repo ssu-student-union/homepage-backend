@@ -16,11 +16,11 @@ public interface PostJpaRepository extends JpaRepository<PostEntity,Long> {
                 SELECT pe
                 FROM PostEntity pe
                 WHERE pe.boardEntity = :board
-                ORDER BY pe.id DESC 
+                ORDER BY pe.id DESC
         """)
     Page<PostEntity> findAllByBoard(Pageable pageable, @Param("board") BoardEntity board);
     Optional<PostEntity> findByBoardEntityAndId(BoardEntity boardEntity, Long id);
-    @Query("SELECT p FROM PostEntity p WHERE p.boardEntity.id = :boardId")
+    @Query("SELECT p FROM PostEntity p WHERE p.boardEntity.id = :boardId ORDER BY p.createdAt DESC")
     Page<PostEntity> findAllByBoardId(@Param("boardId") Long boardId, Pageable pageable);
 
 //    @Query("""

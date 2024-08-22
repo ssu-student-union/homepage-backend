@@ -11,8 +11,8 @@ public class DataPostResponse extends PostListResDto {
     private final Boolean isNotice;
 
     @Builder
-    private DataPostResponse(Long postId, String title, String content, String date, Boolean isNotice) {
-        super(postId, title, content, date);
+    private DataPostResponse(Long postId, String title, /*String content,*/ String date, Boolean isNotice) {
+        super(postId, title, /*content,*/ date);
         this.isNotice = isNotice;
     }
 
@@ -20,7 +20,7 @@ public class DataPostResponse extends PostListResDto {
         return DataPostResponse.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
-                .content(post.getContent())
+//                .content(post.getContent())
                 .date(post.getCreatedAt().toString())
                 .isNotice(post.getTitle().equals("총학생회칙"))
                 .build();
