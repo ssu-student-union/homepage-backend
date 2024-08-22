@@ -14,7 +14,7 @@ public interface PostRepository {
     Page<Post> findAllWithBoard(Pageable pageable, String boardCode);
     Optional<Post> findByBoardIdAndId(Long boardId,Long postId);
     Optional<Post> findByBoardIdAndIdForEditAndDelete(Long boardId,Long postId);
-    Page<Post> findAllByBoardId(Long boardId, Pageable pageable);
+    Page<Post> findAllByBoardIdAndCategory(Long boardId, Category category, Pageable pageable);
     Post save(Post post);
     void delete(Post post);
     Page<Post> findBySearchCriteria(Pageable pageable,String boardCode, String q, String categoryCode);

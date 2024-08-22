@@ -14,6 +14,7 @@ import ussum.homepage.domain.post.BoardRepository;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.global.error.exception.GeneralException;
+import ussum.homepage.infra.jpa.post.entity.Category;
 
 import static ussum.homepage.global.error.status.ErrorStatus.BOARD_NOT_FOUND;
 import static ussum.homepage.global.error.status.ErrorStatus.POST_NOT_FOUND;
@@ -27,8 +28,8 @@ public class PostReader {
         return postRepository.findAllWithBoard(pageable, boardCode);
     }
 
-    public Page<Post> getPostListByBoardId(Long boardId, Pageable pageable) {
-        return postRepository.findAllByBoardId(boardId, pageable);
+    public Page<Post> getPostListByBoardIdAndCategory(Long boardId, Category category, Pageable pageable) {
+        return postRepository.findAllByBoardIdAndCategory(boardId, category, pageable);
     }
 
     public Page<SimplePostResponse> findSimplePostDtoListByBoardCode(String boardCode, Pageable pageable){
