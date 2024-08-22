@@ -15,7 +15,7 @@ public class UserModifier {
         return userRepository.save(user);
     }
 
-    public void updateOnBoardingUser(OnBoardingRequest request){
-        userRepository.updateOnBoardingUser(request);
+    public void updateOnBoardingUser(Long userId, OnBoardingRequest request){
+        userRepository.updateOnBoardingUser(userId, request);
     }
 }

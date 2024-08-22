@@ -8,7 +8,8 @@ import java.util.Optional;
 public interface UserRepository {
     Optional<User> findById(Long userId);
     Optional<User> findByStudentId(String studentId);
-    User save(User user);
     Optional<User> findBykakaoId(String kakaoId);
-    void updateOnBoardingUser(OnBoardingRequest request);
+    Optional<User> findByAccountId(String accountId);
+    User save(User user);
+    void updateOnBoardingUser(Long userId, OnBoardingRequest request);
 }

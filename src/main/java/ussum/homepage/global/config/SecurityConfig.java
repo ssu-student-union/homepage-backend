@@ -36,10 +36,10 @@ public class SecurityConfig {
 
     private static final String[] whiteList = {
             "/auth/**",
-//            "/onboarding/**",
             "/swagger-ui/**",
             "/swagger-resources/**",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+            "/admin/**"
     };
 
     @Bean

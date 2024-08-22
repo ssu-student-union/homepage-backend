@@ -8,10 +8,8 @@ import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.UserRepository;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
-import static ussum.homepage.infra.jpa.post.entity.QPostFileEntity.postFileEntity;
 import static ussum.homepage.infra.jpa.user.entity.QUserEntity.userEntity;
 
 @Repository
@@ -29,21 +27,27 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findByStudentId(String studentId) { return userJpaRepository.findByStudentId(studentId).map(userMapper::toDomain); }
 
     @Override
-    public User save(User user) {
-        return userMapper.toDomain(userJpaRepository.save(userMapper.toEntity(user)));
-    }
-
-    @Override
     public Optional<User> findBykakaoId(String kakaoId){
         return userJpaRepository.findByKakaoId(kakaoId).map(userMapper::toDomain);
     }
 
     @Override
-    public void updateOnBoardingUser(OnBoardingRequest request) {
+    public Optional<User> findByAccountId(String accountId) {
+        return userJpaRepository.findByAccountId(accountId).map(userMapper::toDomain);
+    }
+
+    @Override
+    public User save(User user) {
+        return userMapper.toDomain(userJpaRepository.save(userMapper.toEntity(user)));
+    }
+
+    @Override
+    public void updateOnBoardingUser(Long userId, OnBoardingRequest request) {
         queryFactory
                 .update(userEntity)
                 .set(userEntity.studentId, request.getStudentId())
                 .set(userEntity.name, request.getName())
+                .where(userEntity.id.eq(userId))
                 .execute();
     }
 }
