@@ -9,13 +9,15 @@ import ussum.homepage.domain.post.Post;
 @Getter
 public class PetitionPostResponse extends PostListResDto{
     private final Integer likeCount;
+    private final String onGoingStatus;
     private final String status;
 
     @Builder
-    private PetitionPostResponse(Long postId, String title, String date, Integer likeCount, String status) {
+    private PetitionPostResponse(Long postId, String title, String date, Integer likeCount, String status, String onGoingStatus) {
         super(postId, title, date);
         this.likeCount = likeCount;
         this.status = status;
+        this.onGoingStatus = onGoingStatus;
     }
 
     public static PetitionPostResponse of(Post post, Integer likeCount) {
@@ -26,6 +28,8 @@ public class PetitionPostResponse extends PostListResDto{
                 .date(post.getCreatedAt().toString())
                 .likeCount(likeCount)
                 .status(post.getStatus())
+                .onGoingStatus(post.getOnGoingStatus())
                 .build();
     }
+
 }
