@@ -8,7 +8,7 @@ import ussum.homepage.global.error.exception.GeneralException;
 
 import java.util.Optional;
 
-import static ussum.homepage.global.error.status.ErrorStatus.USER_NOT_FOUND;
+import static ussum.homepage.global.error.status.ErrorStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -21,4 +21,8 @@ public class UserReader {
     public Optional<User> getUserWithKakaoId(String kakaoId){
         return userRepository.findBykakaoId(kakaoId);
     }
+
+    public User getUserWithAcountId(String accountId){
+        return userRepository.findByAccountId(accountId)
+                .orElseThrow(() -> new GeneralException(ACCOUNT_ID_NOT_MATCH)); }
 }

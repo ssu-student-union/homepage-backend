@@ -27,13 +27,18 @@ public class UserRepositoryImpl implements UserRepository {
     public Optional<User> findByStudentId(String studentId) { return userJpaRepository.findByStudentId(studentId).map(userMapper::toDomain); }
 
     @Override
-    public User save(User user) {
-        return userMapper.toDomain(userJpaRepository.save(userMapper.toEntity(user)));
+    public Optional<User> findBykakaoId(String kakaoId){
+        return userJpaRepository.findByKakaoId(kakaoId).map(userMapper::toDomain);
     }
 
     @Override
-    public Optional<User> findBykakaoId(String kakaoId){
-        return userJpaRepository.findByKakaoId(kakaoId).map(userMapper::toDomain);
+    public Optional<User> findByAccountId(String accountId) {
+        return userJpaRepository.findByAccountId(accountId).map(userMapper::toDomain);
+    }
+
+    @Override
+    public User save(User user) {
+        return userMapper.toDomain(userJpaRepository.save(userMapper.toEntity(user)));
     }
 
     @Override

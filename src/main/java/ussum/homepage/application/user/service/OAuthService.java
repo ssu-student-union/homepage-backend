@@ -3,13 +3,20 @@ package ussum.homepage.application.user.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.item.mail.MailErrorHandler;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ussum.homepage.application.user.service.dto.request.CouncilLoginRequest;
+import ussum.homepage.application.user.service.dto.response.CouncilLoginResponse;
 import ussum.homepage.application.user.service.dto.response.KakaoUserInfoResponseDto;
 import ussum.homepage.application.user.service.dto.response.UserOAuthResponse;
+import ussum.homepage.domain.group.Group;
+import ussum.homepage.domain.group.service.GroupReader;
+import ussum.homepage.domain.member.Member;
+import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.exception.UserNotFoundException;
+import ussum.homepage.domain.user.service.UserManager;
 import ussum.homepage.domain.user.service.UserModifier;
 import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.external.oauth.KakaoApiProvider;
@@ -26,8 +33,11 @@ import java.util.Optional;
 public class OAuthService {
     private final KakaoApiProvider kakaoApiProvider;
     private final UserReader userReader;
+    private final MemberReader memberReader;
+    private final GroupReader groupReader;
     private final UserModifier userModifier;
     private final JwtTokenProvider provider;
+    private final UserManager userManager;
 
 
     @Transactional
@@ -56,10 +66,16 @@ public class OAuthService {
         }
     }
 
-//    @Transactional
-//    public String councilLogin(CouncilLoginRequest request){
-//
-//    }
+    @Transactional
+    public CouncilLoginResponse councilLogin(CouncilLoginRequest request){
+        User user = userReader.getUserWithAcountId(request.accountId()); // 예외 발생 가능
+        userManager.validatePassword(request.password(), user.getPassword()); // 예외 발생 가능
+        Member member = memberReader.getMemberWithUserId(user.getId());
+        Group group = groupReader.getGroupByGroupId(member.getGroupId());
+        JwtTokenInfo tokenInfo = issueAccessTokenAndRefreshToken(user);
+        updateRefreshToken(tokenInfo.getRefreshToken(), user);
+        return CouncilLoginResponse.of(tokenInfo, group, member);
+    }
 
 
     private void updateRefreshToken(String refreshToken, User user) {
@@ -69,7 +85,6 @@ public class OAuthService {
 
     private User saveUser(KakaoUserInfoResponseDto userInfo) {
         User createdUser = getUserByKakaoUserInfo(userInfo);
-        log.info("카카오 id, 프로필 url 저장 완료");
         return userModifier.save(createdUser);
 
     }
