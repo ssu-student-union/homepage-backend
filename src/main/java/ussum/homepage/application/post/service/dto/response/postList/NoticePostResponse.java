@@ -19,8 +19,8 @@ public class NoticePostResponse extends PostListResDto{
     private final Boolean isEmergency;
 
     @Builder
-    private NoticePostResponse(Long postId, String title, String content, String date, String thumbNail, String status, String author, Boolean isEmergency) {
-        super(postId, title, content, date);
+    private NoticePostResponse(Long postId, String title, String date, String thumbNail, String status, String author, Boolean isEmergency) {
+        super(postId, title, date);
         this.thumbNail = thumbNail;
         this.status = status;
         this.author = author;
@@ -33,7 +33,7 @@ public class NoticePostResponse extends PostListResDto{
         return NoticePostResponse.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
-                .content(post.getContent())
+//                .content(post.getContent())
                 .date(post.getCreatedAt())
                 .thumbNail(post.getThumbnailImage())
                 .status(post.getStatus())

@@ -12,8 +12,8 @@ public class PetitionPostResponse extends PostListResDto{
     private final String status;
 
     @Builder
-    private PetitionPostResponse(Long postId, String title, String content, String date, Integer likeCount, String status) {
-        super(postId, title, content, date);
+    private PetitionPostResponse(Long postId, String title, String date, Integer likeCount, String status) {
+        super(postId, title, date);
         this.likeCount = likeCount;
         this.status = status;
     }
@@ -22,7 +22,7 @@ public class PetitionPostResponse extends PostListResDto{
         return PetitionPostResponse.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
-                .content(post.getContent())
+//                .content(post.getContent())
                 .date(post.getCreatedAt().toString())
                 .likeCount(likeCount)
                 .status(post.getStatus())
