@@ -29,7 +29,9 @@ public class SecurityConfig {
             "/board/{boardCode}/posts",
             "/board/{boardCode}/posts/{postId}",
             "/board/posts/{postId}/comments",
-            "/board/{boardCode}/{groupCode}/{memberCode}/posts"
+            "/board/{boardCode}/{groupCode}/{memberCode}/posts",
+            "/board/data/posts",
+            "/boards/{boardCode}/posts/top-liked"
     };
 
     private static final String[] whiteList = {

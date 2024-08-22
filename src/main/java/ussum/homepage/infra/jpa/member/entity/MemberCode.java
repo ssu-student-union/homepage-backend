@@ -2,9 +2,12 @@ package ussum.homepage.infra.jpa.member.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 import ussum.homepage.global.error.exception.InvalidValueException;
+import ussum.homepage.infra.jpa.group.entity.GroupCode;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static ussum.homepage.global.error.status.ErrorStatus.INVALID_MEMBERCODE;
 
@@ -12,7 +15,7 @@ import static ussum.homepage.global.error.status.ErrorStatus.INVALID_MEMBERCODE;
 @Getter
 public enum MemberCode {
     // 총학생회
-    STUDENT_COUNCIL("총학생회"),
+    STUDENT_UNION("총학생회"),
 
     // 중앙운영위원회
     CENTRAL_OPERATION_COMMITTEE("중앙운영위원회"),
@@ -127,4 +130,16 @@ public enum MemberCode {
                 .orElseThrow(() -> new InvalidValueException(INVALID_MEMBERCODE));
     }
 
+    public static Optional<MemberCode> fromString(String stringMemberCode) {
+        if (!StringUtils.hasText(stringMemberCode)) {
+            return Optional.empty();
+        }
+        return Arrays.stream(values())
+                .filter(memberCode -> memberCode.stringMemberCode.equals(stringMemberCode))
+                .findFirst();
+    }
+
+    public static MemberCode fromStringOrNull(String stringMemberCode) {
+        return fromString(stringMemberCode).orElse(null);
+    }
 }

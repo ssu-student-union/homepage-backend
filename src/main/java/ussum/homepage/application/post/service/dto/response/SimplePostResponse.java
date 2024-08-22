@@ -10,6 +10,7 @@ public record SimplePostResponse(
         String title,
         String content,
         String date,
+        String onGoingStatus,
         Integer like
 ) {
     public static SimplePostResponse of(Post post,
@@ -19,6 +20,7 @@ public record SimplePostResponse(
                 .title(post.getTitle())
                 .content(post.getContent())
                 .date(post.getCreatedAt())
+                .onGoingStatus(post.getOnGoingStatus())
                 .like(like)
                 .build();
     }

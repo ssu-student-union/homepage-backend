@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
+import ussum.homepage.infra.jpa.group.entity.GroupCode;
+import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.BoardRepository;
@@ -33,11 +35,11 @@ public class PostReader {
         return postRepository.findPostDtoListByBoardCode(boardCode, pageable);
     }
 
-    public Page<Post> getPostListByBoardIdAndGroupCodeAndMemberCode(Long boardId, String groupCode, String memberCode, Pageable pageable ){
+    public Page<Post> getPostListByBoardIdAndGroupCodeAndMemberCode(Long boardId, GroupCode groupCode, MemberCode memberCode, Pageable pageable ){
         return postRepository.findAllByBoardIdAndGroupCodeAndMemberCode(boardId, groupCode,memberCode, pageable);
     }
 
-    public Page<Post> getPostListByGroupCodeAndMemberCodeAndSubCategory(String groupCode, String memberCode, String subCategory, Pageable pageable){
+    public Page<Post> getPostListByGroupCodeAndMemberCodeAndSubCategory(GroupCode groupCode, MemberCode memberCode, String subCategory, Pageable pageable){
         return postRepository.findAllByGroupCodeAndMemberCodeAndSubCategory(groupCode,memberCode,subCategory, pageable);
     }
 

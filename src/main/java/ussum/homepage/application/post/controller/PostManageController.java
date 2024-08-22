@@ -1,6 +1,7 @@
 package ussum.homepage.application.post.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,18 +19,29 @@ import ussum.homepage.global.config.auth.UserId;
 public class PostManageController {
 
     private final PostManageService postManageService;
-
-    @GetMapping("/{boardCode}/{groupCode}/{memberCode}/posts")
+    @Operation(summary = "게시판 별 게시물 리스트 조회 api", description = """
+            게시판 별 게시물 리스트 조회 시 필요한 데이터를 조회하는 api 입니다.
+            요청으로 boardCode 그리고 queryParam 형식으로 , groupCode(중앙기구, 단과대학생회), memberCode(중앙운영위원회), page(입력 안 할시 첫번째 페이지), take(몇개 가져올지) 값을 넣으면 됩니다.
+            공지사항게시판을 사용할때만 groupCode, memberCode에 값을 넣어서 사용하시면 됩니다. 
+            """)
+    @GetMapping("/{boardCode}/posts")
     public ResponseEntity<ApiResponse<?>> getBoardPostsList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
-                                                            @PathVariable(name = "boardCode") String boardCode, @PathVariable(name = "groupCode") String groupCode, @PathVariable(name = "memberCode") String memberCode) {
+                                                            @PathVariable(name = "boardCode") String boardCode, @RequestParam(value = "groupCode", required = false) String groupCode,
+                                                            @RequestParam(value = "memberCode", required = false) String memberCode) {
 
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
         return ApiResponse.success(postManageService.getPostList(page, take, boardCode, groupCode, memberCode));
     }
 
-    @GetMapping("data/{majorCategory}/{middleCategory}/{subCategory}/posts")
+    @Operation(summary = "자료집게시판 게시물 리스트 조회 api", description = """
+            자료집게시판 게시물 리스트 조회 시 필요한 데이터를 조회하는 api 입니다.
+            queryParam 형식으로 majorCategory(대분류), middleCategory(중분류), subCategory(소분류), page(입력 안 할시 첫번째 페이지), take(몇개 가져올지) 값을 넣으면 됩니다.
+            대분류로만 검색하거나 중분류까지만 검색하거나 하면 필요없는 값은 안 보내셔도 됩니다.
+            response에서 총학생회칙일때만 isNotice에 true로 가게 했습니다.
+            """)
+    @GetMapping("data/posts")
     public ResponseEntity<ApiResponse<?>> getDataPostsList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
-                                                            @PathVariable(name = "majorCategory") String majorCategory, @PathVariable(name = "middleCategory") String middleCategory,@PathVariable(name = "subCategory") String subCategory) {
+                                                            @RequestParam(name = "majorCategory", required = false) String majorCategory, @RequestParam(name = "middleCategory", required = false) String middleCategory,@RequestParam(name = "subCategory", required = false) String subCategory) {
 
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
         return ApiResponse.success(postManageService.getDataList(page, take, majorCategory, middleCategory, subCategory));
@@ -54,20 +66,21 @@ public class PostManageController {
     }
 
     @PostMapping("/{boardCode}/posts")
-    public ResponseEntity<ApiResponse<?>> createBoardPost(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> createBoardPost(@Parameter(hidden = true) @UserId Long userId,
                                                           @PathVariable(name = "boardCode") String boardCode,
                                                           @RequestBody PostCreateRequest postCreateRequest){
         return ApiResponse.success(postManageService.createBoardPost(userId, boardCode, postCreateRequest));
     }
+
     @PostMapping("data/{subCategory}/post")
-    public ResponseEntity<ApiResponse<?>> createDataPost(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> createDataPost(@Parameter(hidden = true) @UserId Long userId,
                                                          @PathVariable(name = "subCategory") String subCategory,
-                                                          @RequestBody PostCreateRequest postCreateRequest){
+                                                         @RequestBody PostCreateRequest postCreateRequest) {
         return ApiResponse.success(postManageService.createDataPost(userId, subCategory, postCreateRequest));
     }
 
     @PostMapping("/{boardCode}/files")
-    public ResponseEntity<ApiResponse<?>> createBoardPostFile(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> createBoardPostFile(@Parameter(hidden = true) @UserId Long userId,
                                                               @PathVariable(name = "boardCode") String boardCode,
                                                               @RequestPart(value = "files") MultipartFile[] files,
                                                               @RequestPart(value = "images") MultipartFile[] images) {
@@ -75,7 +88,7 @@ public class PostManageController {
     }
 
     @PatchMapping("/{boardCode}/posts/{postId}")
-    public ResponseEntity<ApiResponse<?>> editBoardPost(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> editBoardPost(@Parameter(hidden = true) @UserId Long userId,
                                                         @PathVariable(name = "boardCode") String boardCode,
                                                         @PathVariable(name = "postId") Long postId,
                                                         @RequestBody PostUpdateRequest postUpdateRequest) {

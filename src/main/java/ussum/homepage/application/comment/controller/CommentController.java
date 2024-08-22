@@ -1,6 +1,7 @@
 package ussum.homepage.application.comment.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class CommentController {
             PostCommentCreateRequest 요청 json에 content 필드를 이용하여 댓글 내용을 작성합니다.
           """)
     @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<ApiResponse<?>> createPostComment(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> createPostComment(@Parameter(hidden = true) @UserId Long userId,
                                                             @PathVariable(name = "postId") Long postId,
                                                             @RequestBody PostCommentCreateRequest postCommentCreateRequest) {
         PostCommentResponse comment = commentService.createComment(userId, postId, postCommentCreateRequest);
@@ -50,7 +51,7 @@ public class CommentController {
             PostCommentUpdateRequest 요청 json에 content 필드를 이용하여 댓글 내용을 작성합니다.
             """)
     @PatchMapping("/posts/{postId}/comments/{commentId}")
-    public ResponseEntity<ApiResponse<?>> editPostComment(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> editPostComment(@Parameter(hidden = true) @UserId Long userId,
                                                           @PathVariable(name = "postId") Long postId,
                                                           @PathVariable(name = "commentId") Long commentId,
                                                           @RequestBody PostCommentUpdateRequest postCommentUpdateRequest) {
