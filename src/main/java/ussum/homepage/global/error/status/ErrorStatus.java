@@ -17,6 +17,8 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //User 관련 에러
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_001", "사용자를 찾을 수 없습니다."),
+    ACCOUNT_ID_NOT_MATCH(HttpStatus.NOT_FOUND, "USER_002", "해당 아이디로 사용자를 찾을 수 없습니다."),
+    PASSWORD_NOT_MATCH(HttpStatus.NOT_FOUND, "USER_003", "해당 비밀번호로 사용자를 찾을 수 없습니다."),
 
     //Group 관련 에러
     GROUP_NOT_FOUND(HttpStatus.NOT_FOUND,"GROUP_001","그룹을 찾을 수 없습니다."),
