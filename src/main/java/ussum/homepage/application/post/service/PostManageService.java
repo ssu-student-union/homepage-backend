@@ -202,9 +202,9 @@ public class PostManageService {
     }
 
     @Transactional
-    public List<PostFileResponse> createBoardPostFile(Long userId, String boardCode, MultipartFile[] files, String typeName){
-        List<String> urlList = s3utils.uploadFileWithPath(userId, boardCode, files, typeName);
-        List<PostFile> postFiles = convertUrlsToPostFiles(urlList, typeName);
+    public List<PostFileResponse> createBoardPostFile(Long userId, String boardCode, MultipartFile[] files, MultipartFile[] images){
+        List<Map<String, String>> urlList = s3utils.uploadFileWithPath(userId, boardCode, files, images);
+        List<PostFile> postFiles = convertUrlsToPostFiles(urlList);
         List<PostFile> afterSaveList = postFileAppender.saveAllPostFile(postFiles);
 
         return afterSaveList.stream()
@@ -212,11 +212,13 @@ public class PostManageService {
                 .collect(Collectors.toList());
     }
 
-    private List<PostFile> convertUrlsToPostFiles(List<String> urlList, String typeName) {
+    private List<PostFile> convertUrlsToPostFiles(List<Map<String, String>> urlList) {
         return urlList.stream()
-                .map(url -> PostFile.of(null, typeName,null, url, null, null))
+                .flatMap(map -> map.entrySet().stream())
+                .map(entry -> PostFile.of(null, entry.getKey(), null, entry.getValue(), null, null)) // key: 파일 타입, value: URL
                 .collect(Collectors.toList());
     }
+
 
     @Transactional
     public Long editBoardPost(String boardCode, Long postId, PostUpdateRequest postUpdateRequest){

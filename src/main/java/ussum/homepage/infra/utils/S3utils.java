@@ -79,8 +79,7 @@ public class S3utils {
                 String fileUrl = amazonS3.getUrl(bucket, fileKey).toString();
                 // Map에 fileType과 fileUrl을 저장
                 Map<String, String> fileData = new HashMap<>();
-                fileData.put("fileType", fileType);
-                fileData.put("url", fileUrl);
+                fileData.put(fileType, fileUrl);
                 uploadedFileUrls.add(fileData);
             } catch (IOException e) {
                 throw new GeneralException(ErrorStatus.S3_ERROR);

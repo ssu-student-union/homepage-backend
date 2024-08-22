@@ -70,8 +70,8 @@ public class PostManageController {
     public ResponseEntity<ApiResponse<?>> createBoardPostFile(@UserId Long userId,
                                                               @PathVariable(name = "boardCode") String boardCode,
                                                               @RequestPart(value = "files") MultipartFile[] files,
-                                                              @RequestParam(value = "type") String typeName) {
-        return ApiResponse.success(postManageService.createBoardPostFile(userId, boardCode, files, typeName));
+                                                              @RequestPart(value = "images") MultipartFile[] images) {
+        return ApiResponse.success(postManageService.createBoardPostFile(userId, boardCode, files, images));
     }
 
     @PatchMapping("/{boardCode}/posts/{postId}")
