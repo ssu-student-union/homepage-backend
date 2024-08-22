@@ -2,7 +2,6 @@ package ussum.homepage.application.post.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -109,8 +108,8 @@ public class PostManageController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<?>> createBoardPostFile(@Parameter(hidden = true) @UserId Long userId,
                                                               @PathVariable(name = "boardCode") String boardCode,
-                                                              @RequestPart(value = "files") MultipartFile[] files,
-                                                              @RequestPart(value = "images") MultipartFile[] images) {
+                                                              @RequestPart(value = "files", required = false) MultipartFile[] files,
+                                                              @RequestPart(value = "images", required = false) MultipartFile[] images) {
 
         return ApiResponse.success(postManageService.createBoardPostFile(userId, boardCode, files, images));
     }

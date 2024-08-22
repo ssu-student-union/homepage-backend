@@ -21,6 +21,8 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final ussum.homepage.infra.jpa.QBaseEntity _super = new ussum.homepage.infra.jpa.QBaseEntity(this);
 
+    public final StringPath accountId = createString("accountId");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
@@ -29,6 +31,8 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
     public final StringPath kakaoId = createString("kakaoId");
 
     public final StringPath name = createString("name");
+
+    public final StringPath password = createString("password");
 
     public final StringPath profileImage = createString("profileImage");
 
