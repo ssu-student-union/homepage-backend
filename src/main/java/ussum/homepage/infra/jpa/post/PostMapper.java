@@ -11,14 +11,11 @@ import ussum.homepage.infra.utils.DateUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class PostMapper {
     public Post toDomain(PostEntity postEntity){
-        String onGoingStatus = Optional.ofNullable(postEntity.getOngoingStatus())
-                .map(OngoingStatus::getStringOnGoingStatus)
-                .orElse(null);
+        String onGoingStatus = OngoingStatus.fromEnumOrNull(postEntity.getOngoingStatus());
 
         return Post.of(
                 postEntity.getId(),
@@ -39,11 +36,6 @@ public class PostMapper {
 
     public PostEntity toEntity(Post post, UserEntity user, BoardEntity board) {
         LocalDateTime lastEditedAt = DateUtils.parseHourMinSecFromCustomString(post.getLastEditedAt());
-
-//        OngoingStatus ongoingStatus = Optional.ofNullable(post.getOnGoingStatus())
-//                .map(OngoingStatus::getEnumOngoingStatusFromStringOngoingStatus)
-//                .orElse(null);
-
         OngoingStatus ongoingStatus = OngoingStatus.fromStringOrNull(post.getOnGoingStatus());
 
         return PostEntity.of(

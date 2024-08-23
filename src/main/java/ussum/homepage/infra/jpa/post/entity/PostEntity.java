@@ -39,7 +39,6 @@ public class PostEntity extends BaseEntity {
     @JoinColumn(name = "board_id")
     private BoardEntity boardEntity;
 
-
     public static PostEntity from(Long id){
         return new PostEntity(id, null, null, null, null, null, null, null, null, null, null);
     }
@@ -58,6 +57,7 @@ public class PostEntity extends BaseEntity {
     }
 
     public void updateStatusAndCategoryCode(OngoingStatus newStatus) {
+        this.category = Category.getEnumCategoryCodeFromStringCategoryCode(newStatus.getStringOnGoingStatus());
         this.ongoingStatus = newStatus;
     }
 }
