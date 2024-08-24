@@ -11,7 +11,7 @@ public record SimplePostResponse(
         String content,
         String date,
         String onGoingStatus,
-        Integer like
+        Integer likeCount
 ) {
     public static SimplePostResponse of(Post post,
                                         Integer like){
@@ -21,7 +21,7 @@ public record SimplePostResponse(
                 .content(post.getContent())
                 .date(post.getCreatedAt())
                 .onGoingStatus(post.getOnGoingStatus())
-                .like(like)
+                .likeCount(like)
                 .build();
     }
 }

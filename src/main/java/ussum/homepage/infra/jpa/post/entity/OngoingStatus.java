@@ -43,18 +43,10 @@ public enum OngoingStatus {
         return fromString(stringOnGoingStatus).orElse(null);
     }
 
-//    public static String toKorean(String stringOnGoingStatus) {
-//        switch (stringOnGoingStatus) {
-//            case "IN_PROGRESS":
-//                return "진행중";
-//            case "RECEIVED":
-//                return "접수완료";
-//            case "ANSWERED":
-//                return "답변완료";
-//            case "COMPLETED":
-//                return "종료됨";
-//            default:
-//                throw new InvalidValueException(WRONG_TRANSLATED_TO_KOREAN);
-//        }
-//    }
+    public static String fromEnumOrNull(OngoingStatus ongoingStatus) {
+        return Optional.ofNullable(ongoingStatus)
+                .map(OngoingStatus::getStringOnGoingStatus)
+                .orElse(null);
+    }
+
 }

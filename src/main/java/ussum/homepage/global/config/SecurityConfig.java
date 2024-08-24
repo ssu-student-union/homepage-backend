@@ -39,7 +39,8 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/swagger-resources/**",
             "/v3/api-docs/**",
-            "/admin/**"
+            "/admin/**",
+            "/onboarding/mail"
     };
 
     @Bean

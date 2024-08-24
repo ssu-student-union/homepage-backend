@@ -1,14 +1,12 @@
 package ussum.homepage.application.post.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ussum.homepage.application.post.service.PostService;
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
-import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
@@ -65,8 +63,12 @@ public class PostController {
 //        return ApiResponse.success(post);
 //    }
 
+    @Operation(summary = "게시물 삭제 api", description = """
+            게시물을 삭제하는 api 입니다. 
+            """)
     @DeleteMapping("/{boardCode}/posts/{postId}")
-    public ResponseEntity<ApiResponse<?>> deleteBoardPost(@PathVariable(name = "boardCode") String boardCode,
+    public ResponseEntity<ApiResponse<?>> deleteBoardPost(@Parameter(hidden = true) @UserId Long userId,
+                                                          @PathVariable(name = "boardCode") String boardCode,
                                                           @PathVariable(name = "postId") Long postId) {
         postService.deletePost(boardCode, postId);
         return ApiResponse.success(null);

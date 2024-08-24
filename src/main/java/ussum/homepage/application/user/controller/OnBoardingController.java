@@ -2,6 +2,7 @@ package ussum.homepage.application.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import ussum.homepage.global.config.auth.UserId;
 @RequiredArgsConstructor
 @RequestMapping("/onboarding")
 @RestController
+@Tag(name = "on-boarding", description = "온보딩 api, 온보딩 실패 시 메일로 문의하는 api")
 public class OnBoardingController {
     private final OnBoardingService onBoardingService;
 
@@ -30,9 +32,11 @@ public class OnBoardingController {
         return ApiResponse.success(null);
     }
 
+    @Operation(summary = "온보딩 실패 시 메일로 문의하는 api", description = """
+            온보딩 실패 시 메일로 문의하는 api 입니다.
+            """)
     @PostMapping("/mail")
-    public ResponseEntity<ApiResponse<?>> sendEmail(@Parameter(hidden = true) @UserId Long userId,
-                                                    @RequestBody OnBoardingEmailRequest onBoardingEmailRequest) {
+    public ResponseEntity<ApiResponse<?>> sendEmail(@RequestBody OnBoardingEmailRequest onBoardingEmailRequest) {
         onBoardingService.sendEmail(onBoardingEmailRequest);
         return ApiResponse.success(null);
     }

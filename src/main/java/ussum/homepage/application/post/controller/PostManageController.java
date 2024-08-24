@@ -2,6 +2,7 @@ package ussum.homepage.application.post.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import ussum.homepage.global.config.auth.UserId;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/board")
+@Tag(name = "post", description = "게시물 전체 조회(자료집 조회는 별도), 단건 조회, 생성(자료집 생성은 별도), 파일 이미지 업로드, 수정 api")
 public class PostManageController {
 
     private final PostManageService postManageService;
@@ -85,6 +87,11 @@ public class PostManageController {
         return ApiResponse.success(postManageService.createBoardPost(userId, boardCode, postCreateRequest));
     }
 
+    @Operation(summary = "자료집 게시물 생성 api", description = """
+            자료집 게시물을 생성하는 api입니다.
+            기본적으로 액세스 토큰을 필요로 합니다.
+            요청 path에 subCategory(소분류) 값을 문자열 형태로 넣으면 됩니다.
+            """)
     @PostMapping("data/{subCategory}/post")
     public ResponseEntity<ApiResponse<?>> createDataPost(@Parameter(hidden = true) @UserId Long userId,
                                                          @PathVariable(name = "subCategory") String subCategory,
@@ -115,6 +122,9 @@ public class PostManageController {
     }
 
 
+    @Operation(summary = "게시물 수정 api", description = """
+            게시물을 수정하는 api 입니다. 
+            """)
     @PatchMapping("/{boardCode}/posts/{postId}")
     public ResponseEntity<ApiResponse<?>> editBoardPost(@Parameter(hidden = true) @UserId Long userId,
                                                         @PathVariable(name = "boardCode") String boardCode,

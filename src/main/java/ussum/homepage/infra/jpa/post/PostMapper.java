@@ -7,17 +7,15 @@ import ussum.homepage.domain.post.Post;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.infra.jpa.post.entity.*;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
+import ussum.homepage.infra.utils.DateUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class PostMapper {
     public Post toDomain(PostEntity postEntity){
-        String onGoingStatus = Optional.ofNullable(postEntity.getOngoingStatus())
-                .map(OngoingStatus::getStringOnGoingStatus)
-                .orElse(null);
+        String onGoingStatus = OngoingStatus.fromEnumOrNull(postEntity.getOngoingStatus());
 
         return Post.of(
                 postEntity.getId(),
@@ -37,14 +35,8 @@ public class PostMapper {
     }
 
     public PostEntity toEntity(Post post, UserEntity user, BoardEntity board) {
-        LocalDateTime lastEditedAt = Optional.ofNullable(post.getLastEditedAt())
-                .filter(date -> !"null".equals(date))
-                .map(LocalDateTime::parse)
-                .orElse(null);
-
-        OngoingStatus ongoingStatus = Optional.ofNullable(post.getOnGoingStatus())
-                .map(OngoingStatus::getEnumOngoingStatusFromStringOngoingStatus)
-                .orElse(null);
+        LocalDateTime lastEditedAt = DateUtils.parseHourMinSecFromCustomString(post.getLastEditedAt());
+        OngoingStatus ongoingStatus = OngoingStatus.fromStringOrNull(post.getOnGoingStatus());
 
         return PostEntity.of(
                 post.getId(),
