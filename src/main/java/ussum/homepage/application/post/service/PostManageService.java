@@ -24,7 +24,6 @@ import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
 
-import ussum.homepage.domain.group.service.GroupReader;
 import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.post.Board;
@@ -62,7 +61,6 @@ public class PostManageService {
     private final PostReactionReader postReactionReader;
     private final UserReader userReader;
     private final MemberReader memberReader;
-    private final GroupReader groupReader;
     private final PostCommentReader postCommentReader;
     private final PostFileReader postFileReader;
     private final PostAppender postAppender;
@@ -90,6 +88,7 @@ public class PostManageService {
     );
 
 
+    @Transactional
     public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode, String memberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 //        Pageable pageable = PageInfo.of(page, take);
@@ -134,6 +133,8 @@ public class PostManageService {
                             return responseFunction.apply(post, null, null, null);
                         case "청원게시판":
                             likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
+
+                            Post updatedPost = postStatusProcessor.processStatus(post);
                             return responseFunction.apply(post, null, likeCount,null);
                         default:
                             throw new EntityNotFoundException(String.valueOf(POST_NOT_FOUND));
@@ -179,12 +180,12 @@ public class PostManageService {
         PostDetailResDto response = null;
         if (board.getName().equals("청원게시판")) {
             Integer likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
-            String postOnGoingStatus = postStatusProcessor.processStatus(post);
+            Post updatedPost = postStatusProcessor.processStatus(post);
             List<PostComment> officialPostComments = postCommentReader.getCommentListWithPostIdAndCommentType(userId, postId, "OFFICIAL");
             List<PostOfficialCommentResponse> postOfficialCommentResponses = officialPostComments.stream()
                     .map(postOfficialComment -> postOfficialCommentFormatter.format(postOfficialComment, userId))
                     .toList();
-            response = responseFunction.apply(post, isAuthor, user.getName(), likeCount, postOnGoingStatus, imageList, null, postOfficialCommentResponses);
+            response = responseFunction.apply(updatedPost, isAuthor, user.getName(), likeCount, updatedPost.getOnGoingStatus(), imageList, null, postOfficialCommentResponses);
         } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판")) {
             response = responseFunction.apply(post, isAuthor, user.getName(), null, post.getCategory(), imageList, fileList,null);
         } else if (board.getName().equals("분실물게시판")) {

@@ -2,6 +2,7 @@ package ussum.homepage.domain.post.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.member.service.MemberManager;
 import ussum.homepage.domain.post.Post;
@@ -24,7 +25,7 @@ public class PostStatusProcessor {
     private final PostReactionReader postReactionReader;
     private final MemberManager memberManager;
 
-    public String processStatus(Post post) {
+    public Post processStatus(Post post) {
         //현재 게시물 상태 checking
         String currentStatus = Optional.ofNullable(post.getOnGoingStatus())
                 .orElseThrow(() -> new PostException(POST_ONGOING_STATUS_IS_NOT_UPDATED));
@@ -32,37 +33,36 @@ public class PostStatusProcessor {
         Integer likeCountOfPost = postReactionReader.countPostReactionsByType(post.getId(), "like");
         switch (currentStatus) {
             case "진행중":
-                return handleInProgressStatus(post,likeCountOfPost);
+                return handleInProgressStatus(post, likeCountOfPost);
             case "접수완료":
                 return handleReceivedStatus(post);
         }
-        return currentStatus;
+        return post;
     }
 
     /**
      * 해당 로직은 실제 청원게시물의 OnGoingStatus를 변경하는 로직
      */
-    public String updatePostOngoingStatus(Long postId, String onGoingStatus) {
-        return postRepository.updatePostOngoingStatus(postId, onGoingStatus, Category.getEnumCategoryCodeFromStringCategoryCode(onGoingStatus)).getOnGoingStatus();
+    public Post updatePostCategoryAndOngoingStatus(Long postId, String onGoingStatus) {
+        return postRepository.updatePostOngoingStatus(postId, onGoingStatus, Category.getEnumCategoryCodeFromStringCategoryCode(onGoingStatus));
     }
 
     /**
      * '진행중' 청원일 때 30일이 지난 시점에 좋아요 100개를 달성하지 못하면 '종료됨'
      * '진행중' 청원일 때 30일이 지난 시점에 좋아요 100개를 달성하면 '접수된' 청원으로 변경
      */
-    private String handleInProgressStatus(Post post, Integer likeCountOfPost) {
-//        LocalDateTime createdAt = LocalDateTime.parse(post.getCreatedAt());
+    private Post handleInProgressStatus(Post post, Integer likeCountOfPost) {
         LocalDateTime createdAt = DateUtils.parseHourMinSecFromCustomString(post.getCreatedAt());
         // 30일이 경과한 경우
         if (LocalDateTime.now().isAfter(createdAt.plusDays(30))) {
             // 30일 동안 좋아요 100개를 달성하지 못한 경우에만 종료됨 상태로 변경
             if (likeCountOfPost < 100) {
-                return updatePostOngoingStatus(post.getId(), "종료됨");
-            } else return updatePostOngoingStatus(post.getId(), "접수완료");
+                return updatePostCategoryAndOngoingStatus(post.getId(), "종료됨");
+            } else return updatePostCategoryAndOngoingStatus(post.getId(), "접수완료");
         } else {
             if (likeCountOfPost >= 100) {
-                return updatePostOngoingStatus(post.getId(), "접수완료");
-            } else return "진행중";
+                return updatePostCategoryAndOngoingStatus(post.getId(), "접수완료");
+            } else return post;
         }
         // 30일 이내면 아직 상태를 변경하지 않음
 //        return "IN_PROGRESS";
@@ -71,11 +71,11 @@ public class PostStatusProcessor {
     /**
      * '접수된' 청원에서 관리자가 댓글을 달면 '답변완료' 청원으로 변경
      */
-    private String handleReceivedStatus(Post post) {
+    private Post handleReceivedStatus(Post post) {
         if (isAnsweredByAdmin(post)) {
-            return updatePostOngoingStatus(post.getId(),"답변완료");
+            return updatePostCategoryAndOngoingStatus(post.getId(),"답변완료");
         }
-        return "접수완료";
+        return post;
     }
 
     /**
