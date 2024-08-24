@@ -30,7 +30,7 @@ public class DataPostResponse extends PostListResDto {
 //                .content(post.getContent())
                 .date(post.getCreatedAt().toString())
                 .isNotice(post.getTitle().equals("총학생회칙"))
-                .fileNames(postFiles.stream().map(postFile ->postFile.getSubCategory()).toList())
+                .fileNames(postFiles.stream().map(postFile ->postFile.getFileCategory()).toList())
                 .files(postFiles.stream().map(postFile -> postFile.getUrl()).toList())
                 .build();
     }

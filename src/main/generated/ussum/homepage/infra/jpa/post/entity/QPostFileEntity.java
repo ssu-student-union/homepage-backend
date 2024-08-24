@@ -22,13 +22,13 @@ public class QPostFileEntity extends EntityPathBase<PostFileEntity> {
 
     public static final QPostFileEntity postFileEntity = new QPostFileEntity("postFileEntity");
 
+    public final EnumPath<FileCategory> fileCategory = createEnum("fileCategory", FileCategory.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final QPostEntity postEntity;
 
     public final StringPath size = createString("size");
-
-    public final StringPath subCategory = createString("subCategory");
 
     public final StringPath typeName = createString("typeName");
 
