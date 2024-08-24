@@ -53,11 +53,11 @@ public class S3utils {
         List<Map<String, String>> uploadedFileUrls = new ArrayList<>();
 
         if (images != null && images.length > 0) {
-            uploadedFileUrls.addAll(uploadFiles(userId, boardCode, images, "IMAGES"));
+            uploadedFileUrls.addAll(uploadFiles(userId, boardCode, images, "images"));
         }
 
         if (files != null && files.length > 0) {
-            uploadedFileUrls.addAll(uploadFiles(userId, boardCode, files, "FILES"));
+            uploadedFileUrls.addAll(uploadFiles(userId, boardCode, files, "files"));
         }
 
         return uploadedFileUrls;

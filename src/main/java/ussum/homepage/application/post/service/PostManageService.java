@@ -16,6 +16,7 @@ import ussum.homepage.application.post.service.dto.response.DataPostResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.*;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 
+import ussum.homepage.application.post.service.dto.response.postSave.PostFileListResponse;
 import ussum.homepage.domain.comment.service.formatter.TriFunction;
 
 import ussum.homepage.application.post.service.dto.response.postSave.PostCreateResponse;
@@ -46,6 +47,7 @@ import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.utils.S3utils;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -218,14 +220,22 @@ public class PostManageService {
     }
 
     @Transactional
-    public List<PostFileResponse> createBoardPostFile(Long userId, String boardCode, MultipartFile[] files, MultipartFile[] images){
+    public PostFileListResponse createBoardPostFile(Long userId, String boardCode, MultipartFile[] files, MultipartFile[] images){
         List<Map<String, String>> urlList = s3utils.uploadFileWithPath(userId, boardCode, files, images);
         List<PostFile> postFiles = convertUrlsToPostFiles(urlList);
         List<PostFile> afterSaveList = postFileAppender.saveAllPostFile(postFiles);
 
-        return afterSaveList.stream()
+        String thumbnailUrl = afterSaveList.stream()
+                .filter(postFile -> postFile.getTypeName().equals("images"))
+                .min(Comparator.comparing(PostFile::getId))
+                .map(PostFile::getUrl)
+                .orElse(null);
+
+        List<PostFileResponse> postFileResponses = afterSaveList.stream()
                 .map(postFile -> PostFileResponse.of(postFile.getId(), postFile.getUrl()))
                 .collect(Collectors.toList());
+
+        return PostFileListResponse.of(thumbnailUrl, postFileResponses);
     }
 
     private List<PostFile> convertUrlsToPostFiles(List<Map<String, String>> urlList) {
