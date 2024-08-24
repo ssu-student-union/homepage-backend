@@ -241,6 +241,11 @@ public class PostManageService {
         Post post = postModifier.updatePost(boardCode, postId, postUpdateRequest);
         return post.getId();
     }
+
+    @Transactional
+    public void deletePost(String boardCode, Long postId) {
+        postModifier.deletePost(boardCode, postId);
+    }
 }
 //스위치 사용 로직
 /*

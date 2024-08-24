@@ -133,4 +133,15 @@ public class PostManageController {
         return ApiResponse.success(postManageService.editBoardPost(boardCode, postId, postUpdateRequest));
     }
 
+    @Operation(summary = "게시물 삭제 api", description = """
+            게시물을 삭제하는 api 입니다. 
+            """)
+    @DeleteMapping("/{boardCode}/posts/{postId}")
+    public ResponseEntity<ApiResponse<?>> deleteBoardPost(@Parameter(hidden = true) @UserId Long userId,
+                                                          @PathVariable(name = "boardCode") String boardCode,
+                                                          @PathVariable(name = "postId") Long postId) {
+        postManageService.deletePost(boardCode, postId);
+        return ApiResponse.success(null);
+    }
+
 }

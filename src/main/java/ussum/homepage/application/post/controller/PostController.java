@@ -46,14 +46,14 @@ public class PostController {
 //        PostResponse post = postService.getPost(boardCode, postId);
 //        return ApiResponse.success(post);
 //    }
-
-    @PostMapping("/{boardCode}/posts")
-    public ResponseEntity<ApiResponse<?>> createBoardPost(@UserId Long userId,
-                                                          @PathVariable(name = "boardCode") String boardCode,
-                                                          @RequestBody PostCreateRequest postCreateRequest) {
-        postService.createPost(userId, boardCode,postCreateRequest);
-        return ApiResponse.success(null);
-    }
+//
+//    @PostMapping("/{boardCode}/posts")
+//    public ResponseEntity<ApiResponse<?>> createBoardPost(@UserId Long userId,
+//                                                          @PathVariable(name = "boardCode") String boardCode,
+//                                                          @RequestBody PostCreateRequest postCreateRequest) {
+//        postService.createPost(userId, boardCode,postCreateRequest);
+//        return ApiResponse.success(null);
+//    }
 
 //    @PatchMapping("/{boardCode}/posts/{postId}")
 //    public ResponseEntity<ApiResponse<?>> editBoardPost(@PathVariable(name = "boardCode") String boardCode,
@@ -62,17 +62,17 @@ public class PostController {
 //        PostResponse post = postService.editPost(boardCode,postId, postUpdateRequest);
 //        return ApiResponse.success(post);
 //    }
-
-    @Operation(summary = "게시물 삭제 api", description = """
-            게시물을 삭제하는 api 입니다. 
-            """)
-    @DeleteMapping("/{boardCode}/posts/{postId}")
-    public ResponseEntity<ApiResponse<?>> deleteBoardPost(@Parameter(hidden = true) @UserId Long userId,
-                                                          @PathVariable(name = "boardCode") String boardCode,
-                                                          @PathVariable(name = "postId") Long postId) {
-        postService.deletePost(boardCode, postId);
-        return ApiResponse.success(null);
-    }
+//
+//    @Operation(summary = "게시물 삭제 api", description = """
+//            게시물을 삭제하는 api 입니다.
+//            """)
+//    @DeleteMapping("/{boardCode}/posts/{postId}")
+//    public ResponseEntity<ApiResponse<?>> deleteBoardPost(@Parameter(hidden = true) @UserId Long userId,
+//                                                          @PathVariable(name = "boardCode") String boardCode,
+//                                                          @PathVariable(name = "postId") Long postId) {
+//        postService.deletePost(boardCode, postId);
+//        return ApiResponse.success(null);
+//    }
 
 //    @GetMapping("/{boardCode}/posts/search")
 //    public ResponseEntity<ApiResponse<?>> searchBoardPost(@RequestParam(value = "q") String q,

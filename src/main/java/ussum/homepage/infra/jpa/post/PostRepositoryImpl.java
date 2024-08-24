@@ -20,6 +20,7 @@ import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.infra.jpa.post.entity.*;
 import ussum.homepage.infra.jpa.post.repository.BoardJpaRepository;
+import ussum.homepage.infra.jpa.post.repository.PostFileJpaRepository;
 import ussum.homepage.infra.jpa.post.repository.PostJpaRepository;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
@@ -48,6 +49,7 @@ import static ussum.homepage.infra.jpa.user.entity.QUserEntity.userEntity;
 @RequiredArgsConstructor
 public class PostRepositoryImpl implements PostRepository {
     private final PostJpaRepository postJpaRepository;
+    private final PostFileJpaRepository postFileJpaRepository;
     private final BoardJpaRepository boardJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final PostMapper postMapper;
@@ -230,6 +232,7 @@ public class PostRepositoryImpl implements PostRepository {
         BoardEntity boardEntity = boardJpaRepository.findById(post.getBoardId())
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
+        postFileJpaRepository.deleteAll(postFileJpaRepository.findAllByPostId(post.getId()));
         postJpaRepository.delete(postMapper.toEntity(post, userEntity, boardEntity));
     }
 
