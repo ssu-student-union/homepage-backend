@@ -52,12 +52,12 @@ public class S3utils {
     public List<Map<String, String>> uploadFileWithPath(Long userId, String boardCode, MultipartFile[] files, MultipartFile[] images) {
         List<Map<String, String>> uploadedFileUrls = new ArrayList<>();
 
-        if (files != null && files.length > 0) {
-            uploadedFileUrls.addAll(uploadFiles(userId, boardCode, files, "files"));
+        if (images != null && images.length > 0) {
+            uploadedFileUrls.addAll(uploadFiles(userId, boardCode, images, "IMAGES"));
         }
 
-        if (images != null && images.length > 0) {
-            uploadedFileUrls.addAll(uploadFiles(userId, boardCode, images, "images"));
+        if (files != null && files.length > 0) {
+            uploadedFileUrls.addAll(uploadFiles(userId, boardCode, files, "FILES"));
         }
 
         return uploadedFileUrls;
