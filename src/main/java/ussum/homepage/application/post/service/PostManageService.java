@@ -16,7 +16,7 @@ import ussum.homepage.application.post.service.dto.response.DataPostResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.*;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 
-import ussum.homepage.domain.comment.service.formatter.TriFunction;
+import ussum.homepage.domain.comment.service.formatter.QuadFunction;
 
 import ussum.homepage.application.post.service.dto.response.postSave.PostCreateResponse;
 import ussum.homepage.application.post.service.dto.response.postSave.PostFileResponse;
@@ -70,14 +70,13 @@ public class PostManageService {
     private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
 
-    private final Map<String, TriFunction<Post, Integer, User, ? extends PostListResDto>> postResponseMap = Map.of(
-            "공지사항게시판", (post, ignored1, user) -> NoticePostResponse.of(post, user),
-            "분실물게시판", (post, ignored1, ignored2) -> LostPostResponse.of(post),
-            "제휴게시판", (post, ignored1, ignored2) -> PartnerPostResponse.of(post),
-            "감사기구게시판", (post, ignored1, ignored2) -> AuditPostResponseDto.of(post),
-            "청원게시판", (post, likeCount, ignored2) -> PetitionPostResponse.of(post, likeCount),
-            "자료집게시판", (post, likeCount, ignored2) -> DataPostResponse.of(post)
-
+    private final Map<String, QuadFunction<Post, List<PostFile>, Integer, User, ? extends PostListResDto>> postResponseMap = Map.of(
+            "공지사항게시판", (post, ignored1, ignored2, user) -> NoticePostResponse.of(post, user),
+            "분실물게시판", (post, ignored1, ignored2, ignored3) -> LostPostResponse.of(post),
+            "제휴게시판", (post, ignored1, ignored2, ignored3) -> PartnerPostResponse.of(post),
+            "감사기구게시판", (post, ignored1, ignored2, ignored3) -> AuditPostResponseDto.of(post),
+            "청원게시판", (post, ignored1, likeCount, ignored2) -> PetitionPostResponse.of(post, likeCount),
+            "자료집게시판", (post, postFiles, ignored1, ignored2) -> DataPostResponse.of(post, postFiles)
     );
 
     private final Map<String, PostDetailFunction<Post, Boolean, String, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
@@ -113,7 +112,7 @@ public class PostManageService {
 
         PageInfo pageInfo = PageInfo.of(postList);
 
-        TriFunction<Post, Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get(board.getName());
+        QuadFunction<Post, List<PostFile>, Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get(board.getName());
 
         if (responseFunction == null) {
             throw new IllegalArgumentException("Unknown board type: " + board.getName());
@@ -126,16 +125,17 @@ public class PostManageService {
                     switch (board.getName()) {
                         case "공지사항게시판":
                             user = userReader.getUserWithId(post.getUserId());
-                            return responseFunction.apply(post, null, user);
+                            return responseFunction.apply(post, null, null,user);
                         case "분실물게시판":
                         case "제휴게시판":
                         case "감사기구게시판":
                         case "자료집":
-                            return responseFunction.apply(post, null, null);
+                            return responseFunction.apply(post, null, null, null);
                         case "청원게시판":
                             likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
+
                             Post updatedPost = postStatusProcessor.processStatus(post);
-                            return responseFunction.apply(updatedPost, likeCount, null);
+                            return responseFunction.apply(post, null, likeCount,null);
                         default:
                             throw new EntityNotFoundException(String.valueOf(POST_NOT_FOUND));
                     }
@@ -152,8 +152,8 @@ public class PostManageService {
 
         Page<Post> postList = postReader.getPostListByGroupCodeAndMemberCodeAndSubCategory(groupCodeEnum, memberCodeEnum, subCategory, pageable);
         PageInfo pageInfo = PageInfo.of(postList);
-        TriFunction<Post, Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get("자료집게시판");
-        List<? extends PostListResDto> responseList = postList.getContent().stream().map(post -> responseFunction.apply(post, null, null)).toList();
+        QuadFunction<Post, List<PostFile> , Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get("자료집게시판");
+        List<? extends PostListResDto> responseList = postList.getContent().stream().map(post -> responseFunction.apply(post, postFileReader.getPostFileListByPostId(post.getId()), null, null)).toList();
         return PostListRes.of(responseList, pageInfo);
     }
 
