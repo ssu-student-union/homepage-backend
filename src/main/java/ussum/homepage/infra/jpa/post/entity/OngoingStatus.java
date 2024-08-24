@@ -43,4 +43,10 @@ public enum OngoingStatus {
         return fromString(stringOnGoingStatus).orElse(null);
     }
 
+    public static String fromEnumOrNull(OngoingStatus ongoingStatus) {
+        return Optional.ofNullable(ongoingStatus)
+                .map(OngoingStatus::getStringOnGoingStatus)
+                .orElse(null);
+    }
+
 }
