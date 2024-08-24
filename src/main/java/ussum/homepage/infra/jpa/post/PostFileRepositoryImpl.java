@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ussum.homepage.domain.post.PostFile;
 import ussum.homepage.domain.post.PostFileRepository;
+import ussum.homepage.infra.jpa.post.entity.FileCategory;
 import ussum.homepage.infra.jpa.post.repository.PostFileJpaRepository;
 
 import java.util.List;
@@ -54,11 +55,13 @@ public class PostFileRepositoryImpl implements PostFileRepository {
     }
 
     @Override
-    public void updatePostIdAndSubCategoryForIds(List<Long> postFileIds, Long postId, String subCategory) {
+    public void updatePostIdAndFileCategoryForIds(List<Long> postFileIds, Long postId, FileCategory fileCategory, String fileType) {
+
         queryFactory
                 .update(postFileEntity)
                 .set(postFileEntity.postEntity.id, postId)
-                .set(postFileEntity.subCategory, subCategory)
+                .set(postFileEntity.fileCategory, fileCategory)
+                .set(postFileEntity.typeName, fileType)
                 .where(postFileEntity.id.in(postFileIds))
                 .execute();
     }

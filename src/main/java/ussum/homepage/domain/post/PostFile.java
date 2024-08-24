@@ -12,12 +12,12 @@ import ussum.homepage.infra.jpa.post.entity.PostEntity;
 public class PostFile {
     private Long id;
     private String typeName;
-    private String subCategory;
+    private String fileCategory;
     private String url;
     private String size;
     private Long postId;
 
-    public static PostFile of(Long id, String typeName, String subCategory, String url, String size, Long postId) {
-        return new PostFile(id, typeName, subCategory, url, size, postId);
+    public static PostFile of(Long id, String typeName, String fileCategory, String url, String size, Long postId) {
+        return new PostFile(id, typeName, fileCategory, url, size, postId);
     }
 }

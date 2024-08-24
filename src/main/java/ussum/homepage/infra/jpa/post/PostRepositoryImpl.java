@@ -3,6 +3,7 @@ package ussum.homepage.infra.jpa.post;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -74,34 +75,70 @@ public class PostRepositoryImpl implements PostRepository {
         return Optional.of(postMapper.toDomain(postEntity));
     }
 
-    @Override
-    public Page<Post> findAllByGroupCodeAndMemberCodeAndSubCategory(GroupCode groupCode, MemberCode memberCode, String subCategory, Pageable pageable) {
-        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(6L));
-
-        if (subCategory != null && !subCategory.isEmpty()) {
-            whereClause.and(postFileEntity.subCategory.eq(subCategory));
-        }
-        if (memberCode != null) {
-            whereClause.and(memberEntity.memberCode.eq(memberCode));
-        }
-        if (groupCode != null) {
-            whereClause.and(groupEntity.groupCode.eq(groupCode));
-        }
-
-//        if (whereClause.getValue() == null) {
-//            throw new IllegalArgumentException("At least one of subCategory, memberCode, or groupCode must be provided");
+//    @Override
+//    public Page<Post> findAllByGroupCodeAndMemberCodeAndSubCategory(GroupCode groupCode, MemberCode memberCode, String subCategory, Pageable pageable) {
+//        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(6L));
+//
+//        if (subCategory != null && !subCategory.isEmpty()) {
+//            whereClause.and(postFileEntity.subCategory.eq(subCategory));
 //        }
+//        if (memberCode != null) {
+//            whereClause.and(memberEntity.memberCode.eq(memberCode));
+//        }
+//        if (groupCode != null) {
+//            whereClause.and(groupEntity.groupCode.eq(groupCode));
+//        }
+//
+////        if (whereClause.getValue() == null) {
+////            throw new IllegalArgumentException("At least one of subCategory, memberCode, or groupCode must be provided");
+////        }
+//
+//        JPAQuery<PostEntity> query = queryFactory
+//                .selectFrom(postEntity)
+//                .leftJoin(postEntity.userEntity, userEntity)
+//                .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
+//                .leftJoin(memberEntity.groupEntity, groupEntity)
+//                .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
+//                .where(whereClause)
+//                .orderBy(postEntity.createdAt.desc());
+//
+//        List<PostEntity> content = query
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetch();
+//
+//        JPAQuery<Long> countQuery = queryFactory
+//                .select(postEntity.count())
+//                .from(postEntity)
+//                .leftJoin(postEntity.userEntity, userEntity)
+//                .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
+//                .leftJoin(memberEntity.groupEntity, groupEntity)
+//                .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
+//                .where(whereClause);
+//
+//        return PageableExecutionUtils.getPage(
+//                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+//                pageable,
+//                countQuery::fetchOne
+//        );
+//    }
+    @Override
+    public Page<Post> findAllByFileCategories(List<FileCategory> fileCategories, Pageable pageable) {
+        BooleanExpression whereClause = postEntity.boardEntity.id.eq(6L);
 
-        JPAQuery<PostEntity> query = queryFactory
+        if (fileCategories != null && !fileCategories.isEmpty()) {
+            whereClause = whereClause.and(postEntity.id.in(
+                    JPAExpressions
+                            .select(postFileEntity.postEntity.id)
+                            .from(postFileEntity)
+                            .where(postFileEntity.fileCategory.in(fileCategories))
+            ));
+        }
+
+        List<PostEntity> content = queryFactory
                 .selectFrom(postEntity)
-                .leftJoin(postEntity.userEntity, userEntity)
-                .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
-                .leftJoin(memberEntity.groupEntity, groupEntity)
-                .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
                 .where(whereClause)
-                .orderBy(postEntity.createdAt.desc());
-
-        List<PostEntity> content = query
+                .orderBy(postEntity.createdAt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -109,10 +146,6 @@ public class PostRepositoryImpl implements PostRepository {
         JPAQuery<Long> countQuery = queryFactory
                 .select(postEntity.count())
                 .from(postEntity)
-                .leftJoin(postEntity.userEntity, userEntity)
-                .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
-                .leftJoin(memberEntity.groupEntity, groupEntity)
-                .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
                 .where(whereClause);
 
         return PageableExecutionUtils.getPage(
@@ -121,7 +154,6 @@ public class PostRepositoryImpl implements PostRepository {
                 countQuery::fetchOne
         );
     }
-
     @Override
     public Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, GroupCode groupCode, MemberCode memberCode, Pageable pageable) {
         BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));

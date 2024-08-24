@@ -6,7 +6,9 @@ import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
+import ussum.homepage.infra.jpa.post.entity.FileCategory;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository {
@@ -20,6 +22,7 @@ public interface PostRepository {
     Page<Post> findBySearchCriteria(Pageable pageable,String boardCode, String q, String categoryCode);
     Page<SimplePostResponse> findPostDtoListByBoardCode(String boardCode, Pageable pageable);
     Post updatePostOngoingStatus(Long postId, String onGoingStatus, Category category);
-    Page<Post> findAllByGroupCodeAndMemberCodeAndSubCategory(GroupCode groupCode, MemberCode memberCode, String subCategory, Pageable pageable);
+//    Page<Post> findAllByGroupCodeAndMemberCodeAndSubCategory(GroupCode groupCode, MemberCode memberCode, String subCategory, Pageable pageable);
+    Page<Post> findAllByFileCategories(List<FileCategory> fileCategories, Pageable pageable);
     Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boarId, GroupCode groupCode, MemberCode memberCode, Pageable pageable);
 }

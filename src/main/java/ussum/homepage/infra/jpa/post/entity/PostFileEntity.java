@@ -12,7 +12,8 @@ public class PostFileEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String typeName;
-    private String subCategory;
+    @Enumerated(EnumType.STRING)
+    private FileCategory fileCategory;
     private String url;
     private String size;
 
@@ -20,8 +21,8 @@ public class PostFileEntity {
     @JoinColumn(name = "post_id")
     private PostEntity postEntity;
 
-    public static PostFileEntity of(Long id, String typeName, String subCategory, String url, String size, PostEntity postEntity) {
-        return new PostFileEntity(id, typeName, subCategory, url, size, postEntity);
+    public static PostFileEntity of(Long id, String typeName, FileCategory fileCategory, String url, String size, PostEntity postEntity) {
+        return new PostFileEntity(id, typeName, fileCategory, url, size, postEntity);
     }
 
 }
