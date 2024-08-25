@@ -16,7 +16,10 @@ public class PostEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+
+    @Lob
     private String content;
+
     private Integer viewCount;
     private String thumbnailImage;
 
