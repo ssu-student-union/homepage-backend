@@ -36,7 +36,7 @@ public class MemberMapper {
                 member.getId(),
                 member.getIsAdmin(),
                 MemberCode.getEnumMemberCodeFromStringMemberCode(member.getMemberCode()),
-                MajorCode.getEnumMajorCodeFromStringMajorCode(member.getMajorCode()),
+                member.getMajorCode() == null ? null : MajorCode.getEnumMajorCodeFromStringMajorCode(member.getMajorCode()),
                 UserEntity.from(member.getUserId()),
                 member.getGroupId() == null ? null : GroupEntity.from(member.getGroupId())
         );
