@@ -4,38 +4,42 @@ import lombok.Builder;
 import lombok.Getter;
 import ussum.homepage.application.comment.service.dto.response.PostOfficialCommentResponse;
 import ussum.homepage.domain.post.Post;
+import ussum.homepage.domain.user.User;
 
 import java.util.List;
 
 @Getter
 public class PetitionPostDetailResponse extends PostDetailResDto {
+    private final String studentId;
     private final Integer likeCount;
-//    private final String onGoingStatus;
-    private final List<String> imageList;
     private final List<PostOfficialCommentResponse> officialCommentList;
+    private final List<String> imageList;
+    //    private final String onGoingStatus;
 
     @Builder
-    private PetitionPostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt, Boolean isAuthor,
-                                       Integer likeCount, String onGoingStatus, List<String> imageList, List<PostOfficialCommentResponse> officialCommentList) {
+    private PetitionPostDetailResponse(Long postId, String categoryName, String authorName, String studentId, String title, String content, String createdAt, Boolean isAuthor,
+                                       Integer likeCount, /*String onGoingStatus,*/ List<String> imageList, List<PostOfficialCommentResponse> officialCommentList) {
         super(postId, categoryName, authorName, title, content, createdAt, isAuthor);
+        this.studentId = studentId;
         this.likeCount = likeCount;
-//        this.onGoingStatus = onGoingStatus;
         this.imageList = imageList;
         this.officialCommentList = officialCommentList;
+//        this.onGoingStatus = onGoingStatus;
     }
 
-    public static PetitionPostDetailResponse of(Post post, Boolean isAuthor, String authorName, Integer likeCount, String category, List<String> imageList,
+    public static PetitionPostDetailResponse of(Post post, Boolean isAuthor, User user, Integer likeCount, String category, List<String> imageList,
                                                 List<PostOfficialCommentResponse> officialCommentList) {
         return PetitionPostDetailResponse.builder()
                 .postId(post.getId())
                 .categoryName(category)
-                .authorName(authorName)
+                .authorName(user.getName())
+                .studentId(user.getStudentId())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
                 .isAuthor(isAuthor)
                 .likeCount(likeCount)
-//                .onGoingStatus(onGoingStatus)
+//                .onGoingStatus(post.getCategory())
                 .imageList(imageList)
                 .officialCommentList(officialCommentList)
                 .build();

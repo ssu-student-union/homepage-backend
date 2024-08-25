@@ -83,12 +83,12 @@ public class PostManageService {
             "자료집게시판", (post, postFiles, ignored1, ignored2) -> DataPostResponse.of(post, postFiles)
     );
 
-    private final Map<String, PostDetailFunction<Post, Boolean, String, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
-            "공지사항게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList, another_ignored) -> NoticePostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
-            "분실물게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, another_ignored1, another_ignored2) -> LostPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList),
-            "제휴게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList, another_ignored) -> PartnerPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
-            "감사기구게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList, another_ignored) -> AuditPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
-            "청원게시판", (post, isAuthor, authorName, likeCount, categoryName, imageList, ignored, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, authorName, likeCount, categoryName, imageList, postOfficialCommentResponseList)
+    private final Map<String, PostDetailFunction<Post, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
+            "공지사항게시판", (post, isAuthor, user, ignored, categoryName, imageList, fileList, another_ignored) -> NoticePostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
+            "분실물게시판", (post, isAuthor, user, ignored, categoryName, imageList, another_ignored1, another_ignored2) -> LostPostDetailResponse.of(post, isAuthor, user, categoryName, imageList),
+            "제휴게시판", (post, isAuthor, user, ignored, categoryName, imageList, fileList, another_ignored) -> PartnerPostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
+            "감사기구게시판", (post, isAuthor, user, ignored, categoryName, imageList, fileList, another_ignored) -> AuditPostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
+            "청원게시판", (post, isAuthor, user, likeCount, categoryName, imageList, ignored, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, user, likeCount, categoryName, imageList, postOfficialCommentResponseList)
     );
 
     public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode, String memberCode, String category) {
@@ -167,7 +167,7 @@ public class PostManageService {
         List<String> fileList = postFileReader.getPostFileListByFileType(postFileList);
 
 
-        PostDetailFunction<Post, Boolean, String, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
+        PostDetailFunction<Post, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
 
         if (responseFunction == null) {
             throw new GeneralException(ErrorStatus.INVALID_BOARDCODE);
@@ -180,11 +180,11 @@ public class PostManageService {
             List<PostOfficialCommentResponse> postOfficialCommentResponses = officialPostComments.stream()
                     .map(postOfficialComment -> postOfficialCommentFormatter.format(postOfficialComment, userId))
                     .toList();
-            response = responseFunction.apply(post, isAuthor, user.getName(), likeCount, post.getCategory(), imageList, null, postOfficialCommentResponses);
+            response = responseFunction.apply(post, isAuthor, user, likeCount, post.getCategory(), imageList, null, postOfficialCommentResponses);
         } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판")) {
-            response = responseFunction.apply(post, isAuthor, user.getName(), null, post.getCategory(), imageList, fileList,null);
+            response = responseFunction.apply(post, isAuthor, user, null, post.getCategory(), imageList, fileList,null);
         } else if (board.getName().equals("분실물게시판")) {
-            response = responseFunction.apply(post, isAuthor, user.getName(), null, post.getCategory(), imageList, null, null); //분실물 게시판은 파일첨부 제외
+            response = responseFunction.apply(post, isAuthor, user, null, post.getCategory(), imageList, null, null); //분실물 게시판은 파일첨부 제외
         }
 
         return PostDetailRes.of(response);
