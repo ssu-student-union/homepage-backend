@@ -74,6 +74,7 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_ONGOING_STATUS(HttpStatus.BAD_REQUEST,"ENUM_013","유효하지 않은 ONGOING_STATUS입니다."),
     WRONG_TRANSLATED_TO_KOREAN(HttpStatus.BAD_REQUEST,"ENUM_014","ONGOING_STATUS가 한국어로 잘못변환되었습니다."),
     INVALID_GROUP_CODE(HttpStatus.BAD_REQUEST,"ENUM_015","유효하지 않은 GROUPCODE입니다."),
+    INVALID_FILE_CATEGORY(HttpStatus.BAD_REQUEST,"ENUM_016","유효하지 않은 FILE_CATEGORY입니다."),
 
     /**
      * 401 Unauthorized, Token 관련 에러
@@ -95,6 +96,9 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //S3에러
     S3_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"S3_001","S3에 파일 저장이 실패했습니다."),
+    INVALID_S3_URL(HttpStatus.BAD_REQUEST,"S3_002","유효하지 않은 S3 파일 URL입니다."),
+    URL_DELETE_ERROR(HttpStatus.BAD_REQUEST,"S3_003","S3 파일 삭제에 실패했습니다."),
+
 
     //Body 에러
     INVALID_BODY(HttpStatus.BAD_REQUEST, "BODY_ERROR", "Body가 올바르지 않습니다.");

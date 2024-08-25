@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.post.service.PostManageService;
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
+import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.request.PostUserRequest;
 import ussum.homepage.global.ApiResponse;
@@ -90,13 +91,14 @@ public class PostManageController {
     @Operation(summary = "자료집 게시물 생성 api", description = """
             자료집 게시물을 생성하는 api입니다.
             기본적으로 액세스 토큰을 필요로 합니다.
-            요청 path에 subCategory(소분류) 값을 문자열 형태로 넣으면 됩니다.
+            요청 path에 fileCategory(카테고리 ex.총학생회칙) 값을 문자열 형태로 넣으면 됩니다.
             """)
-    @PostMapping("data/{subCategory}/post")
+    @PostMapping("data/{fileCategory}/{fileType}/post")
     public ResponseEntity<ApiResponse<?>> createDataPost(@Parameter(hidden = true) @UserId Long userId,
-                                                         @PathVariable(name = "subCategory") String subCategory,
+                                                         @PathVariable(name = "fileCategory") String fileCategory,
+                                                         @PathVariable(name = "fileType") String fileType,
                                                          @RequestBody PostCreateRequest postCreateRequest) {
-        return ApiResponse.success(postManageService.createDataPost(userId, subCategory, postCreateRequest));
+        return ApiResponse.success(postManageService.createDataPost(userId, fileCategory, fileType, postCreateRequest));
     }
 
     @Operation(summary = "게시물 생성 시 파일 및 이미지 저장 api", description = """
@@ -119,6 +121,17 @@ public class PostManageController {
                                                               @RequestPart(value = "images", required = false) MultipartFile[] images) {
 
         return ApiResponse.success(postManageService.createBoardPostFile(userId, boardCode, files, images));
+    }
+
+    @Operation(summary = "게시물 단건 조회 후 파일 혹은 이미지 삭제 api", description = """
+            게시물 단건 조회 후 파일 혹은 이미지 삭제 api입니다.
+            삭제하고자하는 파일의 url을 List 형식으로 보내주시면 됩니다.
+            """)
+    @DeleteMapping("/{boardCode}/files")
+    public ResponseEntity<ApiResponse<?>> deleteBoardPostFile(@Parameter(hidden = true) @UserId Long userId,
+                                                              @PathVariable(name = "boardCode") String boardCode,
+                                                              @RequestBody PostFileDeleteRequest postFileDeleteRequest){
+        return ApiResponse.success(postManageService.deleteBoardPostFile(userId, boardCode, postFileDeleteRequest));
     }
 
 

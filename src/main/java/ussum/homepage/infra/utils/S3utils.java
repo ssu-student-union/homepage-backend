@@ -1,14 +1,12 @@
 package ussum.homepage.infra.utils;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
 
@@ -16,7 +14,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -44,7 +44,7 @@ public class S3utils {
         try {
             amazonS3.putObject(bucket, originalFilename, file.getInputStream(), metadata);
         } catch (IOException e) {
-            throw new RuntimeException("파일을 업로드하는데 실패하셨습니다.", e);
+            throw new GeneralException(ErrorStatus.S3_ERROR);
         }
         return amazonS3.getUrl(bucket, originalFilename).toString();
     }
@@ -90,7 +90,6 @@ public class S3utils {
         return uploadedFileUrls;
     }
 
-
     private File convertMultiPartToFile(MultipartFile file) throws IOException {
         File convertedFile = new File(file.getOriginalFilename());
         FileOutputStream fos = new FileOutputStream(convertedFile);
@@ -99,13 +98,42 @@ public class S3utils {
         return convertedFile;
     }
 
+    public int deleteFiles(PostFileDeleteRequest request) {
+        try {
+            List<DeleteObjectsRequest.KeyVersion> keys = request.fileUrls().stream()
+                    .map(this::extractKeyFromUrl)
+                    .map(DeleteObjectsRequest.KeyVersion::new)
+                    .collect(Collectors.toList());
+
+            DeleteObjectsRequest deleteRequest = new DeleteObjectsRequest(bucket)
+                    .withKeys(keys)
+                    .withQuiet(false);
+
+            DeleteObjectsResult result = amazonS3.deleteObjects(deleteRequest);
+
+            int deletedCount = result.getDeletedObjects().size();
+            return deletedCount;
+        } catch (Exception e) {
+            throw new GeneralException(ErrorStatus.URL_DELETE_ERROR);
+        }
+    }
+
+    private String extractKeyFromUrl(String fileUrl) {
+        try {
+            URL url = new URL(fileUrl);
+            return url.getPath().substring(1);
+        } catch (Exception e) {
+            throw new GeneralException(ErrorStatus.INVALID_S3_URL);
+        }
+    }
+
     public void getFileToProject(String fileName)  {
         S3Object s3Object = amazonS3.getObject(bucket, fileName);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
         try {
             saveFile(inputStream, "**/src/main/resources/csv");
         } catch (IOException e) {
-            throw new RuntimeException("파일을 저장하지 못했습니다.");
+            throw new GeneralException(ErrorStatus.S3_ERROR);
         }
         return;
     }

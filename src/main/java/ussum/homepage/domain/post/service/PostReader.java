@@ -15,6 +15,9 @@ import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.infra.jpa.post.entity.Category;
+import ussum.homepage.infra.jpa.post.entity.FileCategory;
+
+import java.util.List;
 
 import static ussum.homepage.global.error.status.ErrorStatus.BOARD_NOT_FOUND;
 import static ussum.homepage.global.error.status.ErrorStatus.POST_NOT_FOUND;
@@ -40,8 +43,8 @@ public class PostReader {
         return postRepository.findAllByBoardIdAndGroupCodeAndMemberCode(boardId, groupCode,memberCode, pageable);
     }
 
-    public Page<Post> getPostListByGroupCodeAndMemberCodeAndSubCategory(GroupCode groupCode, MemberCode memberCode, String subCategory, Pageable pageable){
-        return postRepository.findAllByGroupCodeAndMemberCodeAndSubCategory(groupCode,memberCode,subCategory, pageable);
+    public Page<Post> getPostListByFileCategories(List<FileCategory> fileCategories, Pageable pageable){
+        return postRepository.findAllByFileCategories(fileCategories, pageable);
     }
 
     public Post getPostWithId(Long postId) {

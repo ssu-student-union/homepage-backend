@@ -2,6 +2,7 @@ package ussum.homepage.domain.post.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.domain.post.PostFile;
 import ussum.homepage.domain.post.PostFileRepository;
 
@@ -30,6 +31,10 @@ public class PostFileReader {
 
     public List<String> getPostFileListByFileType(List<PostFile> postFileList) {
         return getPostFileUrlsByType(postFileList, "files");
+    }
+
+    public Long getPostFileListByUrlAndDelete(PostFileDeleteRequest request){
+        return postFileRepository.deleteAllByUrl(request.fileUrls());
     }
 
 }
