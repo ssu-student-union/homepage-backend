@@ -3,14 +3,14 @@ package ussum.homepage.infra.jpa.post.entity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
+import ussum.homepage.domain.post.exception.PostException;
 import ussum.homepage.global.error.exception.InvalidValueException;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 
 import java.util.Arrays;
 import java.util.Optional;
 
-import static ussum.homepage.global.error.status.ErrorStatus.INVALID_ONGOING_STATUS;
-import static ussum.homepage.global.error.status.ErrorStatus.WRONG_TRANSLATED_TO_KOREAN;
+import static ussum.homepage.global.error.status.ErrorStatus.*;
 
 @RequiredArgsConstructor
 @Getter
@@ -47,6 +47,11 @@ public enum OngoingStatus {
         return Optional.ofNullable(ongoingStatus)
                 .map(OngoingStatus::getStringOnGoingStatus)
                 .orElse(null);
+    }
+
+    public static String fromEnumOrNull(String stringOnGoingStatus) {
+        return Optional.ofNullable(stringOnGoingStatus)
+                .orElseThrow(() -> new InvalidValueException(INVALID_ONGOING_STATUS));
     }
 
 }

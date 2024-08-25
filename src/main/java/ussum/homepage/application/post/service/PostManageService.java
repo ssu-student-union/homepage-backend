@@ -68,7 +68,7 @@ public class PostManageService {
     private final PostAppender postAppender;
     private final PostFileAppender postFileAppender;
     private final PostModifier postModifier;
-    private final PostStatusProcessor postStatusProcessor;
+    private final PetitionPostOngoingStatusProcessor petitionPostStatusProcessor;
     private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
 
@@ -89,8 +89,6 @@ public class PostManageService {
             "청원게시판", (post, isAuthor, authorName, likeCount, onGoingStatus, imageList, ignored, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, authorName, likeCount, onGoingStatus, imageList, postOfficialCommentResponseList)
     );
 
-
-    @Transactional
     public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode, String memberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 //        Pageable pageable = PageInfo.of(page, take);
@@ -135,8 +133,6 @@ public class PostManageService {
                             return responseFunction.apply(post, null, null, null);
                         case "청원게시판":
                             likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
-
-                            Post updatedPost = postStatusProcessor.processStatus(post);
                             return responseFunction.apply(post, null, likeCount,null);
                         default:
                             throw new EntityNotFoundException(String.valueOf(POST_NOT_FOUND));
@@ -146,6 +142,7 @@ public class PostManageService {
 
         return PostListRes.of(responseList, pageInfo);
     }
+
     public PostListRes<?> getDataList(int page, int take, String majorCategory, String middleCategory, String subCategory){
         Pageable pageable = PageInfo.of(page, take);
 
@@ -159,7 +156,6 @@ public class PostManageService {
         return PostListRes.of(responseList, pageInfo);
     }
 
-    @Transactional
     public PostDetailRes<?> getPost(PostUserRequest postUserRequest, String boardCode, Long postId) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post post = postReader.getPostWithBoardCodeAndPostId(boardCode, postId);
@@ -182,12 +178,11 @@ public class PostManageService {
         PostDetailResDto response = null;
         if (board.getName().equals("청원게시판")) {
             Integer likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
-            Post updatedPost = postStatusProcessor.processStatus(post);
             List<PostComment> officialPostComments = postCommentReader.getCommentListWithPostIdAndCommentType(userId, postId, "OFFICIAL");
             List<PostOfficialCommentResponse> postOfficialCommentResponses = officialPostComments.stream()
                     .map(postOfficialComment -> postOfficialCommentFormatter.format(postOfficialComment, userId))
                     .toList();
-            response = responseFunction.apply(updatedPost, isAuthor, user.getName(), likeCount, updatedPost.getOnGoingStatus(), imageList, null, postOfficialCommentResponses);
+            response = responseFunction.apply(post, isAuthor, user.getName(), likeCount, post.getOnGoingStatus(), imageList, null, postOfficialCommentResponses);
         } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판")) {
             response = responseFunction.apply(post, isAuthor, user.getName(), null, post.getCategory(), imageList, fileList,null);
         } else if (board.getName().equals("분실물게시판")) {

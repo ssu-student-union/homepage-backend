@@ -301,6 +301,7 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(postEntity.boardEntity, boardEntity)
                 .where(eqBoardCode(boardCode)
                         .and(postEntity.createdAt.after(sevenDaysAgo))
+                        //일단 지금은 청원게시물들만 인기조회가 필요하기 때문에 종료됨 진행상태만을 제외한 나머지 상태
                         .and(postEntity.ongoingStatus.ne(OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus("종료됨"))))
                 .groupBy(postEntity)
                 .orderBy(orderSpecifiers)
@@ -326,6 +327,28 @@ public class PostRepositoryImpl implements PostRepository {
 
     private BooleanExpression eqBoardCode(String boardCode) {
         return boardCode != null ? boardEntity.boardCode.eq(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode)) : null;
+    }
+
+    @Override
+    public List<Post> findAllByOngoingStatuses(List<String> statuses) {
+//        return postJpaRepository.findAllByOngoingStatusIn(statuses).stream()
+//                .map(postMapper::toDomain)
+//                .collect(Collectors.toList());
+        BooleanBuilder whereClause = new BooleanBuilder();
+        if (statuses != null && !statuses.isEmpty()) {
+            List<OngoingStatus> ongoingStatusEnums = statuses.stream()
+                    .map(OngoingStatus::getEnumOngoingStatusFromStringOngoingStatus)
+                    .collect(Collectors.toList());
+            whereClause.and(postEntity.ongoingStatus.in(ongoingStatusEnums));
+        }
+
+        return queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .fetch()
+                .stream()
+                .map(postMapper::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override

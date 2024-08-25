@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ussum.homepage.application.reaction.service.dto.request.CreatePostReactionReq;
 import ussum.homepage.application.reaction.service.dto.request.PostReactionCreateRequest;
+import ussum.homepage.domain.post.service.PetitionPostOngoingStatusProcessor;
 import ussum.homepage.domain.postlike.PostReaction;
 import ussum.homepage.domain.postlike.service.PostReactionAppender;
 import ussum.homepage.domain.postlike.service.PostReactionManager;
@@ -23,6 +24,7 @@ public class PostReactionService {
     private final PostReactionModifier postReactionModifier;
     private final PostReactionManager postReactionManager;
     private final PostReactionReader postReactionReader;
+    private final PetitionPostOngoingStatusProcessor petitionPostOngoingStatusProcessor;
 
     @Transactional
     public void postReactionToggle(Long userId, Long postId, CreatePostReactionReq createPostReactionReq) {
@@ -33,6 +35,7 @@ public class PostReactionService {
                 reaction -> handleExistingReaction(reaction, newReaction),
                 () -> createNewReaction(newReaction)
         );
+        petitionPostOngoingStatusProcessor.onLikeCountChanged(postId);
     }
 
     //기존 반응이 있고 같은 종류면 삭제
