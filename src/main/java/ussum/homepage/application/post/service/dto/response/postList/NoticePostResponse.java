@@ -1,15 +1,11 @@
 package ussum.homepage.application.post.service.dto.response.postList;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.user.User;
-import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
-import ussum.homepage.infra.jpa.post.entity.OngoingStatus;
-import ussum.homepage.infra.jpa.post.entity.Status;
 
 @Getter
 public class NoticePostResponse extends PostListResDto{

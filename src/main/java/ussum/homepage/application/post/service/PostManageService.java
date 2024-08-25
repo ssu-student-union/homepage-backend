@@ -88,7 +88,7 @@ public class PostManageService {
             "분실물게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, another_ignored1, another_ignored2) -> LostPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList),
             "제휴게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList, another_ignored) -> PartnerPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
             "감사기구게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList, another_ignored) -> AuditPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
-            "청원게시판", (post, isAuthor, authorName, likeCount, onGoingStatus, imageList, ignored, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, authorName, likeCount, onGoingStatus, imageList, postOfficialCommentResponseList)
+            "청원게시판", (post, isAuthor, authorName, likeCount, categoryName, imageList, ignored, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, authorName, likeCount, categoryName, imageList, postOfficialCommentResponseList)
     );
 
     public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode, String memberCode, String category) {
@@ -180,7 +180,7 @@ public class PostManageService {
             List<PostOfficialCommentResponse> postOfficialCommentResponses = officialPostComments.stream()
                     .map(postOfficialComment -> postOfficialCommentFormatter.format(postOfficialComment, userId))
                     .toList();
-            response = responseFunction.apply(post, isAuthor, user.getName(), likeCount, post.getOnGoingStatus(), imageList, null, postOfficialCommentResponses);
+            response = responseFunction.apply(post, isAuthor, user.getName(), likeCount, post.getCategory(), imageList, null, postOfficialCommentResponses);
         } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판")) {
             response = responseFunction.apply(post, isAuthor, user.getName(), null, post.getCategory(), imageList, fileList,null);
         } else if (board.getName().equals("분실물게시판")) {
@@ -199,7 +199,7 @@ public class PostManageService {
         String onGoingStatus = Objects.equals(boardCode, BoardCode.PETITION.getStringBoardCode()) ? postCreateRequest.categoryCode() : postCreateRequest.isNotice() ? Category.EMERGENCY.getStringCategoryCode() : null;
         
 //        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(category), onGoingStatus));
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(category)));
         postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());
         return PostCreateResponse.of(post.getId(), boardCode);
     }
@@ -207,7 +207,7 @@ public class PostManageService {
     @Transactional
     public PostCreateResponse createDataPost(Long userId, String fileCategory, String fileType, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(BoardCode.DATA.getStringBoardCode());
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), null));
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode())));
         postFileAppender.updatePostIdAndFileCategoryForIds(postCreateRequest.postFileList(), post.getId(), fileCategory, fileType);
         return PostCreateResponse.of(post.getId(), BoardCode.DATA.getStringBoardCode());
     }

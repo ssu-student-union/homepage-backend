@@ -3,9 +3,7 @@ package ussum.homepage.infra.jpa.post.entity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
-import ussum.homepage.domain.post.exception.PostException;
 import ussum.homepage.global.error.exception.InvalidValueException;
-import ussum.homepage.infra.jpa.member.entity.MemberCode;
 
 import java.util.Arrays;
 import java.util.Optional;

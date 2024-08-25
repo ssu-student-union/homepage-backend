@@ -11,7 +11,6 @@ import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.domain.post.exception.PostException;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.infra.jpa.post.entity.Category;
-import ussum.homepage.infra.jpa.post.entity.OngoingStatus;
 import ussum.homepage.infra.utils.DateUtils;
 
 import java.time.LocalDateTime;
@@ -28,11 +27,11 @@ public class PetitionPostOngoingStatusProcessor {
     private final MemberManager memberManager;
 
     // 매일 자정에 실행되는 스케줄러
-//    @Scheduled(cron = "0 0 0 * * *")
-    @Scheduled(fixedDelay = 30000)
+    @Scheduled(cron = "0 0 0 * * *")
+//    @Scheduled(fixedDelay = 30000)
     @Transactional
     public void scheduledStatusUpdate() {
-        List<Post> posts = postRepository.findAllByOngoingStatuses(List.of("진행중", "접수완료"));
+        List<Post> posts = postRepository.findAllByCategory(List.of("진행중", "접수완료"));
         posts.forEach(post -> processStatus(post, postReactionReader.countPostReactionsByType(post.getId(), "like")));
     }
 
@@ -44,7 +43,7 @@ public class PetitionPostOngoingStatusProcessor {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(POST_NOT_FOUND));
 
-        if (post.getOnGoingStatus().equals("종료됨") || post.getOnGoingStatus().equals("답변완료") ) {
+        if (post.getCategory().equals("종료됨") || post.getCategory().equals("답변완료") ) {
             return; // 최종 상태("종료됨", "답변완료")인 경우 상태를 업데이트하지 않음
         }
         Integer likeCount = postReactionReader.countPostReactionsByType(postId, "like");
@@ -60,14 +59,14 @@ public class PetitionPostOngoingStatusProcessor {
                 .orElseThrow(() -> new PostException(POST_NOT_FOUND));
 
         if (commentType.equals("OFFICIAL")) {
-            if ("접수완료".equals(post.getOnGoingStatus())) {
+            if ("접수완료".equals(post.getCategory())) {
                 handleReceivedStatus(post);
             }
         }
     }
 
     public void processStatus(Post post, Integer likeCount) {
-        String currentStatus = OngoingStatus.fromEnumOrNull(post.getOnGoingStatus());
+        String currentStatus = Category.fromEnumOrNull(post.getCategory());
         switch (currentStatus) {
             case "진행중":
                 handleInProgressStatus(post, likeCount);
@@ -117,8 +116,8 @@ public class PetitionPostOngoingStatusProcessor {
     /**
      * 해당 로직은 실제 청원게시물의 OnGoingStatus를 변경하는 로직
      */
-    public void updatePostCategoryAndOngoingStatus(Long postId, String onGoingStatus) {
-        postRepository.updatePostOngoingStatus(postId, onGoingStatus, Category.getEnumCategoryCodeFromStringCategoryCode(onGoingStatus));
+    public void updatePostCategoryAndOngoingStatus(Long postId, String category) {
+        postRepository.updatePostCategory(postId, category);
     }
 
 

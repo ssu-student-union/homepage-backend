@@ -20,11 +20,11 @@ public record PostUpdateRequest(
                 post.getViewCount(),
                 thumbnailImage,
                 post.getStatus(),
-                post.getOnGoingStatus(),
+//                post.getOnGoingStatus(),
                 LocalDateTime.parse(post.getCreatedAt()),
                 LocalDateTime.parse(post.getUpdatedAt()),
                 LocalDateTime.now(),
-                category,
+                category.getStringCategoryCode(),
                 post.getUserId(),
                 board.getId()
         );

@@ -21,8 +21,8 @@ public interface PostRepository {
     void delete(Post post);
     Page<Post> findBySearchCriteria(Pageable pageable,String boardCode, String q, String categoryCode);
     Page<SimplePostResponse> findPostDtoListByBoardCode(String boardCode, Pageable pageable);
-    List<Post> findAllByOngoingStatuses(List<String> statuses);
-    Post updatePostOngoingStatus(Long postId, String onGoingStatus, Category category);
+    List<Post> findAllByCategory(List<String> statuses);
+    Post updatePostCategory(Long postId, String category);
 //    Page<Post> findAllByGroupCodeAndMemberCodeAndSubCategory(GroupCode groupCode, MemberCode memberCode, String subCategory, Pageable pageable);
     Page<Post> findAllByFileCategories(List<FileCategory> fileCategories, Pageable pageable);
     Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boarId, GroupCode groupCode, MemberCode memberCode, Pageable pageable);
