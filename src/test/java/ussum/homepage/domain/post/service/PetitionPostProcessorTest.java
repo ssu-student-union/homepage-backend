@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 
 @DisplayName("<PetitionPostOnGoingStatusProcessor Test>")
 @ExtendWith(MockitoExtension.class)
-public class PetitionPostOngoingStatusProcessorTest {
+public class PetitionPostProcessorTest {
     @Mock
     private PostRepository postRepository;
 
@@ -37,7 +37,7 @@ public class PetitionPostOngoingStatusProcessorTest {
     private MemberManager memberManager;
 
     @InjectMocks
-    private PetitionPostOngoingStatusProcessor petitionPostOngoingStatusProcessor;
+    private PetitionPostProcessor petitionPostProcessor;
 
     @Test
     @DisplayName("좋아요 수가 99개일 때는 진행중 상태를 유지해야 한다.")
@@ -48,16 +48,16 @@ public class PetitionPostOngoingStatusProcessorTest {
         LocalDateTime createdAt = LocalDateTime.now().minusDays(10);
 
         when(postRepository.findById(postId)).thenReturn(Optional.of(mockPost));
-        when(mockPost.getOnGoingStatus()).thenReturn(OngoingStatus.IN_PROGRESS.getStringOnGoingStatus());
+        when(mockPost.getCategory()).thenReturn(Category.IN_PROGRESS.getStringCategoryCode());
         when(mockPost.getCreatedAt()).thenReturn(DateUtils.formatHourMinSecToCustomString(createdAt));
         when(postReactionReader.countPostReactionsByType(postId, "like")).thenReturn(99);
 
         // when
-        petitionPostOngoingStatusProcessor.onLikeCountChanged(postId);
+        petitionPostProcessor.onLikeCountChanged(postId);
 
         // then
-        verify(postRepository, never()).updatePostOngoingStatus(anyLong(), anyString(), any());
-        assertThat(mockPost.getOnGoingStatus()).isEqualTo(OngoingStatus.IN_PROGRESS.getStringOnGoingStatus());
+        verify(postRepository, never()).updatePostCategory(anyLong(), anyString());
+        assertThat(mockPost.getCategory()).isEqualTo(OngoingStatus.IN_PROGRESS.getStringOnGoingStatus());
     }
 
     @Test
@@ -69,22 +69,22 @@ public class PetitionPostOngoingStatusProcessorTest {
         LocalDateTime createdAt = LocalDateTime.now().minusDays(10);
 
         when(postRepository.findById(postId)).thenReturn(Optional.of(mockPost));
-        when(mockPost.getOnGoingStatus()).thenReturn(OngoingStatus.IN_PROGRESS.getStringOnGoingStatus());
+        when(mockPost.getCategory()).thenReturn(Category.IN_PROGRESS.getStringCategoryCode());
         when(mockPost.getCreatedAt()).thenReturn(DateUtils.formatHourMinSecToCustomString(createdAt));
         when(mockPost.getId()).thenReturn(postId);
         when(postReactionReader.countPostReactionsByType(postId, "like")).thenReturn(100);
 
         doAnswer(invocation -> {
-            when(mockPost.getOnGoingStatus()).thenReturn(OngoingStatus.RECEIVED.getStringOnGoingStatus());
+            when(mockPost.getCategory()).thenReturn(Category.RECEIVED.getStringCategoryCode());
             return null;
-        }).when(postRepository).updatePostOngoingStatus(postId, "접수완료", Category.RECEIVED);
+        }).when(postRepository).updatePostCategory(postId, "접수완료");
 
         // when
-        petitionPostOngoingStatusProcessor.onLikeCountChanged(postId);
+        petitionPostProcessor.onLikeCountChanged(postId);
 
         // then
-        verify(postRepository, times(1)).updatePostOngoingStatus(postId, "접수완료", Category.RECEIVED);
-        assertThat(mockPost.getOnGoingStatus()).isEqualTo(OngoingStatus.RECEIVED.getStringOnGoingStatus());
+        verify(postRepository, times(1)).updatePostCategory(postId, "접수완료");
+        assertThat(mockPost.getCategory()).isEqualTo(Category.RECEIVED.getStringCategoryCode());
     }
 
 }

@@ -20,7 +20,7 @@ import static ussum.homepage.global.error.status.ErrorStatus.POST_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
-public class PetitionPostOngoingStatusProcessor {
+public class PetitionPostProcessor {
     private final PostRepository postRepository;
     private final PostReactionReader postReactionReader;
     private final PostCommentReader postCommentReader;

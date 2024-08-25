@@ -70,7 +70,7 @@ public class PostManageService {
     private final PostAppender postAppender;
     private final PostFileAppender postFileAppender;
     private final PostModifier postModifier;
-    private final PetitionPostOngoingStatusProcessor petitionPostStatusProcessor;
+    private final PetitionPostProcessor petitionPostStatusProcessor;
     private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
 
