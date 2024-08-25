@@ -95,6 +95,9 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //S3에러
     S3_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"S3_001","S3에 파일 저장이 실패했습니다."),
+    INVALID_S3_URL(HttpStatus.BAD_REQUEST,"S3_002","유효하지 않은 S3 파일 URL입니다."),
+    URL_DELETE_ERROR(HttpStatus.BAD_REQUEST,"S3_003","S3 파일 삭제에 실패했습니다."),
+
 
     //Body 에러
     INVALID_BODY(HttpStatus.BAD_REQUEST, "BODY_ERROR", "Body가 올바르지 않습니다.");
