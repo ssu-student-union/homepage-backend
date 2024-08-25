@@ -3,6 +3,7 @@ package ussum.homepage.application.post.service.dto.request;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.infra.jpa.post.entity.Category;
+import ussum.homepage.infra.utils.DateUtils;
 
 import java.time.LocalDateTime;
 
@@ -21,8 +22,8 @@ public record PostUpdateRequest(
                 thumbnailImage,
                 post.getStatus(),
                 post.getOnGoingStatus(),
-                LocalDateTime.parse(post.getCreatedAt()),
-                LocalDateTime.parse(post.getUpdatedAt()),
+                DateUtils.parseHourMinSecFromCustomString(post.getCreatedAt()),
+                DateUtils.parseHourMinSecFromCustomString(post.getUpdatedAt()),
                 LocalDateTime.now(),
                 category,
                 post.getUserId(),
