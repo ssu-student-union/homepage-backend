@@ -17,6 +17,7 @@ import ussum.homepage.application.post.service.dto.response.DataPostResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.*;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 
+import ussum.homepage.application.post.service.dto.response.postSave.PostFileDeleteResponse;
 import ussum.homepage.application.post.service.dto.response.postSave.PostFileListResponse;
 import ussum.homepage.domain.comment.service.formatter.QuadFunction;
 
@@ -244,9 +245,10 @@ public class PostManageService {
     }
 
     @Transactional
-    public Long deleteBoardPostFile(Long userId, String boardCode, PostFileDeleteRequest request){
+    public PostFileDeleteResponse deleteBoardPostFile(Long userId, String boardCode, PostFileDeleteRequest request){
         int s3Count = s3utils.deleteFiles(request);
-        return postFileReader.getPostFileListByUrlAndDelete(request);
+        Long postFileCount = postFileReader.getPostFileListByUrlAndDelete(request);
+        return PostFileDeleteResponse.of(s3Count, postFileCount);
     }
 
 
