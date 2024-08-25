@@ -91,13 +91,14 @@ public class PostManageController {
     @Operation(summary = "자료집 게시물 생성 api", description = """
             자료집 게시물을 생성하는 api입니다.
             기본적으로 액세스 토큰을 필요로 합니다.
-            요청 path에 subCategory(소분류) 값을 문자열 형태로 넣으면 됩니다.
+            요청 path에 fileCategory(카테고리 ex.총학생회칙) 값을 문자열 형태로 넣으면 됩니다.
             """)
-    @PostMapping("data/{subCategory}/post")
+    @PostMapping("data/{fileCategory}/{fileType}/post")
     public ResponseEntity<ApiResponse<?>> createDataPost(@Parameter(hidden = true) @UserId Long userId,
-                                                         @PathVariable(name = "subCategory") String subCategory,
+                                                         @PathVariable(name = "fileCategory") String fileCategory,
+                                                         @PathVariable(name = "fileType") String fileType,
                                                          @RequestBody PostCreateRequest postCreateRequest) {
-        return ApiResponse.success(postManageService.createDataPost(userId, subCategory, postCreateRequest));
+        return ApiResponse.success(postManageService.createDataPost(userId, fileCategory, fileType, postCreateRequest));
     }
 
     @Operation(summary = "게시물 생성 시 파일 및 이미지 저장 api", description = """

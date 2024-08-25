@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostFile;
 import ussum.homepage.domain.post.PostFileRepository;
+import ussum.homepage.infra.jpa.post.entity.FileCategory;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,7 @@ public class PostFileAppender {
     }
 
     @Transactional
-    public void updatePostIdAndSubCategoryForIds(List<Long> postFileIds, Long postId, String subCategory){
-        postFileRepository.updatePostIdAndSubCategoryForIds(postFileIds, postId, subCategory);
+    public void updatePostIdAndFileCategoryForIds(List<Long> postFileIds, Long postId, String fileCategory, String fileType){
+        postFileRepository.updatePostIdAndFileCategoryForIds(postFileIds, postId, FileCategory.getEnumFileCategoryFromString(fileCategory), fileType);
     }
 }

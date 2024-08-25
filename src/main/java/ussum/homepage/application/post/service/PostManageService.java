@@ -45,6 +45,7 @@ import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
+import ussum.homepage.infra.jpa.post.entity.FileCategory;
 import ussum.homepage.infra.utils.S3utils;
 
 import java.util.Comparator;
@@ -149,11 +150,7 @@ public class PostManageService {
     }
     public PostListRes<?> getDataList(int page, int take, String majorCategory, String middleCategory, String subCategory){
         Pageable pageable = PageInfo.of(page, take);
-
-        GroupCode groupCodeEnum = StringUtils.hasText(majorCategory) ? GroupCode.getEnumGroupCodeFromStringGroupCode(majorCategory) : null;
-        MemberCode memberCodeEnum = StringUtils.hasText(middleCategory) ? MemberCode.getEnumMemberCodeFromStringMemberCode(middleCategory) : null;
-
-        Page<Post> postList = postReader.getPostListByGroupCodeAndMemberCodeAndSubCategory(groupCodeEnum, memberCodeEnum, subCategory, pageable);
+        Page<Post> postList = postReader.getPostListByFileCategories(FileCategory.getFileCategoriesByCategories(majorCategory, middleCategory, subCategory), pageable);
         PageInfo pageInfo = PageInfo.of(postList);
         QuadFunction<Post, List<PostFile> , Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get("자료집게시판");
         List<? extends PostListResDto> responseList = postList.getContent().stream().map(post -> responseFunction.apply(post, postFileReader.getPostFileListByPostId(post.getId()), null, null)).toList();
@@ -213,10 +210,10 @@ public class PostManageService {
     }
 
     @Transactional
-    public PostCreateResponse createDataPost(Long userId, String subCategory, PostCreateRequest postCreateRequest){
+    public PostCreateResponse createDataPost(Long userId, String fileCategory, String fileType, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(BoardCode.DATA.getStringBoardCode());
         Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), null));
-        postFileAppender.updatePostIdAndSubCategoryForIds(postCreateRequest.postFileList(), post.getId(), subCategory);
+        postFileAppender.updatePostIdAndFileCategoryForIds(postCreateRequest.postFileList(), post.getId(), fileCategory, fileType);
         return PostCreateResponse.of(post.getId(), BoardCode.DATA.getStringBoardCode());
     }
 
