@@ -28,7 +28,7 @@ public class NoticePostResponse extends PostListResDto{
     }
 
     public static NoticePostResponse of(Post post, User user) {
-        OngoingStatus ongoingStatus = StringUtils.hasText(post.getOnGoingStatus()) ? OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus(post.getOnGoingStatus()) : null;
+        Category category = StringUtils.hasText(post.getCategory()) ? Category.getEnumCategoryCodeFromStringCategoryCode(post.getCategory()) : null;
 
         return NoticePostResponse.builder()
                 .postId(post.getId())
@@ -39,7 +39,7 @@ public class NoticePostResponse extends PostListResDto{
                 .thumbNail(post.getThumbnailImage())
                 .status(post.getStatus())
                 .author(user.getName())
-                .isEmergency(ongoingStatus!=null&& ongoingStatus.equals(Category.EMERGENCY)? true : false)
+                .isEmergency(category!=null&& category.equals(Category.EMERGENCY)? true : false)
                 .build();
     }
 }
