@@ -25,11 +25,11 @@ public class PostFileReader {
     }
 
     public List<String> getPostImageListByFileType(List<PostFile> postFileList) {
-        return getPostFileUrlsByType(postFileList, "image");
+        return getPostFileUrlsByType(postFileList, "images");
     }
 
     public List<String> getPostFileListByFileType(List<PostFile> postFileList) {
-        return getPostFileUrlsByType(postFileList, "file");
+        return getPostFileUrlsByType(postFileList, "files");
     }
 
 }
