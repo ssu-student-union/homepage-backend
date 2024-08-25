@@ -31,10 +31,14 @@ public class PostFileMapper {
     }
 
     public PostFileEntity toEntity(PostFile postFile) {
+        FileCategory fileCategory = postFile.getFileCategory() != null
+                ? FileCategory.getEnumFileCategoryFromString(postFile.getFileCategory())
+                : null;
+
         return PostFileEntity.of(
                 postFile.getId(),
                 postFile.getTypeName(),
-                FileCategory.getEnumFileCategoryFromString(postFile.getFileCategory()),
+                fileCategory,
                 postFile.getUrl(),
                 null,
                 null
