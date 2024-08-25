@@ -30,6 +30,14 @@ public class PostFileRepositoryImpl implements PostFileRepository {
     }
 
     @Override
+    public Long deleteAllByUrl(List<String> urlList) {
+        return queryFactory
+                .delete(postFileEntity)
+                .where(postFileEntity.url.in(urlList))
+                .execute();
+    }
+
+    @Override
     public Optional<PostFile> findById(Long id) {
         return postFileJpaRepository.findById(id).map(postFileMapper::toDomain);
     }
@@ -39,7 +47,7 @@ public class PostFileRepositoryImpl implements PostFileRepository {
         return postFileMapper.toDomain(
                 postFileJpaRepository.saveAll(
                         fileList.stream()
-                        .map(file -> postFileMapper.toEntity(file))
+                        .map(postFileMapper::toEntity)
                         .toList())
         );
     }

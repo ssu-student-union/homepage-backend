@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.comment.service.dto.response.PostOfficialCommentResponse;
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
+import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.request.PostUserRequest;
 import ussum.homepage.application.post.service.dto.response.DataPostResponse;
@@ -243,6 +244,12 @@ public class PostManageService {
                 .flatMap(map -> map.entrySet().stream())
                 .map(entry -> PostFile.of(null, entry.getKey(), null, entry.getValue(), null, null)) // key: 파일 타입, value: URL
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Long deleteBoardPostFile(Long userId, String boardCode, PostFileDeleteRequest request){
+        int s3Count = s3utils.deleteFiles(request);
+        return postFileReader.getPostFileListByUrlAndDelete(request);
     }
 
 
