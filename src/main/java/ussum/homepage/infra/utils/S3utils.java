@@ -15,6 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -104,13 +106,11 @@ public class S3utils {
                     .map(this::extractKeyFromUrl)
                     .map(DeleteObjectsRequest.KeyVersion::new)
                     .collect(Collectors.toList());
-
             DeleteObjectsRequest deleteRequest = new DeleteObjectsRequest(bucket)
-                    .withKeys(keys)
-                    .withQuiet(false);
+                    .withKeys(keys);
+//                    .withQuiet(false);
 
             DeleteObjectsResult result = amazonS3.deleteObjects(deleteRequest);
-
             int deletedCount = result.getDeletedObjects().size();
             return deletedCount;
         } catch (Exception e) {
@@ -121,7 +121,9 @@ public class S3utils {
     private String extractKeyFromUrl(String fileUrl) {
         try {
             URL url = new URL(fileUrl);
-            return url.getPath().substring(1);
+            String path = url.getPath();
+            String key = path.substring(1);
+            return URLDecoder.decode(key, StandardCharsets.UTF_8.toString());
         } catch (Exception e) {
             throw new GeneralException(ErrorStatus.INVALID_S3_URL);
         }
