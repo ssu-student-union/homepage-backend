@@ -15,7 +15,8 @@ import java.util.List;
 @Component
 public class PostMapper {
     public Post toDomain(PostEntity postEntity){
-        String onGoingStatus = OngoingStatus.fromEnumOrNull(postEntity.getOngoingStatus());
+//        String onGoingStatus = OngoingStatus.fromEnumOrNull(postEntity.getOngoingStatus());
+        String category = Category.fromEnumOrNull(postEntity.getCategory());
 
         return Post.of(
                 postEntity.getId(),
@@ -24,11 +25,11 @@ public class PostMapper {
                 postEntity.getViewCount(),
                 postEntity.getThumbnailImage(),
                 postEntity.getStatus().getStringStatus(),
-                onGoingStatus,
+//                onGoingStatus
                 postEntity.getCreatedAt(),
                 postEntity.getUpdatedAt(),
                 postEntity.getLastEditedAt(),
-                postEntity.getCategory(),
+                category,
                 postEntity.getUserEntity().getId(),
                 postEntity.getBoardEntity().getId()
         );
@@ -36,7 +37,7 @@ public class PostMapper {
 
     public PostEntity toEntity(Post post, UserEntity user, BoardEntity board) {
         LocalDateTime lastEditedAt = DateUtils.parseHourMinSecFromCustomString(post.getLastEditedAt());
-        OngoingStatus ongoingStatus = OngoingStatus.fromStringOrNull(post.getOnGoingStatus());
+//        OngoingStatus ongoingStatus = OngoingStatus.fromStringOrNull(post.getOnGoingStatus());
 
         return PostEntity.of(
                 post.getId(),
@@ -45,7 +46,7 @@ public class PostMapper {
                 post.getViewCount(),
                 post.getThumbnailImage(),
                 Status.getEnumStatusFromStringStatus(post.getStatus()),
-                ongoingStatus,
+//                ongoingStatus,
                 lastEditedAt,
                 Category.getEnumCategoryCodeFromStringCategoryCode(post.getCategory()),
                 user,

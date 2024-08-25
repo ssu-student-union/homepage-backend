@@ -20,7 +20,7 @@ public record SimplePostResponse(
                 .title(post.getTitle())
                 .content(post.getContent())
                 .date(post.getCreatedAt())
-                .onGoingStatus(post.getOnGoingStatus())
+                .onGoingStatus(post.getCategory())
                 .likeCount(like)
                 .build();
     }

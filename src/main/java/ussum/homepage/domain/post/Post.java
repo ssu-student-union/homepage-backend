@@ -19,7 +19,7 @@ public class Post {
     private Integer viewCount;
     private String thumbnailImage;
     private String status;
-    private String onGoingStatus;
+//    private String onGoingStatus;
     private String createdAt;
     private String updatedAt;
     private String lastEditedAt;
@@ -34,15 +34,15 @@ public class Post {
                           Integer viewCount,
                           String thumbnailImage,
                           String status,
-                          String onGoingStatus,
+//                          String onGoingStatus,
                           LocalDateTime createdAt,
                           LocalDateTime updatedAt,
                           LocalDateTime lastEditedAt,
-                          Category category,
+                          String category,
                           Long userId,
                           Long boardId) {
-        return new Post(id, title, content, viewCount, thumbnailImage, status, onGoingStatus,  DateUtils.formatHourMinSecToCustomString(createdAt),
-                DateUtils.formatHourMinSecToCustomString(updatedAt), DateUtils.formatHourMinSecToCustomString(lastEditedAt), category.getStringCategoryCode(),
+        return new Post(id, title, content, viewCount, thumbnailImage, status, /*onGoingStatus,*/ DateUtils.formatHourMinSecToCustomString(createdAt),
+                DateUtils.formatHourMinSecToCustomString(updatedAt), DateUtils.formatHourMinSecToCustomString(lastEditedAt), category,
                 userId, boardId);
     }
 }

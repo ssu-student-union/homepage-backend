@@ -16,8 +16,8 @@ public class PetitionPostResponse extends PostListResDto{
     private PetitionPostResponse(Long postId, String title, String date, String category, Integer likeCount, String onGoingStatus) {
         super(postId, title, null, date, category);
         this.likeCount = likeCount;
-//        this.status = status;
         this.onGoingStatus = onGoingStatus;
+//        this.status = status;
     }
 
     public static PetitionPostResponse of(Post post, Integer likeCount) {
@@ -29,7 +29,7 @@ public class PetitionPostResponse extends PostListResDto{
                 .category(post.getCategory())
                 .likeCount(likeCount)
 //                .status(post.getStatus())
-                .onGoingStatus(post.getOnGoingStatus())
+                .onGoingStatus(post.getCategory())
                 .build();
     }
 

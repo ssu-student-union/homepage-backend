@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static ussum.homepage.global.error.status.ErrorStatus.INVALID_CATEGORY_CODE;
+import static ussum.homepage.global.error.status.ErrorStatus.INVALID_ONGOING_STATUS;
 
 @RequiredArgsConstructor
 @Getter
@@ -78,5 +79,16 @@ public enum Category {
 
     public static Category fromStringOrNull(String stringCategoryCode) {
         return fromString(stringCategoryCode).orElse(null);
+    }
+
+    public static String fromEnumOrNull(String stringCategory) {
+        return Optional.ofNullable(stringCategory)
+                .orElseThrow(() -> new InvalidValueException(INVALID_ONGOING_STATUS));
+    }
+
+    public static String fromEnumOrNull(Category category) {
+        return Optional.ofNullable(category)
+                .map(Category::getStringCategoryCode)
+                .orElse(null);
     }
 }

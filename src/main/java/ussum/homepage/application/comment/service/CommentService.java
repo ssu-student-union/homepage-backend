@@ -16,6 +16,7 @@ import ussum.homepage.domain.comment.service.PostCommentFormatter;
 import ussum.homepage.domain.comment.service.PostCommentModifier;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.member.service.MemberManager;
+import ussum.homepage.domain.post.service.PetitionPostProcessor;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class CommentService {
     private final PostCommentAppender postCommentAppender;
     private final PostCommentModifier postCommentModifier;
     private final MemberManager memberManager;
+    private final PetitionPostProcessor petitionPostProcessor;
 
     public PostCommentListResponse getCommentList(Long postId, int page, int take, String type){
         Page<PostComment> commentList = postCommentReader.getPostCommentList(setPageable(page, take), postId);
@@ -36,6 +38,7 @@ public class CommentService {
     public PostCommentResponse createComment(Long userId, Long postId, PostCommentCreateRequest postCommentCreateRequest) {
         String commentType = memberManager.getCommentType(userId);
         PostComment postComment = postCommentAppender.createPostComment(postCommentCreateRequest.toDomain(userId, postId, commentType));
+        petitionPostProcessor.onAdminCommentPosted(postId, postComment.getCommentType());
         return postCommentFormatter.format(postComment, userId);
     }
 
