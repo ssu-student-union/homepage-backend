@@ -44,7 +44,7 @@ public class AdminService {
         User user = User.createCouncilUser(request.accountId(), password);
         User savedUser = userAppender.createUser(user);
         Group group = groupReader.getGroupByGroupId(request.groupId());
-        Member member = Member.of(null, true, request.memberCode(), request.majorCode(), user.getId(), group.getId());
+        Member member = Member.of(null, true, request.memberCode(), request.majorCode(), savedUser.getId(), group.getId());
         memberAppender.saveMember(member);
     }
 }
