@@ -16,8 +16,8 @@ public class DataPostResponse extends PostListResDto {
     private final List<String> files;
 
     @Builder
-    private DataPostResponse(Long postId, String title, /*String content,*/ String date, String category, Boolean isNotice, List<String> fileNames, List<String> files) {
-        super(postId, title, null, date, category);
+    private DataPostResponse(Long postId, String title, String content, String date, String category, Boolean isNotice, List<String> fileNames, List<String> files) {
+        super(postId, title, content, date, category);
         this.isNotice = isNotice;
         this.fileNames = fileNames;
         this.files = files;
@@ -27,7 +27,7 @@ public class DataPostResponse extends PostListResDto {
         return DataPostResponse.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
-//                .content(post.getContent())
+                .content(post.getContent())
                 .date(post.getCreatedAt().toString())
                 .isNotice(post.getTitle().equals("총학생회칙"))
                 .fileNames(postFiles.stream().map(postFile ->postFile.getFileCategory()).toList())

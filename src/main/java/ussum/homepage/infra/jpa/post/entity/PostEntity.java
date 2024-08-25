@@ -26,8 +26,8 @@ public class PostEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @Enumerated(EnumType.STRING)
-    private OngoingStatus ongoingStatus;
+//    @Enumerated(EnumType.STRING)
+//    private OngoingStatus ongoingStatus;
 
     private LocalDateTime lastEditedAt;
 
@@ -43,12 +43,12 @@ public class PostEntity extends BaseEntity {
     private BoardEntity boardEntity;
 
     public static PostEntity from(Long id){
-        return new PostEntity(id, null, null, null, null, null, null, null, null, null, null);
+        return new PostEntity(id, null, null, null, null, null, null, null, null, null);
     }
 
     public static PostEntity of(Long id, String title, String content, Integer viewCount, String thumbnailImage, Status status,
-                                OngoingStatus ongoingStatus, LocalDateTime lastEditedAt, Category category, UserEntity user, BoardEntity board) {
-        return new PostEntity(id, title, content, viewCount, thumbnailImage, status, ongoingStatus, lastEditedAt, category, user, board);
+                                /*OngoingStatus ongoingStatus,*/ LocalDateTime lastEditedAt, Category category, UserEntity user, BoardEntity board) {
+        return new PostEntity(id, title, content, viewCount, thumbnailImage, status, /*ongoingStatus,*/ lastEditedAt, category, user, board);
     }
 
     public static void increaseViewCount(PostEntity post) {
@@ -59,8 +59,8 @@ public class PostEntity extends BaseEntity {
         post.lastEditedAt = LocalDateTime.now();
     }
 
-    public void updateStatusAndCategoryCode(OngoingStatus newStatus) {
-        this.category = Category.getEnumCategoryCodeFromStringCategoryCode(newStatus.getStringOnGoingStatus());
-        this.ongoingStatus = newStatus;
+    public void updateCategory(Category newCategory) {
+        this.category = newCategory;
+//        this.ongoingStatus = newStatus;
     }
 }

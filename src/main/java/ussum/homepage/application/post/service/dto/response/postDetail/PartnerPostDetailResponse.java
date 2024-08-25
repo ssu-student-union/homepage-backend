@@ -3,6 +3,7 @@ package ussum.homepage.application.post.service.dto.response.postDetail;
 import lombok.Builder;
 import lombok.Getter;
 import ussum.homepage.domain.post.Post;
+import ussum.homepage.domain.user.User;
 
 import java.util.List;
 
@@ -19,11 +20,11 @@ public class PartnerPostDetailResponse extends PostDetailResDto {
         this.fileList = fileList;
     }
 
-    public static PartnerPostDetailResponse of(Post post, Boolean isAuthor, String authorName, String categoryName, List<String> imageList, List<String> fileList) {
+    public static PartnerPostDetailResponse of(Post post, Boolean isAuthor, User user, String categoryName, List<String> imageList, List<String> fileList) {
         return PartnerPostDetailResponse.builder()
                 .postId(post.getId())
                 .categoryName(categoryName)
-                .authorName(authorName)
+                .authorName(user.getName())
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())

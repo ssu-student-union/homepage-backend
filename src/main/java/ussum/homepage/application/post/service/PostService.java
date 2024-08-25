@@ -57,7 +57,7 @@ public class PostService {
     public void createPost(Long userId, String boardCode, PostCreateRequest postCreateRequest) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
-        postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), null));
+        postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode())));
     }
 
 //    public PostResponse editPost(String boardCode,Long postId, PostUpdateRequest postUpdateRequest) {

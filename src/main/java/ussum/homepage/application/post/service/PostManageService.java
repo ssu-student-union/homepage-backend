@@ -71,7 +71,7 @@ public class PostManageService {
     private final PostAppender postAppender;
     private final PostFileAppender postFileAppender;
     private final PostModifier postModifier;
-    private final PostStatusProcessor postStatusProcessor;
+    private final PetitionPostProcessor petitionPostStatusProcessor;
     private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
 
@@ -84,16 +84,14 @@ public class PostManageService {
             "자료집게시판", (post, postFiles, ignored1, ignored2) -> DataPostResponse.of(post, postFiles)
     );
 
-    private final Map<String, PostDetailFunction<Post, Boolean, String, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
-            "공지사항게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList, another_ignored) -> NoticePostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
-            "분실물게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, another_ignored1, another_ignored2) -> LostPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList),
-            "제휴게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList, another_ignored) -> PartnerPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
-            "감사기구게시판", (post, isAuthor, authorName, ignored, categoryName, imageList, fileList, another_ignored) -> AuditPostDetailResponse.of(post, isAuthor, authorName, categoryName, imageList, fileList),
-            "청원게시판", (post, isAuthor, authorName, likeCount, onGoingStatus, imageList, ignored, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, authorName, likeCount, onGoingStatus, imageList, postOfficialCommentResponseList)
+    private final Map<String, PostDetailFunction<Post, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
+            "공지사항게시판", (post, isAuthor, user, ignored, categoryName, imageList, fileList, another_ignored) -> NoticePostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
+            "분실물게시판", (post, isAuthor, user, ignored, categoryName, imageList, another_ignored1, another_ignored2) -> LostPostDetailResponse.of(post, isAuthor, user, categoryName, imageList),
+            "제휴게시판", (post, isAuthor, user, ignored, categoryName, imageList, fileList, another_ignored) -> PartnerPostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
+            "감사기구게시판", (post, isAuthor, user, ignored, categoryName, imageList, fileList, another_ignored) -> AuditPostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
+            "청원게시판", (post, isAuthor, user, likeCount, categoryName, imageList, ignored, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, user, likeCount, categoryName, imageList, postOfficialCommentResponseList)
     );
 
-
-    @Transactional
     public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode, String memberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 //        Pageable pageable = PageInfo.of(page, take);
@@ -138,8 +136,6 @@ public class PostManageService {
                             return responseFunction.apply(post, null, null, null);
                         case "청원게시판":
                             likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
-
-                            Post updatedPost = postStatusProcessor.processStatus(post);
                             return responseFunction.apply(post, null, likeCount,null);
                         default:
                             throw new EntityNotFoundException(String.valueOf(POST_NOT_FOUND));
@@ -149,6 +145,7 @@ public class PostManageService {
 
         return PostListRes.of(responseList, pageInfo);
     }
+
     public PostListRes<?> getDataList(int page, int take, String majorCategory, String middleCategory, String subCategory){
         Pageable pageable = PageInfo.of(page, take);
         Page<Post> postList = postReader.getPostListByFileCategories(FileCategory.getFileCategoriesByCategories(majorCategory, middleCategory, subCategory), pageable);
@@ -158,7 +155,6 @@ public class PostManageService {
         return PostListRes.of(responseList, pageInfo);
     }
 
-    @Transactional
     public PostDetailRes<?> getPost(PostUserRequest postUserRequest, String boardCode, Long postId) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post post = postReader.getPostWithBoardCodeAndPostId(boardCode, postId);
@@ -172,7 +168,7 @@ public class PostManageService {
         List<String> fileList = postFileReader.getPostFileListByFileType(postFileList);
 
 
-        PostDetailFunction<Post, Boolean, String, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
+        PostDetailFunction<Post, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
 
         if (responseFunction == null) {
             throw new GeneralException(ErrorStatus.INVALID_BOARDCODE);
@@ -181,16 +177,15 @@ public class PostManageService {
         PostDetailResDto response = null;
         if (board.getName().equals("청원게시판")) {
             Integer likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
-            Post updatedPost = postStatusProcessor.processStatus(post);
             List<PostComment> officialPostComments = postCommentReader.getCommentListWithPostIdAndCommentType(userId, postId, "OFFICIAL");
             List<PostOfficialCommentResponse> postOfficialCommentResponses = officialPostComments.stream()
                     .map(postOfficialComment -> postOfficialCommentFormatter.format(postOfficialComment, userId))
                     .toList();
-            response = responseFunction.apply(updatedPost, isAuthor, user.getName(), likeCount, updatedPost.getOnGoingStatus(), imageList, null, postOfficialCommentResponses);
+            response = responseFunction.apply(post, isAuthor, user, likeCount, post.getCategory(), imageList, null, postOfficialCommentResponses);
         } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판")) {
-            response = responseFunction.apply(post, isAuthor, user.getName(), null, post.getCategory(), imageList, fileList,null);
+            response = responseFunction.apply(post, isAuthor, user, null, post.getCategory(), imageList, fileList,null);
         } else if (board.getName().equals("분실물게시판")) {
-            response = responseFunction.apply(post, isAuthor, user.getName(), null, post.getCategory(), imageList, null, null); //분실물 게시판은 파일첨부 제외
+            response = responseFunction.apply(post, isAuthor, user, null, post.getCategory(), imageList, null, null); //분실물 게시판은 파일첨부 제외
         }
 
         return PostDetailRes.of(response);
@@ -205,7 +200,7 @@ public class PostManageService {
         String onGoingStatus = Objects.equals(boardCode, BoardCode.PETITION.getStringBoardCode()) ? postCreateRequest.categoryCode() : postCreateRequest.isNotice() ? Category.EMERGENCY.getStringCategoryCode() : null;
         
 //        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(category), onGoingStatus));
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(category)));
         postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());
         return PostCreateResponse.of(post.getId(), boardCode);
     }
@@ -213,7 +208,7 @@ public class PostManageService {
     @Transactional
     public PostCreateResponse createDataPost(Long userId, String fileCategory, String fileType, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(BoardCode.DATA.getStringBoardCode());
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), null));
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode())));
         postFileAppender.updatePostIdAndFileCategoryForIds(postCreateRequest.postFileList(), post.getId(), fileCategory, fileType);
         return PostCreateResponse.of(post.getId(), BoardCode.DATA.getStringBoardCode());
     }

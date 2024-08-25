@@ -25,7 +25,7 @@ public record PostUpdateRequest(
                 DateUtils.parseHourMinSecFromCustomString(post.getCreatedAt()),
                 DateUtils.parseHourMinSecFromCustomString(post.getUpdatedAt()),
                 LocalDateTime.now(),
-                category,
+                category.getStringCategoryCode(),
                 post.getUserId(),
                 board.getId()
         );

@@ -1,6 +1,7 @@
 package ussum.homepage.infra.jpa.post;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
@@ -311,6 +312,17 @@ public class PostRepositoryImpl implements PostRepository {
         //7일 이내거만 확인
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
 
+        // 기본 정렬 조건 설정(최신순 정렬)
+        OrderSpecifier<?>[] orderSpecifiers = new OrderSpecifier<?>[]{
+                postEntity.createdAt.desc()
+        };
+        if (boardCode.equals("청원게시판")) {
+            orderSpecifiers = new OrderSpecifier<?>[]{
+                    postReactionEntity.countDistinct().castToNum(Long.class).desc(), // 청원 게시물일 때 좋아요 순 정렬
+                    postEntity.createdAt.desc() // 기본 정렬(최신순 정렬)
+            };
+        }
+
         List<SimplePostResponse> contents = queryFactory
                 .select(Projections.constructor(SimplePostDto.class,
                         postEntity,
@@ -321,9 +333,10 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(postEntity.boardEntity, boardEntity)
                 .where(eqBoardCode(boardCode)
                         .and(postEntity.createdAt.after(sevenDaysAgo))
-                        .and(postEntity.ongoingStatus.ne(OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus("종료됨"))))
+                        //일단 지금은 청원게시물들만 인기조회가 필요하기 때문에 종료됨 진행상태만을 제외한 나머지 상태
+                        .and(postEntity.category.ne(Category.getEnumCategoryCodeFromStringCategoryCode("종료됨"))))
                 .groupBy(postEntity)
-                .orderBy(postEntity.createdAt.desc())
+                .orderBy(orderSpecifiers)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch()
@@ -349,11 +362,33 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post updatePostOngoingStatus(Long postId, String onGoingStatus, Category category) {
+    public List<Post> findAllByCategory(List<String> statuses) {
+//        return postJpaRepository.findAllByOngoingStatusIn(statuses).stream()
+//                .map(postMapper::toDomain)
+//                .collect(Collectors.toList());
+        BooleanBuilder whereClause = new BooleanBuilder();
+        if (statuses != null && !statuses.isEmpty()) {
+            List<Category> categories = statuses.stream()
+                    .map(Category::getEnumCategoryCodeFromStringCategoryCode)
+                    .collect(Collectors.toList());
+            whereClause.and(postEntity.category.in(categories));
+        }
+
+        return queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .fetch()
+                .stream()
+                .map(postMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Post updatePostCategory(Long postId, String category) {
         return postJpaRepository.findById(postId)
                 .map(postEntity -> {
-                    postEntity.updateStatusAndCategoryCode(
-                            OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus(onGoingStatus)
+                    postEntity.updateCategory(
+                            Category.getEnumCategoryCodeFromStringCategoryCode(category)
                     );
                     return postMapper.toDomain(postJpaRepository.save(postEntity));
                 })
