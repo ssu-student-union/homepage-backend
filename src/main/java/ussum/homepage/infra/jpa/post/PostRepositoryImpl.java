@@ -1,6 +1,7 @@
 package ussum.homepage.infra.jpa.post;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
@@ -311,6 +312,17 @@ public class PostRepositoryImpl implements PostRepository {
         //7일 이내거만 확인
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
 
+        // 기본 정렬 조건 설정(최신순 정렬)
+        OrderSpecifier<?>[] orderSpecifiers = new OrderSpecifier<?>[]{
+                postEntity.createdAt.desc()
+        };
+        if (boardCode.equals("청원게시판")) {
+            orderSpecifiers = new OrderSpecifier<?>[]{
+                    postReactionEntity.countDistinct().castToNum(Long.class).desc(), // 청원 게시물일 때 좋아요 순 정렬
+                    postEntity.createdAt.desc() // 기본 정렬(최신순 정렬)
+            };
+        }
+
         List<SimplePostResponse> contents = queryFactory
                 .select(Projections.constructor(SimplePostDto.class,
                         postEntity,
@@ -323,7 +335,7 @@ public class PostRepositoryImpl implements PostRepository {
                         .and(postEntity.createdAt.after(sevenDaysAgo))
                         .and(postEntity.ongoingStatus.ne(OngoingStatus.getEnumOngoingStatusFromStringOngoingStatus("종료됨"))))
                 .groupBy(postEntity)
-                .orderBy(postEntity.createdAt.desc())
+                .orderBy(orderSpecifiers)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch()
