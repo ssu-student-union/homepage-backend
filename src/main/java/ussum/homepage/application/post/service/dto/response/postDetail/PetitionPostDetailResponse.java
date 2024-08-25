@@ -17,9 +17,9 @@ public class PetitionPostDetailResponse extends PostDetailResDto {
     //    private final String onGoingStatus;
 
     @Builder
-    private PetitionPostDetailResponse(Long postId, String categoryName, String authorName, String studentId, String title, String content, String createdAt, Boolean isAuthor,
+    private PetitionPostDetailResponse(Long postId, String categoryName, String authorName, String studentId, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor,
                                        Integer likeCount, /*String onGoingStatus,*/ List<String> imageList, List<PostOfficialCommentResponse> officialCommentList) {
-        super(postId, categoryName, authorName, title, content, createdAt, isAuthor);
+        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor);
         this.studentId = studentId;
         this.likeCount = likeCount;
         this.imageList = imageList;

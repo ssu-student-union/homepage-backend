@@ -12,9 +12,9 @@ public class LostPostDetailResponse extends PostDetailResDto{
     private final List<String> imageList;
 
     @Builder
-    private LostPostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt, Boolean isAuthor,
+    private LostPostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor,
                                    List<String> imageList) {
-        super(postId, categoryName, authorName, title, content, createdAt, isAuthor);
+        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor);
         this.imageList = imageList;
     }
 
