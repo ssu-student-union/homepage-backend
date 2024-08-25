@@ -21,7 +21,7 @@ public record PostUpdateRequest(
                 post.getViewCount(),
                 thumbnailImage,
                 post.getStatus(),
-                post.getOnGoingStatus(),
+//                post.getOnGoingStatus(),
                 DateUtils.parseHourMinSecFromCustomString(post.getCreatedAt()),
                 DateUtils.parseHourMinSecFromCustomString(post.getUpdatedAt()),
                 LocalDateTime.now(),
