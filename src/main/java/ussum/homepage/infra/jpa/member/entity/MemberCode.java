@@ -23,8 +23,8 @@ public enum MemberCode {
     // 동아리연합회
     CLUB_UNION("동아리연합회"),
 
-    // 중앙선거관리위원회
-    CENTRAL_ELECTION_COMMITTEE("중앙선거관리위원회"),
+    // 선거관리위원회
+    ELECTION_COMMITTEE("선거관리위원회"),
 
     // 경영대학선거관리위원회
     BUSINESS_SCHOOL_ELECTION_COMMITTEE("경영대학선거관리위원회"),
