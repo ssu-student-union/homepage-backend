@@ -37,6 +37,7 @@ public class PetitionPostDetailResponse extends PostDetailResDto {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
+                .lastEditedAt(post.getLastEditedAt())
                 .isAuthor(isAuthor)
                 .likeCount(likeCount)
 //                .onGoingStatus(post.getCategory())

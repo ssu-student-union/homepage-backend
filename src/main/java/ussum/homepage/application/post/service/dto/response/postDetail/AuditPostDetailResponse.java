@@ -28,6 +28,7 @@ public class AuditPostDetailResponse extends PostDetailResDto {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
+                .lastEditedAt(post.getLastEditedAt())
                 .isAuthor(isAuthor)
                 .imageList(imageList)
                 .fileList(fileList)
