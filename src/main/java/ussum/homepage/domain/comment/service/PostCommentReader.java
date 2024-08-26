@@ -48,9 +48,9 @@ public class PostCommentReader {
             default:
                 throw new InvalidValueException(_BAD_REQUEST);
         }
-        if (comments.isEmpty()) {
-            throw new PostCommentException(POST_COMMENT_NOT_FOUND);
-        }
+//        if (comments.isEmpty()) {
+//            throw new PostCommentException(POST_COMMENT_NOT_FOUND);
+//        }
         return comments;
     }
 
