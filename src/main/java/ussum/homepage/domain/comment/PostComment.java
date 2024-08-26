@@ -3,6 +3,9 @@ package ussum.homepage.domain.comment;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import ussum.homepage.infra.utils.DateUtils;
+
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -13,6 +16,7 @@ public class PostComment {
     private Long userId;
     private String commentType;
     private String createdAt;
+    private String updatedAt;
     private String lastEditedAt;
     private Boolean isDeleted;
     private String deletedAt;
@@ -22,10 +26,14 @@ public class PostComment {
                                  Long postId,
                                  Long userId,
                                  String commentType,
-                                 String createdAt,
-                                 String lastEditedAt,
+                                 LocalDateTime createdAt,
+                                 LocalDateTime updatedAt,
+                                 LocalDateTime lastEditedAt,
                                  Boolean isDeleted,
-                                 String deletedAt) {
-        return new PostComment(id, content, postId, userId, commentType, createdAt, lastEditedAt, isDeleted, deletedAt);
+                                 LocalDateTime deletedAt) {
+        return new PostComment(id, content, postId, userId, commentType, DateUtils.formatHourMinSecToCustomString(createdAt),
+                DateUtils.formatHourMinSecToCustomString(updatedAt), DateUtils.formatHourMinSecToCustomString(lastEditedAt),
+                isDeleted, DateUtils.formatHourMinSecToCustomString(deletedAt));
     }
+
 }

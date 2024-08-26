@@ -20,16 +20,18 @@ public class PostCommentMapper {
                 postCommentEntity.getPostEntity().getId(),
                 postCommentEntity.getUserEntity().getId(),
                 String.valueOf(postCommentEntity.getCommentType()),
-                String.valueOf(postCommentEntity.getCreatedAt()),
-                String.valueOf(postCommentEntity.getLastEditedAt()),
+                postCommentEntity.getCreatedAt(),
+                postCommentEntity.getUpdatedAt(),
+                postCommentEntity.getLastEditedAt(),
                 postCommentEntity.getIsDeleted(),
-                String.valueOf(postCommentEntity.getDeletedAt())
+                postCommentEntity.getDeletedAt()
         );
     }
 
     public PostCommentEntity toEntity(PostComment postComment){
         LocalDateTime lastEditedAt = DateUtils.parseHourMinSecFromCustomString(postComment.getLastEditedAt());
         LocalDateTime deletedEditedAt = DateUtils.parseHourMinSecFromCustomString(postComment.getDeletedAt());
+
 
         return PostCommentEntity.of(
                 postComment.getId(),

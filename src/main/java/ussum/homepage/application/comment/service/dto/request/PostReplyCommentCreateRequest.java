@@ -13,6 +13,7 @@ public record PostReplyCommentCreateRequest(
                 userId,
                 null,
                 null,
+                null,
                 false,
                 null
         );

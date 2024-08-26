@@ -14,6 +14,7 @@ public record PostCommentCreateRequest(
                 commentType,
                 null,
                 null,
+              null,
               false,
                 null
         );

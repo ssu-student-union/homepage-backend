@@ -18,16 +18,18 @@ public class PostReplyCommentMapper {
                 postReplyCommentEntity.getContent(),
                 postReplyCommentEntity.getPostCommentEntity().getId(),
                 postReplyCommentEntity.getUserEntity().getId(),
-                String.valueOf(postReplyCommentEntity.getCreatedAt()),
-                String.valueOf(postReplyCommentEntity.getLastEditedAt()),
+                postReplyCommentEntity.getCreatedAt(),
+                postReplyCommentEntity.getUpdatedAt(),
+                postReplyCommentEntity.getLastEditedAt(),
                 postReplyCommentEntity.getIsDeleted(),
-                String.valueOf(postReplyCommentEntity.getDeletedAt())
+                postReplyCommentEntity.getDeletedAt()
         );
     }
 
     public PostReplyCommentEntity toEntity(PostReplyComment postReplyComment) {
         LocalDateTime lastEditedAt = DateUtils.parseHourMinSecFromCustomString(postReplyComment.getLastEditedAt());
         LocalDateTime deletedEditedAt = DateUtils.parseHourMinSecFromCustomString(postReplyComment.getDeletedAt());
+        System.out.println("postReplyComment.getUserId() = " + postReplyComment.getUserId());
 
         return PostReplyCommentEntity.of(
                 postReplyComment.getId(),

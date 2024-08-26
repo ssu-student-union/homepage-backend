@@ -1,6 +1,7 @@
 package ussum.homepage.application.comment.service.dto.request;
 
 import ussum.homepage.domain.comment.PostComment;
+import ussum.homepage.infra.utils.DateUtils;
 
 import java.time.LocalDateTime;
 
@@ -14,10 +15,11 @@ public record PostCommentUpdateRequest(
                 postId,
                 userId,
                 postComment.getCommentType(),
-                postComment.getCreatedAt(),
-                String.valueOf(LocalDateTime.now()),
+                DateUtils.parseHourMinSecFromCustomString(postComment.getCreatedAt()),
+                LocalDateTime.now(),
+                DateUtils.parseHourMinSecFromCustomString(postComment.getLastEditedAt()),
                 postComment.getIsDeleted(),
-                postComment.getDeletedAt()
+                DateUtils.parseHourMinSecFromCustomString(postComment.getDeletedAt())
         );
     }
 

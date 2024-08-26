@@ -61,6 +61,7 @@ public class PostReplyCommentEntity extends BaseEntity {
 
     public static void updateDeletedAt(PostReplyCommentEntity postReplyComment) {
         postReplyComment.deletedAt = LocalDateTime.now();
+        postReplyComment.isDeleted = true;
     }
 
 }
