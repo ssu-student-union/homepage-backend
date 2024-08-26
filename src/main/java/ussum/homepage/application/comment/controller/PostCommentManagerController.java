@@ -27,7 +27,7 @@ public class PostCommentManagerController {
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<ApiResponse<?>> getPostCommentList(@PathVariable Long postId,
                                                              @RequestParam(name = "type") String type,
-                                                             @RequestParam(required = false) Long userId) { //type은 "인기순" 인지 "최신순"인지
+                                                             @RequestParam Long userId) { //type은 "인기순" 인지 "최신순"인지
         return ApiResponse.success(postCommentManageService.getCommentList(postId, type, userId));
     }
 }
