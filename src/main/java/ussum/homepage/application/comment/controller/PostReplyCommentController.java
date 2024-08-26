@@ -43,8 +43,8 @@ public class PostReplyCommentController {
                                                                @PathVariable(name = "commentId") Long commentId,
                                                                @PathVariable(name = "reply-commentId") Long replyCommentId,
                                                                @RequestBody PostReplyCommentUpdateRequest postReplyCommentUpdateRequest) {
-        PostReplyCommentResponse postReplyComment = postReplyCommentService.editReplyComment(userId, commentId, replyCommentId, postReplyCommentUpdateRequest);
-        return ApiResponse.success(postReplyComment);
+        postReplyCommentService.editReplyComment(userId, commentId, replyCommentId, postReplyCommentUpdateRequest);
+        return ApiResponse.success(null);
     }
 
     @Operation(summary = "게시물 대댓글 삭제 api", description = """

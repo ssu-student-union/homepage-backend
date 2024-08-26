@@ -55,8 +55,8 @@ public class CommentController {
                                                           @PathVariable(name = "postId") Long postId,
                                                           @PathVariable(name = "commentId") Long commentId,
                                                           @RequestBody PostCommentUpdateRequest postCommentUpdateRequest) {
-        PostCommentResponse comment = commentService.editComment(userId, postId, commentId, postCommentUpdateRequest);
-        return ApiResponse.success(comment);
+        commentService.editComment(userId, postId, commentId, postCommentUpdateRequest);
+        return ApiResponse.success(null);
     }
 
     @Operation(summary = "게시물 댓글 삭제 api", description = """
