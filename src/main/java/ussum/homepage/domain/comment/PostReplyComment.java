@@ -12,8 +12,11 @@ public class PostReplyComment {
     private Long userId;
     private String createdAt;
     private String lastEditedAt;
+    private Boolean isDeleted;
+    private String deletedAt;
 
-    public static PostReplyComment of(Long id, String content, Long commentId, Long userId, String createdAt, String lastEditedAt) {
+    public static PostReplyComment of(Long id, String content, Long commentId, Long userId, String createdAt, String lastEditedAt,
+                                      Boolean isDeleted, String deletedAt) {
         return PostReplyComment.builder()
                 .id(id)
                 .content(content)
@@ -21,6 +24,8 @@ public class PostReplyComment {
                 .userId(userId)
                 .createdAt(createdAt)
                 .lastEditedAt(lastEditedAt)
+                .isDeleted(isDeleted)
+                .deletedAt(deletedAt)
                 .build();
     }
 }

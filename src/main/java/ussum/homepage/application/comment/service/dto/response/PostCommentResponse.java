@@ -15,19 +15,28 @@ public record PostCommentResponse(
         String lastEditedAt,
         Integer likeCount,
         Boolean isAuthor,
+        Boolean isDeleted,
         List<PostReplyCommentResponse> postReplyComments
 ) {
     public static PostCommentResponse of(PostComment postComment, User user, String commentType, Integer likeCount, Boolean isAuthor, List<PostReplyCommentResponse> postReplyComments) {
+        String studentId = user.getStudentId();
+        String content = postComment.getContent();
+        if (postComment.getIsDeleted().equals(true)) {
+            studentId = "삭제된 사용자입니다.";
+            content = "삭제된 댓글입니다.";
+        }
+
         return new PostCommentResponse(
                 postComment.getId(),
                 user.getName(),
-                user.getStudentId(),
-                postComment.getContent(),
+                studentId,
+                content,
                 commentType,
                 postComment.getCreatedAt(),
                 postComment.getLastEditedAt(),
                 likeCount,
                 isAuthor,
+                postComment.getIsDeleted(),
                 postReplyComments);
     }
 }

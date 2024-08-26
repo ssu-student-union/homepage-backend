@@ -6,6 +6,7 @@ import ussum.homepage.infra.jpa.comment.entity.CommentType;
 import ussum.homepage.infra.jpa.comment.entity.PostCommentEntity;
 import ussum.homepage.infra.jpa.post.entity.PostEntity;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
+import ussum.homepage.infra.utils.DateUtils;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -20,14 +21,15 @@ public class PostCommentMapper {
                 postCommentEntity.getUserEntity().getId(),
                 String.valueOf(postCommentEntity.getCommentType()),
                 String.valueOf(postCommentEntity.getCreatedAt()),
-                String.valueOf(postCommentEntity.getLastEditedAt())
+                String.valueOf(postCommentEntity.getLastEditedAt()),
+                postCommentEntity.getIsDeleted(),
+                String.valueOf(postCommentEntity.getDeletedAt())
         );
     }
+
     public PostCommentEntity toEntity(PostComment postComment){
-        LocalDateTime lastEditedAt = Optional.ofNullable(postComment.getLastEditedAt())
-                .filter(date -> !"null".equals(date))
-                .map(LocalDateTime::parse)
-                .orElse(null);
+        LocalDateTime lastEditedAt = DateUtils.parseHourMinSecFromCustomString(postComment.getLastEditedAt());
+        LocalDateTime deletedEditedAt = DateUtils.parseHourMinSecFromCustomString(postComment.getDeletedAt());
 
         return PostCommentEntity.of(
                 postComment.getId(),
@@ -35,7 +37,9 @@ public class PostCommentMapper {
                 PostEntity.from(postComment.getPostId()),
                 UserEntity.from(postComment.getUserId()),
                 CommentType.getEnumCommentTypeFromStringCommentType(postComment.getCommentType()),
-                lastEditedAt
+                lastEditedAt,
+                postComment.getIsDeleted(),
+                deletedEditedAt
         );
     }
 }

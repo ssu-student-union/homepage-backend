@@ -14,6 +14,8 @@ public class PostComment {
     private String commentType;
     private String createdAt;
     private String lastEditedAt;
+    private Boolean isDeleted;
+    private String deletedAt;
 
     public static PostComment of(Long id,
                                  String content,
@@ -21,7 +23,9 @@ public class PostComment {
                                  Long userId,
                                  String commentType,
                                  String createdAt,
-                                 String lastEditedAt){
-        return new PostComment(id, content, postId, userId, commentType, createdAt, lastEditedAt);
+                                 String lastEditedAt,
+                                 Boolean isDeleted,
+                                 String deletedAt) {
+        return new PostComment(id, content, postId, userId, commentType, createdAt, lastEditedAt, isDeleted, deletedAt);
     }
 }

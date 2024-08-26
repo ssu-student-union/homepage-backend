@@ -64,7 +64,8 @@ public class CommentController {
             요청 url 상에 commentId를 받습니다. 즉, 댓글 id를 받습니다.
             """)
     @DeleteMapping("/posts/comments/{commentId}")
-    public ResponseEntity<ApiResponse<?>> deletePostComment(@PathVariable(name = "commentId") Long commentId) {
+    public ResponseEntity<ApiResponse<?>> deletePostComment(@Parameter(hidden = true) @UserId Long userId,
+                                                            @PathVariable(name = "commentId") Long commentId) {
         commentService.deleteComment(commentId);
         return ApiResponse.success(null);
     }

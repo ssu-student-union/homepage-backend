@@ -54,7 +54,7 @@ public class PostReplyCommentController {
     @DeleteMapping("/posts/comments/reply-comments/{reply-commentId}")
     public ResponseEntity<ApiResponse<?>> deletePostReplyComment(@Parameter(hidden = true) @UserId Long userId,
                                                                  @PathVariable(name = "reply-commentId") Long replyCommentId) {
-        postReplyCommentService.deleteReplyComment(userId, replyCommentId);
+        postReplyCommentService.deleteReplyComment(replyCommentId);
         return ApiResponse.success(null);
     }
 }

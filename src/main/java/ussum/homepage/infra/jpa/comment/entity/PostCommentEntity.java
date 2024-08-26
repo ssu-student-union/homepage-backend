@@ -33,24 +33,37 @@ public class PostCommentEntity extends BaseEntity {
 
     private LocalDateTime lastEditedAt;
 
-    public PostCommentEntity(Long id, String content, PostEntity postEntity, UserEntity userEntity, CommentType commentType, LocalDateTime lastEditedAt) {
+    private Boolean isDeleted;
+
+    private LocalDateTime deletedAt;
+
+    public PostCommentEntity(Long id, String content, PostEntity postEntity, UserEntity userEntity, CommentType commentType, LocalDateTime lastEditedAt,
+                             Boolean isDeleted, LocalDateTime deletedAt) {
         this.id = id;
         this.content = content;
         this.postEntity = postEntity;
         this.userEntity = userEntity;
         this.commentType = commentType;
         this.lastEditedAt = lastEditedAt;
+        this.isDeleted = isDeleted;
+        this.deletedAt = deletedAt;
     }
 
-    public static PostCommentEntity of(Long id, String content, PostEntity postEntity, UserEntity userEntity, CommentType commentType, LocalDateTime lastEditedAt) {
-        return new PostCommentEntity(id, content, postEntity, userEntity, commentType, lastEditedAt);
+    public static PostCommentEntity of(Long id, String content, PostEntity postEntity, UserEntity userEntity, CommentType commentType, LocalDateTime lastEditedAt,
+                                       Boolean isDeleted, LocalDateTime deletedAt) {
+        return new PostCommentEntity(id, content, postEntity, userEntity, commentType, lastEditedAt, isDeleted, deletedAt);
     }
 
     public static PostCommentEntity from(Long id) {
-        return new PostCommentEntity(id, null, null, null, null, null);
+        return new PostCommentEntity(id, null, null, null, null, null, null, null);
     }
 
     public static void updateLastEditedAt(PostCommentEntity postComment) {
         postComment.lastEditedAt = LocalDateTime.now();
+    }
+
+    public static void updateDeletedAt(PostCommentEntity postComment) {
+        postComment.deletedAt = LocalDateTime.now();
+        postComment.isDeleted = false;
     }
 }

@@ -33,7 +33,7 @@ public class PostReplyCommentService {
     }
 
     @Transactional
-    public void deleteReplyComment(Long userId, Long replyCommentId) {
+    public void deleteReplyComment(Long replyCommentId) {
         postReplyCommentModifier.deletePostReplyComment(replyCommentId); //일단은 자기것만 삭제
     }
 }

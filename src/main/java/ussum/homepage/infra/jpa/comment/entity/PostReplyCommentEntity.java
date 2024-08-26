@@ -31,24 +31,36 @@ public class PostReplyCommentEntity extends BaseEntity {
 
     private LocalDateTime lastEditedAt;
 
-    public PostReplyCommentEntity(Long id, String content, PostCommentEntity postCommentEntity, UserEntity userEntity, LocalDateTime lastEditedAt) {
+    private Boolean isDeleted;
+
+    private LocalDateTime deletedAt;
+
+    public PostReplyCommentEntity(Long id, String content, PostCommentEntity postCommentEntity, UserEntity userEntity, LocalDateTime lastEditedAt,
+                                  Boolean isDeleted, LocalDateTime deletedAt) {
         this.id = id;
         this.content = content;
         this.postCommentEntity = postCommentEntity;
         this.userEntity = userEntity;
         this.lastEditedAt = lastEditedAt;
+        this.isDeleted = isDeleted;
+        this.deletedAt = deletedAt;
     }
 
-    public static PostReplyCommentEntity of(Long id, String content, PostCommentEntity postCommentEntity, UserEntity userEntity, LocalDateTime lastEditedAt) {
-        return new PostReplyCommentEntity(id, content, postCommentEntity, userEntity, lastEditedAt);
+    public static PostReplyCommentEntity of(Long id, String content, PostCommentEntity postCommentEntity, UserEntity userEntity, LocalDateTime lastEditedAt,
+                                            Boolean isDeleted, LocalDateTime deletedAt) {
+        return new PostReplyCommentEntity(id, content, postCommentEntity, userEntity, lastEditedAt, isDeleted, deletedAt);
     }
 
     public static PostReplyCommentEntity from(Long id) {
-        return new PostReplyCommentEntity(id, null, null, null, null);
+        return new PostReplyCommentEntity(id, null, null, null, null, null, null);
     }
 
     public static void updateLastEditedAt(PostReplyCommentEntity postReplyComment) {
         postReplyComment.lastEditedAt = LocalDateTime.now();
+    }
+
+    public static void updateDeletedAt(PostReplyCommentEntity postReplyComment) {
+        postReplyComment.deletedAt = LocalDateTime.now();
     }
 
 }

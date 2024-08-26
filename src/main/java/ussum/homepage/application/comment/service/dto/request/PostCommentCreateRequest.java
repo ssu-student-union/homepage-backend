@@ -13,8 +13,9 @@ public record PostCommentCreateRequest(
                 userId,
                 commentType,
                 null,
+                null,
+                null,
                 null
         );
     }
-
 }
