@@ -155,12 +155,11 @@ public class PostManageService {
         return PostListRes.of(responseList, pageInfo);
     }
 
-    public PostDetailRes<?> getPost(PostUserRequest postUserRequest, String boardCode, Long postId) {
+    public PostDetailRes<?> getPost(Long userId, String boardCode, Long postId) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post post = postReader.getPostWithBoardCodeAndPostId(boardCode, postId);
         User user = userReader.getUserWithId(post.getUserId());
 
-        Long userId = (postUserRequest != null) ? postUserRequest.userId() : null;
         Boolean isAuthor = (userId != null && userId.equals(post.getUserId()));
 
         List<PostFile> postFileList = postFileReader.getPostFileListByPostId(post.getId());

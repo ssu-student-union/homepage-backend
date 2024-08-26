@@ -66,7 +66,7 @@ public class PostManageController {
     @GetMapping("/{boardCode}/posts/{postId}")
     public ResponseEntity<ApiResponse<?>> getBoardPost(@PathVariable(name = "boardCode") String boardCode,
                                                        @PathVariable(name = "postId") Long postId,
-                                                       @ModelAttribute PostUserRequest postUserRequest) {
+                                                       @RequestParam(required = false) Long userId) {
 
         return ApiResponse.success(postManageService.getPost(postUserRequest, boardCode, postId));
     }
