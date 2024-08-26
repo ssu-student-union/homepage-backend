@@ -43,6 +43,6 @@ public class PostCommentFormatter implements ussum.homepage.domain.comment.servi
 
         Boolean isAuthor = userId != null && userId.equals(postComment.getUserId());
 
-        return PostCommentResponse.of(postComment, user.getName(), postComment.getCommentType(), likeCountOfPostComment, isAuthor, postReplyCommentResponses);
+        return PostCommentResponse.of(postComment, user, postComment.getCommentType(), likeCountOfPostComment, isAuthor, postReplyCommentResponses);
     }
 }

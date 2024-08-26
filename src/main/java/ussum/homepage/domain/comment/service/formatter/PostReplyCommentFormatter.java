@@ -31,6 +31,6 @@ public class PostReplyCommentFormatter implements ussum.homepage.domain.comment.
         User user = userReader.getUserWithId(postReplyComment.getUserId());
         Integer likeCount = postReplyCommentReactionManager.getLikeCountOfPostReplyComment(postReplyComment.getId());
         Boolean isAuthor = userId != null && userId.equals(postReplyComment.getUserId());
-        return PostReplyCommentResponse.of(postReplyComment, user.getName(), likeCount, isAuthor);
+        return PostReplyCommentResponse.of(postReplyComment, user, likeCount, isAuthor);
     }
 }
