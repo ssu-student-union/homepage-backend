@@ -19,7 +19,7 @@ public enum Category {
     EMERGENCY("긴급공지"),
 
     //분실물 카테고리(분실문 현황, 분실 신고)
-    LOST_STATUS("분실문현황"),
+    LOST_STATUS("분실물현황"),
     LOST_REPORT("분실신고"),
 
     //제휴안내 카테고리(의료, 문화, 뷰티, 건강, 음식, 교육, 주거)
