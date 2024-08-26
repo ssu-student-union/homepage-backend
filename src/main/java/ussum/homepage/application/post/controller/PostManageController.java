@@ -68,7 +68,7 @@ public class PostManageController {
                                                        @PathVariable(name = "postId") Long postId,
                                                        @RequestParam(required = false) Long userId) {
 
-        return ApiResponse.success(postManageService.getPost(postUserRequest, boardCode, postId));
+        return ApiResponse.success(postManageService.getPost(userId, boardCode, postId));
     }
 
     @Operation(summary = "게시물 생성 api", description = """
