@@ -20,9 +20,7 @@ public class PostCommentManageService {
     private final PostCommentReader postCommentReader;
     private final PostCommentFormatter postCommentFormatter;
 
-    public CommentListResponse getCommentList(Long postId, String type, PostUserRequest postUserRequest) {
-        Long userId = postUserRequest != null ? postUserRequest.userId() : null;
-
+    public CommentListResponse getCommentList(Long postId, String type, Long userId) {
         List<PostComment> postComments = postCommentReader.getCommentListWithPostIdAndType(postId, type);
 
         List<PostCommentResponse> postCommentResponses = postComments.stream()
