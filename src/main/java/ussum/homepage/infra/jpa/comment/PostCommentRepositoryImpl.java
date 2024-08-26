@@ -15,6 +15,7 @@ import ussum.homepage.infra.jpa.comment.repository.PostCommentJpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+import static ussum.homepage.infra.jpa.comment.entity.CommentType.GENERAL;
 import static ussum.homepage.infra.jpa.comment.entity.PostCommentEntity.updateLastEditedAt;
 import static ussum.homepage.infra.jpa.comment.entity.QPostCommentEntity.postCommentEntity;
 
@@ -54,6 +55,7 @@ public class PostCommentRepositoryImpl implements PostCommentRepository {
     public List<PostComment> findAllByPostIdOrderByLikesDesc(Long postId) {
         List<PostCommentEntity> commentEntities = postCommentJpaRepository.findAllByPostIdOrderByLikesDesc(postId);
         return commentEntities.stream()
+                .filter(postCommentEntity -> postCommentEntity.getCommentType().equals(GENERAL))
                 .map(postCommentMapper::toDomain)
                 .toList();
     }
@@ -63,6 +65,7 @@ public class PostCommentRepositoryImpl implements PostCommentRepository {
     public List<PostComment> findAllByPostIdOrderByCreatedAtDesc(Long postId) {
         List<PostCommentEntity> commentEntities = postCommentJpaRepository.findAllByPostEntityIdOrderByCreatedAtDesc(postId);
         return commentEntities.stream()
+                .filter(postCommentEntity -> postCommentEntity.getCommentType().equals(GENERAL))
                 .map(postCommentMapper::toDomain)
                 .toList();
     }
