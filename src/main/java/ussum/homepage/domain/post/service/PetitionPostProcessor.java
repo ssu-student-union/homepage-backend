@@ -27,11 +27,11 @@ public class PetitionPostProcessor {
     private final MemberManager memberManager;
 
     // 매일 자정에 실행되는 스케줄러
-    @Scheduled(cron = "0 0 0 * * *")
-//    @Scheduled(fixedDelay = 30000)
+//    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(fixedDelay = 600000)
     @Transactional
     public void scheduledStatusUpdate() {
-        List<Post> posts = postRepository.findAllByCategory(List.of("진행중", "접수완료"));
+        List<Post> posts = postRepository.findAllByCategory(List.of("진행중"));
         posts.forEach(post -> processStatus(post, postReactionReader.countPostReactionsByType(post.getId(), "like")));
     }
 
@@ -51,10 +51,10 @@ public class PetitionPostProcessor {
     }
 
     /**
-     * 관리자가 댓글을 달았을 때 호출되는 메소드 (Trigger)
+     * 중앙운영위원회가 댓글을 달았을 때 호출되는 메소드 (Trigger)
      */
     @Transactional
-    public void onAdminCommentPosted(Long postId,String commentType) {
+    public void onAdminCommentPosted(Long postId, String commentType) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(POST_NOT_FOUND));
 
