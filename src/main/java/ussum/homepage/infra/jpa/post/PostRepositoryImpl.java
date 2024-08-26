@@ -240,10 +240,6 @@ public class PostRepositoryImpl implements PostRepository {
         JPAQuery<Long> countQuery = queryFactory
                 .select(postEntity.count())
                 .from(postEntity)
-                .leftJoin(postEntity.userEntity, userEntity)
-                .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
-                .leftJoin(memberEntity.groupEntity, groupEntity)
-                .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
                 .where(whereClause);
 
         return PageableExecutionUtils.getPage(
