@@ -12,7 +12,9 @@ public record PostReplyCommentUpdateRequest(
                 commentId,
                 userId,
                 postReplyComment.getCreatedAt(),
-                postReplyComment.getLastEditedAt()
+                postReplyComment.getLastEditedAt(),
+                postReplyComment.getIsDeleted(),
+                postReplyComment.getDeletedAt()
         );
     }
 }

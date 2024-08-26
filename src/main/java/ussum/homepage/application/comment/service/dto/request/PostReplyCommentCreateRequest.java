@@ -12,7 +12,10 @@ public record PostReplyCommentCreateRequest(
                 commentId,
                 userId,
                 null,
+                null,
+                false,
                 null
         );
     }
+
 }

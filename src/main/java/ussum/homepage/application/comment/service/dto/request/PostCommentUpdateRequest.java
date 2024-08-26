@@ -15,7 +15,9 @@ public record PostCommentUpdateRequest(
                 userId,
                 postComment.getCommentType(),
                 postComment.getCreatedAt(),
-                String.valueOf(LocalDateTime.now())
+                String.valueOf(LocalDateTime.now()),
+                postComment.getIsDeleted(),
+                postComment.getDeletedAt()
         );
     }
 

@@ -58,9 +58,9 @@ public class PostCommentEntity extends BaseEntity {
         return new PostCommentEntity(id, null, null, null, null, null, null, null);
     }
 
-    public static void updateLastEditedAt(PostCommentEntity postComment) {
-        postComment.lastEditedAt = LocalDateTime.now();
-    }
+//    public static void updateLastEditedAt(PostCommentEntity postComment) {
+//        postComment.lastEditedAt = LocalDateTime.now();
+//    }
 
     public static void updateDeletedAt(PostCommentEntity postComment) {
         postComment.deletedAt = LocalDateTime.now();

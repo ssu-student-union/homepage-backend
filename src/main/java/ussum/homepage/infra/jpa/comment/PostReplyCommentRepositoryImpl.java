@@ -44,8 +44,8 @@ public class PostReplyCommentRepositoryImpl implements PostReplyCommentRepositor
 
     @Override
     public PostReplyComment update(PostReplyComment postReplyComment) {
-        PostReplyCommentEntity postReplyCommentEntity = postReplyCommentMapper.toEntity(postReplyComment);
-        updateLastEditedAt(postReplyCommentEntity);
-        return postReplyCommentMapper.toDomain(postReplyCommentJpaRepository.save(postReplyCommentEntity));
+//        PostReplyCommentEntity postReplyCommentEntity = postReplyCommentMapper.toEntity(postReplyComment);
+//        updateLastEditedAt(postReplyCommentEntity);
+        return postReplyCommentMapper.toDomain(postReplyCommentJpaRepository.save(postReplyCommentMapper.toEntity(postReplyComment)));
     }
 }

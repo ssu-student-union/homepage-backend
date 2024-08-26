@@ -17,7 +17,6 @@ import java.util.Optional;
 
 import static ussum.homepage.infra.jpa.comment.entity.CommentType.GENERAL;
 import static ussum.homepage.infra.jpa.comment.entity.PostCommentEntity.updateDeletedAt;
-import static ussum.homepage.infra.jpa.comment.entity.PostCommentEntity.updateLastEditedAt;
 import static ussum.homepage.infra.jpa.comment.entity.QPostCommentEntity.postCommentEntity;
 
 @Repository
@@ -90,9 +89,9 @@ public class PostCommentRepositoryImpl implements PostCommentRepository {
 
     @Override
     public PostComment update(PostComment postComment){
-        PostCommentEntity postCommentEntity = postCommentMapper.toEntity(postComment);
-        updateLastEditedAt(postCommentEntity);
-        return postCommentMapper.toDomain(postCommentJpaRepository.save(postCommentEntity));
+//        PostCommentEntity postCommentEntity = postCommentMapper.toEntity(postComment);
+//        updateLastEditedAt(postCommentEntity);
+        return postCommentMapper.toDomain(postCommentJpaRepository.save(postCommentMapper.toEntity(postComment)));
     }
 
     @Override
