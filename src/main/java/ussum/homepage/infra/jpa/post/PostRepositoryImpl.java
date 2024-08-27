@@ -270,7 +270,33 @@ public class PostRepositoryImpl implements PostRepository {
         BoardEntity boardEntity = boardJpaRepository.findById(post.getBoardId())
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
+        if (boardEntity.getBoardCode().equals(PETITION)) {
+            // 게시물에 해당하는 모든 댓글 조회 및 처리
+            postCommentJpaRepository.findAllByPostId(post.getId())
+                    .forEach(postCommentEntity -> {
+                        // 대댓글 삭제
+                        postReplyCommentJpaRepository.findAllByPostCommentId(postCommentEntity.getId())
+                                .forEach(postReplyCommentEntity -> {
+                                    // 대댓글 반응 삭제
+                                    List<PostReplyCommentReactionEntity> postReplyCommentReactionList = postReplyCommentReactionJpaRepository.findAllByPostReplyCommentId(postReplyCommentEntity.getId());
+                                    postReplyCommentReactionJpaRepository.deleteAll(postReplyCommentReactionList);
+
+                                    // 대댓글 삭제
+                                    postReplyCommentJpaRepository.delete(postReplyCommentEntity);
+                                });
+
+                        // 댓글 반응 삭제
+                        List<PostCommentReactionEntity> postCommentReactionEntityList = postCommentReactionJpaRepository.findAllByPostCommentId(postCommentEntity.getId());
+                        postCommentReactionJpaRepository.deleteAll(postCommentReactionEntityList);
+
+                        // 댓글 삭제
+                        postCommentJpaRepository.delete(postCommentEntity);
+                    });
+        }
+        // 게시물에 연결된 파일 삭제
         postFileJpaRepository.deleteAll(postFileJpaRepository.findAllByPostId(post.getId()));
+
+        // 게시물 삭제
         postJpaRepository.delete(postMapper.toEntity(post, userEntity, boardEntity));
     }
 
