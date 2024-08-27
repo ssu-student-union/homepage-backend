@@ -14,6 +14,8 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
 import ussum.homepage.domain.post.exception.PostException;
+import ussum.homepage.infra.jpa.comment.repository.PostCommentJpaRepository;
+import ussum.homepage.infra.jpa.comment.repository.PostReplyCommentJpaRepository;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
@@ -24,6 +26,10 @@ import ussum.homepage.infra.jpa.post.entity.*;
 import ussum.homepage.infra.jpa.post.repository.BoardJpaRepository;
 import ussum.homepage.infra.jpa.post.repository.PostFileJpaRepository;
 import ussum.homepage.infra.jpa.post.repository.PostJpaRepository;
+import ussum.homepage.infra.jpa.reaction.entity.PostCommentReactionEntity;
+import ussum.homepage.infra.jpa.reaction.entity.PostReplyCommentReactionEntity;
+import ussum.homepage.infra.jpa.reaction.repository.PostCommentReactionJpaRepository;
+import ussum.homepage.infra.jpa.reaction.repository.PostReplyCommentReactionJpaRepository;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
@@ -36,7 +42,7 @@ import java.util.stream.Collectors;
 import static ussum.homepage.global.error.status.ErrorStatus.*;
 
 import static ussum.homepage.infra.jpa.group.entity.QGroupEntity.groupEntity;
-import static ussum.homepage.infra.jpa.member.entity.QMemberEntity.memberEntity;
+import static ussum.homepage.infra.jpa.member.entity.QMemberEntity.memberEntity;;
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.increaseViewCount;
 import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
 import static ussum.homepage.infra.jpa.post.entity.QPostFileEntity.postFileEntity;
@@ -52,10 +58,14 @@ import static ussum.homepage.infra.jpa.user.entity.QUserEntity.userEntity;
 public class PostRepositoryImpl implements PostRepository {
     private final PostJpaRepository postJpaRepository;
     private final PostFileJpaRepository postFileJpaRepository;
+    private final PostCommentReactionJpaRepository postCommentReactionJpaRepository;
+    private final PostReplyCommentReactionJpaRepository postReplyCommentReactionJpaRepository;
     private final BoardJpaRepository boardJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final PostMapper postMapper;
     private final JPAQueryFactory queryFactory;
+    private final PostReplyCommentJpaRepository postReplyCommentJpaRepository;
+    private final PostCommentJpaRepository postCommentJpaRepository;
 
     @Override
     public Optional<Post> findById(Long postId) {
@@ -270,7 +280,7 @@ public class PostRepositoryImpl implements PostRepository {
         BoardEntity boardEntity = boardJpaRepository.findById(post.getBoardId())
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
-        if (boardEntity.getBoardCode().equals(PETITION)) {
+        if (boardEntity.getBoardCode().equals(BoardCode.getEnumBoardCodeFromStringBoardCode("청원게시판"))) {
             // 게시물에 해당하는 모든 댓글 조회 및 처리
             postCommentJpaRepository.findAllByPostId(post.getId())
                     .forEach(postCommentEntity -> {
