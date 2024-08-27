@@ -59,16 +59,38 @@ public class S3utils {
         if (images != null && images.length > 0) {
             PostFileMediatorResponse imageResponse = uploadFiles(userId, boardCode, images, "images");
             uploadedFileUrls.addAll(imageResponse.urlList());
-            originalFileNames.addAll(imageResponse.originalFileNames());
+            originalFileNames.addAll(formatOriginalFileNames(imageResponse.originalFileNames()));
         }
 
         if (files != null && files.length > 0) {
             PostFileMediatorResponse fileResponse = uploadFiles(userId, boardCode, files, "files");
             uploadedFileUrls.addAll(fileResponse.urlList());
-            originalFileNames.addAll(fileResponse.originalFileNames());
+            originalFileNames.addAll(formatOriginalFileNames(fileResponse.originalFileNames()));
         }
 
         return PostFileMediatorResponse.of(originalFileNames, uploadedFileUrls);
+    }
+    public List<String> formatOriginalFileNames(List<String> originalFileNames) {
+        return originalFileNames.stream()
+                .map(this::formatSingleFileName)
+                .collect(Collectors.toList());
+    }
+
+    private String formatSingleFileName(String originalFileName) {
+        int lastDotIndex = originalFileName.lastIndexOf('.');
+
+        if (lastDotIndex == -1) {
+            // 확장자가 없는 경우 전체 이름을 처리
+            return originalFileName.replaceAll("\\s+", " ").trim();
+        }
+
+        // 파일 이름과 확장자를 분리
+        String nameWithoutExtension = originalFileName.substring(0, lastDotIndex);
+        String extension = originalFileName.substring(lastDotIndex + 1).toUpperCase();
+
+        // 파일 이름 부분을 처리하고 확장자를 대문자로 변환하여 끝에 붙임
+        String processedName = nameWithoutExtension.replaceAll("\\s+", " ").trim();
+        return processedName + " " + extension;
     }
 
     private PostFileMediatorResponse uploadFiles(Long userId, String boardCode, MultipartFile[] files, String fileType) {

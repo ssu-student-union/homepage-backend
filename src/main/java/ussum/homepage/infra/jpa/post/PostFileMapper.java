@@ -16,6 +16,7 @@ public class PostFileMapper {
 
         return PostFile.of(
                 postFileEntity.getId(),
+                postFileEntity.getFileName(),
                 postFileEntity.getTypeName(),
                 fileCategoryString,
                 postFileEntity.getUrl(),
@@ -37,6 +38,7 @@ public class PostFileMapper {
 
         return PostFileEntity.of(
                 postFile.getId(),
+                postFile.getFileName(),
                 postFile.getTypeName(),
                 fileCategory,
                 postFile.getUrl(),
