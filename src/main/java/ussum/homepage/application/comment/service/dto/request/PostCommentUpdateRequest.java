@@ -16,8 +16,8 @@ public record PostCommentUpdateRequest(
                 userId,
                 postComment.getCommentType(),
                 DateUtils.parseHourMinSecFromCustomString(postComment.getCreatedAt()),
+                DateUtils.parseHourMinSecFromCustomString(postComment.getUpdatedAt()),
                 LocalDateTime.now(),
-                DateUtils.parseHourMinSecFromCustomString(postComment.getLastEditedAt()),
                 postComment.getIsDeleted(),
                 DateUtils.parseHourMinSecFromCustomString(postComment.getDeletedAt())
         );
