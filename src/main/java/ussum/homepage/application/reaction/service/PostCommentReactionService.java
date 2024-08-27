@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ussum.homepage.application.reaction.service.dto.request.CreatePostCommentReactionReq;
-import ussum.homepage.application.reaction.service.dto.request.CreatePostReactionReq;
 import ussum.homepage.application.reaction.service.dto.request.PostCommentReactionCreateRequest;
+import ussum.homepage.application.reaction.service.dto.response.PostCommentReactionCountResponse;
 import ussum.homepage.application.reaction.service.dto.response.PostCommentReactionResponse;
 import ussum.homepage.domain.comment.PostComment;
-import ussum.homepage.domain.postlike.PostReaction;
 import ussum.homepage.domain.reaction.service.PostCommentReactionManager;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.reaction.PostCommentReaction;
@@ -31,7 +30,7 @@ public class PostCommentReactionService {
     private final PostCommentReactionReader postCommentReactionReader;
 
     @Transactional
-    public void postCommentReactionToggle(Long userId, Long commentId, CreatePostCommentReactionReq createPostCommentReactionReq) {
+    public PostCommentReactionCountResponse postCommentReactionToggle(Long userId, Long commentId, CreatePostCommentReactionReq createPostCommentReactionReq) {
         PostCommentReaction newPostCommentReaction = createPostCommentReactionReq.toDomain(commentId, userId);
         Optional<PostCommentReaction> existingPostCommentReaction = postCommentReactionReader.getPostCommentReactionByUserIdAndCommentId(userId, commentId);
 
@@ -40,6 +39,8 @@ public class PostCommentReactionService {
                 commentReaction -> handleExistingCommentReaction(commentReaction, newPostCommentReaction),
                 () -> createNewCommentReaction(newPostCommentReaction)
         );
+        int likeCountByCommentId = postCommentReactionReader.getLikeCountByCommentId(newPostCommentReaction.getPostCommentId());
+        return PostCommentReactionCountResponse.of(likeCountByCommentId);
     }
 
     private void handleExistingCommentReaction(PostCommentReaction existingReaction, PostCommentReaction newReaction) {

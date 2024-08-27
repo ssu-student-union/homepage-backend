@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ussum.homepage.application.reaction.service.PostCommentReactionService;
 import ussum.homepage.application.reaction.service.dto.request.CreatePostCommentReactionReq;
+import ussum.homepage.application.reaction.service.dto.response.PostCommentReactionCountResponse;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
 
@@ -28,8 +29,8 @@ public class PostCommentReactionController {
     public ResponseEntity<ApiResponse<?>> togglePostCommentReaction(@Parameter(hidden = true) @UserId Long userId,
                                                                     @PathVariable(name = "commentId") Long commentId,
                                                                     @RequestBody CreatePostCommentReactionReq createPostCommentReactionReq) {
-        postCommentReactionService.postCommentReactionToggle(userId, commentId, createPostCommentReactionReq);
-        return ApiResponse.success("댓글에 성공적으로 반응하였습니다.");
+        PostCommentReactionCountResponse postCommentReactionCount = postCommentReactionService.postCommentReactionToggle(userId, commentId, createPostCommentReactionReq);
+        return ApiResponse.success(postCommentReactionCount);
     }
 
 //    @Operation(summary = "게시물 댓글 반응 생성 api", description = """
