@@ -258,6 +258,65 @@ public class PostManageService {
     public void deletePost(String boardCode, Long postId) {
         postModifier.deletePost(boardCode, postId);
     }
+
+    public PostListRes<?> searchPost(int page, int take, String q, String boardCode, String groupCode, String memberCode, String category) {
+        Board board = boardReader.getBoardWithBoardCode(boardCode);
+        BoardImpl boardImpl = BoardFactory.createBoard(boardCode, board.getId());
+        Pageable pageable = PageInfo.of(page, take);
+
+        GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
+        MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
+        Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
+
+        Page<Post> postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
+
+        PageInfo pageInfo = PageInfo.of(postList);
+
+        QuadFunction<Post, List<PostFile>, Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get(board.getName());
+
+        if (responseFunction == null) {
+            throw new IllegalArgumentException("Unknown board type: " + board.getName());
+        }
+
+        List<? extends PostListResDto> responseList = postList.getContent().stream()
+                .map(post -> {
+                    User user = null;
+                    Integer likeCount = null;
+                    switch (board.getName()) {
+                        case "공지사항게시판":
+                            user = userReader.getUserWithId(post.getUserId());
+                            return responseFunction.apply(post, null, null,user);
+                        case "분실물게시판":
+                        case "제휴게시판":
+                        case "감사기구게시판":
+                        case "자료집":
+                            return responseFunction.apply(post, null, null, null);
+                        case "청원게시판":
+                            likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
+                            return responseFunction.apply(post, null, likeCount,null);
+                        default:
+                            throw new EntityNotFoundException(String.valueOf(POST_NOT_FOUND));
+                    }
+                })
+                .toList();
+
+        return PostListRes.of(responseList, pageInfo);
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//        Page<Post> searchPost = postReader.getPostListBySearch(pageable, boardCode, q, categoryCode);
+//        return PostListResponse.of(searchPost.getContent(), (int) searchPost.getTotalElements(), searchPost.getNumberOfElements(), postFormatter::format);
+    }
 }
 //스위치 사용 로직
 /*

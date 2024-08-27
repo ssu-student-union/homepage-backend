@@ -17,4 +17,9 @@ public class GeneralBoardImpl implements BoardImpl {
     public Page<Post> getPostList(PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, Pageable pageable) {
         return postReader.getPostListByBoardIdAndCategory(this.id, category, pageable);
     }
+
+    @Override
+    public Page<Post> searchPostList(String q, PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, Pageable pageable) {
+        return postReader.searchPostListByBoardIdAndCategory(this.id, q, category, pageable);
+    }
 }
