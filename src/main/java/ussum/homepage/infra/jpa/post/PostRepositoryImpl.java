@@ -26,6 +26,8 @@ import ussum.homepage.infra.jpa.post.entity.*;
 import ussum.homepage.infra.jpa.post.repository.BoardJpaRepository;
 import ussum.homepage.infra.jpa.post.repository.PostFileJpaRepository;
 import ussum.homepage.infra.jpa.post.repository.PostJpaRepository;
+import ussum.homepage.infra.jpa.postlike.entity.PostReactionEntity;
+import ussum.homepage.infra.jpa.postlike.repository.PostReactionJpaRepository;
 import ussum.homepage.infra.jpa.reaction.entity.PostCommentReactionEntity;
 import ussum.homepage.infra.jpa.reaction.entity.PostReplyCommentReactionEntity;
 import ussum.homepage.infra.jpa.reaction.repository.PostCommentReactionJpaRepository;
@@ -305,6 +307,10 @@ public class PostRepositoryImpl implements PostRepository {
         }
         // 게시물에 연결된 파일 삭제
         postFileJpaRepository.deleteAll(postFileJpaRepository.findAllByPostId(post.getId()));
+
+        // 게시물 반응 삭제
+        List<PostReactionEntity> postReactionEntityList = postReactionJpaRepository.findAllByPostId(post.getId());
+        postReactionJpaRepository.deleteAll(postReactionEntityList);
 
         // 게시물 삭제
         postJpaRepository.delete(postMapper.toEntity(post, userEntity, boardEntity));
