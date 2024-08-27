@@ -40,8 +40,8 @@ public class OnBoardingService {
     public void saveUserOnBoarding(Long userId, OnBoardingRequest request){
 //        User user = userReader.getUserWithId(userId);
         String studentId = request.getStudentId();
-//        studentCsvReader.getStudentWithStudentId(Long.valueOf(studentId), request)
-//                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
+        studentCsvReader.getStudentWithStudentId(Long.valueOf(studentId), request)
+                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
 
         userModifier.updateOnBoardingUser(userId, request);
         Member member = Member.createMember(false, request.getMemberCode(), request.getMajorCode(), userId);
