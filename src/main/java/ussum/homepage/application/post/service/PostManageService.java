@@ -14,6 +14,8 @@ import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.request.PostUserRequest;
 import ussum.homepage.application.post.service.dto.response.DataPostResponse;
+import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
+import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.*;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 
@@ -320,21 +322,14 @@ public class PostManageService {
                 .toList();
 
         return PostListRes.of(responseList, pageInfo);
+    }
 
+    public TopLikedPostListResponse getTopLikedPostList(int page, int take, String boardCode) {
+        Pageable pageable = PageInfo.of(page, take);
+        Page<SimplePostResponse> simplePostDtoList = postReader.findSimplePostDtoListByBoardCode(boardCode, pageable);
+        PageInfo pageInfo = PageInfo.of(simplePostDtoList);
 
-
-
-
-
-
-
-
-
-
-
-//
-//        Page<Post> searchPost = postReader.getPostListBySearch(pageable, boardCode, q, categoryCode);
-//        return PostListResponse.of(searchPost.getContent(), (int) searchPost.getTotalElements(), searchPost.getNumberOfElements(), postFormatter::format);
+        return TopLikedPostListResponse.of(simplePostDtoList.getContent(), pageInfo);
     }
 }
 //스위치 사용 로직

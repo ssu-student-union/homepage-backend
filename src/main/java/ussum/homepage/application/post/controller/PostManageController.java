@@ -13,6 +13,7 @@ import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.request.PostUserRequest;
+import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
 
@@ -67,7 +68,6 @@ public class PostManageController {
     public ResponseEntity<ApiResponse<?>> getBoardPost(@PathVariable(name = "boardCode") String boardCode,
                                                        @PathVariable(name = "postId") Long postId,
                                                        @RequestParam(required = false) Long userId) {
-
         return ApiResponse.success(postManageService.getPost(userId, boardCode, postId));
     }
 
@@ -119,7 +119,6 @@ public class PostManageController {
                                                               @PathVariable(name = "boardCode") String boardCode,
                                                               @RequestPart(value = "files", required = false) MultipartFile[] files,
                                                               @RequestPart(value = "images", required = false) MultipartFile[] images) {
-
         return ApiResponse.success(postManageService.createBoardPostFile(userId, boardCode, files, images));
     }
 
@@ -173,8 +172,19 @@ public class PostManageController {
                                                           @RequestParam(value = "groupCode", required = false) String groupCode,
                                                           @RequestParam(value = "memberCode",  required = false) String memberCode,
                                                           @RequestParam(value = "category",  required = false) String category) {
-
         return ApiResponse.success(postManageService.searchPost(page, take, q, boardCode, groupCode, memberCode, category));
+    }
+
+    @Operation(summary = "게시판 인기청원 조회 api", description = """
+            게시판 인기청원 조회 시 필요한 데이터를 조회하는 api 입니다.
+            요청으로 boardCode 그리고 qeury param 형식으로 page, take를 입력하시면 됩니다.
+            """)
+    @GetMapping("/{boardCode}/posts/top-liked")
+    public ResponseEntity<ApiResponse<?>> getTopLikedBoardPostList(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                                   @RequestParam(value = "take") int take,
+                                                                   @PathVariable(name = "boardCode") String boardCode) {
+        TopLikedPostListResponse postList = postManageService.getTopLikedPostList(page, take, boardCode);
+        return ApiResponse.success(postList);
     }
 
 }
