@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
+import ussum.homepage.application.post.service.dto.response.postSave.PostFileMediatorResponse;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
 
@@ -51,22 +52,29 @@ public class S3utils {
         return amazonS3.getUrl(bucket, originalFilename).toString();
     }
 
-    public List<Map<String, String>> uploadFileWithPath(Long userId, String boardCode, MultipartFile[] files, MultipartFile[] images) {
+    public PostFileMediatorResponse uploadFileWithPath(Long userId, String boardCode, MultipartFile[] files, MultipartFile[] images) {
         List<Map<String, String>> uploadedFileUrls = new ArrayList<>();
+        List<String> originalFileNames = new ArrayList<>();
 
         if (images != null && images.length > 0) {
-            uploadedFileUrls.addAll(uploadFiles(userId, boardCode, images, "images"));
+            PostFileMediatorResponse imageResponse = uploadFiles(userId, boardCode, images, "images");
+            uploadedFileUrls.addAll(imageResponse.urlList());
+            originalFileNames.addAll(imageResponse.originalFileNames());
         }
 
         if (files != null && files.length > 0) {
-            uploadedFileUrls.addAll(uploadFiles(userId, boardCode, files, "files"));
+            PostFileMediatorResponse fileResponse = uploadFiles(userId, boardCode, files, "files");
+            uploadedFileUrls.addAll(fileResponse.urlList());
+            originalFileNames.addAll(fileResponse.originalFileNames());
         }
 
-        return uploadedFileUrls;
+        return PostFileMediatorResponse.of(originalFileNames, uploadedFileUrls);
     }
 
-    private List<Map<String, String>> uploadFiles(Long userId, String boardCode, MultipartFile[] files, String fileType) {
+    private PostFileMediatorResponse uploadFiles(Long userId, String boardCode, MultipartFile[] files, String fileType) {
         List<Map<String, String>> uploadedFileUrls = new ArrayList<>();
+        List<String> originalFileNames = new ArrayList<>();
+
         for (MultipartFile file : files) {
             String fileName = file.getOriginalFilename();
             String fileExtension = fileName.substring(fileName.lastIndexOf("."));
@@ -85,11 +93,13 @@ public class S3utils {
                 Map<String, String> fileData = new HashMap<>();
                 fileData.put(fileType, fileUrl);
                 uploadedFileUrls.add(fileData);
+                originalFileNames.add(fileName); // 원본 파일 이름 추가
             } catch (IOException e) {
                 throw new GeneralException(ErrorStatus.S3_ERROR);
             }
         }
-        return uploadedFileUrls;
+
+        return PostFileMediatorResponse.of(originalFileNames, uploadedFileUrls);
     }
 
     private File convertMultiPartToFile(MultipartFile file) throws IOException {
