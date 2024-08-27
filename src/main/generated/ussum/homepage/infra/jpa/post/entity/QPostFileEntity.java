@@ -24,6 +24,8 @@ public class QPostFileEntity extends EntityPathBase<PostFileEntity> {
 
     public final EnumPath<FileCategory> fileCategory = createEnum("fileCategory", FileCategory.class);
 
+    public final StringPath fileName = createString("fileName");
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final QPostEntity postEntity;

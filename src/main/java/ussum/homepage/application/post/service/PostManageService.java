@@ -52,6 +52,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static ussum.homepage.global.error.status.ErrorStatus.POST_NOT_FOUND;
 
@@ -213,7 +214,7 @@ public class PostManageService {
     @Transactional
     public PostFileListResponse createBoardPostFile(Long userId, String boardCode, MultipartFile[] files, MultipartFile[] images){
         PostFileMediatorResponse response = s3utils.uploadFileWithPath(userId, boardCode, files, images);
-        List<PostFile> postFiles = convertUrlsToPostFiles(response.urlList());
+        List<PostFile> postFiles = convertUrlsToPostFiles(response);
         List<PostFile> afterSaveList = postFileAppender.saveAllPostFile(postFiles);
 
         String thumbnailUrl = afterSaveList.stream()
@@ -233,10 +234,28 @@ public class PostManageService {
         return PostFileListResponse.of(thumbnailUrl, postFileResponses);
     }
 
-    private List<PostFile> convertUrlsToPostFiles(List<Map<String, String>> urlList) {
-        return urlList.stream()
-                .flatMap(map -> map.entrySet().stream())
-                .map(entry -> PostFile.of(null, entry.getKey(), null, entry.getValue(), null, null)) // key: 파일 타입, value: URL
+    private List<PostFile> convertUrlsToPostFiles(PostFileMediatorResponse response) {
+        List<String> originalFileNames = response.originalFileNames();
+        List<Map<String, String>> urlList = response.urlList();
+
+        return IntStream.range(0, urlList.size())
+                .mapToObj(i -> {
+                    Map<String, String> urlMap = urlList.get(i);
+                    String originalFileName = i < originalFileNames.size() ? originalFileNames.get(i) : null;
+
+                    return urlMap.entrySet().stream()
+                            .map(entry -> PostFile.of(
+                                    null,
+                                    originalFileName,
+                                    entry.getKey(),
+                                    null,
+                                    entry.getValue(),
+                                    null,
+                                    null
+                            ))
+                            .collect(Collectors.toList());
+                })
+                .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
