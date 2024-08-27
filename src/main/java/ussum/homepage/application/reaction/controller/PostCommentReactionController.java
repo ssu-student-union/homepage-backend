@@ -1,6 +1,7 @@
 package ussum.homepage.application.reaction.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class PostCommentReactionController {
             ex. like를 Request에 넣어서 요청을 하면 댓글 좋아요가 생성되고, 동일한 요청을 한번더 요청하면 이전에 눌렀던 댓긇 좋아요가 취소됩니다.
             """)
     @PostMapping("/posts/comments/{commentId}")
-    public ResponseEntity<ApiResponse<?>> togglePostCommentReaction(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> togglePostCommentReaction(@Parameter(hidden = true) @UserId Long userId,
                                                                     @PathVariable(name = "commentId") Long commentId,
                                                                     @RequestBody CreatePostCommentReactionReq createPostCommentReactionReq) {
         postCommentReactionService.postCommentReactionToggle(userId, commentId, createPostCommentReactionReq);

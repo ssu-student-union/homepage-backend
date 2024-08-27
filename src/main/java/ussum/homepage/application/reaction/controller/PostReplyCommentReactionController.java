@@ -1,6 +1,7 @@
 package ussum.homepage.application.reaction.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,9 @@ public class PostReplyCommentReactionController {
             ex. like를 Request에 넣어서 요청을 하면 대댓글 좋아요가 생성되고, 동일한 요청을 한번더 요청하면 이전에 눌렀던 대댓긇 좋아요가 취소됩니다.
             """)
     @PostMapping("/posts/comments/reply-comments/{reply-commentId}")
-    public ResponseEntity<ApiResponse<?>> togglePostReplyCommentReaction(@UserId Long userId,
-                                                                    @PathVariable(name = "reply-commentId") Long replyCommentId,
-                                                                    @RequestBody CreatePostReplyCommentReactionReq createPostReplyCommentReactionReq) {
+    public ResponseEntity<ApiResponse<?>> togglePostReplyCommentReaction(@Parameter(hidden = true) @UserId Long userId,
+                                                                         @PathVariable(name = "reply-commentId") Long replyCommentId,
+                                                                         @RequestBody CreatePostReplyCommentReactionReq createPostReplyCommentReactionReq) {
         postReplyCommentReactionService.postReplyCommentReactionToggle(userId, replyCommentId, createPostReplyCommentReactionReq);
         return ApiResponse.success("댓글에 성공적으로 반응하였습니다.");
     }
