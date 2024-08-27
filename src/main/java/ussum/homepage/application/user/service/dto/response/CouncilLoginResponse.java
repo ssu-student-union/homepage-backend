@@ -2,7 +2,7 @@ package ussum.homepage.application.user.service.dto.response;
 
 import lombok.Builder;
 import ussum.homepage.domain.group.Group;
-import ussum.homepage.domain.member.Member;;
+import ussum.homepage.domain.member.Member;
 import ussum.homepage.global.jwt.JwtTokenInfo;
 
 @Builder

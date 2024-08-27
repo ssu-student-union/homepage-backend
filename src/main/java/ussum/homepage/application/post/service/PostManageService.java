@@ -17,12 +17,9 @@ import ussum.homepage.application.post.service.dto.response.DataPostResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.*;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 
-import ussum.homepage.application.post.service.dto.response.postSave.PostFileDeleteResponse;
-import ussum.homepage.application.post.service.dto.response.postSave.PostFileListResponse;
+import ussum.homepage.application.post.service.dto.response.postSave.*;
 import ussum.homepage.domain.comment.service.formatter.QuadFunction;
 
-import ussum.homepage.application.post.service.dto.response.postSave.PostCreateResponse;
-import ussum.homepage.application.post.service.dto.response.postSave.PostFileResponse;
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
@@ -53,6 +50,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static ussum.homepage.global.error.status.ErrorStatus.POST_NOT_FOUND;
@@ -214,8 +212,8 @@ public class PostManageService {
 
     @Transactional
     public PostFileListResponse createBoardPostFile(Long userId, String boardCode, MultipartFile[] files, MultipartFile[] images){
-        List<Map<String, String>> urlList = s3utils.uploadFileWithPath(userId, boardCode, files, images);
-        List<PostFile> postFiles = convertUrlsToPostFiles(urlList);
+        PostFileMediatorResponse response = s3utils.uploadFileWithPath(userId, boardCode, files, images);
+        List<PostFile> postFiles = convertUrlsToPostFiles(response.urlList());
         List<PostFile> afterSaveList = postFileAppender.saveAllPostFile(postFiles);
 
         String thumbnailUrl = afterSaveList.stream()
@@ -224,8 +222,12 @@ public class PostManageService {
                 .map(PostFile::getUrl)
                 .orElse(null);
 
+        AtomicInteger index = new AtomicInteger(0);
         List<PostFileResponse> postFileResponses = afterSaveList.stream()
-                .map(postFile -> PostFileResponse.of(postFile.getId(), postFile.getUrl()))
+                .map(postFile -> {
+                    int currentIndex = index.getAndIncrement();
+                    return PostFileResponse.of(postFile.getId(), postFile.getUrl(), response.originalFileNames().get(currentIndex));
+                })
                 .collect(Collectors.toList());
 
         return PostFileListResponse.of(thumbnailUrl, postFileResponses);
