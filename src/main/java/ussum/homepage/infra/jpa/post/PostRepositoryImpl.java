@@ -60,6 +60,7 @@ import static ussum.homepage.infra.jpa.user.entity.QUserEntity.userEntity;
 public class PostRepositoryImpl implements PostRepository {
     private final PostJpaRepository postJpaRepository;
     private final PostFileJpaRepository postFileJpaRepository;
+    private final PostReactionJpaRepository postReactionJpaRepository;
     private final PostCommentReactionJpaRepository postCommentReactionJpaRepository;
     private final PostReplyCommentReactionJpaRepository postReplyCommentReactionJpaRepository;
     private final BoardJpaRepository boardJpaRepository;
