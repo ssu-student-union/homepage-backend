@@ -27,9 +27,9 @@ public class PostReplyCommentService {
     }
 
     @Transactional
-    public PostReplyCommentResponse editReplyComment(Long userId, Long commentId, Long replyCommentId, PostReplyCommentUpdateRequest postReplyCommentUpdateRequest) {
+    public PostReplyCommentResponse editReplyComment(Long userId, Long replyCommentId, PostReplyCommentUpdateRequest postReplyCommentUpdateRequest) {
         PostReplyComment postReplyComment = postReplyCommentReader.getPostReplyComment(replyCommentId);
-        return postReplyCommentFormatter.format(postReplyCommentModifier.updatePostReplyComment(postReplyComment, userId, commentId, postReplyCommentUpdateRequest), userId);
+        return postReplyCommentFormatter.format(postReplyCommentModifier.updatePostReplyComment(postReplyComment, userId, postReplyCommentUpdateRequest), userId);
     }
 
     @Transactional

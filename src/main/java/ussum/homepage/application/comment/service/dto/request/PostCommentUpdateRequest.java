@@ -8,11 +8,11 @@ import java.time.LocalDateTime;
 public record PostCommentUpdateRequest(
         String content
 ) {
-    public PostComment toDomain(PostComment postComment, Long commentId, Long postId, Long userId) {
+    public PostComment toDomain(PostComment postComment, Long commentId, Long userId) {
         return PostComment.of(
                 commentId,
                 content,
-                postId,
+                postComment.getPostId(),
                 userId,
                 postComment.getCommentType(),
                 DateUtils.parseHourMinSecFromCustomString(postComment.getCreatedAt()),

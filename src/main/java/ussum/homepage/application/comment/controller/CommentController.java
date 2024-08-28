@@ -50,12 +50,11 @@ public class CommentController {
             요청 url 상에 postId 와 commentId를 받습니다. 즉, 게시물 id와 댓글 id를 받습니다.
             PostCommentUpdateRequest 요청 json에 content 필드를 이용하여 댓글 내용을 작성합니다.
             """)
-    @PatchMapping("/posts/{postId}/comments/{commentId}")
+    @PatchMapping("/posts/comments/{commentId}")
     public ResponseEntity<ApiResponse<?>> editPostComment(@Parameter(hidden = true) @UserId Long userId,
-                                                          @PathVariable(name = "postId") Long postId,
                                                           @PathVariable(name = "commentId") Long commentId,
                                                           @RequestBody PostCommentUpdateRequest postCommentUpdateRequest) {
-        commentService.editComment(userId, postId, commentId, postCommentUpdateRequest);
+        commentService.editComment(userId, commentId, postCommentUpdateRequest);
         return ApiResponse.success(null);
     }
 
