@@ -7,7 +7,6 @@ import ussum.homepage.domain.csv_user.StudentCsv;
 import ussum.homepage.domain.csv_user.StudentCsvRepository;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
-import ussum.homepage.infra.jpa.csv_user.StudentCsvMapper;
 
 import java.util.Optional;
 
@@ -30,7 +29,7 @@ public class StudentCsvReader {
         boolean groupName = request.getMemberCode().equals(studentCsv.getGroupName());
         boolean major = request.getMajorCode().equals(studentCsv.getMajor());
 
-        if(name && studentId && groupName && major == false){
+        if(!(name && studentId && groupName && major)){
             throw new GeneralException(ErrorStatus.INVALID_ONBOARDING_REQUEST);
         }
     }
