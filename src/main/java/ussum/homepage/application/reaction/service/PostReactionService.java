@@ -67,10 +67,10 @@ public class PostReactionService {
 //        );
 //    }
 
-    @Transactional
-    public void deletePostReaction(Long userId, Long postId, PostReactionCreateRequest postReactionCreateRequest) {
-        PostReaction postReaction = postReactionReader.getPostReactionWithPostIdAndUserId(postId, userId, postReactionCreateRequest.reaction());
-        postReactionModifier.deletePostReaction(postReaction);
-
-    }
+//    @Transactional
+//    public void deletePostReaction(Long userId, Long postId, PostReactionCreateRequest postReactionCreateRequest) {
+//        PostReaction postReaction = postReactionReader.getPostReactionWithPostIdAndUserId(postId, userId, postReactionCreateRequest.reaction());
+//        postReactionModifier.deletePostReaction(postReaction);
+//
+//    }
 }

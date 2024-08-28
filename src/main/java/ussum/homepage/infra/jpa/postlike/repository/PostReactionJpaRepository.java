@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostReactionJpaRepository extends JpaRepository<PostReactionEntity, Long> {
-    Optional<PostReactionEntity> findByPostEntityAndUserEntityAndReaction(PostEntity postEntity, UserEntity userEntity, Reaction reaction);
+    @Query("SELECT r FROM PostReactionEntity r WHERE r.postEntity.id = :postId AND r.userEntity.id = :userId AND r.reaction = :reaction")
+    Optional<PostReactionEntity> findByPostIdAndUserIdAndReaction(Long postId, Long userId, Reaction reaction);
 
     @Query("SELECT r FROM PostReactionEntity r WHERE r.postEntity.id = :postId")
     List<PostReactionEntity> findAllByPostId(Long postId);

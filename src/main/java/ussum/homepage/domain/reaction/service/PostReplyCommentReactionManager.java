@@ -13,4 +13,8 @@ public class PostReplyCommentReactionManager {
     public Integer getLikeCountOfPostReplyComment(Long replyCommentId) {
         return postReplyCommentReactionRepository.findAllByReplyCommentId(replyCommentId).size();
     }
+
+    public Boolean validatePostReplyCommentReactionByReplyCommentIdAndUserId(Long replyCommentId, Long userId, String reaction) {
+        return postReplyCommentReactionRepository.findByReplyCommentIdAndUserIdAndReaction(replyCommentId, userId, reaction).isPresent();
+    }
 }
