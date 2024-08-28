@@ -1,6 +1,7 @@
 package ussum.homepage.application.comment.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ussum.homepage.application.comment.service.PostCommentManageService;
 import ussum.homepage.application.post.service.dto.request.PostUserRequest;
 import ussum.homepage.global.ApiResponse;
+import ussum.homepage.global.config.auth.UserId;
 
 @RequiredArgsConstructor
 @RequestMapping("/board")
@@ -27,7 +29,7 @@ public class PostCommentManagerController {
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<ApiResponse<?>> getPostCommentList(@PathVariable Long postId,
                                                              @RequestParam(name = "type") String type,
-                                                             @RequestParam Long userId) { //type은 "인기순" 인지 "최신순"인지
+                                                             @Parameter(hidden = true) @UserId Long userId) { //type은 "인기순" 인지 "최신순"인지
         return ApiResponse.success(postCommentManageService.getCommentList(postId, type, userId));
     }
 }

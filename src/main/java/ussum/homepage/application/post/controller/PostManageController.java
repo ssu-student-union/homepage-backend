@@ -48,7 +48,7 @@ public class PostManageController {
             """)
     @GetMapping("data/posts")
     public ResponseEntity<ApiResponse<?>> getDataPostsList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
-                                                            @RequestParam(name = "majorCategory", required = false) String majorCategory, @RequestParam(name = "middleCategory", required = false) String middleCategory,@RequestParam(name = "subCategory", required = false) String subCategory) {
+                                                           @RequestParam(name = "majorCategory", required = false) String majorCategory, @RequestParam(name = "middleCategory", required = false) String middleCategory,@RequestParam(name = "subCategory", required = false) String subCategory) {
 
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
         return ApiResponse.success(postManageService.getDataList(page, take, majorCategory, middleCategory, subCategory));
@@ -67,7 +67,7 @@ public class PostManageController {
     @GetMapping("/{boardCode}/posts/{postId}")
     public ResponseEntity<ApiResponse<?>> getBoardPost(@PathVariable(name = "boardCode") String boardCode,
                                                        @PathVariable(name = "postId") Long postId,
-                                                       @RequestParam(required = false) Long userId) {
+                                                       @Parameter(hidden = true) @UserId Long userId) {
         return ApiResponse.success(postManageService.getPost(userId, boardCode, postId));
     }
 
