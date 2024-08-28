@@ -1,6 +1,7 @@
 package ussum.homepage.application.reaction.controller;
 
 
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,9 @@ public class PostReactionController {
             ex. like를 Request에 넣어서 요청을 하면 좋아요가 생성되고, 동일한 요청을 한번더 요청하면 이전에 눌렀던 좋아요가 취소됩니다.
             """)
     @PostMapping("/posts/{postId}")
-    public ResponseEntity<ApiResponse<?>> togglePostReaction(@UserId Long userId, @PathVariable(name = "postId") Long postId, @RequestBody CreatePostReactionReq createPostReactionReq) {
+    public ResponseEntity<ApiResponse<?>> togglePostReaction(@Parameter(hidden = true) @UserId Long userId,
+                                                             @PathVariable(name = "postId") Long postId,
+                                                             @RequestBody CreatePostReactionReq createPostReactionReq) {
         postReactionService.postReactionToggle(userId, postId, createPostReactionReq);
         return ApiResponse.success(null);
     }

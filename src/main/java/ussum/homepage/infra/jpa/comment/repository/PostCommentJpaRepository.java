@@ -24,7 +24,7 @@ public interface PostCommentJpaRepository extends JpaRepository<PostCommentEntit
             "LEFT JOIN PostCommentReactionEntity r ON c.id = r.postCommentEntity.id AND r.reaction = 'LIKE' " +
             "WHERE c.postEntity.id = :postId " +
             "GROUP BY c.id " +
-            "ORDER BY COUNT(r.id) DESC")
+            "ORDER BY COUNT(r.id) DESC , c.createdAt DESC")
     List<PostCommentEntity> findAllByPostIdOrderByLikesDesc(Long postId);
 
     List<PostCommentEntity> findAllByPostEntityIdOrderByCreatedAtDesc(Long postId);

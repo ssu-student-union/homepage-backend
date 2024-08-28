@@ -14,6 +14,8 @@ import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.request.PostUserRequest;
 import ussum.homepage.application.post.service.dto.response.DataPostResponse;
+import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
+import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.*;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 
@@ -36,6 +38,8 @@ import ussum.homepage.domain.post.service.factory.postList.DataPostResponseFacto
 import ussum.homepage.domain.post.service.factory.postList.PostListResponseFactory;
 import ussum.homepage.domain.post.service.factory.postList.PostResponseFactoryProvider;
 import ussum.homepage.domain.post.service.formatter.PostDetailFunction;
+import ussum.homepage.domain.postlike.PostReaction;
+import ussum.homepage.domain.postlike.service.PostReactionManager;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.service.UserReader;
@@ -66,6 +70,7 @@ public class PostManageService {
     private final BoardReader boardReader;
     private final PostReader postReader;
     private final PostReactionReader postReactionReader;
+    private final PostReactionManager postReactionManager;
     private final UserReader userReader;
     private final MemberReader memberReader;
     private final PostCommentReader postCommentReader;
@@ -77,12 +82,13 @@ public class PostManageService {
     private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
 
-    private final Map<String, PostDetailFunction<Post, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
-            "공지사항게시판", (post, isAuthor, user, ignored, categoryName, imageList, fileList, another_ignored) -> NoticePostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
-            "분실물게시판", (post, isAuthor, user, ignored, categoryName, imageList, another_ignored1, another_ignored2) -> LostPostDetailResponse.of(post, isAuthor, user, categoryName, imageList),
-            "제휴게시판", (post, isAuthor, user, ignored, categoryName, imageList, fileList, another_ignored) -> PartnerPostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
-            "감사기구게시판", (post, isAuthor, user, ignored, categoryName, imageList, fileList, another_ignored) -> AuditPostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
-            "청원게시판", (post, isAuthor, user, likeCount, categoryName, imageList, ignored, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, user, likeCount, categoryName, imageList, postOfficialCommentResponseList)
+
+    private final Map<String, PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
+            "공지사항게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, imageList, fileList, another_ignored2) -> NoticePostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
+            "분실물게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, imageList, another_ignored2, another_ignored3) -> LostPostDetailResponse.of(post, isAuthor, user, categoryName, imageList),
+            "제휴게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, imageList, fileList, another_ignored2) -> PartnerPostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
+            "감사기구게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, imageList, fileList, another_ignored2) -> AuditPostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
+            "청원게시판", (post, isAuthor, isLiked, user, likeCount, categoryName, imageList, ignored, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, isLiked, user, likeCount, categoryName, imageList, postOfficialCommentResponseList)
     );
 
     public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode, String memberCode, String category) {
@@ -143,7 +149,7 @@ public class PostManageService {
         List<String> fileList = postFileReader.getPostFileListByFileType(postFileList);
 
 
-        PostDetailFunction<Post, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
+        PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
 
         if (responseFunction == null) {
             throw new GeneralException(ErrorStatus.INVALID_BOARDCODE);
@@ -156,11 +162,12 @@ public class PostManageService {
             List<PostOfficialCommentResponse> postOfficialCommentResponses = officialPostComments.stream()
                     .map(postOfficialComment -> postOfficialCommentFormatter.format(postOfficialComment, userId))
                     .toList();
-            response = responseFunction.apply(post, isAuthor, user, likeCount, post.getCategory(), imageList, null, postOfficialCommentResponses);
+            Boolean isLiked = (userId != null && postReactionManager.validatePostReactionByPostIdAndUserId(postId, userId, "like"));
+            response = responseFunction.apply(post, isAuthor, isLiked, user, likeCount, post.getCategory(), imageList, null, postOfficialCommentResponses);
         } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판")) {
-            response = responseFunction.apply(post, isAuthor, user, null, post.getCategory(), imageList, fileList,null);
+            response = responseFunction.apply(post, isAuthor,null, user, null, post.getCategory(), imageList, fileList,null);
         } else if (board.getName().equals("분실물게시판")) {
-            response = responseFunction.apply(post, isAuthor, user, null, post.getCategory(), imageList, null, null); //분실물 게시판은 파일첨부 제외
+            response = responseFunction.apply(post, isAuthor, null, user, null, post.getCategory(), imageList, null, null); //분실물 게시판은 파일첨부 제외
         }
 
         return PostDetailRes.of(response);
@@ -253,6 +260,58 @@ public class PostManageService {
     @Transactional
     public void deletePost(String boardCode, Long postId) {
         postModifier.deletePost(boardCode, postId);
+    }
+
+    public PostListRes<?> searchPost(int page, int take, String q, String boardCode, String groupCode, String memberCode, String category) {
+        Board board = boardReader.getBoardWithBoardCode(boardCode);
+        BoardImpl boardImpl = BoardFactory.createBoard(boardCode, board.getId());
+        Pageable pageable = PageInfo.of(page, take);
+
+        GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
+        MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
+        Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
+
+        Page<Post> postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
+
+        PageInfo pageInfo = PageInfo.of(postList);
+
+        QuadFunction<Post, List<PostFile>, Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get(board.getName());
+
+        if (responseFunction == null) {
+            throw new IllegalArgumentException("Unknown board type: " + board.getName());
+        }
+
+        List<? extends PostListResDto> responseList = postList.getContent().stream()
+                .map(post -> {
+                    User user = null;
+                    Integer likeCount = null;
+                    switch (board.getName()) {
+                        case "공지사항게시판":
+                            user = userReader.getUserWithId(post.getUserId());
+                            return responseFunction.apply(post, null, null,user);
+                        case "분실물게시판":
+                        case "제휴게시판":
+                        case "감사기구게시판":
+                        case "자료집":
+                            return responseFunction.apply(post, null, null, null);
+                        case "청원게시판":
+                            likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
+                            return responseFunction.apply(post, null, likeCount,null);
+                        default:
+                            throw new EntityNotFoundException(String.valueOf(POST_NOT_FOUND));
+                    }
+                })
+                .toList();
+
+        return PostListRes.of(responseList, pageInfo);
+    }
+
+    public TopLikedPostListResponse getTopLikedPostList(int page, int take, String boardCode) {
+        Pageable pageable = PageInfo.of(page, take);
+        Page<SimplePostResponse> simplePostDtoList = postReader.findSimplePostDtoListByBoardCode(boardCode, pageable);
+        PageInfo pageInfo = PageInfo.of(simplePostDtoList);
+
+        return TopLikedPostListResponse.of(simplePostDtoList.getContent(), pageInfo);
     }
 }
 //스위치 사용 로직

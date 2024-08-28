@@ -15,16 +15,16 @@ import static ussum.homepage.global.error.status.ErrorStatus.POST_COMMENT_REACTI
 public class PostCommentReactionReader {
     private final PostCommentReactionRepository postCommentReactionRepository;
 
-    public PostCommentReaction getPostCommentReactionWithCommentIdAndUserIdAndReaction(Long commentId, Long userId, String reaction) {
-        return postCommentReactionRepository.findByUserIdAndCommentIdAndReaction(commentId, userId, reaction)
-                .orElseThrow(() -> new PostCommentReactionException(POST_COMMENT_REACTION_NOT_FOUND));
-    }
-
     public Optional<PostCommentReaction> getPostCommentReactionByUserIdAndCommentId(Long userId, Long commentId) {
         return postCommentReactionRepository.findByUserIdAndCommentId(userId, commentId);
     }
 
     public int getLikeCountByCommentId(Long commentId) {
         return postCommentReactionRepository.findAllPostCommentByCommentId(commentId).size();
+    }
+
+    public PostCommentReaction getPostCommentReactionWithCommentIdAndUserIdAndReaction(Long commentId, Long userId, String reaction) {
+        return postCommentReactionRepository.findByCommentIdAndUserIdAndReaction(commentId, userId, reaction)
+                .orElseThrow(() -> new PostCommentReactionException(POST_COMMENT_REACTION_NOT_FOUND));
     }
 }

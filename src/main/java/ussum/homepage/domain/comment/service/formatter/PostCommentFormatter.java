@@ -35,6 +35,8 @@ public class PostCommentFormatter implements ussum.homepage.domain.comment.servi
     public PostCommentResponse format(PostComment postComment, Long userId) {
         Integer likeCountOfPostComment = postCommentReactionManager.getLikeCountOfPostComment(postComment.getId());
         User user = userReader.getUserWithId(postComment.getUserId());
+        Boolean isLiked = (userId != null && postCommentReactionManager.validatePostCommentReactionByCommentIdAndUserId(postComment.getId(),
+                userId, "like"));
 
         List<PostReplyComment> postReplyComments = postReplyCommentReader.getPostReplyCommentListWithCommentId(postComment.getId());
         List<PostReplyCommentResponse> postReplyCommentResponses = postReplyComments.stream()
@@ -43,6 +45,6 @@ public class PostCommentFormatter implements ussum.homepage.domain.comment.servi
 
         Boolean isAuthor = userId != null && userId.equals(postComment.getUserId());
 
-        return PostCommentResponse.of(postComment, user, postComment.getCommentType(), likeCountOfPostComment, isAuthor, postReplyCommentResponses);
+        return PostCommentResponse.of(postComment, user, postComment.getCommentType(), likeCountOfPostComment, isAuthor, isLiked, postReplyCommentResponses);
     }
 }

@@ -23,14 +23,13 @@ public class PostReactionReader {
         return postReactionRepository.findByUserIdAndPostId(userId, postId);
     }
 
-    public PostReaction getPostReactionWithPostIdAndUserId(Long postId, Long userId, String reaction) {
-        return postReactionRepository.findByPostIdAndUserId(postId, userId, reaction)
-                .orElseThrow(() -> new PostReactionException(POST_REACTION_NOT_FOUND));
-    }
-
     public Integer countPostReactionsByType(Long postId, String reactionType) {
         return postReactionRepository.countByPostIdAndReactionType(postId, reactionType);
     }
 
+//    public PostReaction getPostReactionWithPostIdAndUserId(Long postId, Long userId, String reaction) {
+//        return postReactionRepository.findByPostIdAndUserId(postId, userId, reaction)
+//                .orElseThrow(() -> new PostReactionException(POST_REACTION_NOT_FOUND));
+//    }
 
 }

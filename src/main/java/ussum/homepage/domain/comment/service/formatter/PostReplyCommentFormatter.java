@@ -29,8 +29,10 @@ public class PostReplyCommentFormatter implements ussum.homepage.domain.comment.
     public PostReplyCommentResponse format(PostReplyComment postReplyComment, Long userId) {
 //        PostReplyComment postReplyComment = postReplyCommentReader.getPostReplyComment(commentId);
         User user = userReader.getUserWithId(postReplyComment.getUserId());
+        Boolean isLiked = (userId != null && postReplyCommentReactionManager.validatePostReplyCommentReactionByReplyCommentIdAndUserId(postReplyComment.getId(),
+                userId, "like"));
         Integer likeCount = postReplyCommentReactionManager.getLikeCountOfPostReplyComment(postReplyComment.getId());
         Boolean isAuthor = userId != null && userId.equals(postReplyComment.getUserId());
-        return PostReplyCommentResponse.of(postReplyComment, user, likeCount, isAuthor);
+        return PostReplyCommentResponse.of(postReplyComment, user, likeCount, isAuthor, isLiked);
     }
 }

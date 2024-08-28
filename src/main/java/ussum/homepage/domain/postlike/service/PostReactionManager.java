@@ -12,10 +12,7 @@ import static ussum.homepage.global.error.status.ErrorStatus.POST_REACTION_IS_AL
 public class PostReactionManager {
     private final PostReactionRepository postReactionRepository;
 
-    public void validatePostReactionByCommentIdAndUserId(Long postId, Long userId, String reaction) {
-        postReactionRepository.findByPostIdAndUserId(postId, userId, reaction)
-                .ifPresent(postReaction -> {
-                    throw new PostReactionException(POST_REACTION_IS_ALREADY_EXIST);
-                });
+    public Boolean validatePostReactionByPostIdAndUserId(Long postId, Long userId, String reaction) {
+        return postReactionRepository.findByPostIdAndUserId(postId, userId, reaction).isPresent();
     }
 }

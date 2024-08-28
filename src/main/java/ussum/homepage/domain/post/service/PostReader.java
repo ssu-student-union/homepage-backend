@@ -68,4 +68,12 @@ public class PostReader {
     public Page<Post> getPostListBySearch(Pageable pageable, String boardCode, String q, String categoryCode) {
         return postRepository.findBySearchCriteria(pageable, boardCode, q, categoryCode);
     }
+
+    public Page<Post> searchPostListByBoardIdAndGroupCodeAndMemberCode(Long boardId, String q, GroupCode groupCode, MemberCode memberCode, Pageable pageable) {
+        return postRepository.searchAllByBoardIdAndGroupCodeAndMemberCode(boardId, q, groupCode,memberCode, pageable);
+    }
+
+    public Page<Post> searchPostListByBoardIdAndCategory(Long boardId, String q, Category category, Pageable pageable) {
+        return postRepository.searchAllByBoardIdAndCategory(boardId, q, category, pageable);
+    }
 }

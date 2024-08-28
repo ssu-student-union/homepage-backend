@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostReplyCommentReactionJpaRepository extends JpaRepository<PostReplyCommentReactionEntity, Long> {
+    @Query("SELECT r FROM PostReplyCommentReactionEntity r WHERE r.postReplyCommentEntity.id = :replyCommentId AND r.userEntity.id = :userId AND r.reaction = :reaction")
+    Optional<PostReplyCommentReactionEntity> findByPostReplyCommentIdAndUserIdAndReaction(Long replyCommentId, Long userId, Reaction reaction);
+
     Optional<PostReplyCommentReactionEntity> findByPostReplyCommentEntityAndUserEntity(PostReplyCommentEntity postReplyCommentEntity, UserEntity userEntity);
 
     @Query("SELECT r FROM PostReplyCommentReactionEntity r WHERE r.postReplyCommentEntity.id = :replyCommentId")
