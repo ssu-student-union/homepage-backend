@@ -15,6 +15,7 @@ public interface PostReplyCommentReactionJpaRepository extends JpaRepository<Pos
     @Query("SELECT r FROM PostReplyCommentReactionEntity r WHERE r.postReplyCommentEntity.id = :replyCommentId AND r.userEntity.id = :userId AND r.reaction = :reaction")
     Optional<PostReplyCommentReactionEntity> findByPostReplyCommentIdAndUserIdAndReaction(Long replyCommentId, Long userId, Reaction reaction);
 
+    Optional<PostReplyCommentReactionEntity> findByPostReplyCommentEntityAndUserEntity(PostReplyCommentEntity postReplyCommentEntity, UserEntity userEntity);
 
     @Query("SELECT r FROM PostReplyCommentReactionEntity r WHERE r.postReplyCommentEntity.id = :replyCommentId")
     List<PostReplyCommentReactionEntity> findAllByPostReplyCommentId(Long replyCommentId);

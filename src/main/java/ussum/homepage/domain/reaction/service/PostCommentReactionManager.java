@@ -13,10 +13,7 @@ public class PostCommentReactionManager {
     private final PostCommentReactionRepository postCommentReactionRepository;
 
     public Boolean validatePostCommentReactionByCommentIdAndUserId(Long commentId, Long userId, String reaction) {
-//        return postCommentReactionRepository.findByCommentIdAndUserIdAndReaction(commentId, userId, reaction).isPresent();
-        boolean isPresent = postCommentReactionRepository.findByCommentIdAndUserIdAndReaction(commentId, userId, reaction).isPresent();
-        System.out.println("commentId: " + commentId + ", userId: " + userId + ", reaction: " + reaction + ", isPresent: " + isPresent);
-        return isPresent;
+        return postCommentReactionRepository.findByCommentIdAndUserIdAndReaction(commentId, userId, reaction).isPresent();
     }
 
 

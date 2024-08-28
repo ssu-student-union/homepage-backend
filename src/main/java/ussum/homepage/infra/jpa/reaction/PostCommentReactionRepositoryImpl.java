@@ -50,16 +50,24 @@ public class PostCommentReactionRepositoryImpl implements PostCommentReactionRep
 
     @Override
     public Optional<PostCommentReaction> findByUserIdAndCommentId(Long userId, Long commentId) {
-        PostCommentReactionEntity result = queryFactory
-                .selectFrom(postCommentReactionEntity)
-                .leftJoin(postCommentReactionEntity.userEntity, userEntity)
-                .leftJoin(postCommentReactionEntity.postCommentEntity, postCommentEntity)
-                .where(
-                        eqUserId(userId),
-                        eqCommentId(commentId)
-                ).fetchOne();
+//        PostCommentReactionEntity result = queryFactory
+//                .selectFrom(postCommentReactionEntity)
+//                .leftJoin(postCommentReactionEntity.userEntity, userEntity)
+//                .leftJoin(postCommentReactionEntity.postCommentEntity, postCommentEntity)
+//                .where(
+//                        eqUserId(userId),
+//                        eqCommentId(commentId)
+//                ).fetchOne();
+//
+//        return Optional.ofNullable(result)
+//                .map(postCommentReactionMapper::toDomain);
+        UserEntity userEntity = userJpaRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
-        return Optional.ofNullable(result)
+        PostCommentEntity postCommentEntity = postCommentJpaRepository.findById(commentId)
+                .orElseThrow(() -> new PostCommentReactionException(POST_COMMENT_NOT_FOUND));
+
+        return postCommentReactionJpaRepository.findByPostCommentEntityAndUserEntity(postCommentEntity, userEntity)
                 .map(postCommentReactionMapper::toDomain);
     }
 
