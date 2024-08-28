@@ -82,14 +82,6 @@ public class PostManageService {
     private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
 
-    private final Map<String, QuadFunction<Post, List<PostFile>, Integer, User, ? extends PostListResDto>> postResponseMap = Map.of(
-            "공지사항게시판", (post, ignored1, ignored2, user) -> NoticePostResponse.of(post, user),
-            "분실물게시판", (post, ignored1, ignored2, ignored3) -> LostPostResponse.of(post),
-            "제휴게시판", (post, ignored1, ignored2, ignored3) -> PartnerPostResponse.of(post),
-            "감사기구게시판", (post, ignored1, ignored2, ignored3) -> AuditPostResponseDto.of(post),
-            "청원게시판", (post, ignored1, likeCount, ignored2) -> PetitionPostResponse.of(post, likeCount),
-            "자료집게시판", (post, postFiles, ignored1, ignored2) -> DataPostResponse.of(post, postFiles)
-    );
 
     private final Map<String, PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
             "공지사항게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, imageList, fileList, another_ignored2) -> NoticePostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
