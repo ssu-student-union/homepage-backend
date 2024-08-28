@@ -91,6 +91,8 @@ public class PetitionPostProcessor {
         }
         else if (now.isAfter(createdAt.plusDays(30))) {
             updatePostCategoryAndOngoingStatus(post.getId(), "종료됨");
+        } else {
+            System.out.println("Like count after status change: " + likeCountOfPost);
         }
     }
 

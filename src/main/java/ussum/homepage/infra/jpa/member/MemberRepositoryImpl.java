@@ -6,6 +6,7 @@ import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.MemberRepository;
 import ussum.homepage.infra.jpa.member.repository.MemberJpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,6 +20,12 @@ public class MemberRepositoryImpl implements MemberRepository {
         return memberJpaRepository.findByUserId(userId).map(memberMapper::toDomain);
     }
 
+    @Override
+    public List<Member> findAllByUserId(Long userId) {
+        return memberJpaRepository.findAllByUserId(userId).stream().map(memberMapper::toDomain).toList();
+    }
+
+    @Override
     // MemberCode가 CENTRAL_OPERATION_COMMITTEE인 경우의 Member를 반환
     public Optional<Member> findCentralOperationCommitteeMember(Long userId) {
         return memberJpaRepository.findByUserId(userId)

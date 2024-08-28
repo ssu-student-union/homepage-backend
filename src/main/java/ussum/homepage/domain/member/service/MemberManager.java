@@ -12,9 +12,9 @@ public class MemberManager {
     private final MemberRepository memberRepository;
 
     public Boolean validMemberWithUserId(Long userId) {
-        return memberRepository.findByUserId(userId)
-                .map(member -> "CENTRAL_OPERATION_COMMITTEE".equals(member.getMemberCode()))
-                .orElse(false);
+        return memberRepository.findAllByUserId(userId)
+                .stream()
+                .anyMatch(member -> "CENTRAL_OPERATION_COMMITTEE".equals(member.getMemberCode()));
     }
 
     public String getCommentType(Long userId) {
