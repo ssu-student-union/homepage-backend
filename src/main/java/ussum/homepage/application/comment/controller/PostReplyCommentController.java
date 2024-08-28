@@ -38,12 +38,11 @@ public class PostReplyCommentController {
             요청 url 상에 commentId 와 reply-commentId를 받습니다. 즉, 댓글 id와 대댓글 id를 받습니다.
             PostReplyCommentUpdateRequest 요청 json에 content 필드를 이용하여 댓글 내용을 작성합니다.
             """)
-    @PatchMapping("/posts/comments/{commentId}/reply-comments/{reply-commentId}")
+    @PatchMapping("/posts/comments/reply-comments/{reply-commentId}")
     public ResponseEntity<ApiResponse<?>> editPostReplyComment(@Parameter(hidden = true) @UserId Long userId,
-                                                               @PathVariable(name = "commentId") Long commentId,
                                                                @PathVariable(name = "reply-commentId") Long replyCommentId,
                                                                @RequestBody PostReplyCommentUpdateRequest postReplyCommentUpdateRequest) {
-        postReplyCommentService.editReplyComment(userId, commentId, replyCommentId, postReplyCommentUpdateRequest);
+        postReplyCommentService.editReplyComment(userId, replyCommentId, postReplyCommentUpdateRequest);
         return ApiResponse.success(null);
     }
 

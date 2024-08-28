@@ -43,9 +43,9 @@ public class CommentService {
     }
 
     @Transactional
-    public PostCommentResponse editComment(Long userId, Long postId, Long commentId, PostCommentUpdateRequest postCommentUpdateRequest){
+    public PostCommentResponse editComment(Long userId, Long commentId, PostCommentUpdateRequest postCommentUpdateRequest){
         PostComment postComment = postCommentReader.getPostComment(commentId);
-        PostComment editedPostComment = postCommentModifier.updateComment(postComment, userId, postId, commentId, postCommentUpdateRequest);
+        PostComment editedPostComment = postCommentModifier.updateComment(postComment, userId, commentId, postCommentUpdateRequest);
 //        PostComment postComment = postCommentModifier.updateComment(userId, postId, commentId, , postCommentUpdateRequest);
 //        return postCommentFormatter.format(postComment.getPostId(), postComment.getUserId(), postComment.getCommentType());
         return postCommentFormatter.format(editedPostComment, userId);
