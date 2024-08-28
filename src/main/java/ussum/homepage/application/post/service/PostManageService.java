@@ -32,6 +32,9 @@ import ussum.homepage.domain.post.PostFile;
 import ussum.homepage.domain.post.service.*;
 import ussum.homepage.domain.post.service.factory.BoardFactory;
 import ussum.homepage.domain.post.service.factory.BoardImpl;
+import ussum.homepage.domain.post.service.factory.postList.DataPostResponseFactory;
+import ussum.homepage.domain.post.service.factory.postList.PostListResponseFactory;
+import ussum.homepage.domain.post.service.factory.postList.PostResponseFactoryProvider;
 import ussum.homepage.domain.post.service.formatter.PostDetailFunction;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.domain.user.User;
@@ -74,15 +77,6 @@ public class PostManageService {
     private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
 
-    private final Map<String, QuadFunction<Post, List<PostFile>, Integer, User, ? extends PostListResDto>> postResponseMap = Map.of(
-            "공지사항게시판", (post, ignored1, ignored2, user) -> NoticePostResponse.of(post, user),
-            "분실물게시판", (post, ignored1, ignored2, ignored3) -> LostPostResponse.of(post),
-            "제휴게시판", (post, ignored1, ignored2, ignored3) -> PartnerPostResponse.of(post),
-            "감사기구게시판", (post, ignored1, ignored2, ignored3) -> AuditPostResponseDto.of(post),
-            "청원게시판", (post, ignored1, likeCount, ignored2) -> PetitionPostResponse.of(post, likeCount),
-            "자료집게시판", (post, postFiles, ignored1, ignored2) -> DataPostResponse.of(post, postFiles)
-    );
-
     private final Map<String, PostDetailFunction<Post, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
             "공지사항게시판", (post, isAuthor, user, ignored, categoryName, imageList, fileList, another_ignored) -> NoticePostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
             "분실물게시판", (post, isAuthor, user, ignored, categoryName, imageList, another_ignored1, another_ignored2) -> LostPostDetailResponse.of(post, isAuthor, user, categoryName, imageList),
@@ -93,14 +87,6 @@ public class PostManageService {
 
     public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode, String memberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
-//        Pageable pageable = PageInfo.of(page, take);
-//        Page<Post> postList = null;
-//        if(boardCode.equals("공지사항게시판")){
-//            postList = postReader.getPostListByBoardIdAndGroupCodeAndMemberCode(board.getId(), groupCode, memberCode, pageable);
-//        }else {
-//            postList = postReader.getPostListByBoardId(board.getId(), pageable);
-//        }
-
 
         //factory 사용 로직
         BoardImpl boardImpl = BoardFactory.createBoard(boardCode, board.getId());
@@ -114,43 +100,34 @@ public class PostManageService {
 
         PageInfo pageInfo = PageInfo.of(postList);
 
-        QuadFunction<Post, List<PostFile>, Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get(board.getName());
-
-        if (responseFunction == null) {
-            throw new IllegalArgumentException("Unknown board type: " + board.getName());
-        }
-
         List<? extends PostListResDto> responseList = postList.getContent().stream()
                 .map(post -> {
-                    User user = null;
-                    Integer likeCount = null;
-                    switch (board.getName()) {
-                        case "공지사항게시판":
-                            user = userReader.getUserWithId(post.getUserId());
-                            return responseFunction.apply(post, null, null,user);
-                        case "분실물게시판":
-                        case "제휴게시판":
-                        case "감사기구게시판":
-                        case "자료집":
-                            return responseFunction.apply(post, null, null, null);
-                        case "청원게시판":
-                            likeCount = postReactionReader.countPostReactionsByType(post.getId(), "like");
-                            return responseFunction.apply(post, null, likeCount,null);
-                        default:
-                            throw new EntityNotFoundException(String.valueOf(POST_NOT_FOUND));
-                    }
+                    PostListResponseFactory factory = PostResponseFactoryProvider.getFactory(board.getName());
+                    return factory.createResponse(post, postReader, postReactionReader, userReader);
                 })
                 .toList();
 
         return PostListRes.of(responseList, pageInfo);
+
     }
 
-    public PostListRes<?> getDataList(int page, int take, String majorCategory, String middleCategory, String subCategory){
+    public PostListRes<?> getDataList(int page, int take, String majorCategory, String middleCategory, String subCategory) {
         Pageable pageable = PageInfo.of(page, take);
-        Page<Post> postList = postReader.getPostListByFileCategories(FileCategory.getFileCategoriesByCategories(majorCategory, middleCategory, subCategory), pageable);
+        Page<Post> postList = postReader.getPostListByFileCategories(
+                FileCategory.getFileCategoriesByCategories(majorCategory, middleCategory, subCategory),
+                pageable
+        );
         PageInfo pageInfo = PageInfo.of(postList);
-        QuadFunction<Post, List<PostFile> , Integer, User, ? extends PostListResDto> responseFunction = postResponseMap.get("자료집게시판");
-        List<? extends PostListResDto> responseList = postList.getContent().stream().map(post -> responseFunction.apply(post, postFileReader.getPostFileListByPostId(post.getId()), null, null)).toList();
+
+        PostListResponseFactory factory = PostResponseFactoryProvider.getFactory("자료집게시판");
+
+        List<? extends PostListResDto> responseList = postList.getContent().stream()
+                .map(post -> {
+                    List<PostFile> postFiles = postFileReader.getPostFileListByPostId(post.getId());
+                    return ((DataPostResponseFactory) factory).createDataResponse(post, postFiles);
+                })
+                .toList();
+
         return PostListRes.of(responseList, pageInfo);
     }
 
