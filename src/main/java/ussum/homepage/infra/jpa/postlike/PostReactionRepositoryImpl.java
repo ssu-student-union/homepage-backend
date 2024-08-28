@@ -63,13 +63,13 @@ public class PostReactionRepositoryImpl implements PostReactionRepository {
 
     @Override
     public Optional<PostReaction> findByPostIdAndUserId(Long postId, Long userId, String reaction) {
-        PostEntity postEntity = postJpaRepository.findById(postId)
-                .orElseThrow(() -> new PostException(POST_NOT_FOUND));
+//        PostEntity postEntity = postJpaRepository.findById(postId)
+//                .orElseThrow(() -> new PostException(POST_NOT_FOUND));
+//
+//        UserEntity userEntity = userJpaRepository.findById(userId)
+//                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
-        UserEntity userEntity = userJpaRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-
-        return postReactionJpaRepository.findByPostEntityAndUserEntityAndReaction(postEntity, userEntity, Reaction.getEnumReactionFromStringReaction(reaction))
+        return postReactionJpaRepository.findByPostIdAndUserIdAndReaction(postId, userId, Reaction.getEnumReactionFromStringReaction(reaction))
                 .map(postReactionMapper::toDomain);
     }
 

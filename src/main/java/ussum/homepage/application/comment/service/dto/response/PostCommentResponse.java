@@ -15,10 +15,11 @@ public record PostCommentResponse(
         String lastEditedAt,
         Integer likeCount,
         Boolean isAuthor,
+        Boolean isLiked,
         Boolean isDeleted,
         List<PostReplyCommentResponse> postReplyComments
 ) {
-    public static PostCommentResponse of(PostComment postComment, User user, String commentType, Integer likeCount, Boolean isAuthor, List<PostReplyCommentResponse> postReplyComments) {
+    public static PostCommentResponse of(PostComment postComment, User user, String commentType, Integer likeCount, Boolean isAuthor, Boolean isLiked, List<PostReplyCommentResponse> postReplyComments) {
         String studentId = user.getStudentId();
         String content = postComment.getContent();
         if (postComment.getIsDeleted().equals(true)) {
@@ -36,6 +37,7 @@ public record PostCommentResponse(
                 postComment.getLastEditedAt(),
                 likeCount,
                 isAuthor,
+                isLiked,
                 postComment.getIsDeleted(),
                 postReplyComments);
     }

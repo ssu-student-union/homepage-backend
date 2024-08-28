@@ -9,6 +9,8 @@ import ussum.homepage.application.post.service.dto.request.PostUserRequest;
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentFormatter;
 import ussum.homepage.domain.comment.service.PostCommentReader;
+import ussum.homepage.domain.reaction.service.PostCommentReactionManager;
+import ussum.homepage.domain.reaction.service.PostReplyCommentReactionManager;
 
 
 import java.util.List;
