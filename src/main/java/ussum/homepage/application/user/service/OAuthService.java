@@ -23,8 +23,10 @@ import ussum.homepage.global.external.oauth.KakaoApiProvider;
 import ussum.homepage.global.jwt.JwtTokenInfo;
 import ussum.homepage.global.jwt.JwtTokenProvider;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -70,11 +72,21 @@ public class OAuthService {
     public CouncilLoginResponse councilLogin(CouncilLoginRequest request){
         User user = userReader.getUserWithAcountId(request.accountId()); // 예외 발생 가능
         userManager.validatePassword(request.password(), user.getPassword()); // 예외 발생 가능
-        Member member = memberReader.getMemberWithUserId(user.getId());
-        Group group = groupReader.getGroupByGroupId(member.getGroupId());
+
+        List<Member> memberList = memberReader.getMembersWithUserId(user.getId()); // List 비어있을 시 에러 발생
+        String memberCode = memberList.get(0).getMemberCode();
+
+        List<String> groupCodeList = memberList.stream()
+                .map(member -> groupReader.getGroupByGroupId(member.getGroupId()))
+                .map(Group::getGroupCode)
+                .toList();
+
         JwtTokenInfo tokenInfo = issueAccessTokenAndRefreshToken(user);
         updateRefreshToken(tokenInfo.getRefreshToken(), user);
-        return CouncilLoginResponse.of(tokenInfo, group, member);
+        return CouncilLoginResponse.of(tokenInfo, groupCodeList, memberCode);
+
+        //        Member member = memberReader.getMemberWithUserId(user.getId()); // 멤버가 여러개 반환되는 유저가 많음
+        //        Group group = groupReader.getGroupByGroupId(memberList.get(0).getGroupId());
     }
 
 
