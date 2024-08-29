@@ -14,8 +14,8 @@ public class MemberMapper {
         return Member.of(
                 memberEntity.getId(),
                 memberEntity.getIsAdmin(),
-                String.valueOf(memberEntity.getMemberCode()),
-                String.valueOf(memberEntity.getMajorCode()),
+                MemberCode.fromEnumOrNull(memberEntity.getMemberCode()),
+                MajorCode.fromEnumOrNull(memberEntity.getMajorCode()),
                 memberEntity.getUserEntity().getId(),
                 memberEntity.getGroupEntity() == null ? null : memberEntity.getGroupEntity().getId()
         );
