@@ -24,25 +24,33 @@ public record PostCreateRequest(
         this(title, content, categoryCode, thumbNailImage, false, postFileList);
     }
 
-    public Post toDomain(Board board, Long userId, Category category) {
+    public Post toDomain(Board board, Long userId) {
+        String status = "새로운";
+        if (isNotice) {
+            status = "긴급공지";
+        }
         return Post.of(
                 null,
                 title,
                 content,
                 1,
                 thumbNailImage,
-                "새로운",
+                status,
 //                OnGoingStatus,
                 null,
                 null,
                 null,
-                category.getStringCategoryCode(),
-                userId, //이건 채워넣어야 함, user쪽 개발되면
+                categoryCode,
+                userId,
                 board.getId()
         );
     }
 
     public Post toDomain(Long boardId, Long userId, Category category) {
+//        String status = "새로운";
+//        if (isNotice) {
+//            status = "긴급";
+//        }
         return Post.of(
                 null,
                 title,
@@ -55,7 +63,7 @@ public record PostCreateRequest(
                 null,
                 null,
                 category.getStringCategoryCode(),
-                userId, //이건 채워넣어야 함, user쪽 개발되면
+                userId,
                 boardId
         );
     }

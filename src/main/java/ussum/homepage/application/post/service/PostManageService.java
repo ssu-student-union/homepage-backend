@@ -26,6 +26,8 @@ import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
 
+import ussum.homepage.domain.group.Group;
+import ussum.homepage.domain.group.service.GroupReader;
 import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.post.Board;
@@ -78,6 +80,7 @@ public class PostManageService {
     private final PostAppender postAppender;
     private final PostFileAppender postFileAppender;
     private final PostModifier postModifier;
+    private final GroupReader groupReader;
     private final PetitionPostProcessor petitionPostStatusProcessor;
     private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
@@ -174,15 +177,28 @@ public class PostManageService {
     }
 
     @Transactional
-    public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
+    public PostCreateResponse createBoardPost(Long userId, String boardCode, /*String groupCode,*/ PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
-        Member member = memberReader.getMemberWithUserId(userId);
-        String noticeCategory = MemberCode.valueOf(member.getMemberCode()).getStringMemberCode();
-        String category = Objects.equals(boardCode, BoardCode.NOTICE.getStringBoardCode()) ? noticeCategory : postCreateRequest.categoryCode();
-        String onGoingStatus = Objects.equals(boardCode, BoardCode.PETITION.getStringBoardCode()) ? postCreateRequest.categoryCode() : postCreateRequest.isNotice() ? Category.EMERGENCY.getStringCategoryCode() : null;
-        
-//        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(category)));
+//        Member member = memberReader.getMemberWithUserId(userId);
+
+//        GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
+//        Group groupByGroupCodeEnum = groupReader.getGroupByGroupCode(groupCodeEnum);
+//        Member memberWithGroupId = memberReader.getMemberWithUserIdAndGroupId(userId, groupByGroupCodeEnum.getId());
+//        MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
+
+//        String noticeCategory = memberCodeEnum.getStringMemberCode();
+//        String noticeCategory = memberWithGroupId.getMemberCode();
+
+//        String noticeCategory = MemberCode.valueOf(member.getMemberCode()).getStringMemberCode();
+//        String category = Objects.equals(boardCode, BoardCode.NOTICE.getStringBoardCode()) ? noticeCategory : postCreateRequest.categoryCode();
+
+//        String category = postCreateRequest.categoryCode();
+
+//        String onGoingStatus = Objects.equals(boardCode, BoardCode.PETITION.getStringBoardCode()) ? postCreateRequest.categoryCode() : postCreateRequest.isNotice() ? Category.EMERGENCY.getStringCategoryCode() : null;
+//            Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
+//        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(category)));
+
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId));
         postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());
         return PostCreateResponse.of(post.getId(), boardCode);
     }
@@ -259,7 +275,8 @@ public class PostManageService {
     }
 
     @Transactional
-    public void deletePost(String boardCode, Long postId) {
+    public void deletePost(String boardCode, Long postId, PostFileDeleteRequest postFileDeleteRequest) {
+        s3utils.deleteFiles(postFileDeleteRequest);
         postModifier.deletePost(boardCode, postId);
     }
 

@@ -24,7 +24,7 @@ public class PostReplyCommentRepositoryImpl implements PostReplyCommentRepositor
 
     @Override
     public List<PostReplyComment> findAllByCommentId(Long commentId) {
-        return postReplyCommentJpaRepository.findAllByCommentIdOrderByCreatedAtDesc(commentId).stream()
+        return postReplyCommentJpaRepository.findAllByCommentId(commentId).stream()
                 .map(postReplyCommentMapper::toDomain)
                 .toList();
     }
