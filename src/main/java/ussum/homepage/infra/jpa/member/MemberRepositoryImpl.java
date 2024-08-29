@@ -28,6 +28,11 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
+    public Optional<Member> findByUserIdAndGroupId(Long userId, Long groupId) {
+        return memberJpaRepository.findByUserIdAndGroupId(userId, groupId).map(memberMapper::toDomain);
+    }
+
+    @Override
     // MemberCode가 CENTRAL_OPERATION_COMMITTEE인 경우의 Member를 반환
     public List<Member> findCentralOperationCommitteeMember(Long userId) {
         return memberJpaRepository.findAllByUserId(userId)

@@ -19,4 +19,8 @@ public class MemberReader {
         return memberRepository.findByUserId(userId).orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
     }
 
+    public Member getMemberWithUserIdAndGroupId(Long userId, Long groupId) {
+        return memberRepository.findByUserIdAndGroupId(userId, groupId).orElseThrow(() -> new MemberNotFoundException(MEMBER_NOT_FOUND));
+    }
+
 }

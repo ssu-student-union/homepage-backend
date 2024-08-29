@@ -48,7 +48,7 @@ public class PostMapper {
                 Status.getEnumStatusFromStringStatus(post.getStatus()),
 //                ongoingStatus,
                 lastEditedAt,
-                Category.getEnumCategoryCodeFromStringCategoryCode(post.getCategory()),
+                Category.fromStringOrNull(post.getCategory()),
                 user,
                 board
         );

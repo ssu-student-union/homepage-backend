@@ -24,7 +24,8 @@ public record PostCreateRequest(
         this(title, content, categoryCode, thumbNailImage, false, postFileList);
     }
 
-    public Post toDomain(Board board, Long userId, Category category) {
+    public Post toDomain(Board board, Long userId, String category) {
+        System.out.println("category2 = " + category);
         return Post.of(
                 null,
                 title,
@@ -36,7 +37,7 @@ public record PostCreateRequest(
                 null,
                 null,
                 null,
-                category.getStringCategoryCode(),
+                category,
                 userId, //이건 채워넣어야 함, user쪽 개발되면
                 board.getId()
         );

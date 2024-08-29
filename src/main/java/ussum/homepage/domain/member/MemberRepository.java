@@ -10,4 +10,5 @@ public interface MemberRepository {
     List<Member> findCentralOperationCommitteeMember(Long userId);
     void save(Member member);
     List<Member> findAllByUserId(Long userId);
+    Optional<Member> findByUserIdAndGroupId(Long userId, Long groupId);
 }
