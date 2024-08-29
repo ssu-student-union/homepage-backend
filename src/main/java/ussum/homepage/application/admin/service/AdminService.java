@@ -8,14 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.admin.service.dto.request.CouncilSignInRequest;
 import ussum.homepage.domain.group.Group;
 import ussum.homepage.domain.group.service.GroupReader;
-import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.service.MemberAppender;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.service.UserAppender;
 import ussum.homepage.infra.csvBatch.JobLauncherRunner;
 import ussum.homepage.infra.utils.S3utils;
 
-import java.nio.file.attribute.GroupPrincipal;
 import java.util.List;
 
 @Service
