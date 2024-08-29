@@ -11,13 +11,15 @@ import java.util.List;
 public record CouncilLoginResponse(
         String accessToken,
         List<String> groupCodeList,
-        String memberName
+        String memberName,
+        String majorName
 ) {
-    public static CouncilLoginResponse of(JwtTokenInfo tokenInfo, List<String> groupCodeList, String memberCode) {
+    public static CouncilLoginResponse of(JwtTokenInfo tokenInfo, List<String> groupCodeList, String memberCode, String majorName) {
         return CouncilLoginResponse.builder()
                 .accessToken(tokenInfo.getAccessToken())
                 .groupCodeList(groupCodeList)
                 .memberName(memberCode)
+                .majorName(majorName)
                 .build();
     }
 }

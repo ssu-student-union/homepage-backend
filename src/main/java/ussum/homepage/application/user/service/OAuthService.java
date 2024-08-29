@@ -75,6 +75,7 @@ public class OAuthService {
 
         List<Member> memberList = memberReader.getMembersWithUserId(user.getId()); // List 비어있을 시 에러 발생
         String memberCode = memberList.get(0).getMemberCode();
+        String majorCode = memberList.get(0).getMajorCode();
 
         List<String> groupCodeList = memberList.stream()
                 .map(member -> groupReader.getGroupByGroupId(member.getGroupId()))
@@ -83,7 +84,7 @@ public class OAuthService {
 
         JwtTokenInfo tokenInfo = issueAccessTokenAndRefreshToken(user);
         updateRefreshToken(tokenInfo.getRefreshToken(), user);
-        return CouncilLoginResponse.of(tokenInfo, groupCodeList, memberCode);
+        return CouncilLoginResponse.of(tokenInfo, groupCodeList, memberCode, majorCode);
 
         //        Member member = memberReader.getMemberWithUserId(user.getId()); // 멤버가 여러개 반환되는 유저가 많음
         //        Group group = groupReader.getGroupByGroupId(memberList.get(0).getGroupId());
