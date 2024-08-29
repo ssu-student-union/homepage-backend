@@ -112,7 +112,7 @@ public class PetitionPostProcessor {
     private Boolean isAnsweredByAdmin(Post post) {
         return postCommentReader.getCommentListWithPostId(post.getId())
                 .stream()
-                .anyMatch(postComment -> memberManager.validMemberWithUserId(postComment.getUserId()));
+                .anyMatch(postComment -> memberManager.getCommentType(postComment.getUserId()).equals("OFFICIAL"));
     }
 
     /**

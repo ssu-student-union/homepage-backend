@@ -9,6 +9,8 @@ import ussum.homepage.infra.jpa.member.repository.MemberJpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+import static ussum.homepage.infra.jpa.member.entity.MemberCode.CENTRAL_OPERATION_COMMITTEE;
+
 @Repository
 @RequiredArgsConstructor
 public class MemberRepositoryImpl implements MemberRepository {
@@ -27,10 +29,12 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     // MemberCode가 CENTRAL_OPERATION_COMMITTEE인 경우의 Member를 반환
-    public Optional<Member> findCentralOperationCommitteeMember(Long userId) {
-        return memberJpaRepository.findByUserId(userId)
+    public List<Member> findCentralOperationCommitteeMember(Long userId) {
+        return memberJpaRepository.findAllByUserId(userId)
+                .stream()
+                .filter(memberEntity -> memberEntity.getMemberCode().equals(CENTRAL_OPERATION_COMMITTEE))
                 .map(memberMapper::toDomain)
-                .filter(member -> "CENTRAL_OPERATION_COMMITTEE".equals(member.getMemberCode()));
+                .toList();
     }
 
     @Override
