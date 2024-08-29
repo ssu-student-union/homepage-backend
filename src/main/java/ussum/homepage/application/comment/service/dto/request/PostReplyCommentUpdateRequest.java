@@ -15,10 +15,11 @@ public record PostReplyCommentUpdateRequest(
                 postReplyComment.getCommentId(),
                 userId,
                 DateUtils.parseHourMinSecFromCustomString(postReplyComment.getCreatedAt()),
+                DateUtils.parseHourMinSecFromCustomString(postReplyComment.getUpdatedAt()),
                 LocalDateTime.now(),
-                DateUtils.parseHourMinSecFromCustomString(postReplyComment.getLastEditedAt()),
                 postReplyComment.getIsDeleted(),
                 DateUtils.parseHourMinSecFromCustomString(postReplyComment.getDeletedAt())
         );
     }
+
 }
