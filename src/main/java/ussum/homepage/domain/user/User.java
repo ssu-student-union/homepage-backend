@@ -38,10 +38,11 @@ public class User {
                 .build();
     }
 
-    public static User createCouncilUser(String accountId, String password){
+    public static User createCouncilUser(CouncilSignInRequest request, String password){
         return User.builder()
-                .accountId(accountId)
+                .accountId(request.accountId())
                 .password(password)
+                .name(request.councilName())
                 .build();
     }
 }
