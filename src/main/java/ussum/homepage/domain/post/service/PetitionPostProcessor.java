@@ -58,10 +58,8 @@ public class PetitionPostProcessor {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(POST_NOT_FOUND));
 
-        if (commentType.equals("OFFICIAL")) {
-            if ("접수완료".equals(post.getCategory())) {
-                handleReceivedStatus(post);
-            }
+        if (commentType.equals("OFFICIAL") && post.getCategory().equals("접수완료") ) {
+            handleReceivedStatus(post);
         }
     }
 
@@ -91,8 +89,6 @@ public class PetitionPostProcessor {
         }
         else if (now.isAfter(createdAt.plusDays(30))) {
             updatePostCategoryAndOngoingStatus(post.getId(), "종료됨");
-        } else {
-            System.out.println("Like count after status change: " + likeCountOfPost);
         }
     }
 
