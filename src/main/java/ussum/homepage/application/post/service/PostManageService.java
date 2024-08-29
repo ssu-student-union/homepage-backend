@@ -177,31 +177,28 @@ public class PostManageService {
     }
 
     @Transactional
-    public PostCreateResponse createBoardPost(Long userId, String boardCode, String groupCode, PostCreateRequest postCreateRequest){
+    public PostCreateResponse createBoardPost(Long userId, String boardCode, /*String groupCode,*/ PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 //        Member member = memberReader.getMemberWithUserId(userId);
 
-        GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
-        System.out.println("groupCodeEnum = " + groupCodeEnum);
-        Group groupByGroupCodeEnum = groupReader.getGroupByGroupCode(groupCodeEnum);
-        System.out.println("groupByGroupCodeEnum = " + groupByGroupCodeEnum);
-
-        Member memberWithGroupId = memberReader.getMemberWithUserIdAndGroupId(userId, groupByGroupCodeEnum.getId());
-        System.out.println("memberWithGroupId = " + memberWithGroupId);
+//        GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
+//        Group groupByGroupCodeEnum = groupReader.getGroupByGroupCode(groupCodeEnum);
+//        Member memberWithGroupId = memberReader.getMemberWithUserIdAndGroupId(userId, groupByGroupCodeEnum.getId());
 //        MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
 
 //        String noticeCategory = memberCodeEnum.getStringMemberCode();
-        String noticeCategory = memberWithGroupId.getMemberCode();
-        System.out.println("noticeCategory = " + noticeCategory);
+//        String noticeCategory = memberWithGroupId.getMemberCode();
 
 //        String noticeCategory = MemberCode.valueOf(member.getMemberCode()).getStringMemberCode();
-        String category = Objects.equals(boardCode, BoardCode.NOTICE.getStringBoardCode()) ? noticeCategory : postCreateRequest.categoryCode();
-        System.out.println("category = " + category);
+//        String category = Objects.equals(boardCode, BoardCode.NOTICE.getStringBoardCode()) ? noticeCategory : postCreateRequest.categoryCode();
+
+//        String category = postCreateRequest.categoryCode();
 
 //        String onGoingStatus = Objects.equals(boardCode, BoardCode.PETITION.getStringBoardCode()) ? postCreateRequest.categoryCode() : postCreateRequest.isNotice() ? Category.EMERGENCY.getStringCategoryCode() : null;
-//        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
+//            Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
 //        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(category)));
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, category));
+
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId));
         postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());
         return PostCreateResponse.of(post.getId(), boardCode);
     }

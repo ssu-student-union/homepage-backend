@@ -88,9 +88,8 @@ public class PostManageController {
     @PostMapping("/{boardCode}/posts")
     public ResponseEntity<ApiResponse<?>> createBoardPost(@Parameter(hidden = true) @UserId Long userId,
                                                           @PathVariable(name = "boardCode") String boardCode,
-                                                          @RequestParam(value = "groupCode", required = false) String groupCode,
                                                           @RequestBody PostCreateRequest postCreateRequest){
-        return ApiResponse.success(postManageService.createBoardPost(userId, boardCode, groupCode, postCreateRequest));
+        return ApiResponse.success(postManageService.createBoardPost(userId, boardCode, postCreateRequest));
     }
 
     @Operation(summary = "자료집 게시물 생성 api", description = """
