@@ -142,4 +142,10 @@ public enum MemberCode {
     public static MemberCode fromStringOrNull(String stringMemberCode) {
         return fromString(stringMemberCode).orElse(null);
     }
+
+    public static String fromEnumOrNull(MemberCode memberCode) {
+        return Optional.ofNullable(memberCode)
+                .map(MemberCode::getStringMemberCode)
+                .orElse(null);
+    }
 }

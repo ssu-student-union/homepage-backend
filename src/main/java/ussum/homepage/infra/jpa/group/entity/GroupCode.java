@@ -95,4 +95,10 @@ public enum GroupCode {
     public static GroupCode fromStringOrNull(String stringGroupCode) {
         return fromString(stringGroupCode).orElse(null);
     }
+
+    public static String fromEnumOrNull(GroupCode groupCode) {
+        return Optional.ofNullable(groupCode)
+                .map(GroupCode::getStringGroupCode)
+                .orElse(null);
+    }
 }
