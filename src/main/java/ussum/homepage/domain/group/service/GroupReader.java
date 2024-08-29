@@ -7,6 +7,8 @@ import ussum.homepage.domain.group.GroupRepository;
 import ussum.homepage.domain.group.exception.GroupNotFoundException;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
 
+import java.util.List;
+
 import static ussum.homepage.global.error.status.ErrorStatus.GROUP_NOT_FOUND;
 
 @Service
@@ -16,6 +18,10 @@ public class GroupReader {
 
     public Group getGroupByGroupId(Long groupId) {
         return groupRepository.findByGroupId(groupId).orElseThrow(() -> new GroupNotFoundException(GROUP_NOT_FOUND));
+    }
+
+    public List<Group> getGroupsByGroupIdList(List<Long> groupIdList) {
+        return groupRepository.findAllByGroupIdList(groupIdList);
     }
 
     public Group getGroupByGroupCode(GroupCode groupCodeEnum) {
