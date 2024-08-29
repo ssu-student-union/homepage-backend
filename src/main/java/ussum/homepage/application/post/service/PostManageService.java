@@ -274,7 +274,8 @@ public class PostManageService {
     }
 
     @Transactional
-    public void deletePost(String boardCode, Long postId) {
+    public void deletePost(String boardCode, Long postId, PostFileDeleteRequest postFileDeleteRequest) {
+        s3utils.deleteFiles(postFileDeleteRequest);
         postModifier.deletePost(boardCode, postId);
     }
 
