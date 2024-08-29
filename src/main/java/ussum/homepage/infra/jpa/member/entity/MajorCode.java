@@ -3,8 +3,10 @@ package ussum.homepage.infra.jpa.member.entity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ussum.homepage.global.error.exception.InvalidValueException;
+import ussum.homepage.infra.jpa.group.entity.GroupCode;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static ussum.homepage.global.error.status.ErrorStatus.INVALID_MAJORCODE;
 
@@ -163,5 +165,11 @@ public enum MajorCode {
                 .filter(majorCode -> majorCode.stringMajorCode.equals(stringMajorCode))
                 .findFirst()
                 .orElseThrow(() -> new InvalidValueException(INVALID_MAJORCODE));
+    }
+
+    public static String fromEnumOrNull(MajorCode majorCode) {
+        return Optional.ofNullable(majorCode)
+                .map(MajorCode::getStringMajorCode)
+                .orElse(null);
     }
 }
