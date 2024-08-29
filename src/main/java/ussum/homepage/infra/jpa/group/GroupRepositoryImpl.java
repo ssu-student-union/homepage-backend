@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ussum.homepage.domain.group.Group;
 import ussum.homepage.domain.group.GroupRepository;
+import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.group.repository.GroupJpaRepository;
 
 import java.util.List;
@@ -25,6 +26,11 @@ public class GroupRepositoryImpl implements GroupRepository{
     }
 
     @Override
+    public Optional<Group> findByGroupCode(GroupCode groupCodeEnum) {
+        return groupJpaRepository.findByGroupCode(groupCodeEnum).map(groupMapper::toDomain);
+    }
+
+    @Override
     public List<Group> findAllByGroupIdList(List<Long> groupIdList) {
         return queryFactory
                 .selectFrom(groupEntity)
@@ -34,4 +40,5 @@ public class GroupRepositoryImpl implements GroupRepository{
                 .map(groupMapper::toDomain)
                 .toList();
     }
+
 }

@@ -12,7 +12,7 @@ import static ussum.homepage.global.error.status.ErrorStatus.INVALID_STATUS;
 @Getter
 public enum Status {
     NEW("새로운"),
-    TEST("긴급"),
+    EMERGENCY_NOTICE("긴급공지"),
     GENERAL("일반");
     private final String stringStatus;
 

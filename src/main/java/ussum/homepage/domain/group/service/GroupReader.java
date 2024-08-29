@@ -5,8 +5,7 @@ import org.springframework.stereotype.Service;
 import ussum.homepage.domain.group.Group;
 import ussum.homepage.domain.group.GroupRepository;
 import ussum.homepage.domain.group.exception.GroupNotFoundException;
-
-import java.util.List;
+import ussum.homepage.infra.jpa.group.entity.GroupCode;
 
 import static ussum.homepage.global.error.status.ErrorStatus.GROUP_NOT_FOUND;
 
@@ -19,7 +18,7 @@ public class GroupReader {
         return groupRepository.findByGroupId(groupId).orElseThrow(() -> new GroupNotFoundException(GROUP_NOT_FOUND));
     }
 
-    public List<Group> getGroupsByGroupIdList(List<Long> groupIdList) {
-        return groupRepository.findAllByGroupIdList(groupIdList);
+    public Group getGroupByGroupCode(GroupCode groupCodeEnum) {
+        return groupRepository.findByGroupCode(groupCodeEnum).orElseThrow(() -> new GroupNotFoundException(GROUP_NOT_FOUND));
     }
 }
