@@ -11,6 +11,7 @@ import ussum.homepage.domain.postlike.service.PostReactionAppender;
 import ussum.homepage.domain.postlike.service.PostReactionManager;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.domain.postlike.service.PostReactionModifier;
+import ussum.homepage.infra.kafka.KafkaProducer;
 
 
 import java.util.Optional;
@@ -25,6 +26,7 @@ public class PostReactionService {
     private final PostReactionManager postReactionManager;
     private final PostReactionReader postReactionReader;
     private final PetitionPostProcessor petitionPostProcessor;
+    private final KafkaProducer kafkaProducer;
 
     @Transactional
     public void postReactionToggle(Long userId, Long postId, CreatePostReactionReq createPostReactionReq) {
@@ -35,7 +37,9 @@ public class PostReactionService {
                 reaction -> handleExistingReaction(reaction, newReaction),
                 () -> createNewReaction(newReaction)
         );
-        petitionPostProcessor.onLikeCountChanged(postId);
+//        petitionPostProcessor.onLikeCountChanged(postId);
+        // Kafka 이벤트 발행
+        kafkaProducer.sendLikeCountChangedEvent(postId);
     }
 
     //기존 반응이 있고 같은 종류면 삭제
