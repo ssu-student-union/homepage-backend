@@ -86,7 +86,7 @@ public class PetitionPostProcessor {
     private void handleInProgressStatus(Post post, Integer likeCountOfPost) {
         LocalDateTime createdAt = DateUtils.parseHourMinSecFromCustomString(post.getCreatedAt());
         LocalDateTime now = LocalDateTime.now();
-        if (now.isBefore(createdAt.plusDays(30)) && likeCountOfPost >= 100) {
+        if (now.isBefore(createdAt.plusDays(30)) && likeCountOfPost >= 1) {
             updatePostCategoryAndOngoingStatus(post.getId(), "접수완료");
         }
         else if (now.isAfter(createdAt.plusDays(30))) {
