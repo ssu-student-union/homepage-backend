@@ -1,6 +1,7 @@
 package ussum.homepage.domain.post.service.factory.postList;
 
 import ussum.homepage.application.post.service.dto.response.DataPostResponse;
+import ussum.homepage.application.post.service.dto.response.FileResponse;
 import ussum.homepage.application.post.service.dto.response.postList.PostListResDto;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostFile;
@@ -19,6 +20,7 @@ public class DataPostResponseFactory implements PostListResponseFactory {
 
     @Override
     public PostListResDto createDataResponse(Post post, List<PostFile> postFiles) {
-        return DataPostResponse.of(post, postFiles);
+        List<FileResponse> fileResponses = postFiles.stream().map(postFile -> FileResponse.of(postFile)).toList();
+        return DataPostResponse.of(post, fileResponses);
     }
 }

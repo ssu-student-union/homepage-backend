@@ -12,26 +12,24 @@ import java.util.List;
 @Getter
 public class DataPostResponse extends PostListResDto {
     private final Boolean isNotice;
-    private final List<String> fileNames;
-    private final List<String> files;
+    private final List<FileResponse> files;
 
     @Builder
-    private DataPostResponse(Long postId, String title, String content, String date, String category, Boolean isNotice, List<String> fileNames, List<String> files) {
+    private DataPostResponse(Long postId, String title, String content, String date, String category, Boolean isNotice, List<FileResponse> files) {
         super(postId, title, content, date, category);
         this.isNotice = isNotice;
-        this.fileNames = fileNames;
         this.files = files;
     }
 
-    public static DataPostResponse of(Post post, List<PostFile> postFiles) {
+    public static DataPostResponse of(Post post, List<FileResponse> files) {
         return DataPostResponse.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .category(post.getCategory())
                 .date(post.getCreatedAt().toString())
                 .isNotice(post.getTitle().equals("총학생회칙"))
-                .fileNames(postFiles.stream().map(postFile ->postFile.getFileName()).toList())
-                .files(postFiles.stream().map(postFile -> postFile.getUrl()).toList())
+                .files(files)
                 .build();
     }
 }
