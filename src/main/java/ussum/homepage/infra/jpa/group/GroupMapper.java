@@ -10,7 +10,7 @@ public class GroupMapper {
     public Group toDomain(GroupEntity groupEntity) {
         return Group.of(
                 groupEntity.getId(),
-                String.valueOf(groupEntity.getGroupCode()),
+                GroupCode.fromEnumOrNull(groupEntity.getGroupCode()),
                 groupEntity.getName()
         );
     }

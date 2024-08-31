@@ -8,14 +8,13 @@ import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.admin.service.dto.request.CouncilSignInRequest;
 import ussum.homepage.domain.group.Group;
 import ussum.homepage.domain.group.service.GroupReader;
-import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.service.MemberAppender;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.service.UserAppender;
 import ussum.homepage.infra.csvBatch.JobLauncherRunner;
 import ussum.homepage.infra.utils.S3utils;
 
-import java.nio.file.attribute.GroupPrincipal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,10 +40,9 @@ public class AdminService {
 
     public void councilSignIn(CouncilSignInRequest request){
         String password = passwordEncoder.encode(request.password());
-        User user = User.createCouncilUser(request.accountId(), password);
+        User user = User.createCouncilUser(request, password);
         User savedUser = userAppender.createUser(user);
-        Group group = groupReader.getGroupByGroupId(request.groupId());
-        Member member = Member.of(null, true, request.memberCode(), request.majorCode(), savedUser.getId(), group.getId());
-        memberAppender.saveMember(member);
+        List<Group> groupList = groupReader.getGroupsByGroupIdList(request.groupIdList());
+        memberAppender.saveMemberList(groupList, request, savedUser);
     }
 }

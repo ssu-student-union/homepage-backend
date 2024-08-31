@@ -5,17 +5,21 @@ import ussum.homepage.domain.group.Group;
 import ussum.homepage.domain.member.Member;
 import ussum.homepage.global.jwt.JwtTokenInfo;
 
+import java.util.List;
+
 @Builder
 public record CouncilLoginResponse(
         String accessToken,
-        String groupName,
-        String memberName
+        List<String> groupCodeList,
+        String memberName,
+        String majorName
 ) {
-    public static CouncilLoginResponse of(JwtTokenInfo tokenInfo, Group group, Member member ) {
+    public static CouncilLoginResponse of(JwtTokenInfo tokenInfo, List<String> groupCodeList, String memberCode, String majorName) {
         return CouncilLoginResponse.builder()
                 .accessToken(tokenInfo.getAccessToken())
-                .groupName(group.getGroupCode())
-                .memberName(member.getMemberCode())
+                .groupCodeList(groupCodeList)
+                .memberName(memberCode)
+                .majorName(majorName)
                 .build();
     }
 }
