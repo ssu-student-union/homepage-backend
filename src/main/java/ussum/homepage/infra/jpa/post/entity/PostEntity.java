@@ -18,6 +18,7 @@ public class PostEntity extends BaseEntity {
     private String title;
 
     @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
 
     private Integer viewCount;
