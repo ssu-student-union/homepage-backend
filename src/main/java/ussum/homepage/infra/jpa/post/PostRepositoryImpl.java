@@ -528,7 +528,7 @@ public class PostRepositoryImpl implements PostRepository {
         BooleanExpression whereClause = postEntity.boardEntity.id.eq(6L);
 
         if (q != null && !q.isEmpty()) {
-            whereClause.and(postEntity.title.like("%" + q + "%"));
+            whereClause = whereClause.and(postEntity.title.like("%" + q + "%"));
         }
 
         if (fileCategories != null && !fileCategories.isEmpty()) {
