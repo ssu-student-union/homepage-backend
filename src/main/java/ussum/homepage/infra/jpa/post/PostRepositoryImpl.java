@@ -523,4 +523,13 @@ public class PostRepositoryImpl implements PostRepository {
         );
     }
 
+    @Override
+    public void updatePostStatusNewToGeneral(LocalDateTime dueDateForNewStatus) {
+        queryFactory
+                .update(postEntity)
+                .set(postEntity.status, Status.GENERAL)
+                .where(postEntity.status.eq(Status.NEW)
+                        .and(postEntity.createdAt.loe(dueDateForNewStatus)))
+                .execute();
+    }
 }
