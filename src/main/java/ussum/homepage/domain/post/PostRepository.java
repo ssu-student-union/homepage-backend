@@ -30,5 +30,6 @@ public interface PostRepository {
     Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boarId, GroupCode groupCode, MemberCode memberCode, Pageable pageable);
     Page<Post> searchAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, String q, GroupCode groupCode, MemberCode memberCode, Pageable pageable);
     Page<Post> searchAllByBoardIdAndCategory(Long boardId, String q, Category category, Pageable pageable);
+    Page<Post> searchAllByFileCategories(String q, List<FileCategory> fileCategories, Pageable pageable);
 
 }

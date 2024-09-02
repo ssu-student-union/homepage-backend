@@ -524,6 +524,43 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public Page<Post> searchAllByFileCategories(String q, List<FileCategory> fileCategories, Pageable pageable) {
+        BooleanExpression whereClause = postEntity.boardEntity.id.eq(6L);
+
+        if (q != null && !q.isEmpty()) {
+            whereClause.and(postEntity.title.like("%" + q + "%"));
+        }
+
+        if (fileCategories != null && !fileCategories.isEmpty()) {
+            whereClause = whereClause.and(postEntity.id.in(
+                    JPAExpressions
+                            .select(postFileEntity.postEntity.id)
+                            .from(postFileEntity)
+                            .where(postFileEntity.fileCategory.in(fileCategories))
+            ));
+        }
+
+        List<PostEntity> content = queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(whereClause);
+
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+    }
+
+    @Override
     public void updatePostStatusNewToGeneral(LocalDateTime dueDateForNewStatus) {
         queryFactory
                 .update(postEntity)
