@@ -188,7 +188,7 @@ public class PostManageController {
             대분류로만 검색하거나 중분류까지만 검색하거나 하면 필요없는 값은 안 보내셔도 됩니다.
             response에서 총학생회칙일때만 isNotice에 true로 가게 했습니다.
             """)
-    @GetMapping("data/posts")
+    @GetMapping("data/posts/search")
     public ResponseEntity<ApiResponse<?>> searchDataPostsList(@RequestParam(value = "page", defaultValue = "0") int page,
                                                               @RequestParam(value = "take") int take,
                                                               @RequestParam(value = "q",required = false) String q,
