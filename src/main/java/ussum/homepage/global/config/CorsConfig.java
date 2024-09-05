@@ -21,6 +21,7 @@ public class CorsConfig {
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("https://kusitms28.shop");
         config.addAllowedOrigin("https://ssu-student-union.github.io");
+        config.addAllowedOrigin("https://homepage-frontend-dun.vercel.app");
         config.addAllowedHeader("*");
         config.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         source.registerCorsConfiguration("/**",config);
