@@ -1,5 +1,6 @@
 package ussum.homepage.application.post.service.dto.request;
 
+import org.springframework.util.StringUtils;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.infra.jpa.post.entity.Category;
@@ -27,7 +28,7 @@ public record PostUpdateRequest(
                 DateUtils.parseHourMinSecFromCustomString(post.getCreatedAt()),
                 DateUtils.parseHourMinSecFromCustomString(post.getUpdatedAt()),
                 LocalDateTime.now(),
-                category.getStringCategoryCode(),
+                Category.fromEnumOrNull(category),
                 post.getUserId(),
                 board.getId()
         );
