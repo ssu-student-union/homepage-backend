@@ -3,11 +3,13 @@ package ussum.homepage.application.post.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import ussum.homepage.application.acl.service.AclManageService;
 import ussum.homepage.application.comment.service.dto.response.PostOfficialCommentResponse;
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
@@ -48,6 +50,7 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
+import ussum.homepage.infra.jpa.acl.entity.Action;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
@@ -85,6 +88,9 @@ public class PostManageService {
     private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
 
+    //acl
+    private final AclManageService aclService;
+
 
     private final Map<String, PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
             "공지사항게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, imageList, fileList, another_ignored2) -> NoticePostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
@@ -106,6 +112,12 @@ public class PostManageService {
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
 
         Page<Post> postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
+
+        //acl
+        List<Post> filteredPosts = postList.getContent().stream()
+                .filter(post -> aclService.hasPermission(post, userReader.getUserWithId(1L), Action.LIST))
+                .toList();
+        Page<Post> filteredPage = new PageImpl<>(filteredPosts, pageable, postList.getTotalElements());
 
         PageInfo pageInfo = PageInfo.of(postList);
 
