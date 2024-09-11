@@ -3,6 +3,8 @@ package ussum.homepage.application.post.service.dto.response.postDetail;
 
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public abstract class PostDetailResDto {
     protected Long postId;
@@ -13,8 +15,9 @@ public abstract class PostDetailResDto {
     protected String createdAt;
     protected String lastEditedAt;
     protected Boolean isAuthor;
+    protected List<String> canAuthority;
 
-    protected PostDetailResDto(Long postId, String categoryName, String authorName, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor) {
+    protected PostDetailResDto(Long postId, String categoryName, String authorName, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor, List<String> canAuthority) {
         this.postId = postId;
         this.categoryName = categoryName;
         this.authorName = authorName;
@@ -23,5 +26,10 @@ public abstract class PostDetailResDto {
         this.createdAt = createdAt;
         this.lastEditedAt = lastEditedAt;
         this.isAuthor = isAuthor;
+        this.canAuthority = canAuthority;
+    }
+
+    public void canAuthority(List<String> canAuthority) {
+        this.canAuthority = canAuthority;
     }
 }

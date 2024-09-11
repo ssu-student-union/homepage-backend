@@ -25,9 +25,10 @@ public class PostCommentManagerController {
             하지만 isAuthor 필드가 false 라면(비로그인 포함) 해당 user는 본인이 작성한 댓글, 대댓글이 아니기에 수정, 삭제를 막아야 합니다. 
             """)
     @GetMapping("/posts/{postId}/comments")
-    public ResponseEntity<ApiResponse<?>> getPostCommentList(@PathVariable Long postId,
-                                                             @RequestParam(name = "type") String type,
-                                                             @RequestParam Long userId) { //type은 "인기순" 인지 "최신순"인지
-        return ApiResponse.success(postCommentManageService.getCommentList(postId, type, userId));
+    public ResponseEntity<ApiResponse<?>> getPostCommentList(@RequestParam(required = false) Long userId,
+                                                             @PathVariable Long postId,
+                                                             @RequestParam(name = "type") String type
+                                                             ) { //type은 "인기순" 인지 "최신순"인지
+        return ApiResponse.success(postCommentManageService.getCommentList(userId, postId, type));
     }
 }

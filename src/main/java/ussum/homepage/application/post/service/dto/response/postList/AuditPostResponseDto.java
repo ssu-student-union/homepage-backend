@@ -21,7 +21,7 @@ public class AuditPostResponseDto extends PostListResDto {
                 .postId(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .date(post.getCreatedAt().toString())
+                .date(post.getCreatedAt())
                 .category(post.getCategory())
                 .thumbNail(post.getThumbnailImage())
                 .status(post.getStatus())

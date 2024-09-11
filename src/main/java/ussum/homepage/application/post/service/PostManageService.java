@@ -1,6 +1,5 @@
 package ussum.homepage.application.post.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,23 +11,18 @@ import ussum.homepage.application.comment.service.dto.response.PostOfficialComme
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
-import ussum.homepage.application.post.service.dto.request.PostUserRequest;
-import ussum.homepage.application.post.service.dto.response.DataPostResponse;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.*;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 
 import ussum.homepage.application.post.service.dto.response.postSave.*;
-import ussum.homepage.domain.comment.service.formatter.QuadFunction;
 
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
 
-import ussum.homepage.domain.group.Group;
 import ussum.homepage.domain.group.service.GroupReader;
-import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
@@ -40,7 +34,6 @@ import ussum.homepage.domain.post.service.factory.postList.DataPostResponseFacto
 import ussum.homepage.domain.post.service.factory.postList.PostListResponseFactory;
 import ussum.homepage.domain.post.service.factory.postList.PostResponseFactoryProvider;
 import ussum.homepage.domain.post.service.formatter.PostDetailFunction;
-import ussum.homepage.domain.postlike.PostReaction;
 import ussum.homepage.domain.postlike.service.PostReactionManager;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.domain.user.User;
@@ -63,8 +56,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static ussum.homepage.global.error.status.ErrorStatus.POST_NOT_FOUND;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -74,14 +65,11 @@ public class PostManageService {
     private final PostReactionReader postReactionReader;
     private final PostReactionManager postReactionManager;
     private final UserReader userReader;
-    private final MemberReader memberReader;
     private final PostCommentReader postCommentReader;
     private final PostFileReader postFileReader;
     private final PostAppender postAppender;
     private final PostFileAppender postFileAppender;
     private final PostModifier postModifier;
-    private final GroupReader groupReader;
-    private final PetitionPostProcessor petitionPostStatusProcessor;
     private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
 
@@ -94,7 +82,7 @@ public class PostManageService {
             "청원게시판", (post, isAuthor, isLiked, user, likeCount, categoryName, imageList, ignored, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, isLiked, user, likeCount, categoryName, imageList, postOfficialCommentResponseList)
     );
 
-    public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode, String memberCode, String category) {
+    public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
         //factory 사용 로직
@@ -120,7 +108,7 @@ public class PostManageService {
 
     }
 
-    public PostListRes<?> getDataList(int page, int take, String majorCategory, String middleCategory, String subCategory) {
+    public PostListRes<?> getDataList(Long userId, int page, int take, String majorCategory, String middleCategory, String subCategory) {
         Pageable pageable = PageInfo.of(page, take);
         Page<Post> postList = postReader.getPostListByFileCategories(
                 FileCategory.getFileCategoriesByCategories(majorCategory, middleCategory, subCategory),
@@ -280,7 +268,7 @@ public class PostManageService {
         postModifier.deletePost(boardCode, postId);
     }
 
-    public PostListRes<?> searchPost(int page, int take, String q, String boardCode, String groupCode, String memberCode, String category) {
+    public PostListRes<?> searchPost(Long userId, int page, int take, String q, String boardCode, String groupCode, String memberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
         //factory 사용 로직
@@ -306,7 +294,7 @@ public class PostManageService {
 
     }
 
-    public PostListRes<?> searchDataList(int page, int take, String q, String majorCategory, String middleCategory, String subCategory) {
+    public PostListRes<?> searchDataList(Long userId, int page, int take, String q, String majorCategory, String middleCategory, String subCategory) {
         Pageable pageable = PageInfo.of(page, take);
         Page<Post> postList = postReader.searchPostListByFileCategories(
                 q,

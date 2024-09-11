@@ -22,7 +22,7 @@ public class PostCommentManageService {
     private final PostCommentReader postCommentReader;
     private final PostCommentFormatter postCommentFormatter;
 
-    public CommentListResponse getCommentList(Long postId, String type, Long userId) {
+    public CommentListResponse getCommentList(Long userId, Long postId, String type) {
         List<PostComment> postComments = postCommentReader.getCommentListWithPostIdAndType(postId, type);
 
         List<PostCommentResponse> postCommentResponses = postComments.stream()
@@ -31,7 +31,7 @@ public class PostCommentManageService {
 
         // 전체 댓글 수 + 각 댓글의 대댓글 수
         Integer totalCommentCount = postCommentResponses.size() + postCommentResponses.stream()
-                .mapToInt(postCommentResponse -> postCommentResponse.postReplyComments().size())
+                .mapToInt(postCommentResponse -> postCommentResponse.getPostReplyComments().size())
                 .sum();
 
         return CommentListResponse.of(postCommentResponses, totalCommentCount);

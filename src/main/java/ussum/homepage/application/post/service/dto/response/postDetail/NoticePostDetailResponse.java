@@ -14,8 +14,8 @@ public class NoticePostDetailResponse extends PostDetailResDto {
 
     @Builder
     private NoticePostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor,
-                                     List<String> imageList, List<String> fileList) {
-        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor);
+                                     List<String> imageList, List<String> fileList, List<String> canAuthority) {
+        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor, canAuthority);
         this.imageList = imageList;
         this.fileList = fileList;
     }

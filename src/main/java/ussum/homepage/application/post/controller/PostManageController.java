@@ -31,13 +31,14 @@ public class PostManageController {
             나머지 게시판 필터링은 category에 값을 넣고 사용하시면 됩니다.
             """)
     @GetMapping("/{boardCode}/posts")
-    public ResponseEntity<ApiResponse<?>> getBoardPostsList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
+    public ResponseEntity<ApiResponse<?>> getBoardPostsList(@RequestParam(required = false) Long userId,
+                                                            @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
                                                             @PathVariable(name = "boardCode") String boardCode, @RequestParam(value = "groupCode", required = false) String groupCode,
                                                             @RequestParam(value = "memberCode",  required = false) String memberCode,
                                                             @RequestParam(value = "category",  required = false) String category) {
 
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
-        return ApiResponse.success(postManageService.getPostList(page, take, boardCode, groupCode, memberCode, category));
+        return ApiResponse.success(postManageService.getPostList(userId, boardCode, page, take, groupCode, memberCode, category));
     }
 
     @Operation(summary = "자료집게시판 게시물 리스트 조회 api", description = """
@@ -47,11 +48,12 @@ public class PostManageController {
             response에서 총학생회칙일때만 isNotice에 true로 가게 했습니다.
             """)
     @GetMapping("data/posts")
-    public ResponseEntity<ApiResponse<?>> getDataPostsList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
-                                                            @RequestParam(name = "majorCategory", required = false) String majorCategory, @RequestParam(name = "middleCategory", required = false) String middleCategory,@RequestParam(name = "subCategory", required = false) String subCategory) {
+    public ResponseEntity<ApiResponse<?>> getDataPostsList(@RequestParam(required = false) Long userId,
+                                                           @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
+                                                           @RequestParam(name = "majorCategory", required = false) String majorCategory, @RequestParam(name = "middleCategory", required = false) String middleCategory,@RequestParam(name = "subCategory", required = false) String subCategory) {
 
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
-        return ApiResponse.success(postManageService.getDataList(page, take, majorCategory, middleCategory, subCategory));
+        return ApiResponse.success(postManageService.getDataList(userId, page, take, majorCategory, middleCategory, subCategory));
     }
 
     @Operation(summary = "게시물 단건 조회 api", description = """
@@ -172,14 +174,15 @@ public class PostManageController {
             나머지 게시판 필터링은 category에 값을 넣고 사용하시면 됩니다.
             """)
     @GetMapping("/{boardCode}/posts/search")
-    public ResponseEntity<ApiResponse<?>> searchBoardPost(@RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<ApiResponse<?>> searchBoardPost(@UserId Long userId,
+                                                          @RequestParam(value = "page", defaultValue = "0") int page,
                                                           @RequestParam(value = "take") int take,
                                                           @RequestParam(value = "q",required = false) String q,
                                                           @PathVariable(name = "boardCode") String boardCode,
                                                           @RequestParam(value = "groupCode", required = false) String groupCode,
                                                           @RequestParam(value = "memberCode",  required = false) String memberCode,
                                                           @RequestParam(value = "category",  required = false) String category) {
-        return ApiResponse.success(postManageService.searchPost(page, take, q, boardCode, groupCode, memberCode, category));
+        return ApiResponse.success(postManageService.searchPost(userId, page, take, q, boardCode, groupCode, memberCode, category));
     }
 
     @Operation(summary = "검색키워드를 활용한 자료집게시판 게시물 리스트 조회 api", description = """
@@ -189,7 +192,8 @@ public class PostManageController {
             response에서 총학생회칙일때만 isNotice에 true로 가게 했습니다.
             """)
     @GetMapping("data/posts/search")
-    public ResponseEntity<ApiResponse<?>> searchDataPostsList(@RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<ApiResponse<?>> searchDataPostsList(@UserId Long userId,
+                                                              @RequestParam(value = "page", defaultValue = "0") int page,
                                                               @RequestParam(value = "take") int take,
                                                               @RequestParam(value = "q",required = false) String q,
                                                               @RequestParam(name = "majorCategory", required = false) String majorCategory,
@@ -197,7 +201,7 @@ public class PostManageController {
                                                               @RequestParam(name = "subCategory", required = false) String subCategory) {
 
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
-        return ApiResponse.success(postManageService.searchDataList(page, take, q, majorCategory, middleCategory, subCategory));
+        return ApiResponse.success(postManageService.searchDataList(userId, page, take, q, majorCategory, middleCategory, subCategory));
     }
 
     @Operation(summary = "게시판 인기청원 조회 api", description = """

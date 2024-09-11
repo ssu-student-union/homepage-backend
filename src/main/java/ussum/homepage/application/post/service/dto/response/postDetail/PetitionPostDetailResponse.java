@@ -15,19 +15,17 @@ public class PetitionPostDetailResponse extends PostDetailResDto {
     private final List<PostOfficialCommentResponse> officialCommentList;
     private final List<String> imageList;
     private final Boolean isLiked;
-    //    private final String onGoingStatus;
 
     @Builder
     private PetitionPostDetailResponse(Long postId, String categoryName, String authorName, String studentId, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor,
-                                       Integer likeCount, /*String onGoingStatus,*/ List<String> imageList, List<PostOfficialCommentResponse> officialCommentList,
-                                       Boolean isLiked) {
-        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor);
+                                       Integer likeCount, List<String> imageList, List<PostOfficialCommentResponse> officialCommentList,
+                                       Boolean isLiked, List<String> canAuthority) {
+        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor, canAuthority);
         this.studentId = studentId;
         this.likeCount = likeCount;
         this.imageList = imageList;
         this.officialCommentList = officialCommentList;
         this.isLiked = isLiked;
-//        this.onGoingStatus = onGoingStatus;
     }
 
     public static PetitionPostDetailResponse of(Post post, Boolean isAuthor, Boolean isLiked, User user, Integer likeCount, String category, List<String> imageList,
@@ -44,7 +42,6 @@ public class PetitionPostDetailResponse extends PostDetailResDto {
                 .isAuthor(isAuthor)
                 .isLiked(isLiked)
                 .likeCount(likeCount)
-//                .onGoingStatus(post.getCategory())
                 .imageList(imageList)
                 .officialCommentList(officialCommentList)
                 .build();
