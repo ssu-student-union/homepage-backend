@@ -6,6 +6,7 @@ import ussum.homepage.global.error.exception.InvalidValueException;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static ussum.homepage.global.error.status.ErrorStatus.INVALID_TYPE;
 
@@ -14,11 +15,19 @@ import static ussum.homepage.global.error.status.ErrorStatus.INVALID_TYPE;
 public enum Type {
     ALLOW("ALLOW"),
     DENY("DENY");
+
     private final String stringType;
+
     public static Type getEnumTypeFromStringType(String stringType) {
         return Arrays.stream(values())
                 .filter(type -> type.stringType.equals(stringType))
                 .findFirst()
                 .orElseThrow(() -> new InvalidValueException(INVALID_TYPE));
+    }
+
+    public static String fromEnumOrNull(Type type) {
+        return Optional.ofNullable(type)
+                .map(Type::getStringType)
+                .orElse(null);
     }
 }
