@@ -47,6 +47,10 @@ public class PostReader {
         return postRepository.findAllByFileCategories(fileCategories, pageable);
     }
 
+    public Page<Post> searchPostListByFileCategories(String q, List<FileCategory> fileCategories, Pageable pageable){
+        return postRepository.searchAllByFileCategories(q, fileCategories, pageable);
+    }
+
     public Post getPostWithId(Long postId) {
         return postRepository.findById(postId).orElseThrow(()-> new GeneralException(POST_NOT_FOUND));
     }

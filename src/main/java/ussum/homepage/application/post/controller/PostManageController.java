@@ -182,6 +182,24 @@ public class PostManageController {
         return ApiResponse.success(postManageService.searchPost(page, take, q, boardCode, groupCode, memberCode, category));
     }
 
+    @Operation(summary = "검색키워드를 활용한 자료집게시판 게시물 리스트 조회 api", description = """
+            검색키워드를 활용하여 자료집게시판 게시물 리스트 조회 시 필요한 데이터를 조회하는 api 입니다.
+            queryParam 형식으로 majorCategory(대분류), middleCategory(중분류), subCategory(소분류), page(입력 안 할시 첫번째 페이지), take(몇개 가져올지) 값을 넣으면 됩니다.
+            대분류로만 검색하거나 중분류까지만 검색하거나 하면 필요없는 값은 안 보내셔도 됩니다.
+            response에서 총학생회칙일때만 isNotice에 true로 가게 했습니다.
+            """)
+    @GetMapping("data/posts/search")
+    public ResponseEntity<ApiResponse<?>> searchDataPostsList(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                              @RequestParam(value = "take") int take,
+                                                              @RequestParam(value = "q",required = false) String q,
+                                                              @RequestParam(name = "majorCategory", required = false) String majorCategory,
+                                                              @RequestParam(name = "middleCategory", required = false) String middleCategory,
+                                                              @RequestParam(name = "subCategory", required = false) String subCategory) {
+
+//        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
+        return ApiResponse.success(postManageService.searchDataList(page, take, q, majorCategory, middleCategory, subCategory));
+    }
+
     @Operation(summary = "게시판 인기청원 조회 api", description = """
             게시판 인기청원 조회 시 필요한 데이터를 조회하는 api 입니다.
             요청으로 boardCode 그리고 qeury param 형식으로 page, take를 입력하시면 됩니다.

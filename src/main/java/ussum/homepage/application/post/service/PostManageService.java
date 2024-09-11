@@ -318,6 +318,27 @@ public class PostManageService {
 
     }
 
+    public PostListRes<?> searchDataList(int page, int take, String q, String majorCategory, String middleCategory, String subCategory) {
+        Pageable pageable = PageInfo.of(page, take);
+        Page<Post> postList = postReader.searchPostListByFileCategories(
+                q,
+                FileCategory.getFileCategoriesByCategories(majorCategory, middleCategory, subCategory),
+                pageable
+        );
+        PageInfo pageInfo = PageInfo.of(postList);
+
+        PostListResponseFactory factory = PostResponseFactoryProvider.getFactory("자료집게시판");
+
+        List<? extends PostListResDto> responseList = postList.getContent().stream()
+                .map(post -> {
+                    List<PostFile> postFiles = postFileReader.getPostFileListByPostId(post.getId());
+                    return ((DataPostResponseFactory) factory).createDataResponse(post, postFiles);
+                })
+                .toList();
+
+        return PostListRes.of(responseList, pageInfo);
+    }
+
     public TopLikedPostListResponse getTopLikedPostList(int page, int take, String boardCode) {
         Pageable pageable = PageInfo.of(page, take);
         Page<SimplePostResponse> simplePostDtoList = postReader.findSimplePostDtoListByBoardCode(boardCode, pageable);
