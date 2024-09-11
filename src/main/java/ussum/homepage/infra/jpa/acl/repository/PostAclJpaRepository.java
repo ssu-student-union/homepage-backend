@@ -12,5 +12,4 @@ import java.util.List;
 public interface PostAclJpaRepository extends JpaRepository<PostAclEntity, Long> {
     @Query("SELECT pa FROM PostAclEntity pa WHERE pa.postEntity.id = :postId")
     List<PostAclEntity> findAllByPostId(@Param("postId") Long postId);
-    List<PostAclEntity> findByPostId(Long postId);
 }

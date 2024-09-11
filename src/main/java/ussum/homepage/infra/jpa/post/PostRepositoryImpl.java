@@ -344,19 +344,24 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Page<SimplePostResponse> findPostDtoListByBoardCode(String boardCode, Pageable pageable) {
-        //7일 이내거만 확인
+        LocalDateTime thirtyDaysAgo = LocalDateTime.now().minus(30, ChronoUnit.DAYS);
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minus(7, ChronoUnit.DAYS);
 
-        // 기본 정렬 조건 설정(최신순 정렬)
         OrderSpecifier<?>[] orderSpecifiers = new OrderSpecifier<?>[]{
                 postEntity.createdAt.desc()
         };
-        if (boardCode.equals("청원게시판")) {
+        if (boardCode.equals(BoardCode.PETITION.getStringBoardCode())) {
             orderSpecifiers = new OrderSpecifier<?>[]{
-                    postReactionEntity.countDistinct().castToNum(Long.class).desc(), // 청원 게시물일 때 좋아요 순 정렬
-                    postEntity.createdAt.desc() // 기본 정렬(최신순 정렬)
+                    postReactionEntity.countDistinct().castToNum(Long.class).desc(),
+                    postEntity.createdAt.desc()
             };
         }
+
+        BooleanExpression timeCondition = postEntity.category.eq(Category.IN_PROGRESS)
+                .and(postEntity.createdAt.after(thirtyDaysAgo))
+                .or(postEntity.category.eq(Category.ANSWERED)
+                        .and(postEntity.createdAt.after(sevenDaysAgo)))
+                .or(postEntity.category.notIn(Category.IN_PROGRESS, Category.ANSWERED, Category.COMPLETED));
 
         List<SimplePostResponse> contents = queryFactory
                 .select(Projections.constructor(SimplePostDto.class,
@@ -367,9 +372,8 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(postReactionEntity).on(postReactionEntity.postEntity.eq(postEntity))
                 .leftJoin(postEntity.boardEntity, boardEntity)
                 .where(eqBoardCode(boardCode)
-                        .and(postEntity.createdAt.after(sevenDaysAgo))
-                        //일단 지금은 청원게시물들만 인기조회가 필요하기 때문에 종료됨 진행상태만을 제외한 나머지 상태
-                        .and(postEntity.category.ne(Category.getEnumCategoryCodeFromStringCategoryCode("종료됨"))))
+                        .and(timeCondition)
+                        .and(postEntity.category.ne(Category.COMPLETED)))
                 .groupBy(postEntity)
                 .orderBy(orderSpecifiers)
                 .offset(pageable.getOffset())
@@ -387,7 +391,8 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(postReactionEntity).on(postReactionEntity.postEntity.eq(postEntity))
                 .leftJoin(postEntity.boardEntity, boardEntity)
                 .where(eqBoardCode(boardCode)
-                        .and(postEntity.createdAt.after(sevenDaysAgo)));
+                        .and(timeCondition)
+                        .and(postEntity.category.ne(Category.COMPLETED)));
 
         return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchCount);
     }

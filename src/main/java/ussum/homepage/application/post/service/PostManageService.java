@@ -1,6 +1,5 @@
 package ussum.homepage.application.post.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -9,28 +8,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import ussum.homepage.application.acl.service.AclManageService;
 import ussum.homepage.application.comment.service.dto.response.PostOfficialCommentResponse;
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
-import ussum.homepage.application.post.service.dto.request.PostUserRequest;
-import ussum.homepage.application.post.service.dto.response.DataPostResponse;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.*;
 import ussum.homepage.application.post.service.dto.response.postList.*;
 
 import ussum.homepage.application.post.service.dto.response.postSave.*;
-import ussum.homepage.domain.comment.service.formatter.QuadFunction;
 
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
 
-import ussum.homepage.domain.group.Group;
 import ussum.homepage.domain.group.service.GroupReader;
-import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
@@ -42,7 +35,6 @@ import ussum.homepage.domain.post.service.factory.postList.DataPostResponseFacto
 import ussum.homepage.domain.post.service.factory.postList.PostListResponseFactory;
 import ussum.homepage.domain.post.service.factory.postList.PostResponseFactoryProvider;
 import ussum.homepage.domain.post.service.formatter.PostDetailFunction;
-import ussum.homepage.domain.postlike.PostReaction;
 import ussum.homepage.domain.postlike.service.PostReactionManager;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.domain.user.User;
@@ -61,12 +53,9 @@ import ussum.homepage.infra.utils.S3utils;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static ussum.homepage.global.error.status.ErrorStatus.POST_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -87,9 +76,6 @@ public class PostManageService {
     private final PetitionPostProcessor petitionPostStatusProcessor;
     private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
-
-    //acl
-    private final AclManageService aclService;
 
 
     private final Map<String, PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
@@ -112,12 +98,6 @@ public class PostManageService {
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
 
         Page<Post> postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
-
-        //acl
-        List<Post> filteredPosts = postList.getContent().stream()
-                .filter(post -> aclService.hasPermission(post, userReader.getUserWithId(1L), Action.LIST))
-                .toList();
-        Page<Post> filteredPage = new PageImpl<>(filteredPosts, pageable, postList.getTotalElements());
 
         PageInfo pageInfo = PageInfo.of(postList);
 

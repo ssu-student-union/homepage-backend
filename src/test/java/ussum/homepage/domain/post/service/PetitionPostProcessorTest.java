@@ -12,7 +12,6 @@ import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.infra.jpa.post.entity.Category;
-import ussum.homepage.infra.jpa.post.entity.OngoingStatus;
 import ussum.homepage.infra.utils.DateUtils;
 
 import java.time.LocalDateTime;
@@ -57,7 +56,7 @@ public class PetitionPostProcessorTest {
 
         // then
         verify(postRepository, never()).updatePostCategory(anyLong(), anyString());
-        assertThat(mockPost.getCategory()).isEqualTo(OngoingStatus.IN_PROGRESS.getStringOnGoingStatus());
+        assertThat(mockPost.getCategory()).isEqualTo(Category.IN_PROGRESS.getStringCategoryCode());
     }
 
     @Test
