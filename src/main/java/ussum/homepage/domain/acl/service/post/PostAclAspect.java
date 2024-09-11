@@ -120,5 +120,52 @@ public class PostAclAspect {
         return result;
     }
 
+    @Around(value = "execution(* ussum.homepage.application.post.service.PostManageService.searchPost(..)) && args(userId, page, take, q, boardCode, ..)", argNames = "joinPoint,userId, page, take, q, boardCode")
+    public Object validAuthorityOfSearchPostList(ProceedingJoinPoint joinPoint, Long userId, int page, int take, String q, String boardCode) throws Throwable {
+        Object result = joinPoint.proceed();
+        List<String> allowedAuthorities = new ArrayList<>();
+        List<String> deniedAuthorities = new ArrayList<>();
+
+        boolean isLoggedIn = userId != null;
+
+        boolean canWrite = isLoggedIn
+                ? postAclManager.hasPermission(userId, boardCode, "WRITE")
+                : postAclManager.hasAllowPermissionForAnonymous(boardCode, "WRITE");
+        if (canWrite) allowedAuthorities.add("WRITE");
+
+        if (boardCode.equals("제휴게시판")) {
+            if(!isLoggedIn) {
+                boolean denyRead = postAclManager.hasDenyPermissionForAnonymous(boardCode, "READ");
+                if (denyRead) deniedAuthorities.add("READ");
+            } else allowedAuthorities.add("READ");
+        } else allowedAuthorities.add("READ");
+
+        PostListRes<?> postListRes = (PostListRes<?>) result;
+        postListRes = postListRes.validAuthorities(allowedAuthorities, deniedAuthorities);
+
+        return postListRes;
+    }
+
+    @Around(value = "execution(* ussum.homepage.application.post.service.PostManageService.searchDataList(..)) && args(userId, page, ..)", argNames = "joinPoint,userId,page")
+    public Object validAuthorityOfSearchDataPostList(ProceedingJoinPoint joinPoint, Long userId, int page) throws Throwable {
+        Object result = joinPoint.proceed();
+        List<String> allowedAuthorities = new ArrayList<>();
+        List<String> deniedAuthorities = new ArrayList<>();
+
+        boolean isLoggedIn = userId != null;
+
+        boolean canWrite = isLoggedIn
+                ? postAclManager.hasPermission(userId, "자료집게시판", "WRITE")
+                : postAclManager.hasAllowPermissionForAnonymous("자료집게시판", "WRITE");
+        if (canWrite) allowedAuthorities.add("WRITE");
+
+        allowedAuthorities.add("READ");
+
+        PostListRes<?> postListRes = (PostListRes<?>) result;
+        postListRes.validAuthorities(allowedAuthorities, deniedAuthorities);
+
+        return result;
+    }
+
 }
 

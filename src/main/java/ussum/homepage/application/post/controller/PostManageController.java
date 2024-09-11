@@ -174,7 +174,7 @@ public class PostManageController {
             나머지 게시판 필터링은 category에 값을 넣고 사용하시면 됩니다.
             """)
     @GetMapping("/{boardCode}/posts/search")
-    public ResponseEntity<ApiResponse<?>> searchBoardPost(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> searchBoardPost(@RequestParam(required = false) Long userId,
                                                           @RequestParam(value = "page", defaultValue = "0") int page,
                                                           @RequestParam(value = "take") int take,
                                                           @RequestParam(value = "q",required = false) String q,
@@ -191,8 +191,8 @@ public class PostManageController {
             대분류로만 검색하거나 중분류까지만 검색하거나 하면 필요없는 값은 안 보내셔도 됩니다.
             response에서 총학생회칙일때만 isNotice에 true로 가게 했습니다.
             """)
-    @GetMapping("data/posts/search")
-    public ResponseEntity<ApiResponse<?>> searchDataPostsList(@UserId Long userId,
+    @GetMapping("/data/posts/search")
+    public ResponseEntity<ApiResponse<?>> searchDataPostsList(@RequestParam(required = false) Long userId,
                                                               @RequestParam(value = "page", defaultValue = "0") int page,
                                                               @RequestParam(value = "take") int take,
                                                               @RequestParam(value = "q",required = false) String q,
