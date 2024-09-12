@@ -77,9 +77,8 @@ public class PostManageController {
             게시물 생성 시 사용하는 api입니다.
             기본적으로 액세스 토큰을 필요로 합니다.
             PathVariable로 노션에 있는 boardCode중 하나를 적습니다.
-            만약 boardCode가 "공지사항게시판" 이라면 PostCreateRequest dto의 category필드에 값을 넣지 않고,
-            groupCode(중앙기구, 단과대학생회), memberCode(중앙운영위원회) 값을 채워넣어서 요청을 보내시면 됩니다.
-            즉, 공지사항게시판을 사용할때만 groupCode, memberCode에 값을 넣어서 사용하시면 됩니다.
+            만약 boardCode가 "공지사항게시판" 이라면 PostCreateRequest dto의 category필드에 값을 넣지 않습니다.
+            그 이유는 공지사항게시판의 카테고리는 글을 쓸 수 있는 작성자의 groupCode와 memberCode에 따라 필터링되어 조회되기 때문입니다.
             
             JSON 형식으로 PostCreateRequest dto를 활용하여 게시글에 적은 값을 전달하면 됩니다.
             PostCreateRequest dto의 List로 되어있는 변수에 들어가는 값 s3에 저장하고 나온 url입니다. 
