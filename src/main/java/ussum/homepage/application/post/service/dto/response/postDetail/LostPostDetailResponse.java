@@ -2,6 +2,7 @@ package ussum.homepage.application.post.service.dto.response.postDetail;
 
 import lombok.Builder;
 import lombok.Getter;
+import ussum.homepage.application.post.service.dto.response.FileResponse;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.user.User;
 
@@ -9,16 +10,16 @@ import java.util.List;
 
 @Getter
 public class LostPostDetailResponse extends PostDetailResDto{
-    private final List<String> imageList;
+    private final List<FileResponse> fileResponseList;
 
     @Builder
     private LostPostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor,
-                                   List<String> imageList, List<String> canAuthority) {
+                                   List<FileResponse> fileResponseList, List<String> canAuthority) {
         super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor, canAuthority);
-        this.imageList = imageList;
+        this.fileResponseList = fileResponseList;
     }
 
-    public static LostPostDetailResponse of(Post post, Boolean isAuthor, User user, String categoryName, List<String> imageList) {
+    public static LostPostDetailResponse of(Post post, Boolean isAuthor, User user, String categoryName, List<FileResponse> fileResponseList) {
         return LostPostDetailResponse.builder()
                 .postId(post.getId())
                 .categoryName(categoryName)
@@ -28,7 +29,7 @@ public class LostPostDetailResponse extends PostDetailResDto{
                 .createdAt(post.getCreatedAt())
                 .lastEditedAt(post.getLastEditedAt())
                 .isAuthor(isAuthor)
-                .imageList(imageList)
+                .fileResponseList(fileResponseList)
                 .build();
     }
 

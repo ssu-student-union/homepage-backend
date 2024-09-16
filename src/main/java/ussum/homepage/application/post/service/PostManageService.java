@@ -2,6 +2,7 @@ package ussum.homepage.application.post.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import ussum.homepage.application.comment.service.dto.response.PostOfficialComme
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
+import ussum.homepage.application.post.service.dto.response.FileResponse;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.*;
@@ -41,6 +43,7 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
+import ussum.homepage.infra.jpa.acl.entity.Action;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
@@ -49,9 +52,9 @@ import ussum.homepage.infra.jpa.post.entity.FileCategory;
 import ussum.homepage.infra.utils.S3utils;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -65,24 +68,27 @@ public class PostManageService {
     private final PostReactionReader postReactionReader;
     private final PostReactionManager postReactionManager;
     private final UserReader userReader;
+    private final MemberReader memberReader;
     private final PostCommentReader postCommentReader;
     private final PostFileReader postFileReader;
     private final PostAppender postAppender;
     private final PostFileAppender postFileAppender;
     private final PostModifier postModifier;
+    private final GroupReader groupReader;
+    private final PetitionPostProcessor petitionPostStatusProcessor;
     private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
 
 
-    private final Map<String, PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
-            "공지사항게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, imageList, fileList, another_ignored2) -> NoticePostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
-            "분실물게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, imageList, another_ignored2, another_ignored3) -> LostPostDetailResponse.of(post, isAuthor, user, categoryName, imageList),
-            "제휴게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, imageList, fileList, another_ignored2) -> PartnerPostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
-            "감사기구게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, imageList, fileList, another_ignored2) -> AuditPostDetailResponse.of(post, isAuthor, user, categoryName, imageList, fileList),
-            "청원게시판", (post, isAuthor, isLiked, user, likeCount, categoryName, imageList, ignored, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, isLiked, user, likeCount, categoryName, imageList, postOfficialCommentResponseList)
+    private final Map<String, PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, FileResponse, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
+            "공지사항게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2) -> NoticePostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
+            "분실물게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored3) -> LostPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
+            "제휴게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2) -> PartnerPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
+            "감사기구게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2) -> AuditPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
+            "청원게시판", (post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList)
     );
 
-    public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category) {
+    public PostListRes<?> getPostList(Long userId, int page, int take, String boardCode, String groupCode, String memberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
         //factory 사용 로직
@@ -136,10 +142,11 @@ public class PostManageService {
         Boolean isAuthor = (userId != null && userId.equals(post.getUserId()));
 
         List<PostFile> postFileList = postFileReader.getPostFileListByPostId(post.getId());
-        List<String> imageList = postFileReader.getPostImageListByFileType(postFileList);
-        List<String> fileList = postFileReader.getPostFileListByFileType(postFileList);
+//        List<String> imageList = postFileReader.getPostImageListByFileType(postFileList);
+//        List<String> fileList = postFileReader.getPostFileListByFileType(postFileList);
+        List<FileResponse> fileResponseList = postFileList.stream().map(FileResponse::of).toList();
 
-        PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, String, String, PostOfficialCommentResponse, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
+        PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, FileResponse, PostOfficialCommentResponse, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
 
         if (responseFunction == null) {
             throw new GeneralException(ErrorStatus.INVALID_BOARDCODE);
@@ -153,19 +160,38 @@ public class PostManageService {
                     .map(postOfficialComment -> postOfficialCommentFormatter.format(postOfficialComment, userId))
                     .toList();
             Boolean isLiked = (userId != null && postReactionManager.validatePostReactionByPostIdAndUserId(postId, userId, "like"));
-            response = responseFunction.apply(post, isAuthor, isLiked, user, likeCount, post.getCategory(), imageList, null, postOfficialCommentResponses);
+            response = responseFunction.apply(post, isAuthor, isLiked, user, likeCount, post.getCategory(), fileResponseList, postOfficialCommentResponses);
         } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판")) {
-            response = responseFunction.apply(post, isAuthor,null, user, null, post.getCategory(), imageList, fileList,null);
+            response = responseFunction.apply(post, isAuthor, null, user, null, post.getCategory(), fileResponseList, null);
         } else if (board.getName().equals("분실물게시판")) {
-            response = responseFunction.apply(post, isAuthor, null, user, null, post.getCategory(), imageList, null, null); //분실물 게시판은 파일첨부 제외
+            response = responseFunction.apply(post, isAuthor, null, user, null, post.getCategory(), fileResponseList, null); //분실물 게시판은 파일첨부 제외
         }
 
         return PostDetailRes.of(response);
     }
 
     @Transactional
-    public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
+    public PostCreateResponse createBoardPost(Long userId, String boardCode, /*String groupCode,*/ PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
+//        Member member = memberReader.getMemberWithUserId(userId);
+
+//        GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
+//        Group groupByGroupCodeEnum = groupReader.getGroupByGroupCode(groupCodeEnum);
+//        Member memberWithGroupId = memberReader.getMemberWithUserIdAndGroupId(userId, groupByGroupCodeEnum.getId());
+//        MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
+
+//        String noticeCategory = memberCodeEnum.getStringMemberCode();
+//        String noticeCategory = memberWithGroupId.getMemberCode();
+
+//        String noticeCategory = MemberCode.valueOf(member.getMemberCode()).getStringMemberCode();
+//        String category = Objects.equals(boardCode, BoardCode.NOTICE.getStringBoardCode()) ? noticeCategory : postCreateRequest.categoryCode();
+
+//        String category = postCreateRequest.categoryCode();
+
+//        String onGoingStatus = Objects.equals(boardCode, BoardCode.PETITION.getStringBoardCode()) ? postCreateRequest.categoryCode() : postCreateRequest.isNotice() ? Category.EMERGENCY.getStringCategoryCode() : null;
+//            Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
+//        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(category)));
+
         Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId));
         postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());
         return PostCreateResponse.of(post.getId(), boardCode);

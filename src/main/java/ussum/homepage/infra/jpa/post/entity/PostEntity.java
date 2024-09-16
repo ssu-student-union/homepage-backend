@@ -27,9 +27,6 @@ public class PostEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-//    @Enumerated(EnumType.STRING)
-//    private OngoingStatus ongoingStatus;
-
     private LocalDateTime lastEditedAt;
 
     @Enumerated(EnumType.STRING)
