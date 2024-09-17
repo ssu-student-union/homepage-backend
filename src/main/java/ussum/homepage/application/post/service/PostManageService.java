@@ -2,7 +2,6 @@ package ussum.homepage.application.post.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +42,6 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
-import ussum.homepage.infra.jpa.acl.entity.Action;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
@@ -52,7 +50,6 @@ import ussum.homepage.infra.jpa.post.entity.FileCategory;
 import ussum.homepage.infra.utils.S3utils;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -171,27 +168,8 @@ public class PostManageService {
     }
 
     @Transactional
-    public PostCreateResponse createBoardPost(Long userId, String boardCode, /*String groupCode,*/ PostCreateRequest postCreateRequest){
+    public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
-//        Member member = memberReader.getMemberWithUserId(userId);
-
-//        GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
-//        Group groupByGroupCodeEnum = groupReader.getGroupByGroupCode(groupCodeEnum);
-//        Member memberWithGroupId = memberReader.getMemberWithUserIdAndGroupId(userId, groupByGroupCodeEnum.getId());
-//        MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
-
-//        String noticeCategory = memberCodeEnum.getStringMemberCode();
-//        String noticeCategory = memberWithGroupId.getMemberCode();
-
-//        String noticeCategory = MemberCode.valueOf(member.getMemberCode()).getStringMemberCode();
-//        String category = Objects.equals(boardCode, BoardCode.NOTICE.getStringBoardCode()) ? noticeCategory : postCreateRequest.categoryCode();
-
-//        String category = postCreateRequest.categoryCode();
-
-//        String onGoingStatus = Objects.equals(boardCode, BoardCode.PETITION.getStringBoardCode()) ? postCreateRequest.categoryCode() : postCreateRequest.isNotice() ? Category.EMERGENCY.getStringCategoryCode() : null;
-//            Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode()), onGoingStatus));
-//        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(category)));
-
         Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId));
         postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());
         return PostCreateResponse.of(post.getId(), boardCode);

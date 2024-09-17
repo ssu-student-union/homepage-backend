@@ -37,7 +37,6 @@ public class PostManageController {
                                                             @RequestParam(value = "memberCode",  required = false) String memberCode,
                                                             @RequestParam(value = "category",  required = false) String category) {
 
-//        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
         return ApiResponse.success(postManageService.getPostList(userId, boardCode, page, take, groupCode, memberCode, category));
     }
 
@@ -52,7 +51,6 @@ public class PostManageController {
                                                            @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
                                                            @RequestParam(name = "majorCategory", required = false) String majorCategory, @RequestParam(name = "middleCategory", required = false) String middleCategory,@RequestParam(name = "subCategory", required = false) String subCategory) {
 
-//        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
         return ApiResponse.success(postManageService.getDataList(userId, page, take, majorCategory, middleCategory, subCategory));
     }
 
@@ -199,7 +197,6 @@ public class PostManageController {
                                                               @RequestParam(name = "middleCategory", required = false) String middleCategory,
                                                               @RequestParam(name = "subCategory", required = false) String subCategory) {
 
-//        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
         return ApiResponse.success(postManageService.searchDataList(userId, page, take, q, majorCategory, middleCategory, subCategory));
     }
 
