@@ -1,6 +1,7 @@
 package ussum.homepage.application.comment.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ussum.homepage.application.comment.service.PostCommentManageService;
 import ussum.homepage.application.post.service.dto.request.PostUserRequest;
 import ussum.homepage.global.ApiResponse;
+import ussum.homepage.global.config.auth.UserId;
 
 @RequiredArgsConstructor
 @RequestMapping("/board")
@@ -25,7 +27,7 @@ public class PostCommentManagerController {
             하지만 isAuthor 필드가 false 라면(비로그인 포함) 해당 user는 본인이 작성한 댓글, 대댓글이 아니기에 수정, 삭제를 막아야 합니다. 
             """)
     @GetMapping("/posts/{postId}/comments")
-    public ResponseEntity<ApiResponse<?>> getPostCommentList(@RequestParam(required = false) Long userId,
+    public ResponseEntity<ApiResponse<?>> getPostCommentList(@Parameter(hidden = true) @UserId Long userId,
                                                              @PathVariable Long postId,
                                                              @RequestParam(name = "type") String type
                                                              ) { //type은 "인기순" 인지 "최신순"인지

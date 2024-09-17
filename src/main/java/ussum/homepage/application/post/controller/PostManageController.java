@@ -31,7 +31,7 @@ public class PostManageController {
             나머지 게시판 필터링은 category에 값을 넣고 사용하시면 됩니다.
             """)
     @GetMapping("/{boardCode}/posts")
-    public ResponseEntity<ApiResponse<?>> getBoardPostsList(@RequestParam(required = false) Long userId,
+    public ResponseEntity<ApiResponse<?>> getBoardPostsList(@Parameter(hidden = true) @UserId Long userId,
                                                             @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
                                                             @PathVariable(name = "boardCode") String boardCode, @RequestParam(value = "groupCode", required = false) String groupCode,
                                                             @RequestParam(value = "memberCode",  required = false) String memberCode,
@@ -48,7 +48,7 @@ public class PostManageController {
             response에서 총학생회칙일때만 isNotice에 true로 가게 했습니다.
             """)
     @GetMapping("data/posts")
-    public ResponseEntity<ApiResponse<?>> getDataPostsList(@RequestParam(required = false) Long userId,
+    public ResponseEntity<ApiResponse<?>> getDataPostsList(@Parameter(hidden = true) @UserId Long userId,
                                                            @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
                                                            @RequestParam(name = "majorCategory", required = false) String majorCategory, @RequestParam(name = "middleCategory", required = false) String middleCategory,@RequestParam(name = "subCategory", required = false) String subCategory) {
 
@@ -69,7 +69,7 @@ public class PostManageController {
     @GetMapping("/{boardCode}/posts/{postId}")
     public ResponseEntity<ApiResponse<?>> getBoardPost(@PathVariable(name = "boardCode") String boardCode,
                                                        @PathVariable(name = "postId") Long postId,
-                                                       @RequestParam(required = false) Long userId) {
+                                                       @Parameter(hidden = true) @UserId Long userId) {
         return ApiResponse.success(postManageService.getPost(userId, boardCode, postId));
     }
 
@@ -173,7 +173,7 @@ public class PostManageController {
             나머지 게시판 필터링은 category에 값을 넣고 사용하시면 됩니다.
             """)
     @GetMapping("/{boardCode}/posts/search")
-    public ResponseEntity<ApiResponse<?>> searchBoardPost(@RequestParam(required = false) Long userId,
+    public ResponseEntity<ApiResponse<?>> searchBoardPost(@Parameter(hidden = true) @UserId Long userId,
                                                           @RequestParam(value = "page", defaultValue = "0") int page,
                                                           @RequestParam(value = "take") int take,
                                                           @RequestParam(value = "q",required = false) String q,
@@ -191,7 +191,7 @@ public class PostManageController {
             response에서 총학생회칙일때만 isNotice에 true로 가게 했습니다.
             """)
     @GetMapping("/data/posts/search")
-    public ResponseEntity<ApiResponse<?>> searchDataPostsList(@RequestParam(required = false) Long userId,
+    public ResponseEntity<ApiResponse<?>> searchDataPostsList(@Parameter(hidden = true) @UserId Long userId,
                                                               @RequestParam(value = "page", defaultValue = "0") int page,
                                                               @RequestParam(value = "take") int take,
                                                               @RequestParam(value = "q",required = false) String q,
