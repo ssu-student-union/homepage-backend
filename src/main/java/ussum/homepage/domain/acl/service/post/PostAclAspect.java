@@ -59,7 +59,7 @@ public class PostAclAspect {
     public Object validAuthorityOfSearchPostList(ProceedingJoinPoint joinPoint, Long userId, int page, int take, String q, String boardCode) throws Throwable {
         Object result = joinPoint.proceed();
         PostListRes<?> postListRes = (PostListRes<?>) result;
-        postAclHandler.applyPermissionsToPostList(postListRes, userId, boardCode);
+        postListRes = postAclHandler.applyPermissionsToPostList(postListRes, userId, boardCode);
         return postListRes;
     }
 
@@ -68,7 +68,7 @@ public class PostAclAspect {
     public Object validAuthorityOfSearchDataPostList(ProceedingJoinPoint joinPoint, Long userId, int page) throws Throwable {
         Object result = joinPoint.proceed();
         PostListRes<?> postListRes = (PostListRes<?>) result;
-        postAclHandler.applyPermissionsToPostList(postListRes, userId, "자료집게시판");
+        postListRes = postAclHandler.applyPermissionsToPostList(postListRes, userId, "자료집게시판");
         return postListRes;
     }
 }
