@@ -86,12 +86,12 @@ private final CorsConfig corsConfig;
     };
 
     private static final String[] bothWhiteList = {
-            "/board/{boardCode}/posts/{postId}",
-            "/board/{boardCode}/posts",
-            "/board/{boardCode}/{groupCode}/{memberCode}/posts",
-            "/board/data/posts",
-            "/board/posts/{postId}/comments",
-            "/board/{boardCode}/posts/search"
+            "/board/{boardCode}/posts/{postId}", //단건 조회
+            "/board/{boardCode}/posts", //전체 조회
+            "/board/data/posts", //자료집 조회
+            "/board/posts/{postId}/comments", //댓글 대댓글 조회
+            "/board/{boardCode}/posts/search", //검색
+            "/board/data/posts/search" //자료집 검색
     };
 
     private static final String[] whiteList = {
