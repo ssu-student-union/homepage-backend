@@ -31,13 +31,14 @@ public class PostManageController {
             나머지 게시판 필터링은 category에 값을 넣고 사용하시면 됩니다.
             """)
     @GetMapping("/{boardCode}/posts")
-    public ResponseEntity<ApiResponse<?>> getBoardPostsList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
+    public ResponseEntity<ApiResponse<?>> getBoardPostsList(@RequestParam(required = false) Long userId,
+                                                            @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
                                                             @PathVariable(name = "boardCode") String boardCode, @RequestParam(value = "groupCode", required = false) String groupCode,
                                                             @RequestParam(value = "memberCode",  required = false) String memberCode,
                                                             @RequestParam(value = "category",  required = false) String category) {
 
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
-        return ApiResponse.success(postManageService.getPostList(page, take, boardCode, groupCode, memberCode, category));
+        return ApiResponse.success(postManageService.getPostList(userId, boardCode, page, take, groupCode, memberCode, category));
     }
 
     @Operation(summary = "자료집게시판 게시물 리스트 조회 api", description = """
@@ -47,11 +48,12 @@ public class PostManageController {
             response에서 총학생회칙일때만 isNotice에 true로 가게 했습니다.
             """)
     @GetMapping("data/posts")
-    public ResponseEntity<ApiResponse<?>> getDataPostsList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
-                                                            @RequestParam(name = "majorCategory", required = false) String majorCategory, @RequestParam(name = "middleCategory", required = false) String middleCategory,@RequestParam(name = "subCategory", required = false) String subCategory) {
+    public ResponseEntity<ApiResponse<?>> getDataPostsList(@RequestParam(required = false) Long userId,
+                                                           @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
+                                                           @RequestParam(name = "majorCategory", required = false) String majorCategory, @RequestParam(name = "middleCategory", required = false) String middleCategory,@RequestParam(name = "subCategory", required = false) String subCategory) {
 
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
-        return ApiResponse.success(postManageService.getDataList(page, take, majorCategory, middleCategory, subCategory));
+        return ApiResponse.success(postManageService.getDataList(userId, page, take, majorCategory, middleCategory, subCategory));
     }
 
     @Operation(summary = "게시물 단건 조회 api", description = """
@@ -75,9 +77,8 @@ public class PostManageController {
             게시물 생성 시 사용하는 api입니다.
             기본적으로 액세스 토큰을 필요로 합니다.
             PathVariable로 노션에 있는 boardCode중 하나를 적습니다.
-            만약 boardCode가 "공지사항게시판" 이라면 PostCreateRequest dto의 category필드에 값을 넣지 않고,
-            groupCode(중앙기구, 단과대학생회), memberCode(중앙운영위원회) 값을 채워넣어서 요청을 보내시면 됩니다.
-            즉, 공지사항게시판을 사용할때만 groupCode, memberCode에 값을 넣어서 사용하시면 됩니다.
+            만약 boardCode가 "공지사항게시판" 이라면 PostCreateRequest dto의 category필드에 값을 넣지 않습니다.
+            그 이유는 공지사항게시판의 카테고리는 글을 쓸 수 있는 작성자의 groupCode와 memberCode에 따라 필터링되어 조회되기 때문입니다.
             
             JSON 형식으로 PostCreateRequest dto를 활용하여 게시글에 적은 값을 전달하면 됩니다.
             PostCreateRequest dto의 List로 되어있는 변수에 들어가는 값 s3에 저장하고 나온 url입니다. 
@@ -172,14 +173,15 @@ public class PostManageController {
             나머지 게시판 필터링은 category에 값을 넣고 사용하시면 됩니다.
             """)
     @GetMapping("/{boardCode}/posts/search")
-    public ResponseEntity<ApiResponse<?>> searchBoardPost(@RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<ApiResponse<?>> searchBoardPost(@RequestParam(required = false) Long userId,
+                                                          @RequestParam(value = "page", defaultValue = "0") int page,
                                                           @RequestParam(value = "take") int take,
                                                           @RequestParam(value = "q",required = false) String q,
                                                           @PathVariable(name = "boardCode") String boardCode,
                                                           @RequestParam(value = "groupCode", required = false) String groupCode,
                                                           @RequestParam(value = "memberCode",  required = false) String memberCode,
                                                           @RequestParam(value = "category",  required = false) String category) {
-        return ApiResponse.success(postManageService.searchPost(page, take, q, boardCode, groupCode, memberCode, category));
+        return ApiResponse.success(postManageService.searchPost(userId, page, take, q, boardCode, groupCode, memberCode, category));
     }
 
     @Operation(summary = "검색키워드를 활용한 자료집게시판 게시물 리스트 조회 api", description = """
@@ -188,8 +190,9 @@ public class PostManageController {
             대분류로만 검색하거나 중분류까지만 검색하거나 하면 필요없는 값은 안 보내셔도 됩니다.
             response에서 총학생회칙일때만 isNotice에 true로 가게 했습니다.
             """)
-    @GetMapping("data/posts/search")
-    public ResponseEntity<ApiResponse<?>> searchDataPostsList(@RequestParam(value = "page", defaultValue = "0") int page,
+    @GetMapping("/data/posts/search")
+    public ResponseEntity<ApiResponse<?>> searchDataPostsList(@RequestParam(required = false) Long userId,
+                                                              @RequestParam(value = "page", defaultValue = "0") int page,
                                                               @RequestParam(value = "take") int take,
                                                               @RequestParam(value = "q",required = false) String q,
                                                               @RequestParam(name = "majorCategory", required = false) String majorCategory,
@@ -197,7 +200,7 @@ public class PostManageController {
                                                               @RequestParam(name = "subCategory", required = false) String subCategory) {
 
 //        PostListResponse postList = postService.getPostList(PageRequest.of(page, take, Sort.by("id").descending()), boardCode);
-        return ApiResponse.success(postManageService.searchDataList(page, take, q, majorCategory, middleCategory, subCategory));
+        return ApiResponse.success(postManageService.searchDataList(userId, page, take, q, majorCategory, middleCategory, subCategory));
     }
 
     @Operation(summary = "게시판 인기청원 조회 api", description = """

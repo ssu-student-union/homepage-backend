@@ -9,4 +9,8 @@ public record CommentListResponse(
     public static CommentListResponse of(List<PostCommentResponse> postCommentResponses, Integer total) {
         return new CommentListResponse(postCommentResponses, total);
     }
+
+    public void validAuthority(List<String> canAuthorityList) {
+        postComments.forEach(postComment -> postComment.canAuthority(canAuthorityList));
+    }
 }

@@ -19,7 +19,6 @@ public class Post {
     private Integer viewCount;
     private String thumbnailImage;
     private String status;
-//    private String onGoingStatus;
     private String createdAt;
     private String updatedAt;
     private String lastEditedAt;
@@ -27,21 +26,19 @@ public class Post {
     private Long userId;
     private Long boardId;
 
-
     public static Post of(Long id,
                           String title,
                           String content,
                           Integer viewCount,
                           String thumbnailImage,
                           String status,
-//                          String onGoingStatus,
                           LocalDateTime createdAt,
                           LocalDateTime updatedAt,
                           LocalDateTime lastEditedAt,
                           String category,
                           Long userId,
                           Long boardId) {
-        return new Post(id, title, content, viewCount, thumbnailImage, status, /*onGoingStatus,*/ DateUtils.formatHourMinSecToCustomString(createdAt),
+        return new Post(id, title, content, viewCount, thumbnailImage, status, DateUtils.formatHourMinSecToCustomString(createdAt),
                 DateUtils.formatHourMinSecToCustomString(updatedAt), DateUtils.formatHourMinSecToCustomString(lastEditedAt), category,
                 userId, boardId);
     }

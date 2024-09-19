@@ -24,11 +24,9 @@ public class PetitionPostResponse extends PostListResDto{
         return PetitionPostResponse.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
-//                .content(post.getContent())
-                .date(post.getCreatedAt().toString())
+                .date(post.getCreatedAt())
                 .category(post.getCategory())
                 .likeCount(likeCount)
-//                .status(post.getStatus())
                 .onGoingStatus(post.getCategory())
                 .build();
     }

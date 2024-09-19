@@ -2,10 +2,8 @@ package ussum.homepage.application.post.service.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import ussum.homepage.application.post.service.dto.response.postList.PetitionPostResponse;
 import ussum.homepage.application.post.service.dto.response.postList.PostListResDto;
 import ussum.homepage.domain.post.Post;
-import ussum.homepage.domain.post.PostFile;
 
 import java.util.List;
 
@@ -27,7 +25,7 @@ public class DataPostResponse extends PostListResDto {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .category(post.getCategory())
-                .date(post.getCreatedAt().toString())
+                .date(post.getCreatedAt())
                 .isNotice(post.getTitle().equals("총학생회칙"))
                 .files(files)
                 .build();

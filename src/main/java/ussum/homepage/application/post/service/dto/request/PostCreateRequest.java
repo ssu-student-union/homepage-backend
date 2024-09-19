@@ -16,14 +16,6 @@ public record PostCreateRequest(
         boolean isNotice,
         List<Long> postFileList
 ) {
-    @Builder
-    public PostCreateRequest {
-    }
-
-    public PostCreateRequest(String title, String content, String categoryCode, String thumbNailImage, List<Long> postFileList) {
-        this(title, content, categoryCode, thumbNailImage, false, postFileList);
-    }
-
     public Post toDomain(Board board, Long userId) {
         String status = "새로운";
         if (isNotice) {

@@ -10,16 +10,12 @@ import java.util.List;
 
 @Getter
 public class AuditPostDetailResponse extends PostDetailResDto {
-//    private final List<String> imageList;
-//    private final List<String> fileList;
-private final List<FileResponse> fileResponseList;
+    private final List<FileResponse> fileResponseList;
 
     @Builder
     private AuditPostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor,
-                                    List<FileResponse> fileResponseList) {
-        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor);
-//        this.imageList = imageList;
-//        this.fileList = fileList;
+                                    List<FileResponse> fileResponseList, List<String> canAuthority) {
+        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor, canAuthority);
         this.fileResponseList = fileResponseList;
     }
 
@@ -33,8 +29,6 @@ private final List<FileResponse> fileResponseList;
                 .createdAt(post.getCreatedAt())
                 .lastEditedAt(post.getLastEditedAt())
                 .isAuthor(isAuthor)
-//                .imageList(imageList)
-//                .fileList(fileList)
                 .fileResponseList(fileResponseList)
                 .build();
     }

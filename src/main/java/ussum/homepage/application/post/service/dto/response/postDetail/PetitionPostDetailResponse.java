@@ -20,8 +20,8 @@ public class PetitionPostDetailResponse extends PostDetailResDto {
     @Builder
     private PetitionPostDetailResponse(Long postId, String categoryName, String authorName, String studentId, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor,
                                        Integer likeCount, List<FileResponse> fileResponseList, List<PostOfficialCommentResponse> officialCommentList,
-                                       Boolean isLiked) {
-        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor);
+                                       Boolean isLiked, List<String> canAuthority) {
+        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor, canAuthority);
         this.studentId = studentId;
         this.likeCount = likeCount;
         this.fileResponseList = fileResponseList;
@@ -29,8 +29,8 @@ public class PetitionPostDetailResponse extends PostDetailResDto {
         this.isLiked = isLiked;
     }
 
-    public static PetitionPostDetailResponse of(Post post, Boolean isAuthor, Boolean isLiked, User user, Integer likeCount, String category,
-                                                List<FileResponse> fileResponseList, List<PostOfficialCommentResponse> officialCommentList) {
+    public static PetitionPostDetailResponse of(Post post, Boolean isAuthor, Boolean isLiked, User user, Integer likeCount, String category, List<FileResponse> fileResponseList,
+                                                List<PostOfficialCommentResponse> officialCommentList) {
         return PetitionPostDetailResponse.builder()
                 .postId(post.getId())
                 .categoryName(category)

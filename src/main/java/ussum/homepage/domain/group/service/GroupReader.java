@@ -20,6 +20,10 @@ public class GroupReader {
         return groupRepository.findByGroupId(groupId).orElseThrow(() -> new GroupNotFoundException(GROUP_NOT_FOUND));
     }
 
+    public Group getGroupById(Long groupId) {
+        return groupRepository.findByGroupId(groupId).orElseThrow(() -> new GroupNotFoundException(GROUP_NOT_FOUND));
+    }
+
     public List<Group> getGroupsByGroupIdList(List<Long> groupIdList) {
         return groupRepository.findAllByGroupIdList(groupIdList);
     }

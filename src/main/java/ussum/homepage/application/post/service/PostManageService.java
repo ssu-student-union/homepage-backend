@@ -88,7 +88,7 @@ public class PostManageService {
             "청원게시판", (post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList)
     );
 
-    public PostListRes<?> getPostList(int page, int take, String boardCode, String groupCode, String memberCode, String category) {
+    public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
         //factory 사용 로직
@@ -114,7 +114,7 @@ public class PostManageService {
 
     }
 
-    public PostListRes<?> getDataList(int page, int take, String majorCategory, String middleCategory, String subCategory) {
+    public PostListRes<?> getDataList(Long userId, int page, int take, String majorCategory, String middleCategory, String subCategory) {
         Pageable pageable = PageInfo.of(page, take);
         Page<Post> postList = postReader.getPostListByFileCategories(
                 FileCategory.getFileCategoriesByCategories(majorCategory, middleCategory, subCategory),
@@ -274,7 +274,7 @@ public class PostManageService {
         postModifier.deletePost(boardCode, postId);
     }
 
-    public PostListRes<?> searchPost(int page, int take, String q, String boardCode, String groupCode, String memberCode, String category) {
+    public PostListRes<?> searchPost(Long userId, int page, int take, String q, String boardCode, String groupCode, String memberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
         //factory 사용 로직
@@ -300,7 +300,7 @@ public class PostManageService {
 
     }
 
-    public PostListRes<?> searchDataList(int page, int take, String q, String majorCategory, String middleCategory, String subCategory) {
+    public PostListRes<?> searchDataList(Long userId, int page, int take, String q, String majorCategory, String middleCategory, String subCategory) {
         Pageable pageable = PageInfo.of(page, take);
         Page<Post> postList = postReader.searchPostListByFileCategories(
                 q,
