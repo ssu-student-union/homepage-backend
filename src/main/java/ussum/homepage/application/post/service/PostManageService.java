@@ -19,6 +19,7 @@ import ussum.homepage.application.post.service.dto.response.postList.*;
 
 import ussum.homepage.application.post.service.dto.response.postSave.*;
 
+import ussum.homepage.domain.acl.service.post.CustomACL;
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
@@ -84,8 +85,8 @@ public class PostManageService {
             "감사기구게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2) -> AuditPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
             "청원게시판", (post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList)
     );
-
-    public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category) {
+    @CustomACL(action = "READ")
+    public PostListRes<?> getPostList(String boardCode, int page, int take, String groupCode, String memberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
         //factory 사용 로직
@@ -110,7 +111,7 @@ public class PostManageService {
         return PostListRes.of(responseList, pageInfo);
 
     }
-
+    @CustomACL(boardCode = "자료집게시판",action = "READ")
     public PostListRes<?> getDataList(Long userId, int page, int take, String majorCategory, String middleCategory, String subCategory) {
         Pageable pageable = PageInfo.of(page, take);
         Page<Post> postList = postReader.getPostListByFileCategories(
@@ -130,7 +131,7 @@ public class PostManageService {
 
         return PostListRes.of(responseList, pageInfo);
     }
-
+    @CustomACL(action = "READ")
     public PostDetailRes<?> getPost(Long userId, String boardCode, Long postId) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post post = postReader.getPostWithBoardCodeAndPostId(boardCode, postId);
@@ -168,6 +169,7 @@ public class PostManageService {
     }
 
     @Transactional
+    @CustomACL(action = "WRITE")
     public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId));
@@ -176,6 +178,7 @@ public class PostManageService {
     }
 
     @Transactional
+    @CustomACL(boardCode = "자료집게시판", action = "WRITE")
     public PostCreateResponse createDataPost(Long userId, String fileCategory, String fileType, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(BoardCode.DATA.getStringBoardCode());
         Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode())));
@@ -251,7 +254,7 @@ public class PostManageService {
         s3utils.deleteFiles(postFileDeleteRequest);
         postModifier.deletePost(boardCode, postId);
     }
-
+    @CustomACL
     public PostListRes<?> searchPost(Long userId, int page, int take, String q, String boardCode, String groupCode, String memberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
@@ -277,7 +280,7 @@ public class PostManageService {
         return PostListRes.of(responseList, pageInfo);
 
     }
-
+    @CustomACL(boardCode = "자료집게시판")
     public PostListRes<?> searchDataList(Long userId, int page, int take, String q, String majorCategory, String middleCategory, String subCategory) {
         Pageable pageable = PageInfo.of(page, take);
         Page<Post> postList = postReader.searchPostListByFileCategories(

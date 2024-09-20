@@ -117,7 +117,7 @@ class PostManageServiceTest {
         when(userReader.getUserWithId(1L)).thenReturn(user);
 
         // When
-        PostListRes<?> result = postManageService.getPostList(page, take, boardCode, null, null, null);
+        PostListRes<?> result = postManageService.getPostList(boardCode,page, take, null, null, null);
 
         // Then
         assertThat(result).isNotNull();
@@ -158,7 +158,7 @@ class PostManageServiceTest {
                 .thenReturn(emptyPage);
 
         // When
-        PostListRes<?> result = postManageService.getPostList(0, 10, boardCode, null, null, null);
+        PostListRes<?> result = postManageService.getPostList(boardCode,0, 10, null, null, null);
 
         // Then
         assertThat(result.postListResDto()).isEmpty();
@@ -172,7 +172,7 @@ class PostManageServiceTest {
         when(boardReader.getBoardWithBoardCode(invalidBoardCode)).thenThrow(new IllegalArgumentException("Invalid board code"));
 
         // When & Then
-        assertThatThrownBy(() -> postManageService.getPostList(0, 10, invalidBoardCode, null, null, null))
+        assertThatThrownBy(() -> postManageService.getPostList(invalidBoardCode,0, 10, null, null, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Invalid board code");
     }
@@ -194,7 +194,7 @@ class PostManageServiceTest {
         when(userReader.getUserWithId(anyLong())).thenReturn(TestDataFactory.createUser(1L, "Test User"));
 
         // When
-        PostListRes<?> result = postManageService.getPostList(page, take, boardCode, null, null, null);
+        PostListRes<?> result = postManageService.getPostList(boardCode,page, take, null, null, null);
 
         // Then
         assertThat(result.postListResDto()).hasSize(5);
@@ -221,7 +221,7 @@ class PostManageServiceTest {
         when(userReader.getUserWithId(1L)).thenReturn(TestDataFactory.createUser(1L, "Test User"));
 
         // When & Then
-        assertThatCode(() -> postManageService.getPostList(0, 10, boardCode, null, null, null))
+        assertThatCode(() -> postManageService.getPostList(boardCode,0, 10, null, null, null))
                 .doesNotThrowAnyException();
     }
 }

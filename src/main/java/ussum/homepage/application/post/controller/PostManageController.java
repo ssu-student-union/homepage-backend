@@ -37,7 +37,7 @@ public class PostManageController {
                                                             @RequestParam(value = "memberCode",  required = false) String memberCode,
                                                             @RequestParam(value = "category",  required = false) String category) {
 
-        return ApiResponse.success(postManageService.getPostList(userId, boardCode, page, take, groupCode, memberCode, category));
+        return ApiResponse.success(postManageService.getPostList(boardCode, page, take, groupCode, memberCode, category));
     }
 
     @Operation(summary = "자료집게시판 게시물 리스트 조회 api", description = """
