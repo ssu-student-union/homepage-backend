@@ -11,6 +11,11 @@ public record CommentListResponse(
     }
 
     public void validAuthority(List<String> canAuthorityList) {
-        postComments.forEach(postComment -> postComment.canAuthority(canAuthorityList));
+        postComments.forEach(postComment -> {
+            postComment.canAuthority(canAuthorityList);
+            postComment.getPostReplyComments().stream().forEach(
+                    postReplyComment -> postReplyComment.canAuthority(canAuthorityList)
+            );
+        });
     }
 }
