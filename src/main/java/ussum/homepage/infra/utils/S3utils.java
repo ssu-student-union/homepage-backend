@@ -133,6 +133,10 @@ public class S3utils {
     }
 
     public int deleteFiles(PostFileDeleteRequest request) {
+        if (request.fileUrls() == null || request.fileUrls().isEmpty()) {
+            return 0;
+        }
+
         try {
             List<DeleteObjectsRequest.KeyVersion> keys = request.fileUrls().stream()
                     .map(this::extractKeyFromUrl)
