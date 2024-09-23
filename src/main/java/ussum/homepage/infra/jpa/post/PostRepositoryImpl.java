@@ -375,6 +375,7 @@ public class PostRepositoryImpl implements PostRepository {
                         .and(timeCondition)
                         .and(postEntity.category.ne(Category.COMPLETED)))
                 .groupBy(postEntity)
+                .having(postReactionEntity.countDistinct().goe(1L))
                 .orderBy(orderSpecifiers)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
