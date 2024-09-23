@@ -1,6 +1,5 @@
 package ussum.homepage.domain.acl.service.post;
 
-
 import ussum.homepage.infra.jpa.acl.entity.TargetGroup;
 import ussum.homepage.infra.jpa.acl.entity.Type;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
@@ -12,11 +11,9 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CustomACL {
-    String boardCode() default "";
-    String action() default "";
-    boolean allowAnonymous() default true;
-    BoardPermission[] boardPermissions() default {};
+public @interface BoardPermission {
+    BoardCode boardCode();
+    String[] actions();
     TargetGroup[] targetGroups() default {};
     Type type() default Type.ALLOW;
     ussum.homepage.infra.jpa.acl.entity.Target target() default ussum.homepage.infra.jpa.acl.entity.Target.USER;

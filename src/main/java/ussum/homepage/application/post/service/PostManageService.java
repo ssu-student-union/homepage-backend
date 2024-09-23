@@ -19,6 +19,8 @@ import ussum.homepage.application.post.service.dto.response.postList.*;
 
 import ussum.homepage.application.post.service.dto.response.postSave.*;
 
+
+import ussum.homepage.domain.acl.service.post.BoardPermission;
 import ussum.homepage.domain.acl.service.post.CustomACL;
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
@@ -43,6 +45,8 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
+import ussum.homepage.infra.jpa.acl.entity.Target;
+import ussum.homepage.infra.jpa.acl.entity.Type;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
@@ -85,8 +89,20 @@ public class PostManageService {
             "감사기구게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2) -> AuditPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
             "청원게시판", (post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList)
     );
-    @CustomACL(action = "READ")
-    public PostListRes<?> getPostList(String boardCode, int page, int take, String groupCode, String memberCode, String category) {
+    @CustomACL(
+            action = "READ",
+            target = Target.EVERYONE,
+            type = Type.ALLOW,
+            boardPermissions = {
+                    @BoardPermission(
+                            boardCode = BoardCode.PARTNER,
+                            actions = {"READ"},
+                            target = Target.USER,
+                            type = Type.ALLOW
+                    )
+            }
+    )
+    public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
         //factory 사용 로직
@@ -109,7 +125,6 @@ public class PostManageService {
                 .toList();
 
         return PostListRes.of(responseList, pageInfo);
-
     }
     @CustomACL(boardCode = "자료집게시판",action = "READ")
     public PostListRes<?> getDataList(Long userId, int page, int take, String majorCategory, String middleCategory, String subCategory) {

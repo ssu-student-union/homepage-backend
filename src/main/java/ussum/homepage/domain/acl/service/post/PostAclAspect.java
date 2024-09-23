@@ -25,15 +25,22 @@ public class PostAclAspect {
         String boardCode = customACL.boardCode().isEmpty() ? extractBoardCode(args) : customACL.boardCode();
         String action = customACL.action();
 
+        // 비로그인 사용자 체크
+        if (userId == null && !customACL.allowAnonymous()) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
+        }
         // 권한 체크
-        if (!action.isEmpty()) {
-            boolean hasPermission = userId != null
+
+        boolean hasPermission = checkBoardPermission(customACL.boardPermissions(), boardCode, action, userId);
+
+        if (!hasPermission && !action.isEmpty()) {
+            hasPermission = userId != null
                     ? postAclManager.hasPermission(userId, boardCode, action)
                     : postAclManager.hasAllowPermissionForAnonymous(boardCode, action);
+        }
 
-            if (!hasPermission) {
-                throw new GeneralException(ErrorStatus._FORBIDDEN);
-            }
+        if (!hasPermission) {
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
         }
 
         Object result = joinPoint.proceed();
@@ -48,7 +55,20 @@ public class PostAclAspect {
 
         return result;
     }
-
+    private boolean checkBoardPermission(BoardPermission[] boardPermissions, String boardCode, String action, Long userId) {
+        for (BoardPermission permission : boardPermissions) {
+            if (permission.boardCode().name().equals(boardCode)) {
+                for (String permittedAction : permission.actions()) {
+                    if (permittedAction.equals(action)) {
+                        return userId != null
+                                ? postAclManager.hasPermission(userId, boardCode, action)
+                                : postAclManager.hasAllowPermissionForAnonymous(boardCode, action);
+                    }
+                }
+            }
+        }
+        return false;
+    }
     private Long extractUserId(Object[] args) {
         for (Object arg : args) {
             if (arg instanceof Long) {
