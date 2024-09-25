@@ -75,6 +75,9 @@ dependencies {
 	// P6spy
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
 
+	//캐시의 세부 설정을 구성
+	implementation 'com.github.ben-manes.caffeine:caffeine'
+
 	// querydsl
 	implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
 	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta" // querydsl JPAAnnotationProcessor 사용 지정
