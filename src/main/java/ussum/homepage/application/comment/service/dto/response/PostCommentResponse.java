@@ -57,6 +57,7 @@ public class PostCommentResponse {
                 .createdAt(postComment.getCreatedAt())
                 .lastEditedAt(postComment.getLastEditedAt())
                 .likeCount(likeCount)
+                .isAuthor(isAuthor)
                 .isLiked(isLiked)
                 .isDeleted(postComment.getIsDeleted())
                 .postReplyComments(postReplyComments)

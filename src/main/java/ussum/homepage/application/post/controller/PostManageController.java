@@ -149,8 +149,8 @@ public class PostManageController {
     }
 
     @Operation(summary = "게시물 삭제 api", description = """
-            게시물을 삭제하는 api 입니다. 
-            게시물 단건 조회 후 반환된 imageList 혹은 fileList에 있는 url 모두를 
+            게시물을 삭제하는 api 입니다.
+            게시물 단건 조회 후 반환된 imageList 혹은 fileList에 있는 url 모두를
             즉, 삭제하고자하는 파일의 url을 List 형식으로 보내주시면 됩니다.
             """)
     @DeleteMapping("/{boardCode}/posts/{postId}")
