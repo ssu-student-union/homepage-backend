@@ -97,8 +97,8 @@ public class PostManageService {
                     @BoardPermission(
                             boardCode = BoardCode.PARTNER,
                             actions = {"READ"},
-                            target = Target.USER,
-                            type = Type.ALLOW
+                            target = Target.ANONYMOUS,
+                            type = Type.DENY
                     )
             }
     )
