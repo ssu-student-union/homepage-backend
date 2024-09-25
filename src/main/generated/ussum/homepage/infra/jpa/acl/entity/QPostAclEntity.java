@@ -24,13 +24,13 @@ public class QPostAclEntity extends EntityPathBase<PostAclEntity> {
 
     public final EnumPath<Action> action = createEnum("action", Action.class);
 
+    public final ussum.homepage.infra.jpa.post.entity.QBoardEntity boardEntity;
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final EnumPath<OrderType> orderType = createEnum("orderType", OrderType.class);
-
-    public final ussum.homepage.infra.jpa.post.entity.QPostEntity postEntity;
-
     public final EnumPath<Target> target = createEnum("target", Target.class);
+
+    public final EnumPath<TargetGroup> targetGroup = createEnum("targetGroup", TargetGroup.class);
 
     public final EnumPath<Type> type = createEnum("type", Type.class);
 
@@ -52,7 +52,7 @@ public class QPostAclEntity extends EntityPathBase<PostAclEntity> {
 
     public QPostAclEntity(Class<? extends PostAclEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.postEntity = inits.isInitialized("postEntity") ? new ussum.homepage.infra.jpa.post.entity.QPostEntity(forProperty("postEntity"), inits.get("postEntity")) : null;
+        this.boardEntity = inits.isInitialized("boardEntity") ? new ussum.homepage.infra.jpa.post.entity.QBoardEntity(forProperty("boardEntity")) : null;
     }
 
 }
