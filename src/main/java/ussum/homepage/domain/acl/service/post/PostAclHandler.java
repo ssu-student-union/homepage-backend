@@ -41,7 +41,7 @@ public class PostAclHandler {
         postDetailRes.validAuthority(allowedAuthorities);
     }
 
-    public void applyPermissionsToCommentList(CommentListResponse commentListRes, Long userId) {
+    public CommentListResponse applyPermissionsToCommentList(CommentListResponse commentListRes, Long userId) {
         List<String> allowedAuthorities = new ArrayList<>();
         boolean isLoggedIn = userId != null;
 
@@ -57,7 +57,7 @@ public class PostAclHandler {
             }
         }
 
-        commentListRes.validAuthority(allowedAuthorities);
+        return commentListRes.validAuthorities(allowedAuthorities);
     }
 
     private void addPermissionAuthorities(List<String> allowedAuthorities, List<String> deniedAuthorities, Long userId, String boardCode, boolean isLoggedIn) {

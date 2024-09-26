@@ -15,9 +15,9 @@ public abstract class PostDetailResDto {
     protected String createdAt;
     protected String lastEditedAt;
     protected Boolean isAuthor;
-    protected List<String> canAuthority;
+    protected List<String> allowedAuthorities;
 
-    protected PostDetailResDto(Long postId, String categoryName, String authorName, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor, List<String> canAuthority) {
+    protected PostDetailResDto(Long postId, String categoryName, String authorName, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor, List<String> allowedAuthorities) {
         this.postId = postId;
         this.categoryName = categoryName;
         this.authorName = authorName;
@@ -26,10 +26,10 @@ public abstract class PostDetailResDto {
         this.createdAt = createdAt;
         this.lastEditedAt = lastEditedAt;
         this.isAuthor = isAuthor;
-        this.canAuthority = canAuthority;
+        this.allowedAuthorities = allowedAuthorities;
     }
 
-    public void canAuthority(List<String> canAuthority) {
-        this.canAuthority = canAuthority;
+    public void canAuthority(List<String> allowedAuthorities) {
+        this.allowedAuthorities = allowedAuthorities;
     }
 }
