@@ -26,9 +26,10 @@ public class PetitionPostProcessor {
     private final PostCommentReader postCommentReader;
     private final MemberManager memberManager;
 
-    // 매일 자정에 실행되는 스케줄러
+    // 매일 정오에 실행되는 스케줄러
 //    @Scheduled(cron = "0 0 0 * * *")
-    @Scheduled(fixedDelay = 300000)
+//    @Scheduled(fixedDelay = 300000)
+    @Scheduled(cron = "0 0 12 * * *")
     @Transactional
     public void scheduledStatusUpdate() {
         List<Post> posts = postRepository.findAllByCategory(List.of("진행중"));
