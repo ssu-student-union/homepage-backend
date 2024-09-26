@@ -29,7 +29,7 @@ public abstract class PostDetailResDto {
         this.allowedAuthorities = allowedAuthorities;
     }
 
-    public void canAuthority(List<String> allowedAuthorities) {
+    public void allowAuthority(List<String> allowedAuthorities) {
         this.allowedAuthorities = allowedAuthorities;
     }
 }

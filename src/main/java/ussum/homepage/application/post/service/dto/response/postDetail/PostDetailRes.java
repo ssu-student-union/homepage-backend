@@ -13,7 +13,7 @@ public record PostDetailRes<T extends PostDetailResDto>(
         return new PostDetailRes<>(postDetailResDto);
     }
 
-    public void validAuthority(List<String> canAuthorityList) {
-        this.postDetailResDto.canAuthority(canAuthorityList);
+    public void validAuthority(List<String> allowedAuthorities) {
+        this.postDetailResDto.allowAuthority(allowedAuthorities);
     }
 }
