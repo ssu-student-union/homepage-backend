@@ -7,18 +7,20 @@ import org.springframework.stereotype.Service;
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.PostCommentRepository;
 import ussum.homepage.domain.comment.service.formatter.PostCommentFormatter;
+import ussum.homepage.domain.post.PostRepository;
+import ussum.homepage.domain.post.exception.PostException;
 import ussum.homepage.domain.reaction.exception.PostCommentException;
 import ussum.homepage.global.error.exception.InvalidValueException;
 
 import java.util.List;
 
-import static ussum.homepage.global.error.status.ErrorStatus.POST_COMMENT_NOT_FOUND;
-import static ussum.homepage.global.error.status.ErrorStatus._BAD_REQUEST;
+import static ussum.homepage.global.error.status.ErrorStatus.*;
 
 @Service
 @RequiredArgsConstructor
 public class PostCommentReader {
     private final PostCommentRepository postCommentRepository;
+    private final PostRepository postRepository;
 
     public Page<PostComment> getPostCommentList(Pageable pageable, Long postId){
         return postCommentRepository.findAllByPostId(pageable, postId);
@@ -37,6 +39,7 @@ public class PostCommentReader {
     }
 
     public List<PostComment> getCommentListWithPostIdAndType(Long postId, String type) {
+        postRepository.findById(postId).orElseThrow(() -> new PostException(POST_NOT_FOUND));
         List<PostComment> comments;
         switch (type) {
             case "인기순":

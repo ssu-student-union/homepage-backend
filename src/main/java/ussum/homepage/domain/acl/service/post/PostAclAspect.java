@@ -50,7 +50,7 @@ public class PostAclAspect {
     public Object validCommentAuthorityOfPetitionPost(ProceedingJoinPoint joinPoint, Long userId) throws Throwable {
         Object result = joinPoint.proceed();
         CommentListResponse commentListRes = (CommentListResponse) result;
-        postAclHandler.applyPermissionsToCommentList(commentListRes, userId);
+        commentListRes = postAclHandler.applyPermissionsToCommentList(commentListRes, userId);
         return commentListRes;
     }
 

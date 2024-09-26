@@ -21,10 +21,10 @@ public class PostCommentResponse {
     public Boolean isLiked;
     public Boolean isDeleted;
     public List<PostReplyCommentResponse> postReplyComments;
-    public List<String> canAuthority;
+//    public List<String> canAuthority;
 
     @Builder
-    public PostCommentResponse(Long id, String authorName, String studentId, String content, String commentType, String createdAt, String lastEditedAt, Integer likeCount, Boolean isAuthor, Boolean isLiked, Boolean isDeleted, List<PostReplyCommentResponse> postReplyComments, List<String> canAuthority) {
+    public PostCommentResponse(Long id, String authorName, String studentId, String content, String commentType, String createdAt, String lastEditedAt, Integer likeCount, Boolean isAuthor, Boolean isLiked, Boolean isDeleted, List<PostReplyCommentResponse> postReplyComments/*, List<String> canAuthority*/) {
         this.id = id;
         this.authorName = authorName;
         this.studentId = studentId;
@@ -37,7 +37,7 @@ public class PostCommentResponse {
         this.isLiked = isLiked;
         this.isDeleted = isDeleted;
         this.postReplyComments = postReplyComments;
-        this.canAuthority = canAuthority;
+//        this.canAuthority = canAuthority;
     }
 
     public static PostCommentResponse of(PostComment postComment, User user, String commentType, Integer likeCount, Boolean isAuthor, Boolean isLiked, List<PostReplyCommentResponse> postReplyComments) {
@@ -64,8 +64,8 @@ public class PostCommentResponse {
                 .build();
     }
 
-    public void canAuthority(List<String> canAuthorityList) {
-        this.canAuthority = canAuthorityList;
-    }
+//    public void canAuthority(List<String> canAuthorityList) {
+//        this.canAuthority = canAuthorityList;
+//    }
 
 }
