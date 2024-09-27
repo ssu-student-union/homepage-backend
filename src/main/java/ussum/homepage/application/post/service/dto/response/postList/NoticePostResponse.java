@@ -12,20 +12,16 @@ public class NoticePostResponse extends PostListResDto{
     private final String thumbNail;
     private final String status;
     private final String author;
-    private final Boolean isEmergency;
 
     @Builder
-    private NoticePostResponse(Long postId, String title, String content, String date, String category, String thumbNail, String status, String author, Boolean isEmergency) {
+    private NoticePostResponse(Long postId, String title, String content, String date, String category, String thumbNail, String status, String author) {
         super(postId, title, content, date, category);
         this.thumbNail = thumbNail;
         this.status = status;
         this.author = author;
-        this.isEmergency = isEmergency;
     }
 
     public static NoticePostResponse of(Post post, User user) {
-        Category category = StringUtils.hasText(post.getCategory()) ? Category.getEnumCategoryCodeFromStringCategoryCode(post.getCategory()) : null;
-
         return NoticePostResponse.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
@@ -35,7 +31,6 @@ public class NoticePostResponse extends PostListResDto{
                 .thumbNail(post.getThumbnailImage())
                 .status(post.getStatus())
                 .author(user.getName())
-                .isEmergency(category!=null&& category.equals(Category.EMERGENCY)? true : false)
                 .build();
     }
 }

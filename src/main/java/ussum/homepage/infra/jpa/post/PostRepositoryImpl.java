@@ -251,21 +251,16 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Post save(Post post){
-        UserEntity userEntity = userJpaRepository.findById(post.getUserId())
-                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
-
-        BoardEntity boardEntity = boardJpaRepository.findById(post.getBoardId())
-                .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
         return postMapper.toDomain(
-                postJpaRepository.save(postMapper.toEntity(post, userEntity, boardEntity))
+                postJpaRepository.save(postMapper.toEntity(post, post.getUserId(), post.getBoardId()))
         );
     }
 
     @Override
     public void delete(Post post) {
-        UserEntity userEntity = userJpaRepository.findById(post.getUserId())
-                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
+//        UserEntity userEntity = userJpaRepository.findById(post.getUserId())
+//                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
 
         BoardEntity boardEntity = boardJpaRepository.findById(post.getBoardId())
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
@@ -301,7 +296,7 @@ public class PostRepositoryImpl implements PostRepository {
         postReactionJpaRepository.deleteAll(postReactionEntityList);
 
         // 게시물 삭제
-        postJpaRepository.delete(postMapper.toEntity(post, userEntity, boardEntity));
+        postJpaRepository.delete(postMapper.toEntity(post, post.getUserId(), post.getBoardId()));
     }
 
     @Override

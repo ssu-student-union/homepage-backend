@@ -3,6 +3,7 @@ package ussum.homepage.application.post.service.dto.request;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.infra.jpa.post.entity.Category;
+import ussum.homepage.infra.jpa.post.entity.Status;
 import ussum.homepage.infra.utils.DateUtils;
 
 import java.time.LocalDateTime;
@@ -23,11 +24,11 @@ public record PostUpdateRequest(
                 content,
                 post.getViewCount(),
                 thumbnailImage,
-                post.getStatus(),
+                Status.fromEnumOrNull(isNotice?Status.EMERGENCY_NOTICE:Status.getEnumStatusFromStringStatus(post.getStatus())),
                 DateUtils.parseHourMinSecFromCustomString(post.getCreatedAt()),
                 DateUtils.parseHourMinSecFromCustomString(post.getUpdatedAt()),
                 LocalDateTime.now(),
-                Category.fromEnumOrNull(isNotice?Category.EMERGENCY:null),
+                categoryCode,
                 post.getUserId(),
                 board.getId()
         );
