@@ -12,10 +12,11 @@ public record PostUpdateRequest(
         String title,
         String content,
         String categoryCode,
+        Boolean isNotice,
         String thumbnailImage,
         List<Long> postFileList
 ) {
-    public Post toDomain(Post post, Board board, Category category) {
+    public Post toDomain(Post post, Board board) {
         return Post.of(
                 post.getId(),
                 title,
@@ -26,7 +27,7 @@ public record PostUpdateRequest(
                 DateUtils.parseHourMinSecFromCustomString(post.getCreatedAt()),
                 DateUtils.parseHourMinSecFromCustomString(post.getUpdatedAt()),
                 LocalDateTime.now(),
-                Category.fromEnumOrNull(category),
+                Category.fromEnumOrNull(isNotice?Category.EMERGENCY:null),
                 post.getUserId(),
                 board.getId()
         );
