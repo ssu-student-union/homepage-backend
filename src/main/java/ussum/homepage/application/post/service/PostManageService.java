@@ -241,8 +241,10 @@ public class PostManageService {
 
     @Transactional
     public Long editBoardPost(String boardCode, Long postId, PostUpdateRequest postUpdateRequest){
-        Post post = postModifier.updatePost(boardCode, postId, postUpdateRequest);
-        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), post.getId());
+        Post post = postReader.getPostWithId(postId);
+        Board board = boardReader.getBoardWithBoardCode(boardCode);
+        Post newPost = postModifier.updatePost(postUpdateRequest.toDomain(post, board));
+        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId());
         return post.getId();
     }
 

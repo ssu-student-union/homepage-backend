@@ -13,12 +13,8 @@ public class PostModifier {
     private final PostReader postReader;
     private final BoardReader boardReader;
 
-    public Post updatePost(String boardCode,Long postId, PostUpdateRequest postUpdateRequest){
-        Board board = boardReader.getBoardWithBoardCode(boardCode);
-
-        return postRepository.save(postUpdateRequest.toDomain(
-                postReader.getPostWithBoardCodeForEditAndDelete(boardCode, postId), board, Category.getEnumCategoryCodeFromStringCategoryCode(postUpdateRequest.categoryCode()))
-        );
+    public Post updatePost(Post post){
+        return postRepository.save(post);
     }
 
     public void deletePost(String boardCode, Long postId) {
