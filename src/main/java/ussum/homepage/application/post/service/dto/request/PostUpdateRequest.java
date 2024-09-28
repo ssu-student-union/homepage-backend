@@ -24,7 +24,12 @@ public record PostUpdateRequest(
                 content,
                 post.getViewCount(),
                 thumbnailImage,
-                Status.fromEnumOrNull(isNotice?Status.EMERGENCY_NOTICE:Status.getEnumStatusFromStringStatus(post.getStatus())),
+//                Status.fromEnumOrNull(isNotice?Status.EMERGENCY_NOTICE:Status.getEnumStatusFromStringStatus(post.getStatus())),
+                // 삼항 연산자를 활용하여 상태 처리
+                Status.fromEnumOrNull(
+                        isNotice ? Status.EMERGENCY_NOTICE :
+                                (Status.getEnumStatusFromStringStatus(post.getStatus()).equals(Status.EMERGENCY_NOTICE) ? Status.GENERAL : Status.getEnumStatusFromStringStatus(post.getStatus()))
+                ),
                 DateUtils.parseHourMinSecFromCustomString(post.getCreatedAt()),
                 DateUtils.parseHourMinSecFromCustomString(post.getUpdatedAt()),
                 LocalDateTime.now(),
