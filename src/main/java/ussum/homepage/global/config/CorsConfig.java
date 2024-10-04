@@ -19,7 +19,7 @@ public class CorsConfig {
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:5173");
         config.addAllowedOrigin("http://localhost:3000");
-        config.addAllowedOrigin("https://stu.ssu.ac.kr");
+        config.addAllowedOrigin("https://sssupport.shop");
         config.addAllowedOrigin("https://ssu-student-union.github.io");
         config.addAllowedOrigin("https://homepage-frontend-dun.vercel.app");
         config.addAllowedOrigin("https://homepage-frontend-psi.vercel.app");
