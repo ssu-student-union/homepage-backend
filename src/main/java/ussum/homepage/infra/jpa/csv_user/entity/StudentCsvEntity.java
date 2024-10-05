@@ -11,29 +11,25 @@ import lombok.*;
 @Builder
 @Entity
 public class StudentCsvEntity {
-    // STID / 학번 / 성명 / 대학 / 학과(부) / 학적상 / 학생그룹 / (전화번호) / (전자메일)
     @Id
-    private Long STID;
     private Long studentId;
     private String studentName;
     private String groupName;
+    private String program;
     private String major;
+    private String specificMajor;
     private String studentStatus;
-    private String studentGroup; // 학생그룹의 의미
-    // 전화번호?
-    private String studentEmail;
 
-    public static StudentCsvEntity of(Long STID, Long studentId, String studentName, String groupName,
-                                      String major, String studentStatus, String studentGroup, String studentEmail) {
-        return ussum.homepage.infra.jpa.csv_user.entity.StudentCsvEntity.builder()
-                .STID(STID)
+    public static StudentCsvEntity of(Long studentId, String studentName, String groupName,
+                                      String program, String major, String specificMajor, String studentStatus) {
+        return StudentCsvEntity.builder()
                 .studentId(studentId)
                 .studentName(studentName)
                 .groupName(groupName)
+                .program(program)
                 .major(major)
+                .specificMajor(specificMajor)
                 .studentStatus(studentStatus)
-                .studentGroup(studentGroup)
-                .studentEmail(studentEmail)
                 .build();
     }
 }

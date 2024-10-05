@@ -9,27 +9,25 @@ public class StudentCsvMapper {
 
     public StudentCsv toDomain(StudentCsvEntity csvData) {
         return StudentCsv.of(
-                csvData.getSTID(),
                 csvData.getStudentId(),
                 csvData.getStudentName(),
                 csvData.getGroupName(),
+                csvData.getProgram(),
                 csvData.getMajor(),
-                csvData.getStudentStatus(),
-                csvData.getStudentGroup(),
-                csvData.getStudentEmail()
+                csvData.getSpecificMajor(),
+                csvData.getStudentStatus()
         );
     }
 
     public StudentCsvEntity toEntity(StudentCsv studentCsv) {
         return StudentCsvEntity.of(
-                studentCsv.getSTID(),
                 studentCsv.getStudentId(),
                 studentCsv.getStudentName(),
+                studentCsv.getProgram(),
                 studentCsv.getGroupName(),
                 studentCsv.getMajor(),
-                studentCsv.getStudentStatus(),
-                studentCsv.getStudentGroup(),
-                studentCsv.getStudentEmail()
+                studentCsv.getSpecificMajor(),
+                studentCsv.getStudentStatus()
         );
     }
 }
