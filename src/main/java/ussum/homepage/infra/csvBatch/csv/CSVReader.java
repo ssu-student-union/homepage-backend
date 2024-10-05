@@ -29,14 +29,13 @@ public class CSVReader {
         /* delimitedLineTokenizer : setNames를 통해 각각의 데이터의 이름 설정 */
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer(",");
         delimitedLineTokenizer.setNames(
-                "STID",
-                "studentId",
-                "studentName",
-                "groupName",
-                "major",
-                "studentStatus",
-                "studentGroup",
-                "studentEmail"
+                "studentId", // 학번
+                "studentName", // 성명
+                "groupName", // 대학
+                "program", // 프로그램?
+                "major", // 학과(부)
+                "specificMajor", // 세부전공(건축만 존재)
+                "studentStatus" // 재학여부(재학, 휴학)
         );
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
 
