@@ -15,7 +15,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping("/s3-csv")
-    public ResponseEntity<ApiResponse<?>> csvToS3(@RequestParam MultipartFile file) {
+    public ResponseEntity<ApiResponse<?>> csvToS3(@RequestPart(value = "csv") MultipartFile file) {
         adminService.uploadCsvToS3(file);
         return ApiResponse.success(null);
     }
