@@ -17,7 +17,7 @@ public class CSVReader {
     public FlatFileItemReader<StudentCsv> csvFileItemReader() { // 엔티티를 반환하는게 맞나?
         /* file read */
         FlatFileItemReader<StudentCsv> flatFileItemReader = new FlatFileItemReader<>();
-        flatFileItemReader.setResource(new ClassPathResource("csv/학생목록.csv"));
+        flatFileItemReader.setResource(new ClassPathResource(System.getProperty("user.dir") + "/csv/학생목록.csv"));
         flatFileItemReader.setLinesToSkip(1); // header line skip
         flatFileItemReader.setEncoding("UTF-8"); // encoding
 //        flatFileItemReader.setStrict(false);

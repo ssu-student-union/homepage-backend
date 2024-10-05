@@ -168,8 +168,10 @@ public class S3utils {
     public void getFileToProject(String fileName)  {
         S3Object s3Object = amazonS3.getObject(bucket, fileName);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
+        String projectRootPath = System.getProperty("user.dir");
+        String filePath = projectRootPath + "/csv/" + fileName;
         try {
-            saveFile(inputStream, "**/src/main/resources/csv");
+            saveFile(inputStream, filePath);
         } catch (IOException e) {
             throw new GeneralException(ErrorStatus.S3_ERROR);
         }
