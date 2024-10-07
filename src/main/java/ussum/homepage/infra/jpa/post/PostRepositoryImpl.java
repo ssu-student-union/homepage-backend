@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -69,6 +70,7 @@ public class PostRepositoryImpl implements PostRepository {
     private final JPAQueryFactory queryFactory;
     private final PostReplyCommentJpaRepository postReplyCommentJpaRepository;
     private final PostCommentJpaRepository postCommentJpaRepository;
+    private final EntityManager entityManager;
 
     @Override
     public Optional<Post> findById(Long postId) {
@@ -569,5 +571,48 @@ public class PostRepositoryImpl implements PostRepository {
                 .where(postEntity.status.eq(Status.NEW)
                         .and(postEntity.createdAt.loe(dueDateForNewStatus)))
                 .execute();
+    }
+
+    @Override
+    public void updatePostStatusEmergencyToGeneralInBatches() {
+        // 3일 전 날짜 계산
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+        // 한 번에 처리할 게시물 수 설정
+        int batchSize = 500;
+        // 총 처리된 게시물 수를 추적하기 위한 변수
+        long processedCount = 0;
+
+        while (true) {
+            // 배치 크기만큼의 게시물 ID를 가져옴
+            List<Long> batchIds = queryFactory
+                    .select(postEntity.id)
+                    .from(postEntity)
+                    .where(postEntity.boardEntity.id.eq(2L)  // 공지사항 게시판 ID가 1이라고 가정
+                            .and(postEntity.status.ne(Status.GENERAL))  // 상태가 GENERAL이 아닌 것
+                            .and(postEntity.createdAt.before(threeDaysAgo)))  // 3일 이전에 생성된 것
+                    .limit(batchSize)
+                    .fetch();
+
+            // 더 이상 처리할 게시물이 없으면 반복 종료
+            if (batchIds.isEmpty()) {
+                break;
+            }
+
+            // 가져온 ID에 해당하는 게시물들의 상태를 GENERAL로 업데이트
+            long updatedCount = queryFactory
+                    .update(postEntity)
+                    .set(postEntity.status, Status.GENERAL)
+                    .where(postEntity.id.in(batchIds))
+                    .execute();
+
+            // 처리된 게시물 수 누적
+            processedCount += updatedCount;
+
+            // 영속성 컨텍스트 초기화 (메모리 관리를 위해)
+            entityManager.clear();
+        }
+
+        // 총 처리된 게시물 수 출력
+        System.out.println("총 업데이트된 게시물 수: " + processedCount);
     }
 }

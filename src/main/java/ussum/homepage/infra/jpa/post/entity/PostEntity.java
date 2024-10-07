@@ -61,4 +61,7 @@ public class PostEntity extends BaseEntity {
         this.category = newCategory;
 //        this.ongoingStatus = newStatus;
     }
+    public void updateStatus(Status newStatus) {
+        this.status = newStatus;
+    }
 }

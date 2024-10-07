@@ -20,6 +20,7 @@ public interface PostRepository {
     Page<Post> findAllByBoardIdAndCategory(Long boardId, Category category, Pageable pageable);
     Post save(Post post);
     void updatePostStatusNewToGeneral(LocalDateTime dueDateOfNew);
+    void updatePostStatusEmergencyToGeneralInBatches();
     void delete(Post post);
     Page<Post> findBySearchCriteria(Pageable pageable,String boardCode, String q, String categoryCode);
     Page<SimplePostResponse> findPostDtoListByBoardCode(String boardCode, Pageable pageable);
