@@ -100,7 +100,9 @@ private final CorsConfig corsConfig;
             "/swagger-resources/**",
             "/v3/api-docs/**",
             "/admin/**",
-            "/onboarding/mail"
+            "/onboarding/mail",
+            "/actuator",
+            "/actuator/prometheus"
     };
     @Bean
     public PasswordEncoder passwordEncoder() {
