@@ -29,7 +29,7 @@ public class StudentCsvReader {
         boolean name = request.getName().equals(studentCsv.getStudentName());
         boolean studentId = request.getStudentId().equals(studentCsv.getStudentId().toString());
         boolean groupName = request.getMemberCode().equals(MemberCode.getEnumMemberCodeFromStringMemberCode(studentCsv.getGroupName()).getStringMemberCode());
-        boolean major = request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(studentCsv.getMajor()).getStringMajorCode());
+        boolean major = request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(studentCsv.getProgram()).getStringMajorCode());
 
         if(!(name && studentId && groupName && major)){
             throw new GeneralException(ErrorStatus.INVALID_ONBOARDING_REQUEST);
