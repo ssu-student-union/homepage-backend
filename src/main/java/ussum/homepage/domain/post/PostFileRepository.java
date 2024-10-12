@@ -11,5 +11,5 @@ public interface PostFileRepository {
     Optional<PostFile> findById(Long id);
     List<PostFile> saveAll(List<PostFile> postFiles);
     void updatePostIdForIds(List<Long> postFileIds, Long postId);
-    void updatePostIdAndFileCategoryForIds(List<Long> postFileIds, Long postId, FileCategory fileCategory, String fileType);
+    void updatePostIdAndFileCategoryForIds(List<Long> postFileIds, Long postId, FileCategory fileCategory);
 }

@@ -27,7 +27,7 @@ public class PostFileAppender {
     }
 
     @Transactional
-    public void updatePostIdAndFileCategoryForIds(List<Long> postFileIds, Long postId, String fileCategory, String fileType){
-        postFileRepository.updatePostIdAndFileCategoryForIds(postFileIds, postId, FileCategory.getEnumFileCategoryFromString(fileCategory), fileType);
+    public void updatePostIdAndFileCategoryForIds(List<Long> postFileIds, Long postId, String fileCategory){
+        postFileRepository.updatePostIdAndFileCategoryForIds(postFileIds, postId, FileCategory.getEnumFileCategoryFromString(fileCategory));
     }
 }
