@@ -266,7 +266,7 @@ public class PostRepositoryImpl implements PostRepository {
     public Post save(Post post){
 
         return postMapper.toDomain(
-                postJpaRepository.save(postMapper.toEntity(post, post.getUserId(), post.getBoardId()))
+                postJpaRepository.save(postMapper.toEntity(post))
         );
     }
 
@@ -309,7 +309,7 @@ public class PostRepositoryImpl implements PostRepository {
         postReactionJpaRepository.deleteAll(postReactionEntityList);
 
         // 게시물 삭제
-        postJpaRepository.delete(postMapper.toEntity(post, post.getUserId(), post.getBoardId()));
+        postJpaRepository.delete(postMapper.toEntity(post));
     }
 
     @Override
@@ -433,15 +433,10 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post updatePostCategory(Long postId, String category) {
-        return postJpaRepository.findById(postId)
-                .map(postEntity -> {
-                    postEntity.updateCategory(
-                            Category.getEnumCategoryCodeFromStringCategoryCode(category)
-                    );
-                    return postMapper.toDomain(postJpaRepository.save(postEntity));
-                })
-                .orElseThrow(() -> new PostException(POST_ONGOING_STATUS_IS_NOT_UPDATED));
+    public Post updatePostCategory(Post post, String category) {
+        PostEntity postEntity = postMapper.toEntity(post);
+        postEntity.updateCategory(Category.getEnumCategoryCodeFromStringCategoryCode(category));
+        return postMapper.toDomain(postJpaRepository.save(postEntity));
     }
 
     @Override

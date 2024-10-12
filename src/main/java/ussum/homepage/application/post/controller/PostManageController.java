@@ -147,6 +147,17 @@ public class PostManageController {
                                                         @RequestBody PostUpdateRequest postUpdateRequest) {
         return ApiResponse.success(postManageService.editBoardPost(boardCode, postId, postUpdateRequest));
     }
+    @Operation(summary = "자료집 게시물 수정 api", description = """
+            자료집 게시물을 수정하는 api 입니다. 
+            """)
+    @PatchMapping("/data/{fileCategory}/{fileType}/posts/{postId}")
+    public ResponseEntity<ApiResponse<?>> editBoardDataPost(@Parameter(hidden = true) @UserId Long userId,
+                                                        @PathVariable(name = "fileCategory") String fileCategory,
+                                                        @PathVariable(name = "fileType") String fileType,
+                                                            @PathVariable(name = "postId") Long postId,
+                                                        @RequestBody PostUpdateRequest postUpdateRequest) {
+        return ApiResponse.success(postManageService.editBoardDatePost(fileCategory, fileType, postId, postUpdateRequest));
+    }
 
     @Operation(summary = "게시물 삭제 api", description = """
             게시물을 삭제하는 api 입니다.

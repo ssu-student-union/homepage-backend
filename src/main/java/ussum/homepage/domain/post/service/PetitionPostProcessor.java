@@ -86,10 +86,10 @@ public class PetitionPostProcessor {
         LocalDateTime createdAt = DateUtils.parseHourMinSecFromCustomString(post.getCreatedAt());
         LocalDateTime now = LocalDateTime.now();
         if (now.isBefore(createdAt.plusDays(30)) && likeCountOfPost >= 100) {
-            updatePostCategoryAndOngoingStatus(post.getId(), "접수완료");
+            updatePostCategoryAndOngoingStatus(post, Category.RECEIVED.getStringCategoryCode());
         }
         else if (now.isAfter(createdAt.plusDays(30))) {
-            updatePostCategoryAndOngoingStatus(post.getId(), "종료됨");
+            updatePostCategoryAndOngoingStatus(post, Category.COMPLETED.getStringCategoryCode());
         }
     }
 
@@ -98,7 +98,7 @@ public class PetitionPostProcessor {
      */
     private void handleReceivedStatus(Post post) {
         if (isAnsweredByAdmin(post)) {
-            updatePostCategoryAndOngoingStatus(post.getId(),"답변완료");
+            updatePostCategoryAndOngoingStatus(post,Category.ANSWERED.getStringCategoryCode());
         }
     }
 
@@ -115,8 +115,8 @@ public class PetitionPostProcessor {
     /**
      * 해당 로직은 실제 청원게시물의 OnGoingStatus를 변경하는 로직
      */
-    public void updatePostCategoryAndOngoingStatus(Long postId, String category) {
-        postRepository.updatePostCategory(postId, category);
+    public void updatePostCategoryAndOngoingStatus(Post post, String category) {
+        postRepository.updatePostCategory(post, category);
     }
 
 

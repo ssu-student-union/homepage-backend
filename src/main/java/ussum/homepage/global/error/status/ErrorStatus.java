@@ -75,7 +75,7 @@ public enum ErrorStatus implements BaseErrorCode {
     WRONG_TRANSLATED_TO_KOREAN(HttpStatus.BAD_REQUEST,"ENUM_014","ONGOING_STATUS가 한국어로 잘못변환되었습니다."),
     INVALID_GROUP_CODE(HttpStatus.BAD_REQUEST,"ENUM_015","유효하지 않은 GROUPCODE입니다."),
     INVALID_FILE_CATEGORY(HttpStatus.BAD_REQUEST,"ENUM_016","유효하지 않은 FILE_CATEGORY입니다."),
-
+    INVALID_FILETYPE(HttpStatus.BAD_REQUEST,"ENUM_017","유효하지 않은 FILETYPE입니다."),
     /**
      * 401 Unauthorized, Token 관련 에러
      */

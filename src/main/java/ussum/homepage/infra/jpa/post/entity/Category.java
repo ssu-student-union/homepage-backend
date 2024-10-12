@@ -42,6 +42,21 @@ public enum Category {
     AUDIT_RESULT("감사결과"),
     ETC("기타"),
 
+    //자료집카테고리
+    RESULT_REPORT("결과보고서"),
+    MINUTES("회의록"),
+    STUDENT_COUNCIL_RULES("총학생회칙"),
+    OPERATION_RULES("운영세칙"),
+    DATA("자료"),
+    SETTLEMENT("결산안"),
+    ACTIVITY_REPORT("활동보고"),
+    SPECIAL_ORGANIZATION("특별기구자료"),
+    ENFORCEMENT_RULES("시행세칙"),
+    GUIDELINE("지침서"),
+    OLD_NEW_COMPARISON("신구대조표"),
+    DINNER_RULES("회식세칙"),
+    BUDGET_SETTLEMENT("예결산안"),
+
     //공지사항 카테고리
     //중앙 : 총학생회, 중앙운영위원회, 중앙선거관리위원회, 동아리연합회
     //단과대 : IT대학, 인문대학, 융합특성화자유전공학부, 사회과학대학, 공과대학, 경영대학, 경제통상대학, 자연과학대학, 법과대학

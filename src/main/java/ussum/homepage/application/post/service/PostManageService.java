@@ -47,6 +47,7 @@ import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.FileCategory;
+import ussum.homepage.infra.jpa.post.entity.FileType;
 import ussum.homepage.infra.utils.S3utils;
 
 import java.util.Comparator;
@@ -178,7 +179,7 @@ public class PostManageService {
     @Transactional
     public PostCreateResponse createDataPost(Long userId, String fileCategory, String fileType, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(BoardCode.DATA.getStringBoardCode());
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode())));
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(fileType)));
         postFileAppender.updatePostIdAndFileCategoryForIds(postCreateRequest.postFileList(), post.getId(), fileCategory, fileType);
         return PostCreateResponse.of(post.getId(), BoardCode.DATA.getStringBoardCode());
     }
@@ -244,6 +245,13 @@ public class PostManageService {
         Post post = postReader.getPostWithId(postId);
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post newPost = postModifier.updatePost(postUpdateRequest.toDomain(post, board));
+        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId());
+        return post.getId();
+    }
+    @Transactional
+    public Long editBoardDatePost(String fileCategory, String fileType, Long postId, PostUpdateRequest postUpdateRequest){
+        Post post = postReader.getPostWithId(postId);
+        Post newPost = postModifier.updateDataPost(post, fileType);
         postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId());
         return post.getId();
     }

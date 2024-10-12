@@ -35,7 +35,7 @@ public class PostMapper {
         );
     }
 
-    public PostEntity toEntity(Post post, Long userId, Long boardId) {
+    public PostEntity toEntity(Post post) {
         LocalDateTime lastEditedAt = DateUtils.parseHourMinSecFromCustomString(post.getLastEditedAt());
 //        OngoingStatus ongoingStatus = OngoingStatus.fromStringOrNull(post.getOnGoingStatus());
 
@@ -49,8 +49,8 @@ public class PostMapper {
 //                ongoingStatus,
                 lastEditedAt,
                 Category.fromStringOrNull(post.getCategory()),
-                UserEntity.from(userId),
-                BoardEntity.from(boardId)
+                UserEntity.from(post.getUserId()),
+                BoardEntity.from(post.getBoardId())
         );
     }
 
