@@ -40,6 +40,9 @@ public class PostEntity extends BaseEntity {
     @JoinColumn(name = "board_id")
     private BoardEntity boardEntity;
 
+    public PostEntity(Long postId) {
+    }
+
     public static PostEntity from(Long id){
         return new PostEntity(id, null, null, null, null, null, null, null, null, null);
     }

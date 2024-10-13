@@ -176,7 +176,7 @@ public class PostManageService {
     public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId));
-        postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());
+        postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId(), FileCategory.자료집아님);
         return PostCreateResponse.of(post.getId(), boardCode);
     }
 
@@ -272,14 +272,14 @@ public class PostManageService {
         Post post = postReader.getPostWithId(postId);
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post newPost = postModifier.updatePost(postUpdateRequest.toDomain(post, board));
-        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId());
+        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId(), FileCategory.자료집아님);
         return post.getId();
     }
     @Transactional
     public Long editBoardDatePost(String fileCategory, Long postId, PostUpdateRequest postUpdateRequest){
         Post post = postReader.getPostWithId(postId);
         Post newPost = postModifier.updateDataPost(post, postUpdateRequest.categoryCode());
-        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId());
+        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId(), FileCategory.fromString(fileCategory));
         return post.getId();
     }
 

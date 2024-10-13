@@ -57,7 +57,9 @@ public enum FileCategory {
     단과대회의록("단과대", "접속계정", "회의록"),
     예결산안("단과대", "접속계정", "예결산안"),
     단과대활동보고("단과대", "접속계정", "활동보고"),
-    대표자회의결과보고("단과대", "접속계정", "대표자회의결과보고");
+    대표자회의결과보고("단과대", "접속계정", "대표자회의결과보고"),
+
+    자료집아님("","","");
     private final String majorCategory;
     private final String middleCategory;
     private final String subCategory;
@@ -96,5 +98,13 @@ public enum FileCategory {
 
     private static boolean matchCategory(String categoryValue, String filterValue) {
         return filterValue == null || categoryValue.equals(filterValue);
+    }
+
+    public static FileCategory fromString(String value) {
+        try {
+            return FileCategory.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidValueException(INVALID_FILE_CATEGORY);
+        }
     }
 }
