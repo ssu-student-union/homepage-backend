@@ -1,5 +1,6 @@
 package ussum.homepage.application.post.controller;
 
+import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/boards")
 public class PostController {
+    //Comparator
 //    private final PostService postService;
 
 //    @GetMapping("/{boardCode}/posts")
