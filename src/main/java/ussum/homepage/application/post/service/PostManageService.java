@@ -278,7 +278,7 @@ public class PostManageService {
     @Transactional
     public Long editBoardDatePost(String fileCategory, Long postId, PostUpdateRequest postUpdateRequest){
         Post post = postReader.getPostWithId(postId);
-        Post newPost = postModifier.updateDataPost(post, fileCategory);
+        Post newPost = postModifier.updateDataPost(post, postUpdateRequest.categoryCode());
         postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId());
         return post.getId();
     }
