@@ -96,7 +96,7 @@ public class PostManageController {
             기본적으로 액세스 토큰을 필요로 합니다.
             요청 path에 fileCategory(카테고리 ex.총학생회칙) 값을 문자열 형태로 넣으면 됩니다.
             """)
-    @PostMapping("data/{fileCategory}/{fileType}/post")
+    @PostMapping("/data/{fileCategory}/{fileType}/post")
     public ResponseEntity<ApiResponse<?>> createDataPost(@Parameter(hidden = true) @UserId Long userId,
                                                          @PathVariable(name = "fileCategory") String fileCategory,
                                                          @PathVariable(name = "fileType") String fileType,
