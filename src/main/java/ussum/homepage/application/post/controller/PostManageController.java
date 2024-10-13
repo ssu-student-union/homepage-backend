@@ -129,10 +129,9 @@ public class PostManageController {
     @PostMapping(value = "/data/files/{fileType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<?>> createBoardDataPostFile(@Parameter(hidden = true) @UserId Long userId,
-                                                              @PathVariable(name = "boardCode") String boardCode,
                                                               @RequestPart(value = "files", required = false) MultipartFile[] files,
                                                               @PathVariable(name = "fileType") String fileType) {
-        return ApiResponse.success(postManageService.createBoardDataPostFile(userId, boardCode, files, fileType));
+        return ApiResponse.success(postManageService.createBoardDataPostFile(userId, files, fileType));
     }
 
     @Operation(summary = "게시물 단건 조회 후 파일 혹은 이미지 삭제 api", description = """

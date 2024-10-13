@@ -212,8 +212,8 @@ public class PostManageService {
         return PostFileListResponse.of(thumbnailUrl, postFileResponses);
     }
     @Transactional
-    public PostFileListResponse createBoardDataPostFile(Long userId, String boardCode, MultipartFile[] files, String fileType){
-        PostFileMediatorResponse response = s3utils.uploadDataFileWithPath(userId, boardCode, files, fileType);
+    public PostFileListResponse createBoardDataPostFile(Long userId, MultipartFile[] files, String fileType){
+        PostFileMediatorResponse response = s3utils.uploadDataFileWithPath(userId, BoardCode.DATA.getStringBoardCode(), files, fileType);
         List<PostFile> postFiles = convertUrlsToPostFiles(response);
         List<PostFile> afterSaveList = postFileAppender.saveAllPostFile(postFiles);
 
