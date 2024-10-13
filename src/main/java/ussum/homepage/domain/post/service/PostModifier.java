@@ -19,7 +19,7 @@ public class PostModifier {
     }
 
     public Post updateDataPost(Post post, String category){
-        return postRepository.updatePostCategory(post, category);
+        return postRepository.updatePostCategory(post, Category.getEnumCategoryCodeFromStringCategoryCode(category));
     }
 
     public void deletePost(String boardCode, Long postId) {

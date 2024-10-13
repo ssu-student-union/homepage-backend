@@ -25,7 +25,7 @@ public interface PostRepository {
     Page<Post> findBySearchCriteria(Pageable pageable,String boardCode, String q, String categoryCode);
     Page<SimplePostResponse> findPostDtoListByBoardCode(String boardCode, Pageable pageable);
     List<Post> findAllByCategory(List<String> statuses);
-    Post updatePostCategory(Post post, String category);
+    Post updatePostCategory(Post post, Category category);
     //    Page<Post> findAllByGroupCodeAndMemberCodeAndSubCategory(GroupCode groupCode, MemberCode memberCode, String subCategory, Pageable pageable);
     Page<Post> findAllByFileCategories(List<FileCategory> fileCategories, Pageable pageable);
     Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boarId, GroupCode groupCode, MemberCode memberCode, Pageable pageable);

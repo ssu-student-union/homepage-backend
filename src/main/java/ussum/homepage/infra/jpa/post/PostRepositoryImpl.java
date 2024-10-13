@@ -433,9 +433,9 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post updatePostCategory(Post post, String category) {
+    public Post updatePostCategory(Post post, Category category) {
         PostEntity postEntity = postMapper.toEntity(post);
-        postEntity.updateCategory(Category.getEnumCategoryCodeFromStringCategoryCode(category));
+        postEntity.updateCategory(category);
         return postMapper.toDomain(postJpaRepository.save(postEntity));
     }
 
