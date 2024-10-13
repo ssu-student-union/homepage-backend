@@ -52,21 +52,21 @@ public class S3utils {
         return amazonS3.getUrl(bucket, originalFilename).toString();
     }
 
-    public PostFileMediatorResponse uploadFileWithPath(Long userId, String boardCode, MultipartFile[] files, MultipartFile[] images) {
+    public PostFileMediatorResponse uploadFileWithPath(Long userId, String boardCode, MultipartFile[] files, String fileType) {
         List<Map<String, String>> uploadedFileUrls = new ArrayList<>();
         List<String> originalFileNames = new ArrayList<>();
 
-        if (images != null && images.length > 0) {
-            PostFileMediatorResponse imageResponse = uploadFiles(userId, boardCode, images, "images");
+        if (files != null && files.length > 0) {
+            PostFileMediatorResponse imageResponse = uploadFiles(userId, boardCode, files, fileType);
             uploadedFileUrls.addAll(imageResponse.urlList());
             originalFileNames.addAll(formatOriginalFileNames(imageResponse.originalFileNames()));
         }
-
-        if (files != null && files.length > 0) {
-            PostFileMediatorResponse fileResponse = uploadFiles(userId, boardCode, files, "files");
-            uploadedFileUrls.addAll(fileResponse.urlList());
-            originalFileNames.addAll(formatOriginalFileNames(fileResponse.originalFileNames()));
-        }
+//
+//        if (files != null && files.length > 0) {
+//            PostFileMediatorResponse fileResponse = uploadFiles(userId, boardCode, files, "files");
+//            uploadedFileUrls.addAll(fileResponse.urlList());
+//            originalFileNames.addAll(formatOriginalFileNames(fileResponse.originalFileNames()));
+//        }
 
         return PostFileMediatorResponse.of(originalFileNames, uploadedFileUrls);
     }

@@ -177,16 +177,16 @@ public class PostManageService {
     }
 
     @Transactional
-    public PostCreateResponse createDataPost(Long userId, String fileCategory, String fileType, PostCreateRequest postCreateRequest){
+    public PostCreateResponse createDataPost(Long userId, String fileCategory, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(BoardCode.DATA.getStringBoardCode());
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(fileType)));
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode())));
         postFileAppender.updatePostIdAndFileCategoryForIds(postCreateRequest.postFileList(), post.getId(), fileCategory);
         return PostCreateResponse.of(post.getId(), BoardCode.DATA.getStringBoardCode());
     }
 
     @Transactional
-    public PostFileListResponse createBoardPostFile(Long userId, String boardCode, MultipartFile[] files, MultipartFile[] images){
-        PostFileMediatorResponse response = s3utils.uploadFileWithPath(userId, boardCode, files, images);
+    public PostFileListResponse createBoardPostFile(Long userId, String boardCode, MultipartFile[] files, String fileType){
+        PostFileMediatorResponse response = s3utils.uploadFileWithPath(userId, boardCode, files, fileType);
         List<PostFile> postFiles = convertUrlsToPostFiles(response);
         List<PostFile> afterSaveList = postFileAppender.saveAllPostFile(postFiles);
 

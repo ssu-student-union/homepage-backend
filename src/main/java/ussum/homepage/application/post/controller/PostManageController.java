@@ -96,12 +96,11 @@ public class PostManageController {
             기본적으로 액세스 토큰을 필요로 합니다.
             요청 path에 fileCategory(카테고리 ex.총학생회칙) 값을 문자열 형태로 넣으면 됩니다.
             """)
-    @PostMapping("/data/{fileCategory}/{fileType}/post")
+    @PostMapping("/data/{fileCategory}/post")
     public ResponseEntity<ApiResponse<?>> createDataPost(@Parameter(hidden = true) @UserId Long userId,
                                                          @PathVariable(name = "fileCategory") String fileCategory,
-                                                         @PathVariable(name = "fileType") String fileType,
                                                          @RequestBody PostCreateRequest postCreateRequest) {
-        return ApiResponse.success(postManageService.createDataPost(userId, fileCategory, fileType, postCreateRequest));
+        return ApiResponse.success(postManageService.createDataPost(userId, fileCategory, postCreateRequest));
     }
 
     @Operation(summary = "게시물 생성 시 파일 및 이미지 저장 api", description = """
@@ -110,19 +109,17 @@ public class PostManageController {
             이 반환값을 가지고 게시물 생성 api에 있는 dto의 List에 url를 보내주어야 합니다.
             기본적으로 액세스 토큰을 필요로 합니다.
             PathVariable로 노션에 있는 boardCode중 하나를 적습니다.
-            s3에 저장할 MultipartFile 형식의 파라미터를 2개 두었습니다.
-            첫번째 파라미터는 files라는 key값으로 보내주면 됩니다.
-            두번째 파라미터는 images라는 key값으로 보내주면 됩니다.
+            s3에 저장할 MultipartFile 형식을 fileType에 담아주시면 됩니다.
             이미지와 파일을 경로를 구분하여 저장하기 위해 이러한 방식을 선택했습니다.
             기본적인 api로직은 받은 파라미터를 통해 파일들을 먼저 s3에 저장하고 db에 순차적으로 생성된 id와 url을 하나의 dto로 이를 List로 반환합니다.
             """)
-    @PostMapping(value = "/{boardCode}/files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+    @PostMapping(value = "/{boardCode}/files/{fileType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<?>> createBoardPostFile(@Parameter(hidden = true) @UserId Long userId,
                                                               @PathVariable(name = "boardCode") String boardCode,
                                                               @RequestPart(value = "files", required = false) MultipartFile[] files,
-                                                              @RequestPart(value = "images", required = false) MultipartFile[] images) {
-        return ApiResponse.success(postManageService.createBoardPostFile(userId, boardCode, files, images));
+                                                              @PathVariable(name = "fileType") String fileType) {
+        return ApiResponse.success(postManageService.createBoardPostFile(userId, boardCode, files, fileType));
     }
 
     @Operation(summary = "게시물 단건 조회 후 파일 혹은 이미지 삭제 api", description = """
