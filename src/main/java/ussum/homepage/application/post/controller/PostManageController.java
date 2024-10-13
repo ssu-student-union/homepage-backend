@@ -126,7 +126,7 @@ public class PostManageController {
     @Operation(summary = "자료집 게시물 생성 시 파일 및 이미지 저장 api", description = """
             자료집 게시물 생성 시 파일 및 이미지 저장하는 api입니다.
             """)
-    @PostMapping(value = "/{boardCode}/files/{fileType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+    @PostMapping(value = "/data/files/{fileType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse<?>> createBoardDataPostFile(@Parameter(hidden = true) @UserId Long userId,
                                                               @PathVariable(name = "boardCode") String boardCode,
