@@ -75,7 +75,7 @@ public class S3utils {
         List<String> originalFileNames = new ArrayList<>();
 
         if (images != null && images.length > 0) {
-            PostFileMediatorResponse imageResponse = uploadFiles(userId, boardCode, files, "images");
+            PostFileMediatorResponse imageResponse = uploadFiles(userId, boardCode, images, "images");
             uploadedFileUrls.addAll(imageResponse.urlList());
             originalFileNames.addAll(formatOriginalFileNames(imageResponse.originalFileNames()));
         }
