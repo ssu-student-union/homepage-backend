@@ -14,8 +14,8 @@ public class PartnerPostDetailResponse extends PostDetailResDto {
 
     @Builder
     private PartnerPostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor,
-                                      List<FileResponse> fileResponseList, List<String> canAuthority) {
-        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor, canAuthority);
+                                      List<FileResponse> fileResponseList, List<String> allowedAuthorities) {
+        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor, allowedAuthorities);
         this.fileResponseList = fileResponseList;
     }
 
