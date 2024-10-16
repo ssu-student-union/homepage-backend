@@ -4,6 +4,8 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -183,6 +185,14 @@ public class PostRepositoryImpl implements PostRepository {
             whereClause.and(groupEntity.groupCode.eq(groupCode));
         }
 
+        // Status 우선순위를 정의합니다.
+        NumberExpression<Integer> statusOrder = new CaseBuilder()
+                .when(postEntity.status.eq(Status.EMERGENCY_NOTICE)).then(1)
+                .when(postEntity.status.eq(Status.NEW)).then(2)
+                .when(postEntity.status.eq(Status.GENERAL)).then(3)
+                .otherwise(Integer.MAX_VALUE);
+
+
 //        if (whereClause.getValue() == null) {
 //            throw new IllegalArgumentException("At least one of memberCode, or groupCode must be provided");
 //        }
@@ -194,7 +204,9 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(memberEntity.groupEntity, groupEntity)
                 .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
                 .where(whereClause)
-                .orderBy(postEntity.createdAt.desc());
+//                .orderBy(postEntity.createdAt.desc());
+                .orderBy(statusOrder.asc(), postEntity.createdAt.desc());
+
 
 
         List<PostEntity> content = query
