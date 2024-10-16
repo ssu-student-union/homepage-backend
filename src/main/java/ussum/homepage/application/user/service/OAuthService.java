@@ -1,11 +1,12 @@
 package ussum.homepage.application.user.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.mail.MailErrorHandler;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ussum.homepage.application.user.service.dto.request.CouncilLoginRequest;
 import ussum.homepage.application.user.service.dto.response.CouncilLoginResponse;
 import ussum.homepage.application.user.service.dto.response.KakaoUserInfoResponseDto;
@@ -22,6 +23,8 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.external.oauth.KakaoApiProvider;
 import ussum.homepage.global.jwt.JwtTokenInfo;
 import ussum.homepage.global.jwt.JwtTokenProvider;
+import ussum.homepage.global.jwt.LockService;
+import ussum.homepage.global.jwt.RefreshService;
 
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +43,8 @@ public class OAuthService {
     private final UserModifier userModifier;
     private final JwtTokenProvider provider;
     private final UserManager userManager;
+    private final LockService lockService;
+    private final RefreshService refreshService;
 
 
     @Transactional
@@ -107,8 +112,21 @@ public class OAuthService {
         return optionalUser.orElseGet(() -> User.createUser(userInfo));
     }
 
-    private JwtTokenInfo issueAccessTokenAndRefreshToken(User user) {
-        return provider.issueToken(user);
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public JwtTokenInfo issueAccessTokenAndRefreshToken(User user) {
+        return lockService.executeWithLock("refresh_token:" + user.getId(), () -> {
+            JwtTokenInfo tokenInfo = refreshService.getRefreshTokenInfo(user.getId());
+            if (tokenInfo != null) {
+                return tokenInfo;
+            }
+
+            tokenInfo = provider.issueToken(user);
+            refreshService.updateRefreshToken(tokenInfo.getRefreshToken(), user);
+            return tokenInfo;
+        });
     }
 
+    public JwtTokenInfo issueAccessTokenAndRefreshTokenNotAsync(User user) {
+        return provider.issueToken(user);
+    }
 }

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.redis.core.RedisHash;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @Builder
 @Getter
@@ -20,5 +22,9 @@ public class RefreshToken {
                 .id(userId)
                 .refreshToken(refreshToken)
                 .build();
+    }
+
+    public void updateToken(String newRefreshToken) {
+        this.refreshToken = newRefreshToken;
     }
 }
