@@ -462,6 +462,13 @@ public class PostRepositoryImpl implements PostRepository {
             whereClause.and(groupEntity.groupCode.eq(groupCode));
         }
 
+        NumberExpression<Integer> statusOrder = new CaseBuilder()
+                .when(postEntity.status.eq(Status.EMERGENCY_NOTICE)).then(1)
+                .when(postEntity.status.eq(Status.NEW)).then(2)
+                .when(postEntity.status.eq(Status.GENERAL)).then(3)
+                .otherwise(Integer.MAX_VALUE);
+
+
 //        if (whereClause.getValue() == null) {
 //            throw new IllegalArgumentException("At least one of memberCode, or groupCode must be provided");
 //        }
@@ -478,7 +485,8 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(memberEntity.groupEntity, groupEntity)
                 .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
                 .where(whereClause)
-                .orderBy(postEntity.createdAt.desc());
+//                .orderBy(postEntity.createdAt.desc());
+                .orderBy(statusOrder.asc(), postEntity.createdAt.desc());
 
         List<PostEntity> content = query
                 .offset(pageable.getOffset())
