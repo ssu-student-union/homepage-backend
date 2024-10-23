@@ -222,7 +222,7 @@ public class PostRepositoryImpl implements PostRepository {
         return PageableExecutionUtils.getPage(
                 content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
                 pageable,
-                countQuery::fetchCount
+                countQuery::fetchOne
         );
     }
 
@@ -493,7 +493,7 @@ public class PostRepositoryImpl implements PostRepository {
         return PageableExecutionUtils.getPage(
                 content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
                 pageable,
-                countQuery::fetchCount
+                countQuery::fetchOne
         );
 
     }
