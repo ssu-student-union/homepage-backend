@@ -193,10 +193,6 @@ public class PostRepositoryImpl implements PostRepository {
                 .otherwise(Integer.MAX_VALUE);
 
 
-//        if (whereClause.getValue() == null) {
-//            throw new IllegalArgumentException("At least one of memberCode, or groupCode must be provided");
-//        }
-
         JPAQuery<PostEntity> query = queryFactory
                 .selectFrom(postEntity)
                 .leftJoin(postEntity.userEntity, userEntity)
@@ -205,19 +201,13 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
                 .where(whereClause)
 //                .orderBy(postEntity.createdAt.desc());
-                .orderBy(statusOrder.asc(), postEntity.createdAt.desc());
-
+                .orderBy(statusOrder.asc(), postEntity.createdAt.desc()).distinct();
 
 
         List<PostEntity> content = query
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
-//        JPAQuery<Long> countQuery = queryFactory
-//                .select(postEntity.count())
-//                .from(postEntity)
-//                .where(whereClause);
 
         JPAQuery<Long> countQuery = queryFactory
                 .select(postEntity.count())
@@ -226,13 +216,13 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
                 .leftJoin(memberEntity.groupEntity, groupEntity)
                 .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
-                .where(whereClause);
-
+                .where(whereClause)
+                .distinct();
 
         return PageableExecutionUtils.getPage(
                 content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
                 pageable,
-                countQuery::fetchOne
+                countQuery::fetchCount
         );
     }
 
@@ -469,10 +459,6 @@ public class PostRepositoryImpl implements PostRepository {
                 .otherwise(Integer.MAX_VALUE);
 
 
-//        if (whereClause.getValue() == null) {
-//            throw new IllegalArgumentException("At least one of memberCode, or groupCode must be provided");
-//        }
-
         // 검색어 q가 지정된 경우, 제목에 해당 검색어가 포함된 게시물만 필터링
         if (q != null && !q.isEmpty()) {
             whereClause.and(postEntity.title.like("%" + q + "%"));
@@ -486,7 +472,8 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
                 .where(whereClause)
 //                .orderBy(postEntity.createdAt.desc());
-                .orderBy(statusOrder.asc(), postEntity.createdAt.desc());
+                .orderBy(statusOrder.asc(), postEntity.createdAt.desc()).distinct();
+
 
         List<PostEntity> content = query
                 .offset(pageable.getOffset())
@@ -500,12 +487,13 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
                 .leftJoin(memberEntity.groupEntity, groupEntity)
                 .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
-                .where(whereClause);
+                .where(whereClause)
+                .distinct();
 
         return PageableExecutionUtils.getPage(
                 content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
                 pageable,
-                countQuery::fetchOne
+                countQuery::fetchCount
         );
 
     }
