@@ -497,6 +497,60 @@ public class PostRepositoryImpl implements PostRepository {
         );
 
     }
+    /*
+        @Override
+public Page<Post> searchAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, String q, GroupCode groupCode, MemberCode memberCode, Pageable pageable) {
+    // 조건절 구성
+    BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
+
+    if (memberCode != null) {
+        whereClause.and(memberEntity.memberCode.eq(memberCode));
+    }
+    if (groupCode != null) {
+        whereClause.and(groupEntity.groupCode.eq(groupCode));
+    }
+    if (q != null && !q.isEmpty()) {
+        whereClause.and(postEntity.title.like("%" + q + "%"));
+    }
+
+    // 상태 정렬 조건
+    NumberExpression<Integer> statusOrder = new CaseBuilder()
+            .when(postEntity.status.eq(Status.EMERGENCY_NOTICE)).then(1)
+            .when(postEntity.status.eq(Status.NEW)).then(2)
+            .when(postEntity.status.eq(Status.GENERAL)).then(3)
+            .otherwise(Integer.MAX_VALUE);
+
+    // 조회용 메인 쿼리 - 필요한 조인만 사용
+    JPAQuery<PostEntity> query = queryFactory
+            .selectFrom(postEntity)
+            .leftJoin(postEntity.userEntity, userEntity).fetchJoin()  // fetchJoin 추가
+            .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity)).fetchJoin()  // fetchJoin 추가
+            .leftJoin(memberEntity.groupEntity, groupEntity).fetchJoin()  // fetchJoin 추가
+            .where(whereClause)
+            .orderBy(statusOrder.asc(), postEntity.createdAt.desc());
+
+    // 별도의 카운트 쿼리 - 필요한 조인만 포함
+    JPAQuery<Long> countQuery = queryFactory
+            .select(postEntity.countDistinct())  // countDistinct 사용
+            .from(postEntity)
+            .leftJoin(postEntity.userEntity, userEntity)
+            .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
+            .leftJoin(memberEntity.groupEntity, groupEntity)
+            .where(whereClause);
+
+    // 페이징 처리
+    List<PostEntity> content = query
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+    return PageableExecutionUtils.getPage(
+            content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+            pageable,
+            countQuery::fetchOne
+    );
+}
+     */
 
     @Override
     public Page<Post> searchAllByBoardIdAndCategory(Long boardId, String q, Category category, Pageable pageable) {
