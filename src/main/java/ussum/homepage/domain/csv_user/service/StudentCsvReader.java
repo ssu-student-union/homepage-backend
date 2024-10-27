@@ -25,6 +25,10 @@ public class StudentCsvReader {
                 });
     }
 
+    public Optional<StudentCsv> getStudentWithStudentId(Long studentId){
+        return studentCsvRepository.findByStudentId(studentId);
+    }
+
     private void checkStudentRight(OnBoardingRequest request, StudentCsv studentCsv){
         boolean name = request.getName().equals(studentCsv.getStudentName());
         boolean studentId = request.getStudentId().equals(studentCsv.getStudentId().toString());
