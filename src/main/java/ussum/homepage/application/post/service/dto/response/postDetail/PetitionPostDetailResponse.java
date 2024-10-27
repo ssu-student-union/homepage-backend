@@ -20,8 +20,8 @@ public class PetitionPostDetailResponse extends PostDetailResDto {
     @Builder
     private PetitionPostDetailResponse(Long postId, String categoryName, String authorName, String studentId, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor,
                                        Integer likeCount, List<FileResponse> fileResponseList, List<PostOfficialCommentResponse> officialCommentList,
-                                       Boolean isLiked, List<String> canAuthority) {
-        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor, canAuthority);
+                                       Boolean isLiked, List<String> allowedAuthorities) {
+        super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor, allowedAuthorities);
         this.studentId = studentId;
         this.likeCount = likeCount;
         this.fileResponseList = fileResponseList;
