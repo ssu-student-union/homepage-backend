@@ -27,7 +27,7 @@ public class UserController {
             """)
     @GetMapping("/user-info")
     public ApiResponse<UserInfoResponse> getUserInfo(@RequestBody TokenRequest tokenRequest){
-        log.info("##### userId ##### : " + tokenRequest.accessToken());
-        return ApiResponse.onSuccess(userService.getUserInfo(tokenRequest.accessToken()));
+        log.info("##### userId ##### : " + tokenRequest.getAccessToken());
+        return ApiResponse.onSuccess(userService.getUserInfo(tokenRequest.getAccessToken()));
     }
 }
