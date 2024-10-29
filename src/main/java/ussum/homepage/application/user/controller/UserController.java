@@ -27,7 +27,7 @@ public class UserController {
             """)
     @GetMapping("/user-info")
     public ApiResponse<UserInfoResponse> getUserInfo(
-            @RequestHeader("Authorization") String authorizationHeader){
+            @RequestHeader(value = "Authorization", required = false) String authorizationHeader){
         String accessToken = authorizationHeader.replace("Bearer ", ""); // Bearer 제거
         log.info("##### userId ##### : " + accessToken);
         return ApiResponse.onSuccess(userService.getUserInfo(accessToken));
