@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ussum.homepage.application.user.service.UserService;
@@ -26,7 +25,7 @@ public class UserController {
             PASSU 정보 조회 API 입니다. Authorization 헤더로 토큰 보내면 됩니다.
             """)
     @GetMapping("/user-info")
-    public ApiResponse<UserInfoResponse> getUserInfo(@RequestBody TokenRequest tokenRequest){
+    public ApiResponse<UserInfoResponse> getUserInfo(TokenRequest tokenRequest){
         log.info("##### userId ##### : " + tokenRequest.getAccessToken());
         return ApiResponse.onSuccess(userService.getUserInfo(tokenRequest.getAccessToken()));
     }
