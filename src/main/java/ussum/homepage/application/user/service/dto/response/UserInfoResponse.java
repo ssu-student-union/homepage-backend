@@ -25,7 +25,7 @@ public record UserInfoResponse(
     public static UserInfoResponse of(User user, Member member){
         return UserInfoResponse.builder()
                 .name(user.getName())
-                .studentId("null")
+                .studentId(user.getStudentId() == null ? "null" : String.valueOf(user.getStudentId()))
                 .major(MemberCode.getEnumMemberCodeFromStringMemberCode(member.getMemberCode()).getStringMemberCode())
                 .isCouncil(member.getIsAdmin())
                 .build();
