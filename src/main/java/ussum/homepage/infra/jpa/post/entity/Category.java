@@ -42,7 +42,7 @@ public enum Category {
     AUDIT_RESULT("감사결과"),
     ETC("기타"),
 
-    //자료집카테고리
+    //자료집카테고리(이거 나중에 없앨 예정)
     RESULT_REPORT("결과보고서"),
     MINUTES("회의록"),
     STUDENT_COUNCIL_RULES("총학생회칙"),

@@ -1,11 +1,14 @@
 package ussum.homepage.application.post.service;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.comment.service.dto.response.PostOfficialCommentResponse;
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
@@ -40,6 +43,7 @@ import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
+import ussum.homepage.global.config.auth.UserId;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
@@ -120,7 +124,7 @@ public class PostManageService {
         );
         PageInfo pageInfo = PageInfo.of(postList);
 
-        PostListResponseFactory factory = PostResponseFactoryProvider.getFactory("자료집게시판");
+        PostListResponseFactory factory = PostResponseFactoryProvider.getFactory(BoardCode.DATA.getStringBoardCode());
 
         List<? extends PostListResDto> responseList = postList.getContent().stream()
                 .map(post -> {
@@ -172,21 +176,44 @@ public class PostManageService {
     public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId));
-        postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId());
+        postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId(), FileCategory.자료집아님);
         return PostCreateResponse.of(post.getId(), boardCode);
     }
 
     @Transactional
-    public PostCreateResponse createDataPost(Long userId, String fileCategory, String fileType, PostCreateRequest postCreateRequest){
+    public PostCreateResponse createDataPost(Long userId, String fileCategory, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(BoardCode.DATA.getStringBoardCode());
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(fileType)));
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode())));
         postFileAppender.updatePostIdAndFileCategoryForIds(postCreateRequest.postFileList(), post.getId(), fileCategory);
         return PostCreateResponse.of(post.getId(), BoardCode.DATA.getStringBoardCode());
     }
 
+    //이거 두개 api 합쳐야댐!!!!
     @Transactional
     public PostFileListResponse createBoardPostFile(Long userId, String boardCode, MultipartFile[] files, MultipartFile[] images){
         PostFileMediatorResponse response = s3utils.uploadFileWithPath(userId, boardCode, files, images);
+        List<PostFile> postFiles = convertUrlsToPostFiles(response);
+        List<PostFile> afterSaveList = postFileAppender.saveAllPostFile(postFiles);
+
+        String thumbnailUrl = afterSaveList.stream()
+                .filter(postFile -> postFile.getTypeName().equals("images"))
+                .min(Comparator.comparing(PostFile::getId))
+                .map(PostFile::getUrl)
+                .orElse(null);
+
+        AtomicInteger index = new AtomicInteger(0);
+        List<PostFileResponse> postFileResponses = afterSaveList.stream()
+                .map(postFile -> {
+                    int currentIndex = index.getAndIncrement();
+                    return PostFileResponse.of(postFile.getId(), postFile.getUrl(), response.originalFileNames().get(currentIndex));
+                })
+                .collect(Collectors.toList());
+
+        return PostFileListResponse.of(thumbnailUrl, postFileResponses);
+    }
+    @Transactional
+    public PostFileListResponse createBoardDataPostFile(Long userId, MultipartFile[] files, String fileType){
+        PostFileMediatorResponse response = s3utils.uploadDataFileWithPath(userId, BoardCode.DATA.getStringBoardCode(), files, fileType);
         List<PostFile> postFiles = convertUrlsToPostFiles(response);
         List<PostFile> afterSaveList = postFileAppender.saveAllPostFile(postFiles);
 
@@ -245,14 +272,14 @@ public class PostManageService {
         Post post = postReader.getPostWithId(postId);
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post newPost = postModifier.updatePost(postUpdateRequest.toDomain(post, board));
-        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId());
+        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId(), FileCategory.자료집아님);
         return post.getId();
     }
     @Transactional
-    public Long editBoardDatePost(String fileCategory, String fileType, Long postId, PostUpdateRequest postUpdateRequest){
+    public Long editBoardDatePost(String fileCategory, Long postId, PostUpdateRequest postUpdateRequest){
         Post post = postReader.getPostWithId(postId);
-        Post newPost = postModifier.updateDataPost(post, fileType);
-        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId());
+        Post newPost = postModifier.updatePost(postUpdateRequest.toDataDomain(post));
+        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId(), FileCategory.fromString(fileCategory));
         return post.getId();
     }
 

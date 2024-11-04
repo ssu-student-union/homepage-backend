@@ -38,4 +38,20 @@ public record PostUpdateRequest(
                 board.getId()
         );
     }
+    public Post toDataDomain(Post post) {
+        return Post.of(
+                post.getId(),
+                title,
+                content,
+                post.getViewCount(),
+                thumbnailImage,
+                post.getStatus(),
+                DateUtils.parseHourMinSecFromCustomString(post.getCreatedAt()),
+                DateUtils.parseHourMinSecFromCustomString(post.getUpdatedAt()),
+                LocalDateTime.now(),
+                categoryCode,
+                post.getUserId(),
+                6L
+        );
+    }
 }

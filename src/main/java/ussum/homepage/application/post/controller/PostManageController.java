@@ -96,14 +96,12 @@ public class PostManageController {
             기본적으로 액세스 토큰을 필요로 합니다.
             요청 path에 fileCategory(카테고리 ex.총학생회칙) 값을 문자열 형태로 넣으면 됩니다.
             """)
-    @PostMapping("/data/{fileCategory}/{fileType}/post")
+    @PostMapping("/data/{fileCategory}/post")
     public ResponseEntity<ApiResponse<?>> createDataPost(@Parameter(hidden = true) @UserId Long userId,
                                                          @PathVariable(name = "fileCategory") String fileCategory,
-                                                         @PathVariable(name = "fileType") String fileType,
                                                          @RequestBody PostCreateRequest postCreateRequest) {
-        return ApiResponse.success(postManageService.createDataPost(userId, fileCategory, fileType, postCreateRequest));
+        return ApiResponse.success(postManageService.createDataPost(userId, fileCategory, postCreateRequest));
     }
-
     @Operation(summary = "게시물 생성 시 파일 및 이미지 저장 api", description = """
             게시물 생성 시 파일 및 이미지 저장하는 api입니다.
             우선 이 api는 게시물 생성 api를 사용전 미리 호출하여야 합니다. 기본적으로 반환값이 저장된 파일 및 사진의 url이기 때문에
@@ -123,6 +121,17 @@ public class PostManageController {
                                                               @RequestPart(value = "files", required = false) MultipartFile[] files,
                                                               @RequestPart(value = "images", required = false) MultipartFile[] images) {
         return ApiResponse.success(postManageService.createBoardPostFile(userId, boardCode, files, images));
+    }
+
+    @Operation(summary = "자료집 게시물 생성 시 파일 및 이미지 저장 api", description = """
+            자료집 게시물 생성 시 파일 및 이미지 저장하는 api입니다.
+            """)
+    @PostMapping(value = "/data/files/{fileType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse<?>> createBoardDataPostFile(@Parameter(hidden = true) @UserId Long userId,
+                                                              @RequestPart(value = "files", required = false) MultipartFile[] files,
+                                                              @PathVariable(name = "fileType") String fileType) {
+        return ApiResponse.success(postManageService.createBoardDataPostFile(userId, files, fileType));
     }
 
     @Operation(summary = "게시물 단건 조회 후 파일 혹은 이미지 삭제 api", description = """
@@ -150,13 +159,12 @@ public class PostManageController {
     @Operation(summary = "자료집 게시물 수정 api", description = """
             자료집 게시물을 수정하는 api 입니다. 
             """)
-    @PatchMapping("/data/{fileCategory}/{fileType}/posts/{postId}")
+    @PatchMapping("/data/{fileCategory}/posts/{postId}")
     public ResponseEntity<ApiResponse<?>> editBoardDataPost(@Parameter(hidden = true) @UserId Long userId,
                                                         @PathVariable(name = "fileCategory") String fileCategory,
-                                                        @PathVariable(name = "fileType") String fileType,
                                                             @PathVariable(name = "postId") Long postId,
                                                         @RequestBody PostUpdateRequest postUpdateRequest) {
-        return ApiResponse.success(postManageService.editBoardDatePost(fileCategory, fileType, postId, postUpdateRequest));
+        return ApiResponse.success(postManageService.editBoardDatePost(fileCategory, postId, postUpdateRequest));
     }
 
     @Operation(summary = "게시물 삭제 api", description = """

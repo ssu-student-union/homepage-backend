@@ -21,6 +21,7 @@ public class DataPostResponseFactory implements PostListResponseFactory {
     @Override
     public PostListResDto createDataResponse(Post post, List<PostFile> postFiles) {
         List<FileResponse> fileResponses = postFiles.stream().map(postFile -> FileResponse.of(postFile)).toList();
-        return DataPostResponse.of(post, fileResponses);
+        String content = postFiles.get(0).getFileCategory();
+        return DataPostResponse.of(post, fileResponses, content);
     }
 }

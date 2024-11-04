@@ -116,7 +116,7 @@ public class PetitionPostProcessor {
      * 해당 로직은 실제 청원게시물의 OnGoingStatus를 변경하는 로직
      */
     public void updatePostCategoryAndOngoingStatus(Post post, String category) {
-        postRepository.updatePostCategory(post, category);
+        postRepository.updatePostCategory(post, Category.getEnumCategoryCodeFromStringCategoryCode(category));
     }
 
 

@@ -22,8 +22,8 @@ public class PostFileAppender {
     }
 
     @Transactional
-    public void updatePostIdForIds(List<Long> postFileIds, Long postId) {
-        postFileRepository.updatePostIdForIds(postFileIds, postId);
+    public void updatePostIdForIds(List<Long> postFileIds, Long postId, FileCategory fileCategory) {
+        postFileRepository.updatePostIdForIds(postFileIds, postId, fileCategory);
     }
 
     @Transactional

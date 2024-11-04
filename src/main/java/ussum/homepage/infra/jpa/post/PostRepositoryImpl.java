@@ -4,6 +4,8 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -183,9 +185,13 @@ public class PostRepositoryImpl implements PostRepository {
             whereClause.and(groupEntity.groupCode.eq(groupCode));
         }
 
-//        if (whereClause.getValue() == null) {
-//            throw new IllegalArgumentException("At least one of memberCode, or groupCode must be provided");
-//        }
+        // Status 우선순위를 정의합니다.
+        NumberExpression<Integer> statusOrder = new CaseBuilder()
+                .when(postEntity.status.eq(Status.EMERGENCY_NOTICE)).then(1)
+                .when(postEntity.status.eq(Status.NEW)).then(2)
+                .when(postEntity.status.eq(Status.GENERAL)).then(3)
+                .otherwise(Integer.MAX_VALUE);
+
 
         JPAQuery<PostEntity> query = queryFactory
                 .selectFrom(postEntity)
@@ -194,7 +200,8 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(memberEntity.groupEntity, groupEntity)
                 .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
                 .where(whereClause)
-                .orderBy(postEntity.createdAt.desc());
+//                .orderBy(postEntity.createdAt.desc());
+                .orderBy(statusOrder.asc(), postEntity.createdAt.desc()).distinct();
 
 
         List<PostEntity> content = query
@@ -202,20 +209,14 @@ public class PostRepositoryImpl implements PostRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-//        JPAQuery<Long> countQuery = queryFactory
-//                .select(postEntity.count())
-//                .from(postEntity)
-//                .where(whereClause);
-
         JPAQuery<Long> countQuery = queryFactory
-                .select(postEntity.count())
+                .select(postEntity.countDistinct())
                 .from(postEntity)
                 .leftJoin(postEntity.userEntity, userEntity)
                 .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
                 .leftJoin(memberEntity.groupEntity, groupEntity)
                 .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
                 .where(whereClause);
-
 
         return PageableExecutionUtils.getPage(
                 content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
@@ -433,9 +434,9 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post updatePostCategory(Post post, String category) {
+    public Post updatePostCategory(Post post, Category category) {
         PostEntity postEntity = postMapper.toEntity(post);
-        postEntity.updateCategory(Category.getEnumCategoryCodeFromStringCategoryCode(category));
+        postEntity.updateCategory(category);
         return postMapper.toDomain(postJpaRepository.save(postEntity));
     }
 
@@ -450,9 +451,12 @@ public class PostRepositoryImpl implements PostRepository {
             whereClause.and(groupEntity.groupCode.eq(groupCode));
         }
 
-//        if (whereClause.getValue() == null) {
-//            throw new IllegalArgumentException("At least one of memberCode, or groupCode must be provided");
-//        }
+        NumberExpression<Integer> statusOrder = new CaseBuilder()
+                .when(postEntity.status.eq(Status.EMERGENCY_NOTICE)).then(1)
+                .when(postEntity.status.eq(Status.NEW)).then(2)
+                .when(postEntity.status.eq(Status.GENERAL)).then(3)
+                .otherwise(Integer.MAX_VALUE);
+
 
         // 검색어 q가 지정된 경우, 제목에 해당 검색어가 포함된 게시물만 필터링
         if (q != null && !q.isEmpty()) {
@@ -466,7 +470,9 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(memberEntity.groupEntity, groupEntity)
                 .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
                 .where(whereClause)
-                .orderBy(postEntity.createdAt.desc());
+//                .orderBy(postEntity.createdAt.desc());
+                .orderBy(statusOrder.asc(), postEntity.createdAt.desc()).distinct();
+
 
         List<PostEntity> content = query
                 .offset(pageable.getOffset())
@@ -474,7 +480,7 @@ public class PostRepositoryImpl implements PostRepository {
                 .fetch();
 
         JPAQuery<Long> countQuery = queryFactory
-                .select(postEntity.count())
+                .select(postEntity.countDistinct())
                 .from(postEntity)
                 .leftJoin(postEntity.userEntity, userEntity)
                 .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
