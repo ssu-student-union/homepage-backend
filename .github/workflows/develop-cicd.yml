@@ -72,4 +72,4 @@ jobs:
             sudo docker run -d --log-driver=syslog \
             -e TZ=Asia/Seoul \
             -p 8080:8080 --name ussum-develop \
-            ${{ secrets.DOCKERHUB_REPO }}/ussum-develop:latest
+            ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
