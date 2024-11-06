@@ -44,7 +44,7 @@ public class PostController {
 //    @PostMapping("/{boardCode}/posts")
 //    public ResponseEntity<ApiResponse<?>> createBoardPost(@UserId Long userId,
 //                                                          @PathVariable(name = "boardCode") String boardCode,
-//                                                          @RequestBody PostCreateRequest postCreateRequest) {
+//                                                          @RequestBody GeneralPostCreateRequest postCreateRequest) {
 //        postService.createPost(userId, boardCode,postCreateRequest);
 //        return ApiResponse.success(null);
 //    }

@@ -9,10 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.post.service.PostManageService;
-import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
+import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
-import ussum.homepage.application.post.service.dto.request.PostUserRequest;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
@@ -87,8 +86,8 @@ public class PostManageController {
     @PostMapping("/{boardCode}/posts")
     public ResponseEntity<ApiResponse<?>> createBoardPost(@Parameter(hidden = true) @UserId Long userId,
                                                           @PathVariable(name = "boardCode") String boardCode,
-                                                          @RequestBody PostCreateRequest postCreateRequest){
-        return ApiResponse.success(postManageService.createBoardPost(userId, boardCode, postCreateRequest));
+                                                          @RequestBody GeneralPostCreateRequest generalPostCreateRequest){
+        return ApiResponse.success(postManageService.createBoardPost(userId, boardCode, generalPostCreateRequest));
     }
 
     @Operation(summary = "자료집 게시물 생성 api", description = """
@@ -99,8 +98,8 @@ public class PostManageController {
     @PostMapping("/data/{fileCategory}/post")
     public ResponseEntity<ApiResponse<?>> createDataPost(@Parameter(hidden = true) @UserId Long userId,
                                                          @PathVariable(name = "fileCategory") String fileCategory,
-                                                         @RequestBody PostCreateRequest postCreateRequest) {
-        return ApiResponse.success(postManageService.createDataPost(userId, fileCategory, postCreateRequest));
+                                                         @RequestBody GeneralPostCreateRequest generalPostCreateRequest) {
+        return ApiResponse.success(postManageService.createDataPost(userId, fileCategory, generalPostCreateRequest));
     }
     @Operation(summary = "게시물 생성 시 파일 및 이미지 저장 api", description = """
             게시물 생성 시 파일 및 이미지 저장하는 api입니다.
