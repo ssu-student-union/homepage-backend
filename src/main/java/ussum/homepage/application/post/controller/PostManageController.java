@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.post.service.PostManageService;
 import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequest;
+import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
@@ -86,8 +87,8 @@ public class PostManageController {
     @PostMapping("/{boardCode}/posts")
     public ResponseEntity<ApiResponse<?>> createBoardPost(@Parameter(hidden = true) @UserId Long userId,
                                                           @PathVariable(name = "boardCode") String boardCode,
-                                                          @RequestBody GeneralPostCreateRequest generalPostCreateRequest){
-        return ApiResponse.success(postManageService.createBoardPost(userId, boardCode, generalPostCreateRequest));
+                                                          @RequestBody PostCreateRequest postCreateRequest){
+        return ApiResponse.success(postManageService.createBoardPost(userId, boardCode, postCreateRequest));
     }
 
     @Operation(summary = "자료집 게시물 생성 api", description = """

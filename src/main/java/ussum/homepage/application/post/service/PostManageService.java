@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.comment.service.dto.response.PostOfficialCommentResponse;
 import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequest;
+import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.response.FileResponse;
@@ -31,6 +32,7 @@ import ussum.homepage.domain.post.PostFile;
 import ussum.homepage.domain.post.service.*;
 import ussum.homepage.domain.post.service.factory.BoardFactory;
 import ussum.homepage.domain.post.service.factory.BoardImpl;
+import ussum.homepage.domain.post.service.factory.PostFactoryImpl;
 import ussum.homepage.domain.post.service.factory.postList.DataPostResponseFactory;
 import ussum.homepage.domain.post.service.factory.postList.PostListResponseFactory;
 import ussum.homepage.domain.post.service.factory.postList.PostResponseFactoryProvider;
@@ -168,10 +170,12 @@ public class PostManageService {
     }
 
     @Transactional
-    public PostCreateResponse createBoardPost(Long userId, String boardCode, GeneralPostCreateRequest generalPostCreateRequest){
+    public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
-        Post post = postAppender.createPost(generalPostCreateRequest.toDomain(board, userId));
-        postFileAppender.updatePostIdForIds(generalPostCreateRequest.getPostFileList(), post.getId(), FileCategory.자료집아님);
+        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId));
+        PostFactoryImpl postFactory = new PostFactoryImpl();
+        postCreateRequest = postFactory.convert(boardCode,postCreateRequest);
+        postFileAppender.updatePostIdForIds(postCreateRequest.getPostFileList(), post.getId(), FileCategory.자료집아님);
         return PostCreateResponse.of(post.getId(), boardCode);
     }
 

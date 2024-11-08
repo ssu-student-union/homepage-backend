@@ -38,7 +38,7 @@ public class KakaoApiProvider {
     public String getKakaoLogin(){
         String authUrl = authorize_uri +
                 "?client_id=" + clientId +
-                "&redirect_uri=" + redirectUri +
+                "&redirect_uri="+ redirectUri +
                 "&response_type=code";
         return authUrl;
     }
