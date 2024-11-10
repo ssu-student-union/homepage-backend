@@ -32,6 +32,7 @@ import ussum.homepage.domain.post.PostFile;
 import ussum.homepage.domain.post.service.*;
 import ussum.homepage.domain.post.service.factory.BoardFactory;
 import ussum.homepage.domain.post.service.factory.BoardImpl;
+import ussum.homepage.domain.post.service.factory.PostFactory;
 import ussum.homepage.domain.post.service.factory.PostFactoryImpl;
 import ussum.homepage.domain.post.service.factory.postList.DataPostResponseFactory;
 import ussum.homepage.domain.post.service.factory.postList.PostListResponseFactory;
@@ -77,6 +78,8 @@ public class PostManageService {
     private final PetitionPostProcessor petitionPostStatusProcessor;
     private final PostOfficialCommentFormatter postOfficialCommentFormatter;
     private final S3utils s3utils;
+    private final PostFactory postFactory;
+    private final PostAdditionalAppender postAdditionalAppender;
 
 
     private final Map<String, PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, FileResponse, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
@@ -172,10 +175,10 @@ public class PostManageService {
     @Transactional
     public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId));
-        PostFactoryImpl postFactory = new PostFactoryImpl();
-        postCreateRequest = postFactory.convert(boardCode,postCreateRequest);
-        postFileAppender.updatePostIdForIds(postCreateRequest.getPostFileList(), post.getId(), FileCategory.자료집아님);
+        PostCreateRequest converPostCreateRequest = postFactory.convert(boardCode,postCreateRequest);
+        Post post = postAppender.createPost(converPostCreateRequest.toDomain(board, userId));
+        postAdditionalAppender.createAdditional(converPostCreateRequest);
+        postFileAppender.updatePostIdForIds(converPostCreateRequest.getPostFileList(), post.getId(), FileCategory.자료집아님);
         return PostCreateResponse.of(post.getId(), boardCode);
     }
 

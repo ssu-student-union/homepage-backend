@@ -1,16 +1,14 @@
 package ussum.homepage.infra.jpa.post.entity;
 
+import static ussum.homepage.global.error.status.ErrorStatus.INVALID_CATEGORY_CODE;
+import static ussum.homepage.global.error.status.ErrorStatus.INVALID_ONGOING_STATUS;
+
+import java.util.Arrays;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 import ussum.homepage.global.error.exception.InvalidValueException;
-import ussum.homepage.infra.jpa.member.entity.MemberCode;
-
-import java.util.Arrays;
-import java.util.Optional;
-
-import static ussum.homepage.global.error.status.ErrorStatus.INVALID_CATEGORY_CODE;
-import static ussum.homepage.global.error.status.ErrorStatus.INVALID_ONGOING_STATUS;
 
 @RequiredArgsConstructor
 @Getter

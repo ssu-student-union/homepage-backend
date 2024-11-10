@@ -15,4 +15,5 @@ public class PostAppender {
     public Post createPost(Post post) {
         return postRepository.save(post);
     }
+
 }

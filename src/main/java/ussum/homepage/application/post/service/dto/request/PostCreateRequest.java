@@ -1,12 +1,18 @@
 package ussum.homepage.application.post.service.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import java.util.List;
 import lombok.Getter;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 
 @Getter
-public class PostCreateRequest {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "boardId",defaultImpl = GeneralPostCreateRequest.class)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = RightsDetailRequest.class, name = "8"),
+})
+public abstract class PostCreateRequest {
     protected String title;
     protected String content;
     protected String thumbNailImage;
@@ -26,6 +32,7 @@ public class PostCreateRequest {
         if(isNotice){
             status = "긴급공지";
         }
+
         return Post.of(null,
                 title,
                 content,
