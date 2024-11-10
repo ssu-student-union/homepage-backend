@@ -9,7 +9,6 @@ import ussum.homepage.domain.post.BoardRepository;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.repository.BoardJpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 

@@ -1,16 +1,14 @@
 package ussum.homepage.application.post.service;
 
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.comment.service.dto.response.PostOfficialCommentResponse;
+import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
@@ -34,6 +32,7 @@ import ussum.homepage.domain.post.PostFile;
 import ussum.homepage.domain.post.service.*;
 import ussum.homepage.domain.post.service.factory.BoardFactory;
 import ussum.homepage.domain.post.service.factory.BoardImpl;
+import ussum.homepage.domain.post.service.factory.PostFactoryImpl;
 import ussum.homepage.domain.post.service.factory.postList.DataPostResponseFactory;
 import ussum.homepage.domain.post.service.factory.postList.PostListResponseFactory;
 import ussum.homepage.domain.post.service.factory.postList.PostResponseFactoryProvider;
@@ -43,7 +42,6 @@ import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
-import ussum.homepage.global.config.auth.UserId;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
@@ -51,7 +49,6 @@ import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.FileCategory;
-import ussum.homepage.infra.jpa.post.entity.FileType;
 import ussum.homepage.infra.utils.S3utils;
 
 import java.util.Comparator;
@@ -176,15 +173,18 @@ public class PostManageService {
     public PostCreateResponse createBoardPost(Long userId, String boardCode, PostCreateRequest postCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post post = postAppender.createPost(postCreateRequest.toDomain(board, userId));
-        postFileAppender.updatePostIdForIds(postCreateRequest.postFileList(), post.getId(), FileCategory.자료집아님);
+        PostFactoryImpl postFactory = new PostFactoryImpl();
+        postCreateRequest = postFactory.convert(boardCode,postCreateRequest);
+        postFileAppender.updatePostIdForIds(postCreateRequest.getPostFileList(), post.getId(), FileCategory.자료집아님);
         return PostCreateResponse.of(post.getId(), boardCode);
     }
 
     @Transactional
-    public PostCreateResponse createDataPost(Long userId, String fileCategory, PostCreateRequest postCreateRequest){
+    public PostCreateResponse createDataPost(Long userId, String fileCategory, GeneralPostCreateRequest generalPostCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(BoardCode.DATA.getStringBoardCode());
-        Post post = postAppender.createPost(postCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode())));
-        postFileAppender.updatePostIdAndFileCategoryForIds(postCreateRequest.postFileList(), post.getId(), fileCategory);
+        Post post = postAppender.createPost(generalPostCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(
+                generalPostCreateRequest.getCategoryCode())));
+        postFileAppender.updatePostIdAndFileCategoryForIds(generalPostCreateRequest.getPostFileList(), post.getId(), fileCategory);
         return PostCreateResponse.of(post.getId(), BoardCode.DATA.getStringBoardCode());
     }
 

@@ -3,7 +3,6 @@ package ussum.homepage.infra.jpa.post.entity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ussum.homepage.global.error.exception.InvalidValueException;
-import ussum.homepage.infra.jpa.postlike.entity.Reaction;
 
 import java.util.Arrays;
 
@@ -17,7 +16,9 @@ public enum BoardCode {
     LOST("분실물게시판"),
     PARTNER("제휴게시판"),
     PETITION("청원게시판"),
-    DATA("자료집게시판");
+    DATA("자료집게시판"),
+    SUGGESTION("건의게시판"),
+    RIGHTS("인권신고게시판");
 
     private final String stringBoardCode;
     public static BoardCode getEnumBoardCodeFromStringBoardCode(String stringBoardCode) {
