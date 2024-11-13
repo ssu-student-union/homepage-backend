@@ -1,5 +1,6 @@
 package ussum.homepage.global.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -12,9 +13,11 @@ import java.util.List;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     private final UserIdArgumentResolver userIdArgumentResolver;
+    private final ObjectMapper objectMapper;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers){
         resolvers.add(userIdArgumentResolver);
+        resolvers.add(new BoardRequestBodyArgumentResolver(objectMapper));
     }
 }

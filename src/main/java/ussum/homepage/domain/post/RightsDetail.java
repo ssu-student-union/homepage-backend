@@ -12,10 +12,11 @@ public class RightsDetail {
     private String name;
     private String studentId;
     private String major;
-    private String personType;
+    private PersonType personType;
+    private Long postId;
 
     public static RightsDetail of(Long id,
-                          String name,String studentId,String major,String personType) {
-        return new RightsDetail(id, name, studentId, major, personType);
+                          String name,String studentId,String major,PersonType personType,Long postId) {
+        return new RightsDetail(id, name, studentId, major, personType, postId);
     }
 }

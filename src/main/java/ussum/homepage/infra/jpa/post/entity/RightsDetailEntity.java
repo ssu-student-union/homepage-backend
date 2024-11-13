@@ -1,5 +1,8 @@
 package ussum.homepage.infra.jpa.post.entity;
 
+import static ussum.homepage.global.error.status.ErrorStatus.INVALID_PERSON_TYPE;
+import static ussum.homepage.global.error.status.ErrorStatus.PERSON_TYPE_NULL;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,11 +15,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.util.Arrays;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import ussum.homepage.global.error.exception.InvalidValueException;
 
 @Entity
 @Table(name = "rights_detail")
@@ -57,12 +64,13 @@ public class RightsDetailEntity {
         private final String type;
 
         public static PersonType getEnumPersonTypeFromStringType(String type) {
-            for (PersonType person : values()) {
-                if (person.getType().equals(type)) {
-                    return person;
-                }
+            if (type == null) {
+                throw new InvalidValueException(PERSON_TYPE_NULL);
             }
-            throw new IllegalArgumentException("Unknown rights person type: " + type);
+            return Arrays.stream(values())
+                    .filter(personType -> personType.getType().equals(type))
+                    .findFirst()
+                    .orElseThrow(() -> new InvalidValueException(INVALID_PERSON_TYPE));
         }
     }
     public static RightsDetailEntity of(Long id, String name, String studentId, String major, PersonType personType,PostEntity postEntity) {
