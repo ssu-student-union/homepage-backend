@@ -55,16 +55,14 @@ public enum Category {
     DINNER_RULES("회식세칙"),
     BUDGET_SETTLEMENT("예결산안"),
 
-    //공지사항 카테고리
+    //인권신고게시판
+    STAND_BY("접수대기"),
     //중앙 : 총학생회, 중앙운영위원회, 중앙선거관리위원회, 동아리연합회
     //단과대 : IT대학, 인문대학, 융합특성화자유전공학부, 사회과학대학, 공과대학, 경영대학, 경제통상대학, 자연과학대학, 법과대학
     STUDENT_COUNCIL("총학생회"),
     CENTRAL_OPERATION_COMMITTEE("중앙운영위원회"),
     CENTRAL_ELECTION_COMMITTEE("중앙선거관리위원회"),
     CLUB_UNION("동아리연합회"),
-
-    //인권신고게시판 카테고리
-    STAND_BY("접수대기"),
 
     IT_SCHOOL("IT대학"),
     HUMANITIES_SCHOOL("인문대학"),

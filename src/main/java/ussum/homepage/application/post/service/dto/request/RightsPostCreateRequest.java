@@ -8,17 +8,13 @@ import ussum.homepage.domain.post.Post;
 
 @Getter
 public class RightsPostCreateRequest extends PostCreateRequest {
-
     private final List<RightsDetailRequest> relatedPeople;
-    private final String categoryCode;
 
     @Builder
-    public RightsPostCreateRequest(String title, String content, String thumbNailImage, String categoryCode, boolean isNotice,
+    public RightsPostCreateRequest(String title, String content, String categoryCode,String thumbNailImage, boolean isNotice,
                                    List<Long> postFileList, List<RightsDetailRequest> relatedPeople) {
-        super(title, content, thumbNailImage, isNotice, postFileList);
+        super(title, content, categoryCode, thumbNailImage, isNotice, postFileList);
         this.relatedPeople = relatedPeople;
-        this.postFileList = postFileList;
-        this.categoryCode = categoryCode;
     }
 
     @Override

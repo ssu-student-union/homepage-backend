@@ -17,8 +17,9 @@ public class PostFactoryImpl implements PostFactory {
                 yield RightsPostCreateRequest.builder()
                         .title(rightsPostCreateRequest.getTitle())
                         .content(rightsPostCreateRequest.getContent())
-                        .isNotice(rightsPostCreateRequest.isNotice())
+                        .categoryCode(rightsPostCreateRequest.getCategoryCode())
                         .thumbNailImage(rightsPostCreateRequest.getThumbNailImage())
+                        .isNotice(rightsPostCreateRequest.isNotice())
                         .postFileList(rightsPostCreateRequest.getPostFileList())
                         .relatedPeople(rightsPostCreateRequest.getRelatedPeople())
                         .build();
@@ -26,8 +27,9 @@ public class PostFactoryImpl implements PostFactory {
             default -> GeneralPostCreateRequest.builder()
                     .title(request.getTitle())
                     .content(request.getContent())
-                    .isNotice(request.isNotice())
+                    .categoryCode(request.getCategoryCode())
                     .thumbNailImage(request.getThumbNailImage())
+                    .isNotice(request.isNotice())
                     .postFileList(request.getPostFileList())
                     .build();
         };
