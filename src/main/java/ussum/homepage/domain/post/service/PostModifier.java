@@ -11,6 +11,7 @@ import ussum.homepage.infra.jpa.post.entity.FileType;
 @RequiredArgsConstructor
 public class PostModifier {
     private final PostRepository postRepository;
+    private final RightsDetailRepository rightsDetailRepository;
     private final PostReader postReader;
     private final BoardReader boardReader;
 
@@ -23,6 +24,7 @@ public class PostModifier {
     }
 
     public void deletePost(String boardCode, Long postId) {
+        rightsDetailRepository.deleteAll(postId);
         postRepository.delete(postReader.getPostWithBoardCodeForEditAndDelete(boardCode, postId));
     }
 

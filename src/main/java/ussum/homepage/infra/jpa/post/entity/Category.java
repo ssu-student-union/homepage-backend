@@ -63,6 +63,9 @@ public enum Category {
     CENTRAL_ELECTION_COMMITTEE("중앙선거관리위원회"),
     CLUB_UNION("동아리연합회"),
 
+    //인권신고게시판 카테고리
+    STAND_BY("접수대기"),
+
     IT_SCHOOL("IT대학"),
     HUMANITIES_SCHOOL("인문대학"),
     CONVERGENCE_DEPARTMENT("융합특성화자유전공학부"),

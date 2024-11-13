@@ -18,13 +18,13 @@ public class PostAdditionalAppender {
     private final RightsDetailRepository rightsDetailRepository;
 
     @Transactional
-    public void createAdditional(PostCreateRequest converPostCreateRequest) {
+    public void createAdditional(PostCreateRequest converPostCreateRequest, Long postId) {
         if (converPostCreateRequest instanceof RightsPostCreateRequest){
 
             List<RightsDetail> rightsDetailList = new ArrayList<>();
 
-            for ( RightsDetailRequest detailRequest : ((RightsPostCreateRequest) converPostCreateRequest).getRelatedPeople()){
-                rightsDetailList.add(detailRequest.toDomain());
+            for (RightsDetailRequest detailRequest : ((RightsPostCreateRequest) converPostCreateRequest).getRelatedPeople()){
+                rightsDetailList.add(detailRequest.toDomain(postId));
             }
             rightsDetailRepository.saveAll(rightsDetailList);
         }

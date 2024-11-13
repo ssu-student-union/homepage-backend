@@ -8,10 +8,10 @@ import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 
 @Getter
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "boardId",defaultImpl = GeneralPostCreateRequest.class)
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = RightsDetailRequest.class, name = "8"),
-})
+//@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "boardCode",defaultImpl = GeneralPostCreateRequest.class)
+//@JsonSubTypes({
+//        @JsonSubTypes.Type(value = RightsPostCreateRequest.class, name = "인권신고게시판")
+//})
 public abstract class PostCreateRequest {
     protected String title;
     protected String content;
@@ -27,21 +27,5 @@ public abstract class PostCreateRequest {
         this.postFileList = postFileList;
     }
 
-    public Post toDomain(Board board, Long userId){
-        String status = "새로운";
-        if(isNotice){
-            status = "긴급공지";
-        }
-
-        return Post.of(null,
-                title,
-                content,
-                1,
-                thumbNailImage,
-                status,
-                null,null,null,
-                null,
-                userId,
-                board.getId());
-    }
+    public abstract Post toDomain(Board board, Long userId);
 }
