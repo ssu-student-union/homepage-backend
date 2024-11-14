@@ -70,6 +70,9 @@ public class PostAclHandler {
         }
 
         if (boardCode.equals("인권신고게시판")){
+            if (allowedAuthorities.isEmpty()){
+                deniedAuthorities.add("WRITE");
+            }
             if (isLoggedIn) {
                 boolean canAllRead = postAclManager.hasPermission(userId, boardCode, "ALL_READ");
                 if (canAllRead) {

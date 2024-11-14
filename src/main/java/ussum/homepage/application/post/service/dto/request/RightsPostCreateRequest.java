@@ -23,7 +23,7 @@ public class RightsPostCreateRequest extends PostCreateRequest {
         return Post.of(null,
                 title,
                 content,
-                null,
+                1,
                 thumbNailImage,
                 "새로운",
                 null, null, null,
