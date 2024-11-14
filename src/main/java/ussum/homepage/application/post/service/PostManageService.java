@@ -37,6 +37,7 @@ import ussum.homepage.domain.post.service.factory.PostFactoryImpl;
 import ussum.homepage.domain.post.service.factory.postList.DataPostResponseFactory;
 import ussum.homepage.domain.post.service.factory.postList.PostListResponseFactory;
 import ussum.homepage.domain.post.service.factory.postList.PostResponseFactoryProvider;
+import ussum.homepage.domain.post.service.factory.postList.RightsPostResponseFactory;
 import ussum.homepage.domain.post.service.formatter.PostDetailFunction;
 import ussum.homepage.domain.postlike.service.PostReactionManager;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
@@ -109,6 +110,9 @@ public class PostManageService {
         List<? extends PostListResDto> responseList = postList.getContent().stream()
                 .map(post -> {
                     PostListResponseFactory factory = PostResponseFactoryProvider.getFactory(board.getName());
+                    if (factory instanceof RightsPostResponseFactory && userId!=null) {
+                        return RightsPostResponseFactory.createResponse(post, postReader, postReactionReader, userReader, userId);
+                    }
                     return factory.createResponse(post, postReader, postReactionReader, userReader);
                 })
                 .toList();
