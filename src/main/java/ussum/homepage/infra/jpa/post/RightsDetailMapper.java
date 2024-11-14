@@ -16,7 +16,8 @@ public class RightsDetailMapper {
     private final PostJpaRepository postJpaRepository;
 
     public static RightsDetail toDomain(RightsDetailEntity rightsDetailEntity){
-        return RightsDetail.of(rightsDetailEntity.getId(), rightsDetailEntity.getName(), rightsDetailEntity.getStudentId(),rightsDetailEntity.getMajor(),rightsDetailEntity.getPersonType(),
+        return RightsDetail.of(rightsDetailEntity.getId(), rightsDetailEntity.getName(),
+                rightsDetailEntity.getPhoneNumber(), rightsDetailEntity.getStudentId(),rightsDetailEntity.getMajor(),rightsDetailEntity.getPersonType(),
                 rightsDetailEntity.getPostEntity().getId());
     }
 
@@ -25,7 +26,7 @@ public class RightsDetailMapper {
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
         PersonType personType = rightsDetail.getPersonType();
-        return RightsDetailEntity.of(rightsDetail.getId(), rightsDetail.getName(),
+        return RightsDetailEntity.of(rightsDetail.getId(), rightsDetail.getName(), rightsDetail.getPhoneNumber(),
                 rightsDetail.getStudentId(), rightsDetail.getMajor(), personType, postEntity);
     }
 

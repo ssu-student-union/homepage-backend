@@ -5,6 +5,7 @@ import ussum.homepage.infra.jpa.post.entity.RightsDetailEntity.PersonType;
 
 public record RightsDetailRequest(
         String name,
+        String phoneNumber,
         String studentId,
         String major,
         String personType,
@@ -13,6 +14,6 @@ public record RightsDetailRequest(
     public RightsDetail toDomain(Long postId) {
         PersonType enumPersonType = PersonType.getEnumPersonTypeFromStringType(personType());
 
-        return RightsDetail.of(null, name, studentId, major, enumPersonType,postId);
+        return RightsDetail.of(null, name, phoneNumber, studentId, major, enumPersonType, postId);
     }
 }

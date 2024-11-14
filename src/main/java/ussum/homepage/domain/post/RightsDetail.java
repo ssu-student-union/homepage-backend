@@ -10,13 +10,14 @@ import ussum.homepage.infra.jpa.post.entity.RightsDetailEntity.PersonType;
 public class RightsDetail {
     private Long id;
     private String name;
+    private String phoneNumber;
     private String studentId;
     private String major;
     private PersonType personType;
     private Long postId;
 
     public static RightsDetail of(Long id,
-                          String name,String studentId,String major,PersonType personType,Long postId) {
-        return new RightsDetail(id, name, studentId, major, personType, postId);
+                          String name, String phoneNumber,String studentId,String major,PersonType personType,Long postId) {
+        return new RightsDetail(id, name, phoneNumber,studentId, major, personType, postId);
     }
 }
