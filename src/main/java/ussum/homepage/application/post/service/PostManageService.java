@@ -29,6 +29,7 @@ import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostFile;
+import ussum.homepage.domain.post.RightsDetail;
 import ussum.homepage.domain.post.service.*;
 import ussum.homepage.domain.post.service.factory.BoardFactory;
 import ussum.homepage.domain.post.service.factory.BoardImpl;
@@ -81,15 +82,17 @@ public class PostManageService {
     private final S3utils s3utils;
     private final PostFactory postFactory;
     private final PostAdditionalAppender postAdditionalAppender;
+    private final PostAdditionalReader postAdditionalReader;
 
 
-    private final Map<String, PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, FileResponse, PostOfficialCommentResponse, ? extends PostDetailResDto>> postDetailResponseMap = Map.of(
-            "공지사항게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2) -> NoticePostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
-            "분실물게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored3) -> LostPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
-            "제휴게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2) -> PartnerPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
-            "감사기구게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2) -> AuditPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
-            "청원게시판", (post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList),
-            "건의게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2) -> SuggestionPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList)
+    private final Map<String, PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, FileResponse, PostOfficialCommentResponse, RightsDetail,? extends PostDetailResDto>> postDetailResponseMap = Map.of(
+            "공지사항게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2, another_ignored3) -> NoticePostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
+            "분실물게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2, another_ignored3) -> LostPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
+            "제휴게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2, another_ignored3) -> PartnerPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
+            "감사기구게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2, another_ignored3) -> AuditPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
+            "청원게시판", (post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList, another_ignored3) -> PetitionPostDetailResponse.of(post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList),
+            "건의게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2, another_ignored3) -> SuggestionPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
+            "인권신고게시판", (post, isAuthor, ignored, user, another_ignored1,categoryName, fileResponseList,postOfficialCommentResponseList,rightsDetailList) -> RightsPostDetailResponse.of(post,isAuthor,user,categoryName,fileResponseList,postOfficialCommentResponseList, rightsDetailList)
     );
 
     public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category) {
@@ -153,7 +156,7 @@ public class PostManageService {
 //        List<String> fileList = postFileReader.getPostFileListByFileType(postFileList);
         List<FileResponse> fileResponseList = postFileList.stream().map(FileResponse::of).toList();
 
-        PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, FileResponse, PostOfficialCommentResponse, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
+        PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, FileResponse, PostOfficialCommentResponse, RightsDetail, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
 
         if (responseFunction == null) {
             throw new GeneralException(ErrorStatus.INVALID_BOARDCODE);
@@ -167,11 +170,18 @@ public class PostManageService {
                     .map(postOfficialComment -> postOfficialCommentFormatter.format(postOfficialComment, userId))
                     .toList();
             Boolean isLiked = (userId != null && postReactionManager.validatePostReactionByPostIdAndUserId(postId, userId, "like"));
-            response = responseFunction.apply(post, isAuthor, isLiked, user, likeCount, post.getCategory(), fileResponseList, postOfficialCommentResponses);
+            response = responseFunction.apply(post, isAuthor, isLiked, user, likeCount, post.getCategory(), fileResponseList, postOfficialCommentResponses,null);
+        }else if (board.getName().equals("인권신고게시판")){
+            List<PostComment> officialPostComments = postCommentReader.getCommentListWithPostIdAndCommentType(userId, postId, "OFFICIAL");
+            List<PostOfficialCommentResponse> postOfficialCommentResponses = officialPostComments.stream()
+                    .map(postOfficialComment -> postOfficialCommentFormatter.format(postOfficialComment, userId))
+                    .toList();
+            List<RightsDetail> rightsPostDetailResponseList = postAdditionalReader.getRightsDetailByPostId(post.getId());
+            response = responseFunction.apply(post, isAuthor,null,user,null,post.getCategory(),fileResponseList,postOfficialCommentResponses,rightsPostDetailResponseList);
         } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판") || board.getName().equals("건의게시판")) {
-            response = responseFunction.apply(post, isAuthor, null, user, null, post.getCategory(), fileResponseList, null);
+            response = responseFunction.apply(post, isAuthor, null, user, null, post.getCategory(), fileResponseList, null,null);
         } else if (board.getName().equals("분실물게시판")) {
-            response = responseFunction.apply(post, isAuthor, null, user, null, post.getCategory(), fileResponseList, null); //분실물 게시판은 파일첨부 제외
+            response = responseFunction.apply(post, isAuthor, null, user, null, post.getCategory(), fileResponseList, null,null); //분실물 게시판은 파일첨부 제외
         }
 
         return PostDetailRes.of(response);

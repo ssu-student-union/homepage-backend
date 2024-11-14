@@ -15,7 +15,7 @@ public class RightsDetailMapper {
 
     private final PostJpaRepository postJpaRepository;
 
-    public static RightsDetail toDomain(RightsDetailEntity rightsDetailEntity){
+    public RightsDetail toDomain(RightsDetailEntity rightsDetailEntity){
         return RightsDetail.of(rightsDetailEntity.getId(), rightsDetailEntity.getName(),
                 rightsDetailEntity.getPhoneNumber(), rightsDetailEntity.getStudentId(),rightsDetailEntity.getMajor(),rightsDetailEntity.getPersonType(),
                 rightsDetailEntity.getPostEntity().getId());
