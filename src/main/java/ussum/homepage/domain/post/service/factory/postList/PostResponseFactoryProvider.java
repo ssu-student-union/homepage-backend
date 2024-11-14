@@ -13,6 +13,7 @@ public class PostResponseFactoryProvider {
         factoryMap.put("감사기구게시판", new AuditPostResponseFactory());
         factoryMap.put("청원게시판", new PetitionPostResponseFactory());
         factoryMap.put("자료집게시판", new DataPostResponseFactory());
+        factoryMap.put("건의게시판", new SuggestionPostResponseFactory());
     }
 
     public static PostListResponseFactory getFactory(String boardName) {
