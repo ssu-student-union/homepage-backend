@@ -87,7 +87,8 @@ public class PostManageService {
             "분실물게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored3) -> LostPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
             "제휴게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2) -> PartnerPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
             "감사기구게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2) -> AuditPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
-            "청원게시판", (post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList)
+            "청원게시판", (post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList) -> PetitionPostDetailResponse.of(post, isAuthor, isLiked, user, likeCount, categoryName, fileResponseList, postOfficialCommentResponseList),
+            "건의게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2) -> SuggestionPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList)
     );
 
     public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category) {
@@ -163,7 +164,7 @@ public class PostManageService {
                     .toList();
             Boolean isLiked = (userId != null && postReactionManager.validatePostReactionByPostIdAndUserId(postId, userId, "like"));
             response = responseFunction.apply(post, isAuthor, isLiked, user, likeCount, post.getCategory(), fileResponseList, postOfficialCommentResponses);
-        } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판")) {
+        } else if (board.getName().equals("제휴게시판") || board.getName().equals("공지사항게시판") || board.getName().equals("감사기구게시판") || board.getName().equals("건의게시판")) {
             response = responseFunction.apply(post, isAuthor, null, user, null, post.getCategory(), fileResponseList, null);
         } else if (board.getName().equals("분실물게시판")) {
             response = responseFunction.apply(post, isAuthor, null, user, null, post.getCategory(), fileResponseList, null); //분실물 게시판은 파일첨부 제외
