@@ -16,6 +16,7 @@ import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
+import ussum.homepage.global.config.custom.BoardRequestBody;
 
 @RestController
 @RequiredArgsConstructor
@@ -83,11 +84,14 @@ public class PostManageController {
             이 컨트롤러에 있는 "/board/{boardCode}/files" api를 먼저 사용하여 리턴값으로 전달받는 값을 넣어주면 됩니다. 
             사진이나 파일이 존재하지 않을 시 빈 List로 전달해주시면 됩니다.
             isNotice는 긴급공지 사항을 나타내는 필드로 맞을시 true, 틀릴시 false를 반환하면 됩니다.
+            
+            인권신고게시판 경우 기존 json에 추가로 relatedPeople 리스트로 전달해주시면 됩니다. 리스트에는 name, major, studentId에 값을 String으로
+            넣어서 전달해주시고 personType은 신고자, 피침해자, 침해자중 선택하여 전달해주시면 됩니다.
             """)
     @PostMapping("/{boardCode}/posts")
     public ResponseEntity<ApiResponse<?>> createBoardPost(@Parameter(hidden = true) @UserId Long userId,
                                                           @PathVariable(name = "boardCode") String boardCode,
-                                                          @RequestBody PostCreateRequest postCreateRequest){
+                                                          @BoardRequestBody PostCreateRequest postCreateRequest){
         return ApiResponse.success(postManageService.createBoardPost(userId, boardCode, postCreateRequest));
     }
 

@@ -1,14 +1,18 @@
 package ussum.homepage.application.post.service.dto.request;
 
 import ussum.homepage.domain.post.RightsDetail;
+import ussum.homepage.infra.jpa.post.entity.RightsDetailEntity.PersonType;
 
 public record RightsDetailRequest(
         String name,
         String studentId,
         String major,
-        String personType
+        String personType,
+        Long postId
 ) {
-    public RightsDetail toDomain() {
-        return RightsDetail.of(null, name, studentId, major, personType);
+    public RightsDetail toDomain(Long postId) {
+        PersonType enumPersonType = PersonType.getEnumPersonTypeFromStringType(personType());
+
+        return RightsDetail.of(null, name, studentId, major, enumPersonType,postId);
     }
 }

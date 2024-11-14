@@ -9,13 +9,10 @@ import ussum.homepage.infra.jpa.post.entity.Category;
 
 @Getter
 public class GeneralPostCreateRequest extends PostCreateRequest {
-    private final String categoryCode;
 
     @Builder
-    public GeneralPostCreateRequest(String title, String content, String thumbNailImage, boolean isNotice, String categoryCode, List<Long> postFileList) {
-        super(title, content, thumbNailImage, isNotice,postFileList);
-        this.categoryCode = categoryCode;
-        this.postFileList = postFileList;
+    public GeneralPostCreateRequest(String title, String content, String categoryCode, String thumbNailImage, boolean isNotice, List<Long> postFileList) {
+        super(title, content,categoryCode, thumbNailImage, isNotice,postFileList);
     }
 
     public Post toDomain(Board board, Long userId){

@@ -76,6 +76,8 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_GROUP_CODE(HttpStatus.BAD_REQUEST,"ENUM_015","유효하지 않은 GROUPCODE입니다."),
     INVALID_FILE_CATEGORY(HttpStatus.BAD_REQUEST,"ENUM_016","유효하지 않은 FILE_CATEGORY입니다."),
     INVALID_FILETYPE(HttpStatus.BAD_REQUEST,"ENUM_017","유효하지 않은 FILETYPE입니다."),
+    PERSON_TYPE_NULL(HttpStatus.BAD_REQUEST,"ENUM_18","PERSON_TYPE이 NULL입니다."),
+    INVALID_PERSON_TYPE(HttpStatus.BAD_REQUEST,"ENUM_19","유효하지 않은 PERSON_TYPE입니다."),
     /**
      * 401 Unauthorized, Token 관련 에러
      */

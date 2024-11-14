@@ -12,11 +12,17 @@ import ussum.homepage.infra.jpa.post.repository.RightsDetailJpaRepository;
 public class RightsDetailRepositoryImpl implements RightsDetailRepository {
 
     private final RightsDetailJpaRepository rightsDetailJpaRepository;
+    private final RightsDetailMapper rightsDetailMapper;
 
     @Override
     public void saveAll(List<RightsDetail> rightsDetails) {
         rightsDetailJpaRepository.saveAll(rightsDetails.stream()
-                                .map(RightsDetailMapper::toEntity)
+                                .map(rightsDetailMapper::toEntity)
                                 .toList());
+    }
+
+    @Override
+    public void deleteAll(Long postId) {
+        rightsDetailJpaRepository.deleteByPostEntityId(postId);
     }
 }

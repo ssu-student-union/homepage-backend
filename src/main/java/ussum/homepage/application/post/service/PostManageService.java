@@ -177,7 +177,7 @@ public class PostManageService {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         PostCreateRequest converPostCreateRequest = postFactory.convert(boardCode,postCreateRequest);
         Post post = postAppender.createPost(converPostCreateRequest.toDomain(board, userId));
-        postAdditionalAppender.createAdditional(converPostCreateRequest);
+        postAdditionalAppender.createAdditional(converPostCreateRequest,post.getId());
         postFileAppender.updatePostIdForIds(converPostCreateRequest.getPostFileList(), post.getId(), FileCategory.자료집아님);
         return PostCreateResponse.of(post.getId(), boardCode);
     }
