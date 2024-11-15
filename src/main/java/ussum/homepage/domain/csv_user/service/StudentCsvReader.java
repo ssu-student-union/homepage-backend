@@ -33,7 +33,13 @@ public class StudentCsvReader {
         boolean name = request.getName().equals(studentCsv.getStudentName());
         boolean studentId = request.getStudentId().equals(studentCsv.getStudentId().toString());
         boolean groupName = request.getMemberCode().equals(MemberCode.getEnumMemberCodeFromStringMemberCode(studentCsv.getGroupName()).getStringMemberCode());
-        boolean major = request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(studentCsv.getMajor()).getStringMajorCode());
+        boolean major;
+        if (request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(studentCsv.getMajor()).getStringMajorCode())){
+            major = true;
+        }else{
+            // 예술창작학부로 들어올시 예외 처리를 하기 위해 일단 이렇게 코드 처리
+            major = request.getMajorCode().equals("문예창작전공") & studentCsv.getMajor().equals("영화예술전공");
+        }
 
         if(!(name && studentId && groupName && major)){
             throw new GeneralException(ErrorStatus.INVALID_ONBOARDING_REQUEST);
