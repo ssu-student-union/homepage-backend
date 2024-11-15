@@ -38,6 +38,8 @@ public class RightsDetailEntity {
     @NotNull
     private String name;
 
+    private String phoneNumber;
+
     private String studentId;
 
     private String major;
@@ -73,7 +75,7 @@ public class RightsDetailEntity {
                     .orElseThrow(() -> new InvalidValueException(INVALID_PERSON_TYPE));
         }
     }
-    public static RightsDetailEntity of(Long id, String name, String studentId, String major, PersonType personType,PostEntity postEntity) {
-        return new RightsDetailEntity(id, name, studentId, major, personType, postEntity);
+    public static RightsDetailEntity of(Long id, String name, String phoneNumber, String studentId, String major, PersonType personType,PostEntity postEntity) {
+        return new RightsDetailEntity(id, name, phoneNumber,studentId, major, personType, postEntity);
     }
 }

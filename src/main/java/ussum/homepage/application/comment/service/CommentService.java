@@ -36,7 +36,7 @@ public class CommentService {
 
     @Transactional
     public PostCommentResponse createComment(Long userId, Long postId, PostCommentCreateRequest postCommentCreateRequest) {
-        String commentType = memberManager.getCommentType(userId);
+        String commentType = memberManager.getCommentType(userId,postId);
         PostComment postComment = postCommentAppender.createPostComment(postCommentCreateRequest.toDomain(userId, postId, commentType));
         petitionPostProcessor.onAdminCommentPosted(postId, postComment.getCommentType());
         return postCommentFormatter.format(postComment, userId);

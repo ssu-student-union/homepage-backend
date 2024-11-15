@@ -34,6 +34,8 @@ public enum Category {
     RECEIVED("접수완료"),
     ANSWERED("답변완료"),
     COMPLETED("종료됨"),
+    //건의 게시판(답변완료, 답변대기)
+    PENDING("답변대기"),
 
     //감사기구 카테고리(감사계획, 감사결과, 기타)
     AUDIT_PLAN("감사계획"),
