@@ -8,6 +8,7 @@ import ussum.homepage.domain.member.MemberRepository;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.infra.jpa.comment.entity.CommentType;
+import ussum.homepage.infra.jpa.post.entity.BoardCode;
 
 import java.util.List;
 
@@ -44,9 +45,10 @@ public class MemberManager {
     }
 
     private List<Member> getCommitteeMembers(Long userId, Long boardId) {
-        return switch (boardId.intValue()) {
-            case 5 -> memberRepository.findCentralOperationCommitteeMember(userId);
-            case 8 -> memberRepository.findStudentHumanRightsCommitteeMember(userId);
+        return switch (BoardCode.getEnumBoardCodeFromBoardId(boardId.intValue())) {
+            case PETITION -> memberRepository.findCentralOperationCommitteeMember(userId);
+            case SUGGESTION -> memberRepository.findStudentHumanRightsCommitteeMember(userId);
+            case RIGHTS -> memberRepository.findSuggestionCommitteeMember(userId);
             default -> new ArrayList<>();
         };
     }

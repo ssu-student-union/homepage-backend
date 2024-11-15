@@ -113,7 +113,7 @@ public enum MemberCode {
     // 교지편집위원회
     SCHOOL_MAGAZINE_EDITORIAL_COMMITTEE("교지편집위원회"),
 
-    // 학생복지위원회O
+    // 학생복지위원회
     STUDENT_WELFARE_COMMITTEE("학생복지위원회"),
 
     // IT지원위원회
