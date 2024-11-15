@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface MemberRepository {
     Optional<Member> findByUserId(Long userId);
     List<Member> findCentralOperationCommitteeMember(Long userId);
+    List<Member> findStudentHumanRightsCommitteeMember(Long userId);
     void save(Member member);
     List<Member> findAllByUserId(Long userId);
     Optional<Member> findByUserIdAndGroupId(Long userId, Long groupId);
