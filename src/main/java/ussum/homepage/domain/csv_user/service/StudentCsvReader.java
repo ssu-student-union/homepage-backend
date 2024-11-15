@@ -38,7 +38,7 @@ public class StudentCsvReader {
             major = true;
         }else{
             // 예술창작학부로 들어올시 예외 처리를 하기 위해 일단 이렇게 코드 처리
-            major = request.getMajorCode().equals("문예창작전공") & studentCsv.getMajor().equals("영화예술전공");
+            major = request.getMajorCode().equals("문예창작전공") | studentCsv.getMajor().equals("영화예술전공");
         }
 
         if(!(name && studentId && groupName && major)){
