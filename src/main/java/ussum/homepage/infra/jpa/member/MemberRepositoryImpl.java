@@ -57,7 +57,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     public List<Member> findSuggestionCommitteeMember(Long userId) {
         return memberJpaRepository.findAllByUserId(userId)
                 .stream()
-                .filter(memberEntity -> memberEntity.getGroupEntity().getGroupCode().equals(STUDENT_GOVERNMENT_ORGANIZATION))
+                .filter(memberEntity -> memberEntity.getMemberCode().equals(STUDENT_GOVERNMENT_ORGANIZATION))
                 .map(memberMapper::toDomain)
                 .toList();
     }
