@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import static ussum.homepage.infra.jpa.member.entity.MemberCode.CENTRAL_OPERATION_COMMITTEE;
 import static ussum.homepage.infra.jpa.member.entity.MemberCode.STUDENT_HUMAN_RIGHTS_COMMITTEE;
+import static ussum.homepage.infra.jpa.group.entity.GroupCode.STUDENT_GOVERNMENT_ORGANIZATION;
 
 @Repository
 @RequiredArgsConstructor
@@ -48,6 +49,20 @@ public class MemberRepositoryImpl implements MemberRepository {
         return memberJpaRepository.findAllByUserId(userId)
                 .stream()
                 .filter(memberEntity -> memberEntity.getMemberCode().equals(STUDENT_HUMAN_RIGHTS_COMMITTEE))
+                .map(memberMapper::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Member> findSuggestionCommitteeMember(Long userId) {
+        return memberJpaRepository.findAllByUserId(userId)
+                .stream()
+                .filter(memberEntity -> {
+                    if (memberEntity.getGroupEntity() == null || memberEntity.getGroupEntity().getGroupCode() == null) {
+                        return false;
+                    }
+                    return memberEntity.getGroupEntity().getGroupCode().equals(STUDENT_GOVERNMENT_ORGANIZATION);
+                })
                 .map(memberMapper::toDomain)
                 .toList();
     }

@@ -57,11 +57,11 @@ public class RightsDetailEntity {
     @Getter
     public enum PersonType {
 
-        REPORTER("신고자"),
+        REPORTER("REPORTER"),
 
-        VICTIM("피침해자"),
+        VICTIM("VICTIM"),
 
-        ATTACKER("침해자");
+        ATTACKER("ATTACKER"),;
 
         private final String type;
 
@@ -73,6 +73,13 @@ public class RightsDetailEntity {
                     .filter(personType -> personType.getType().equals(type))
                     .findFirst()
                     .orElseThrow(() -> new InvalidValueException(INVALID_PERSON_TYPE));
+        }
+
+        public static String getStringTypeFromPersonType(PersonType personType) {
+            if (personType == null) {
+                throw new InvalidValueException(INVALID_PERSON_TYPE);
+            }
+            return personType.getType();
         }
     }
     public static RightsDetailEntity of(Long id, String name, String phoneNumber, String studentId, String major, PersonType personType,PostEntity postEntity) {
