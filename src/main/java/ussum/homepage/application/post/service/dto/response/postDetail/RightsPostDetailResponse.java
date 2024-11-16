@@ -12,21 +12,21 @@ import ussum.homepage.infra.jpa.post.entity.RightsDetailEntity;
 
 @Getter
 public class RightsPostDetailResponse extends PostDetailResDto{
-    private List<FileResponse> fileResponseList;
+    private List<FileResponse> postFileList;
     private List<PostOfficialCommentResponse> officialCommentList;
     private List<RightsDetail> rightsDetailList;
 
     @Builder
     private RightsPostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor,
-                                     List<FileResponse> fileResponseList, List<PostOfficialCommentResponse> officialCommentList,
+                                     List<FileResponse> postFileList, List<PostOfficialCommentResponse> officialCommentList,
                                      List<String> canAuthority, List<RightsDetail> rightsDetailList) {
         super(postId,categoryName,authorName,title,content,createdAt,lastEditedAt,isAuthor,canAuthority);
-        this.fileResponseList = fileResponseList;
+        this.postFileList = postFileList;
         this.officialCommentList = officialCommentList;
         this.rightsDetailList = rightsDetailList;
     }
 
-    public static RightsPostDetailResponse of(Post post, Boolean isAuthor, User user, String category, List<FileResponse> fileResponseList,
+    public static RightsPostDetailResponse of(Post post, Boolean isAuthor, User user, String category, List<FileResponse> postFileList,
                                               List<PostOfficialCommentResponse> officialCommentList, List<RightsDetail> rightsDetailList) {
      return RightsPostDetailResponse.builder()
              .postId(post.getId())
@@ -36,7 +36,7 @@ public class RightsPostDetailResponse extends PostDetailResDto{
              .content(post.getContent())
              .createdAt(post.getCreatedAt())
              .lastEditedAt(post.getLastEditedAt())
-             .fileResponseList(fileResponseList)
+             .postFileList(postFileList)
              .officialCommentList(officialCommentList)
              .rightsDetailList(rightsDetailList)
              .isAuthor(isAuthor)

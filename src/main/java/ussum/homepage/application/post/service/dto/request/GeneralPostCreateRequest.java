@@ -11,8 +11,8 @@ import ussum.homepage.infra.jpa.post.entity.Category;
 public class GeneralPostCreateRequest extends PostCreateRequest {
 
     @Builder
-    public GeneralPostCreateRequest(String title, String content, String categoryCode, String thumbNailImage, boolean isNotice, List<Long> postFileList) {
-        super(title, content,categoryCode, thumbNailImage, isNotice,postFileList);
+    public GeneralPostCreateRequest(String title, String content, String category, String thumbNailImage, boolean isNotice, List<Long> postFileList) {
+        super(title, content,category, thumbNailImage, isNotice,postFileList);
     }
 
     public Post toDomain(Board board, Long userId){
@@ -27,7 +27,7 @@ public class GeneralPostCreateRequest extends PostCreateRequest {
                 thumbNailImage,
                 status,
                 null,null,null,
-                categoryCode,
+                category,
                 userId,
                 board.getId());
     }
@@ -39,7 +39,7 @@ public class GeneralPostCreateRequest extends PostCreateRequest {
                 thumbNailImage,
                 "새로운",
                 null,null,null,
-                categoryCode,
+                this.category,
                 userId,
                 boardId);
     }

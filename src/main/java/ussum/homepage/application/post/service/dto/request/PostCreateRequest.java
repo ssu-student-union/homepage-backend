@@ -13,15 +13,15 @@ import ussum.homepage.domain.post.Post;
 public abstract class PostCreateRequest {
     protected String title;
     protected String content;
-    protected String categoryCode;
+    protected String category;
     protected String thumbNailImage;
     protected boolean isNotice;
     protected List<Long> postFileList;
 
-    public PostCreateRequest(String title, String content, String categoryCode, String thumbNailImage, boolean isNotice, List<Long> postFileList) {
+    public PostCreateRequest(String title, String content, String category, String thumbNailImage, boolean isNotice, List<Long> postFileList) {
         this.title = title;
         this.content = content;
-        this.categoryCode = categoryCode;
+        this.category = category;
         this.thumbNailImage = thumbNailImage;
         this.isNotice = isNotice;
         this.postFileList = postFileList;
