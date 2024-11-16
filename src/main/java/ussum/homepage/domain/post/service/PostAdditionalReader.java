@@ -15,7 +15,6 @@ public class PostAdditionalReader {
 
     @Transactional
     public List<RightsDetail> getRightsDetailByPostId(Long postId) {
-        List<RightsDetail> rightsDetails = rightsDetailRepository.findAllByPostId(postId);
-        return rightsDetails;
+        return rightsDetailRepository.findAllByPostId(postId);
     }
 }
