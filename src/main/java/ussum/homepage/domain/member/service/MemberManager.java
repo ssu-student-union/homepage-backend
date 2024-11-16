@@ -44,8 +44,13 @@ public class MemberManager {
                 : CommentType.OFFICIAL.getStringCommentType();
     }
 
+    public String getBoardType(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow();
+        return BoardCode.getEnumBoardCodeFromBoardId(post.getBoardId()).toString();
+    }
+
     private List<Member> getCommitteeMembers(Long userId, Long boardId) {
-        return switch (BoardCode.getEnumBoardCodeFromBoardId(boardId.intValue())) {
+        return switch (BoardCode.getEnumBoardCodeFromBoardId(boardId)) {
             case PETITION -> memberRepository.findCentralOperationCommitteeMember(userId);
             case SUGGESTION -> memberRepository.findStudentHumanRightsCommitteeMember(userId);
             case RIGHTS -> memberRepository.findSuggestionCommitteeMember(userId);

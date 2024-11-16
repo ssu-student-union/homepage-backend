@@ -30,7 +30,7 @@ public enum BoardCode {
                 .orElseThrow(() -> new InvalidValueException(INVALID_BOARDCODE));
     }
 
-    public static BoardCode getEnumBoardCodeFromBoardId(int boardId) {
+    public static BoardCode getEnumBoardCodeFromBoardId(Long boardId) {
         return Arrays.stream(values())
                 .filter(boardCode -> boardCode.boardId == boardId)
                 .findFirst()
