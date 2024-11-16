@@ -23,7 +23,7 @@ public class PostAdditionalAppender {
 
             List<RightsDetail> rightsDetailList = new ArrayList<>();
 
-            for (RightsDetailRequest detailRequest : ((RightsPostCreateRequest) converPostCreateRequest).getRelatedPeople()){
+            for (RightsDetailRequest detailRequest : ((RightsPostCreateRequest) converPostCreateRequest).getRightsDetailList()){
                 rightsDetailList.add(detailRequest.toDomain(postId));
             }
             rightsDetailRepository.saveAll(rightsDetailList);

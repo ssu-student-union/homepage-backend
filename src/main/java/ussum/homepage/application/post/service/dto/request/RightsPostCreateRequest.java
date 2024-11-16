@@ -8,13 +8,13 @@ import ussum.homepage.domain.post.Post;
 
 @Getter
 public class RightsPostCreateRequest extends PostCreateRequest {
-    private final List<RightsDetailRequest> relatedPeople;
+    private final List<RightsDetailRequest> rightsDetailList;
 
     @Builder
-    public RightsPostCreateRequest(String title, String content, String categoryCode,String thumbNailImage, boolean isNotice,
-                                   List<Long> postFileList, List<RightsDetailRequest> relatedPeople) {
-        super(title, content, categoryCode, thumbNailImage, isNotice, postFileList);
-        this.relatedPeople = relatedPeople;
+    public RightsPostCreateRequest(String title, String content, String category,String thumbNailImage, boolean isNotice,
+                                   List<Long> postFileList, List<RightsDetailRequest> rightsDetailList) {
+        super(title, content, category, thumbNailImage, isNotice, postFileList);
+        this.rightsDetailList = rightsDetailList;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class RightsPostCreateRequest extends PostCreateRequest {
                 thumbNailImage,
                 "새로운",
                 null, null, null,
-                categoryCode,
+                category,
                 userId,
                 board.getId());
     }

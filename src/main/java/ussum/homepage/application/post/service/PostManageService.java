@@ -207,7 +207,7 @@ public class PostManageService {
     public PostCreateResponse createDataPost(Long userId, String fileCategory, GeneralPostCreateRequest generalPostCreateRequest){
         Board board = boardReader.getBoardWithBoardCode(BoardCode.DATA.getStringBoardCode());
         Post post = postAppender.createPost(generalPostCreateRequest.toDomain(board.getId(), userId, Category.getEnumCategoryCodeFromStringCategoryCode(
-                generalPostCreateRequest.getCategoryCode())));
+                generalPostCreateRequest.getCategory())));
         postFileAppender.updatePostIdAndFileCategoryForIds(generalPostCreateRequest.getPostFileList(), post.getId(), fileCategory);
         return PostCreateResponse.of(post.getId(), BoardCode.DATA.getStringBoardCode());
     }
