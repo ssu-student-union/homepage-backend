@@ -17,7 +17,7 @@ public class PostMapper {
     public Post toDomain(PostEntity postEntity){
 //        String onGoingStatus = OngoingStatus.fromEnumOrNull(postEntity.getOngoingStatus());
         String category = Category.fromEnumOrNull(postEntity.getCategory());
-        String suggestionTarget = SuggestionTarget.getTargetStringFromSuggestionTarget(postEntity.getSuggestionTarget());
+        String suggestionTarget = postEntity.getSuggestionTarget() != null  ? SuggestionTarget.getTargetStringFromSuggestionTarget(postEntity.getSuggestionTarget()) : null;
 
         return Post.of(
                 postEntity.getId(),
