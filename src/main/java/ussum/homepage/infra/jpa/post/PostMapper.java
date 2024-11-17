@@ -17,6 +17,7 @@ public class PostMapper {
     public Post toDomain(PostEntity postEntity){
 //        String onGoingStatus = OngoingStatus.fromEnumOrNull(postEntity.getOngoingStatus());
         String category = Category.fromEnumOrNull(postEntity.getCategory());
+        String suggestionTarget = SuggestionTarget.getTargetStringFromSuggestionTarget(postEntity.getSuggestionTarget());
 
         return Post.of(
                 postEntity.getId(),
@@ -30,6 +31,7 @@ public class PostMapper {
                 postEntity.getUpdatedAt(),
                 postEntity.getLastEditedAt(),
                 category,
+                suggestionTarget,
                 postEntity.getUserEntity().getId(),
                 postEntity.getBoardEntity().getId()
         );
@@ -49,6 +51,7 @@ public class PostMapper {
 //                ongoingStatus,
                 lastEditedAt,
                 Category.fromStringOrNull(post.getCategory()),
+                SuggestionTarget.fromString(post.getSuggestionTarget()),
                 UserEntity.from(post.getUserId()),
                 BoardEntity.from(post.getBoardId())
         );

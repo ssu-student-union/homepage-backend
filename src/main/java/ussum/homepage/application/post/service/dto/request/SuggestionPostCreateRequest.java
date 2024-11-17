@@ -7,19 +7,18 @@ import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 
 @Getter
-public class RightsPostCreateRequest extends PostCreateRequest {
-    private final List<RightsDetailRequest> rightsDetailList;
+public class SuggestionPostCreateRequest extends PostCreateRequest {
+    private final String suggestionTarget;
 
     @Builder
-    public RightsPostCreateRequest(String title, String content, String category,String thumbNailImage, boolean isNotice,
-                                   List<Long> postFileList, List<RightsDetailRequest> rightsDetailList) {
+    public SuggestionPostCreateRequest(String title, String content, String category, String thumbNailImage,
+                                       boolean isNotice, List<Long> postFileList, String suggestionTarget) {
         super(title, content, category, thumbNailImage, isNotice, postFileList);
-        this.rightsDetailList = rightsDetailList;
+        this.suggestionTarget = suggestionTarget;
     }
 
     @Override
     public Post toDomain(Board board, Long userId) {
-
         return Post.of(null,
                 title,
                 content,
@@ -28,13 +27,8 @@ public class RightsPostCreateRequest extends PostCreateRequest {
                 "새로운",
                 null, null, null,
                 category,
-                null,
+                suggestionTarget,
                 userId,
                 board.getId());
     }
-
-    private boolean validation(String boardCod){
-        return true;
-    }
 }
-
