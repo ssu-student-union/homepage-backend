@@ -11,16 +11,17 @@ import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.SuggestionTarget;
 
 @RequiredArgsConstructor
-public class GeneralBoardImpl implements BoardImpl {
+public class SuggestionBoardImpl implements BoardImpl {
     private final Long id;
 
     @Override
     public Page<Post> getPostList(PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, SuggestionTarget suggestionTarget, Pageable pageable) {
-        return postReader.getPostListByBoardIdAndCategory(this.id, category, pageable);
+        return postReader.getPostListByBoardIdAndCategoryAndSuggestionTarget(this.id, category, suggestionTarget, pageable);
     }
 
     @Override
     public Page<Post> searchPostList(String q, PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, Pageable pageable) {
         return postReader.searchPostListByBoardIdAndCategory(this.id, q, category, pageable);
     }
+
 }

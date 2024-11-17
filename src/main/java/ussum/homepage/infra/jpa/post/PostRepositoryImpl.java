@@ -226,6 +226,40 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public Page<Post> findAllByBoardIdAndCategoryAndSuggestionTarget(Long boardId, Category category, SuggestionTarget suggestionTarget, Pageable pageable) {
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
+
+        if (category != null) {
+            whereClause.and(postEntity.category.eq(category));
+        }
+
+        if (suggestionTarget != null) {
+            whereClause.and(postEntity.suggestionTarget.eq(suggestionTarget));
+        }
+
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(whereClause);
+
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+    }
+
+    @Override
     public Page<Post> findAllWithBoard(Pageable pageable, String boardCode) {
         BoardEntity boardEntity = boardJpaRepository.findByBoardCode(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode))
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
