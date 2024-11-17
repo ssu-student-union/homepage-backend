@@ -34,6 +34,7 @@ public record PostUpdateRequest(
                 DateUtils.parseHourMinSecFromCustomString(post.getUpdatedAt()),
                 LocalDateTime.now(),
                 categoryCode,
+                post.getSuggestionTarget(),
                 post.getUserId(),
                 board.getId()
         );
@@ -50,6 +51,7 @@ public record PostUpdateRequest(
                 DateUtils.parseHourMinSecFromCustomString(post.getUpdatedAt()),
                 LocalDateTime.now(),
                 categoryCode,
+                post.getSuggestionTarget(),
                 post.getUserId(),
                 6L
         );

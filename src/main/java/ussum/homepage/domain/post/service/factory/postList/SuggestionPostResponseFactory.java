@@ -16,4 +16,10 @@ public class SuggestionPostResponseFactory implements PostListResponseFactory {
         return SuggestionPostResponse.of(post, user);
     }
 
+    public static PostListResDto createResponse(Post post, PostReader postReader, PostReactionReader postReactionReader, UserReader userReader, Long userId) {
+
+        User user = userReader.getUserWithId(post.getUserId());
+        return SuggestionPostResponse.of(post, user);
+    }
+
 }

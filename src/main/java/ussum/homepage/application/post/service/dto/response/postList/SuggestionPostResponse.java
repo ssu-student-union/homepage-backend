@@ -9,11 +9,13 @@ import ussum.homepage.domain.user.User;
 public class SuggestionPostResponse extends PostListResDto {
 
     private final String author;
+    private final Long userId;
 
     @Builder
-    private SuggestionPostResponse(Long postId, String title, String content, String date, String category, String author) {
+    private SuggestionPostResponse(Long postId, String title, String content, String date, String category, String author, Long userId) {
         super(postId, title, content, date, category);
         this.author = author;
+        this.userId = userId;
     }
 
     public static SuggestionPostResponse of(Post post, User user) {
@@ -24,6 +26,7 @@ public class SuggestionPostResponse extends PostListResDto {
                 .content(post.getContent())
                 .category(post.getCategory())
                 .author(user.getName())
+                .userId(user.getId())
                 .build();
     }
 

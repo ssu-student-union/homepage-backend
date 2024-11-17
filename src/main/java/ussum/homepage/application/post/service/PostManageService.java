@@ -34,10 +34,7 @@ import ussum.homepage.domain.post.service.*;
 import ussum.homepage.domain.post.service.factory.BoardFactory;
 import ussum.homepage.domain.post.service.factory.BoardImpl;
 import ussum.homepage.domain.post.service.factory.PostFactory;
-import ussum.homepage.domain.post.service.factory.postList.DataPostResponseFactory;
-import ussum.homepage.domain.post.service.factory.postList.PostListResponseFactory;
-import ussum.homepage.domain.post.service.factory.postList.PostResponseFactoryProvider;
-import ussum.homepage.domain.post.service.factory.postList.RightsPostResponseFactory;
+import ussum.homepage.domain.post.service.factory.postList.*;
 import ussum.homepage.domain.post.service.formatter.PostDetailFunction;
 import ussum.homepage.domain.post.service.processor.PetitionPostProcessor;
 import ussum.homepage.domain.postlike.service.PostReactionManager;
@@ -52,6 +49,7 @@ import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.FileCategory;
+import ussum.homepage.infra.jpa.post.entity.SuggestionTarget;
 import ussum.homepage.infra.utils.S3utils;
 
 import java.util.Comparator;
@@ -95,7 +93,7 @@ public class PostManageService {
             "인권신고게시판", (post, isAuthor, ignored, user, another_ignored1,categoryName, fileResponseList,postOfficialCommentResponseList,rightsDetailList) -> RightsPostDetailResponse.of(post,isAuthor,user,categoryName,fileResponseList,postOfficialCommentResponseList, rightsDetailList)
     );
 
-    public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category) {
+    public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category, String suggestionTarget) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
         //factory 사용 로직
@@ -105,16 +103,20 @@ public class PostManageService {
         GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
         MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
+        SuggestionTarget suggestionTargetEnum = StringUtils.hasText(suggestionTarget) ? SuggestionTarget.fromString(suggestionTarget) : null;
 
-        Page<Post> postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
+
+        Page<Post> postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 
         List<? extends PostListResDto> responseList = postList.getContent().stream()
                 .map(post -> {
                     PostListResponseFactory factory = PostResponseFactoryProvider.getFactory(board.getName());
-                    if (factory instanceof RightsPostResponseFactory && userId!=null) {
+                    if (userId!=null && factory instanceof RightsPostResponseFactory) {
                         return RightsPostResponseFactory.createResponse(post, postReader, postReactionReader, userReader, userId);
+                    } else if (userId!=null && factory instanceof SuggestionPostResponse) {
+                        return SuggestionPostResponseFactory.createResponse(post, postReader, postReactionReader, userReader, userId);
                     }
                     return factory.createResponse(post, postReader, postReactionReader, userReader);
                 })

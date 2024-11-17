@@ -15,6 +15,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.HandlerMapping;
 import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.RightsPostCreateRequest;
+import ussum.homepage.application.post.service.dto.request.SuggestionPostCreateRequest;
 import ussum.homepage.global.config.custom.BoardRequestBody;
 
 @Component
@@ -44,8 +45,16 @@ public class BoardRequestBodyArgumentResolver implements HandlerMethodArgumentRe
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         String body = StreamUtils.copyToString(request.getInputStream(), StandardCharsets.UTF_8);
 
-        Class<?> targetClass = "인권신고게시판".equals(boardCode) ?
-                RightsPostCreateRequest.class : GeneralPostCreateRequest.class;
+        Class<?> targetClass;
+
+        // boardCode에 따라 요청 객체의 클래스를 결정
+        if ("인권신고게시판".equals(boardCode)) {
+            targetClass = RightsPostCreateRequest.class;
+        } else if ("건의게시판".equals(boardCode)) {
+            targetClass = SuggestionPostCreateRequest.class;
+        } else {
+            targetClass = GeneralPostCreateRequest.class;  // 기본값 설정
+        }
 
         Object result = objectMapper.readValue(body, targetClass);
 

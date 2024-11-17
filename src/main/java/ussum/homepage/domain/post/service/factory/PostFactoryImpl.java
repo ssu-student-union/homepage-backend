@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.RightsPostCreateRequest;
+import ussum.homepage.application.post.service.dto.request.SuggestionPostCreateRequest;
 
 @Component
 public class PostFactoryImpl implements PostFactory {
@@ -22,6 +23,18 @@ public class PostFactoryImpl implements PostFactory {
                         .isNotice(rightsPostCreateRequest.isNotice())
                         .postFileList(rightsPostCreateRequest.getPostFileList())
                         .rightsDetailList(rightsPostCreateRequest.getRightsDetailList())
+                        .build();
+            }
+            case "건의게시판" ->{
+                SuggestionPostCreateRequest suggestionPostCreateRequest = (SuggestionPostCreateRequest) request;
+                yield SuggestionPostCreateRequest.builder()
+                        .title(suggestionPostCreateRequest.getTitle())
+                        .content(suggestionPostCreateRequest.getContent())
+                        .category(suggestionPostCreateRequest.getCategory())
+                        .thumbNailImage(suggestionPostCreateRequest.getThumbNailImage())
+                        .isNotice(suggestionPostCreateRequest.isNotice())
+                        .postFileList(suggestionPostCreateRequest.getPostFileList())
+                        .suggestionTarget(suggestionPostCreateRequest.getSuggestionTarget())
                         .build();
             }
             default -> GeneralPostCreateRequest.builder()

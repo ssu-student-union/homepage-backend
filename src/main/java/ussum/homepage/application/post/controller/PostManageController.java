@@ -40,9 +40,10 @@ public class PostManageController {
                                                             @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
                                                             @PathVariable(name = "boardCode") String boardCode, @RequestParam(value = "groupCode", required = false) String groupCode,
                                                             @RequestParam(value = "memberCode",  required = false) String memberCode,
+                                                            @RequestParam(value = "suggestionTarget",  required = false) String suggestionTarget,
                                                             @RequestParam(value = "category",  required = false) String category) {
 
-        return ApiResponse.success(postManageService.getPostList(userId, boardCode, page, take, groupCode, memberCode, category));
+        return ApiResponse.success(postManageService.getPostList(userId, boardCode, page, take, groupCode, memberCode, category, suggestionTarget));
     }
 
     @Operation(summary = "자료집게시판 게시물 리스트 조회 api", description = """
