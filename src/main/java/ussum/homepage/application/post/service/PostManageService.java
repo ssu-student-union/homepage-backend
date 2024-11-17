@@ -34,10 +34,7 @@ import ussum.homepage.domain.post.service.*;
 import ussum.homepage.domain.post.service.factory.BoardFactory;
 import ussum.homepage.domain.post.service.factory.BoardImpl;
 import ussum.homepage.domain.post.service.factory.PostFactory;
-import ussum.homepage.domain.post.service.factory.postList.DataPostResponseFactory;
-import ussum.homepage.domain.post.service.factory.postList.PostListResponseFactory;
-import ussum.homepage.domain.post.service.factory.postList.PostResponseFactoryProvider;
-import ussum.homepage.domain.post.service.factory.postList.RightsPostResponseFactory;
+import ussum.homepage.domain.post.service.factory.postList.*;
 import ussum.homepage.domain.post.service.formatter.PostDetailFunction;
 import ussum.homepage.domain.post.service.processor.PetitionPostProcessor;
 import ussum.homepage.domain.postlike.service.PostReactionManager;
@@ -113,8 +110,10 @@ public class PostManageService {
         List<? extends PostListResDto> responseList = postList.getContent().stream()
                 .map(post -> {
                     PostListResponseFactory factory = PostResponseFactoryProvider.getFactory(board.getName());
-                    if (factory instanceof RightsPostResponseFactory && userId!=null) {
+                    if (userId!=null && factory instanceof RightsPostResponseFactory) {
                         return RightsPostResponseFactory.createResponse(post, postReader, postReactionReader, userReader, userId);
+                    } else if (userId!=null && factory instanceof SuggestionPostResponse) {
+                        return SuggestionPostResponseFactory.createResponse(post, postReader, postReactionReader, userReader, userId);
                     }
                     return factory.createResponse(post, postReader, postReactionReader, userReader);
                 })
