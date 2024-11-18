@@ -26,6 +26,11 @@ public enum SuggestionTarget {
                 .findFirst()
                 .orElseThrow(() -> new InvalidValueException(INVALID_MEMBERCODE));
     }
+    public static SuggestionTarget fromStringOrNull(String target) {
+        return Optional.ofNullable(target)
+                .map(SuggestionTarget::fromString)
+                .orElse(null);
+    }
 
     public static String getTargetStringFromSuggestionTarget(SuggestionTarget suggestionTarget) {
         return suggestionTarget.target;
