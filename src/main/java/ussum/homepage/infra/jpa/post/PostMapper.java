@@ -52,7 +52,7 @@ public class PostMapper {
 //                ongoingStatus,
                 lastEditedAt,
                 Category.fromStringOrNull(post.getCategory()),
-                SuggestionTarget.fromString(post.getSuggestionTarget()),
+                SuggestionTarget.fromStringOrNull(post.getSuggestionTarget()),
                 UserEntity.from(post.getUserId()),
                 BoardEntity.from(post.getBoardId())
         );
