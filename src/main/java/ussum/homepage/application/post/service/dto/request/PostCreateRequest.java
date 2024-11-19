@@ -6,6 +6,10 @@ import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 
 @Getter
+//@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "boardCode",defaultImpl = GeneralPostCreateRequest.class)
+//@JsonSubTypes({
+//        @JsonSubTypes.Type(value = RightsPostCreateRequest.class, name = "인권신고게시판")
+//})
 public abstract class PostCreateRequest {
     protected String title;
     protected String content;
