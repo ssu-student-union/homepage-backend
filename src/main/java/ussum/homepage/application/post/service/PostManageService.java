@@ -26,6 +26,7 @@ import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
 
 import ussum.homepage.domain.group.service.GroupReader;
+import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
@@ -112,6 +113,21 @@ public class PostManageService {
         PageInfo pageInfo = PageInfo.of(postList);
 
         List<? extends PostListResDto> responseList = postList.getContent().stream()
+                .filter(post -> {
+                    if (board.getId() == 8) {
+                        // 그룹 코드 11에 속하지 않은 경우 작성한 글만 반환
+                        boolean isInGroup11 = memberReader.getMembersWithUserId(userId).stream()
+                                .map(Member::getGroupId)
+                                .filter(groupId -> groupId != null)
+                                .anyMatch(groupId -> groupId.equals(11L));
+
+                        if(isInGroup11){
+                            return true;
+                        }
+                        return post.getUserId().equals(userId);
+                    }
+                    return true;
+                })
                 .map(post -> {
                     PostListResponseFactory factory = PostResponseFactoryProvider.getFactory(board.getName());
                     if (userId!=null && factory instanceof RightsPostResponseFactory) {
