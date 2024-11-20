@@ -48,6 +48,7 @@ import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
+import ussum.homepage.infra.jpa.post.PostMapper;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.FileCategory;
@@ -94,6 +95,7 @@ public class PostManageService {
             "건의게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, postOfficialCommentResponseList, another_ignored3) -> SuggestionPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList, postOfficialCommentResponseList),
             "인권신고게시판", (post, isAuthor, ignored, user, another_ignored1,categoryName, fileResponseList,postOfficialCommentResponseList,rightsDetailList) -> RightsPostDetailResponse.of(post,isAuthor,user,categoryName,fileResponseList,postOfficialCommentResponseList, rightsDetailList)
     );
+    private final PostMapper postMapper;
 
     public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category, String suggestionTarget) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
@@ -109,8 +111,6 @@ public class PostManageService {
 
 
         Page<Post> postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, pageable);
-
-        PageInfo pageInfo = PageInfo.of(postList);
 
         List<? extends PostListResDto> responseList = postList.getContent().stream()
                 .filter(post -> {
@@ -139,8 +139,9 @@ public class PostManageService {
                 })
                 .toList();
 
-        return PostListRes.of(responseList, pageInfo);
+        PageInfo pageInfo = PageInfo.of(postMapper.toPage((List<PostListResDto>) responseList,pageable));
 
+        return PostListRes.of(responseList, pageInfo);
     }
 
     public PostListRes<?> getDataList(Long userId, int page, int take, String majorCategory, String middleCategory, String subCategory) {
