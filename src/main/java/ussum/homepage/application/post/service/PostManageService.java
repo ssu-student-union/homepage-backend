@@ -108,26 +108,19 @@ public class PostManageService {
         MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
         SuggestionTarget suggestionTargetEnum = StringUtils.hasText(suggestionTarget) ? SuggestionTarget.fromString(suggestionTarget) : null;
+        boolean notUnionUser = memberReader.getMembersWithUserId(userId).stream()
+                .map(Member::getGroupId)
+                .filter(groupId -> groupId != null)
+                .anyMatch(groupId -> groupId.equals(11L));
+        Page<Post> postList;
 
+        if ((board.getId() == 8 || board.getId() == 7) && !notUnionUser){
+            postList = boardImpl.getPostListByUserId(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, userId, pageable);
+        }else postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, pageable);
 
-        Page<Post> postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, pageable);
+        PageInfo pageInfo = PageInfo.of(postList);
 
         List<? extends PostListResDto> responseList = postList.getContent().stream()
-                .filter(post -> {
-                    if (board.getId() == 8 || board.getId() == 7) {
-                        // 그룹 코드 11에 속하지 않은 경우 작성한 글만 반환
-                        boolean isInGroup11 = memberReader.getMembersWithUserId(userId).stream()
-                                .map(Member::getGroupId)
-                                .filter(groupId -> groupId != null)
-                                .anyMatch(groupId -> groupId.equals(11L));
-
-                        if(isInGroup11){
-                            return true;
-                        }
-                        return post.getUserId().equals(userId);
-                    }
-                    return true;
-                })
                 .map(post -> {
                     PostListResponseFactory factory = PostResponseFactoryProvider.getFactory(board.getName());
                     if (userId!=null && factory instanceof RightsPostResponseFactory) {
@@ -138,8 +131,6 @@ public class PostManageService {
                     return factory.createResponse(post, postReader, postReactionReader, userReader);
                 })
                 .toList();
-
-        PageInfo pageInfo = PageInfo.of(postMapper.toPage((List<PostListResDto>) responseList,pageable));
 
         return PostListRes.of(responseList, pageInfo);
     }

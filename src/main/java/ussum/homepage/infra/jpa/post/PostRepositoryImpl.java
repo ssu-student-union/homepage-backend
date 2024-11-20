@@ -615,6 +615,40 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public Page<Post> searchAllByBoardIdAndCategoryAndUserId(Long boardId, Category category, Pageable pageable,
+                                                             Long userId) {
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
+        if (userId != null) {
+            whereClause.and(postEntity.userEntity.id.eq(userId));
+        }
+
+        if (category != null) {
+            whereClause.and(postEntity.category.eq(category));
+        }
+
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(whereClause);
+
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+    }
+
+    @Override
     public void updatePostStatusNewToGeneral(LocalDateTime dueDateForNewStatus) {
         queryFactory
                 .update(postEntity)
