@@ -114,7 +114,7 @@ public class PostManageService {
 
         List<? extends PostListResDto> responseList = postList.getContent().stream()
                 .filter(post -> {
-                    if (board.getId() == 8) {
+                    if (board.getId() == 8 || board.getId() == 7) {
                         // 그룹 코드 11에 속하지 않은 경우 작성한 글만 반환
                         boolean isInGroup11 = memberReader.getMembersWithUserId(userId).stream()
                                 .map(Member::getGroupId)
