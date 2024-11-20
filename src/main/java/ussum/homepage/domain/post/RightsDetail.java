@@ -8,7 +8,7 @@ import ussum.homepage.infra.jpa.post.entity.RightsDetailEntity.PersonType;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RightsDetail {
-    private Long id;
+    private Long RightsDetailId;
     private String name;
     private String phoneNumber;
     private String studentId;

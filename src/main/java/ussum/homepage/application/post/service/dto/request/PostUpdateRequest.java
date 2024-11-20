@@ -2,7 +2,6 @@ package ussum.homepage.application.post.service.dto.request;
 
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
-import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.Status;
 import ussum.homepage.infra.utils.DateUtils;
 

@@ -29,4 +29,8 @@ public class PostAdditionalAppender {
             rightsDetailRepository.saveAll(rightsDetailList);
         }
     }
+    @Transactional
+    public Long modifyAdditional(Long rightsDetailId, RightsDetailRequest rightsDetailRequest) {
+       return rightsDetailRepository.updateRightsDetail(rightsDetailId, rightsDetailRequest);
+    }
 }

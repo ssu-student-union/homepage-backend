@@ -26,7 +26,7 @@ public class RightsDetailMapper {
                 .orElseThrow(() -> new IllegalArgumentException("Post not found"));
 
         PersonType personType = rightsDetail.getPersonType();
-        return RightsDetailEntity.of(rightsDetail.getId(), rightsDetail.getName(), rightsDetail.getPhoneNumber(),
+        return RightsDetailEntity.of(null, rightsDetail.getName(), rightsDetail.getPhoneNumber(),
                 rightsDetail.getStudentId(), rightsDetail.getMajor(), personType, postEntity);
     }
 

@@ -12,6 +12,7 @@ import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequ
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
+import ussum.homepage.application.post.service.dto.request.RightsDetailRequest;
 import ussum.homepage.application.post.service.dto.response.FileResponse;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
@@ -292,7 +293,6 @@ public class PostManageService {
         return PostFileDeleteResponse.of(s3Count, postFileCount);
     }
 
-
     @Transactional
     public Long editBoardPost(String boardCode, Long postId, PostUpdateRequest postUpdateRequest){
         Post post = postReader.getPostWithId(postId);
@@ -300,6 +300,12 @@ public class PostManageService {
         Post newPost = postModifier.updatePost(postUpdateRequest.toDomain(post, board));
         postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId(), FileCategory.자료집아님);
         return post.getId();
+    }
+
+    @Transactional
+    public Long editPostRightsDetail(Long rightsDetailId, RightsDetailRequest rightsDetailRequest){
+        RightsDetail rightsDetail = postAdditionalReader.getRightsDetailById(rightsDetailId);
+        return postAdditionalAppender.modifyAdditional(rightsDetailId, rightsDetailRequest);
     }
     @Transactional
     public Long editBoardDatePost(String fileCategory, Long postId, PostUpdateRequest postUpdateRequest){

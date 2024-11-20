@@ -13,6 +13,7 @@ import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequ
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
+import ussum.homepage.application.post.service.dto.request.RightsDetailRequest;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
@@ -165,6 +166,18 @@ public class PostManageController {
                                                         @PathVariable(name = "postId") Long postId,
                                                         @RequestBody PostUpdateRequest postUpdateRequest) {
         return ApiResponse.success(postManageService.editBoardPost(boardCode, postId, postUpdateRequest));
+    }
+
+    @Operation(summary = "인권신고 디테일 수정 api", description = """
+            인권신고 게시물 관련인 수정하는 api입니다.""")
+    @PatchMapping("/{boardCode}/posts/{postId}/{rightsDetailId}")
+    public ResponseEntity<ApiResponse<?>> editRightsDetailPost(@Parameter(hidden = true) @UserId Long userId,
+                                                               @PathVariable(name = "boardCode") String boardCode,
+                                                               @PathVariable(name = "postId") Long postId,
+                                                               @PathVariable(name = "rightsDetailId") Long rightsDetailId,
+                                                               @RequestBody RightsDetailRequest rightsDetailRequest
+                                                               ){
+        return ApiResponse.success(postManageService.editPostRightsDetail(rightsDetailId,rightsDetailRequest));
     }
     @Operation(summary = "자료집 게시물 수정 api", description = """
             자료집 게시물을 수정하는 api 입니다. 

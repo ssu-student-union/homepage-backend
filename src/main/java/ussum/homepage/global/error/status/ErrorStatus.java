@@ -34,6 +34,9 @@ public enum ErrorStatus implements BaseErrorCode {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_001","게시글을 찾을 수 없습니다."),
     POST_ONGOING_STATUS_IS_NOT_UPDATED(HttpStatus.INTERNAL_SERVER_ERROR,"POST_002","게시글 진행상태를 업데이트 하지 못했습니다."),
 
+    //RightsDetail 관련 에러
+    RIGHTS_DETAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "RIGHTS_DETAIL", "인권게시물 세부사항을 찾을 수 없습니다"),
+
     //PostComment 관련 에러
     POST_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_COMMENT_001","댓글을 찾을 수 없습니다."),
 
