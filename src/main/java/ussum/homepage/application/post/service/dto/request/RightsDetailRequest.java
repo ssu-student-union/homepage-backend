@@ -9,7 +9,8 @@ public record RightsDetailRequest(
         String studentId,
         String major,
         String personType,
-        Long postId
+        Long postId,
+        Long id
 ) {
     public RightsDetail toDomain(Long postId) {
         PersonType enumPersonType = PersonType.getEnumPersonTypeFromStringType(personType());
