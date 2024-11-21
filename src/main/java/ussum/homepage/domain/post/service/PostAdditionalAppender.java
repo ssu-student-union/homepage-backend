@@ -33,4 +33,8 @@ public class PostAdditionalAppender {
     public Long modifyAdditional(Long rightsDetailId, RightsDetailRequest rightsDetailRequest) {
        return rightsDetailRepository.updateRightsDetail(rightsDetailId, rightsDetailRequest);
     }
+    @Transactional
+    public void modifyAdditionalList(List<RightsDetail> rightsDetailList) {
+        rightsDetailRepository.updateRightsDetailList(rightsDetailList);
+    }
 }

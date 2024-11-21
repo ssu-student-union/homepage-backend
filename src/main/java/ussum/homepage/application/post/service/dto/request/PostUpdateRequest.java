@@ -14,7 +14,8 @@ public record PostUpdateRequest(
         String categoryCode,
         Boolean isNotice,
         String thumbnailImage,
-        List<Long> postFileList
+        List<Long> postFileList,
+        List<RightsDetailRequest> rightsDetailList
 ) {
     public Post toDomain(Post post, Board board) {
         return Post.of(

@@ -167,18 +167,6 @@ public class PostManageController {
                                                         @RequestBody PostUpdateRequest postUpdateRequest) {
         return ApiResponse.success(postManageService.editBoardPost(boardCode, postId, postUpdateRequest));
     }
-
-    @Operation(summary = "인권신고 디테일 수정 api", description = """
-            인권신고 게시물 관련인 수정하는 api입니다.""")
-    @PatchMapping("/{boardCode}/posts/{postId}/{rightsDetailId}")
-    public ResponseEntity<ApiResponse<?>> editRightsDetailPost(@Parameter(hidden = true) @UserId Long userId,
-                                                               @PathVariable(name = "boardCode") String boardCode,
-                                                               @PathVariable(name = "postId") Long postId,
-                                                               @PathVariable(name = "rightsDetailId") Long rightsDetailId,
-                                                               @RequestBody RightsDetailRequest rightsDetailRequest
-                                                               ){
-        return ApiResponse.success(postManageService.editPostRightsDetail(rightsDetailId,rightsDetailRequest));
-    }
     @Operation(summary = "자료집 게시물 수정 api", description = """
             자료집 게시물을 수정하는 api 입니다. 
             """)

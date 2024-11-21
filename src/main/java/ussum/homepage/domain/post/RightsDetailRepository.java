@@ -12,4 +12,6 @@ public interface RightsDetailRepository {
     Optional<RightsDetail> findById(Long rightsDetailId);
 
     Long updateRightsDetail(Long rightsDetailId, RightsDetailRequest rightsDetailRequest);
+
+    void updateRightsDetailList(List<RightsDetail> rightsDetailList);
 }

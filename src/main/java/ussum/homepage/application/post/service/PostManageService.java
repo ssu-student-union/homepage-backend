@@ -1,5 +1,6 @@
 package ussum.homepage.application.post.service;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -306,15 +307,17 @@ public class PostManageService {
         Post post = postReader.getPostWithId(postId);
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post newPost = postModifier.updatePost(postUpdateRequest.toDomain(post, board));
+        Optional.ofNullable(postUpdateRequest.rightsDetailList())
+                .ifPresent(rightsDetails -> {
+                    List<RightsDetail> domainRightsDetails = rightsDetails.stream()
+                            .map(request -> request.toDomain(postId))
+                            .collect(Collectors.toList());
+                    postAdditionalAppender.modifyAdditionalList(domainRightsDetails);
+                });
         postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId(), FileCategory.자료집아님);
         return post.getId();
     }
 
-    @Transactional
-    public Long editPostRightsDetail(Long rightsDetailId, RightsDetailRequest rightsDetailRequest){
-        RightsDetail rightsDetail = postAdditionalReader.getRightsDetailById(rightsDetailId);
-        return postAdditionalAppender.modifyAdditional(rightsDetailId, rightsDetailRequest);
-    }
     @Transactional
     public Long editBoardDatePost(String fileCategory, Long postId, PostUpdateRequest postUpdateRequest){
         Post post = postReader.getPostWithId(postId);
