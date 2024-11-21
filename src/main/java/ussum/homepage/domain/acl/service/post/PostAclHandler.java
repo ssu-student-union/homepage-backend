@@ -75,8 +75,11 @@ public class PostAclHandler {
             }
             if (isLoggedIn) {
                 boolean canAllRead = postAclManager.hasPermission(userId, boardCode, "ALL_READ");
+                boolean canRead = postAclManager.hasPermission(userId, boardCode, "READ");
                 if (canAllRead) {
                     allowedAuthorities.add("ALL_READ");
+                } else if (canRead) {
+                    allowedAuthorities.add("READ");
                 } else
                     deniedAuthorities.add("ALL_READ");
             }else deniedAuthorities.add("ALL_READ");
