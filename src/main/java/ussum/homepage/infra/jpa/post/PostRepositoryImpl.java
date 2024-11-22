@@ -48,6 +48,7 @@ import static ussum.homepage.global.error.status.ErrorStatus.*;
 
 import static ussum.homepage.infra.jpa.group.entity.QGroupEntity.groupEntity;
 import static ussum.homepage.infra.jpa.member.entity.QMemberEntity.memberEntity;;
+import static ussum.homepage.infra.jpa.post.entity.BoardCode.getEnumBoardCodeFromStringBoardCode;
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.increaseViewCount;
 import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
 import static ussum.homepage.infra.jpa.post.entity.QPostFileEntity.postFileEntity;
@@ -261,7 +262,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Page<Post> findAllWithBoard(Pageable pageable, String boardCode) {
-        BoardEntity boardEntity = boardJpaRepository.findByBoardCode(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode))
+        BoardEntity boardEntity = boardJpaRepository.findByBoardCode(getEnumBoardCodeFromStringBoardCode(boardCode))
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
         return postJpaRepository.findAllByBoard(pageable,boardEntity).map(postMapper::toDomain);
@@ -313,7 +314,11 @@ public class PostRepositoryImpl implements PostRepository {
         BoardEntity boardEntity = boardJpaRepository.findById(post.getBoardId())
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
-        if (boardEntity.getBoardCode().equals(BoardCode.getEnumBoardCodeFromStringBoardCode("청원게시판"))) {
+        BoardCode boardCode = boardEntity.getBoardCode();
+        if (boardCode.equals(getEnumBoardCodeFromStringBoardCode("청원게시판")) ||
+                boardCode.equals(getEnumBoardCodeFromStringBoardCode("건의게시판")) ||
+                boardCode.equals(getEnumBoardCodeFromStringBoardCode("인권신고게시판"))
+        ) {
             // 게시물에 해당하는 모든 댓글 조회 및 처리
             postCommentJpaRepository.findAllByPostId(post.getId())
                     .forEach(postCommentEntity -> {
@@ -349,7 +354,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Page<Post> findBySearchCriteria(Pageable pageable, String boardCode, String q, String categoryCode) {
-        BoardEntity boardEntity = boardJpaRepository.findByBoardCode(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode))
+        BoardEntity boardEntity = boardJpaRepository.findByBoardCode(getEnumBoardCodeFromStringBoardCode(boardCode))
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
         Category enumCategoryCodeFromStringCategory = Category.getEnumCategoryCodeFromStringCategoryCode(categoryCode);
@@ -442,7 +447,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     private BooleanExpression eqBoardCode(String boardCode) {
-        return boardCode != null ? boardEntity.boardCode.eq(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode)) : null;
+        return boardCode != null ? boardEntity.boardCode.eq(getEnumBoardCodeFromStringBoardCode(boardCode)) : null;
     }
 
     @Override
@@ -593,6 +598,40 @@ public class PostRepositoryImpl implements PostRepository {
                 .selectFrom(postEntity)
                 .where(whereClause)
                 .orderBy(postEntity.createdAt.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(whereClause);
+
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+    }
+
+    @Override
+    public Page<Post> searchAllByBoardIdAndCategoryAndUserId(Long boardId, Category category, Pageable pageable,
+                                                             Long userId) {
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
+        if (userId != null) {
+            whereClause.and(postEntity.userEntity.id.eq(userId));
+        }
+
+        if (category != null) {
+            whereClause.and(postEntity.category.eq(category));
+        }
+
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        List<PostEntity> content = query
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

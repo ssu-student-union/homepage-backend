@@ -27,7 +27,7 @@ public class RightsPostCreateRequest extends PostCreateRequest {
                 thumbNailImage,
                 "새로운",
                 null, null, null,
-                category,
+                "접수대기",
                 null,
                 userId,
                 board.getId());

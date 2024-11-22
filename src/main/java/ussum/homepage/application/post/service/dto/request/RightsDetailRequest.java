@@ -9,11 +9,11 @@ public record RightsDetailRequest(
         String studentId,
         String major,
         String personType,
-        Long postId
+        Long postId,
+        Long rightsDetailId
 ) {
     public RightsDetail toDomain(Long postId) {
-        PersonType enumPersonType = PersonType.getEnumPersonTypeFromStringType(personType());
 
-        return RightsDetail.of(null, name, phoneNumber, studentId, major, enumPersonType, postId);
+        return RightsDetail.of(rightsDetailId, name, phoneNumber, studentId, major, personType, postId);
     }
 }

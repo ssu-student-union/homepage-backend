@@ -1,5 +1,6 @@
 package ussum.homepage.application.post.service;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,6 +13,7 @@ import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequ
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
+import ussum.homepage.application.post.service.dto.request.RightsDetailRequest;
 import ussum.homepage.application.post.service.dto.response.FileResponse;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
@@ -25,6 +27,7 @@ import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
 
 import ussum.homepage.domain.group.service.GroupReader;
+import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
@@ -46,6 +49,7 @@ import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
+import ussum.homepage.infra.jpa.post.PostMapper;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.FileCategory;
@@ -92,6 +96,7 @@ public class PostManageService {
             "건의게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, postOfficialCommentResponseList, another_ignored3) -> SuggestionPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList, postOfficialCommentResponseList),
             "인권신고게시판", (post, isAuthor, ignored, user, another_ignored1,categoryName, fileResponseList,postOfficialCommentResponseList,rightsDetailList) -> RightsPostDetailResponse.of(post,isAuthor,user,categoryName,fileResponseList,postOfficialCommentResponseList, rightsDetailList)
     );
+    private final PostMapper postMapper;
 
     public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category, String suggestionTarget) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
@@ -104,9 +109,15 @@ public class PostManageService {
         MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
         SuggestionTarget suggestionTargetEnum = StringUtils.hasText(suggestionTarget) ? SuggestionTarget.fromString(suggestionTarget) : null;
+        boolean notUnionUser = memberReader.getMembersWithUserId(userId).stream()
+                .map(Member::getGroupId)
+                .filter(groupId -> groupId != null)
+                .anyMatch(groupId -> groupId.equals(11L));
+        Page<Post> postList;
 
-
-        Page<Post> postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, pageable);
+        if ((board.getId() == 8 || board.getId() == 7) && !notUnionUser){
+            postList = boardImpl.getPostListByUserId(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, userId, pageable);
+        }else postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 
@@ -123,7 +134,6 @@ public class PostManageService {
                 .toList();
 
         return PostListRes.of(responseList, pageInfo);
-
     }
 
     public PostListRes<?> getDataList(Long userId, int page, int take, String majorCategory, String middleCategory, String subCategory) {
@@ -292,15 +302,22 @@ public class PostManageService {
         return PostFileDeleteResponse.of(s3Count, postFileCount);
     }
 
-
     @Transactional
     public Long editBoardPost(String boardCode, Long postId, PostUpdateRequest postUpdateRequest){
         Post post = postReader.getPostWithId(postId);
         Board board = boardReader.getBoardWithBoardCode(boardCode);
         Post newPost = postModifier.updatePost(postUpdateRequest.toDomain(post, board));
+        Optional.ofNullable(postUpdateRequest.rightsDetailList())
+                .ifPresent(rightsDetails -> {
+                    List<RightsDetail> domainRightsDetails = rightsDetails.stream()
+                            .map(request -> request.toDomain(postId))
+                            .collect(Collectors.toList());
+                    postAdditionalAppender.modifyAdditionalList(domainRightsDetails);
+                });
         postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId(), FileCategory.자료집아님);
         return post.getId();
     }
+
     @Transactional
     public Long editBoardDatePost(String fileCategory, Long postId, PostUpdateRequest postUpdateRequest){
         Post post = postReader.getPostWithId(postId);
