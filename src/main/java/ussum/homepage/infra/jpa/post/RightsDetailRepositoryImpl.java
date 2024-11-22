@@ -1,6 +1,6 @@
 package ussum.homepage.infra.jpa.post;
 
-import static ussum.homepage.global.error.status.ErrorStatus.RIGHTS_DETAIL_ID_NULL;
+import static ussum.homepage.global.error.status.ErrorStatus.RIGHTS_DETAIL_ID_NOT_FOUND;
 import static ussum.homepage.infra.jpa.post.entity.QRightsDetailEntity.rightsDetailEntity;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -72,7 +72,7 @@ public class RightsDetailRepositoryImpl implements RightsDetailRepository {
     public void updateRightsDetailList(List<RightsDetail> rightsDetailList) {
         rightsDetailList.forEach(rightsDetail -> {
             if (rightsDetail.getRightsDetailId() == null) {
-                throw new GeneralException(RIGHTS_DETAIL_ID_NULL);
+                throw new GeneralException(RIGHTS_DETAIL_ID_NOT_FOUND);
             }
             PersonType personType = PersonType.getEnumPersonTypeFromStringType(rightsDetail.getPersonType());
 
@@ -86,6 +86,16 @@ public class RightsDetailRepositoryImpl implements RightsDetailRepository {
                     .where(rightsDetailEntity.id.eq(rightsDetail.getRightsDetailId()))
                     .execute();
         });
+    }
+
+    @Override
+    public List<Long> findRightsDetailIdsByPostId(Long postId) {
+
+        return queryFactory
+                .select(rightsDetailEntity.id)
+                .from(rightsDetailEntity)
+                .where(rightsDetailEntity.postEntity.id.eq(postId))
+                .fetch();
     }
 }
 

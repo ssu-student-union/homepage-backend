@@ -14,4 +14,6 @@ public interface RightsDetailRepository {
     Long updateRightsDetail(Long rightsDetailId, RightsDetailRequest rightsDetailRequest);
 
     void updateRightsDetailList(List<RightsDetail> rightsDetailList);
+
+    List<Long> findRightsDetailIdsByPostId(Long postId);
 }

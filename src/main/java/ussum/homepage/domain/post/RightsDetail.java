@@ -3,7 +3,6 @@ package ussum.homepage.domain.post;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import ussum.homepage.infra.jpa.post.entity.RightsDetailEntity.PersonType;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
