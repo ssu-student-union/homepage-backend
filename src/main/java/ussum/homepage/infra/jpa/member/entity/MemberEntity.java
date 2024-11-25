@@ -11,6 +11,7 @@ import ussum.homepage.infra.jpa.user.entity.UserEntity;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 public class MemberEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
