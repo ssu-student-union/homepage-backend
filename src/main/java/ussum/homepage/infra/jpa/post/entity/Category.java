@@ -1,16 +1,14 @@
 package ussum.homepage.infra.jpa.post.entity;
 
+import static ussum.homepage.global.error.status.ErrorStatus.INVALID_CATEGORY_CODE;
+import static ussum.homepage.global.error.status.ErrorStatus.INVALID_ONGOING_STATUS;
+
+import java.util.Arrays;
+import java.util.Optional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 import ussum.homepage.global.error.exception.InvalidValueException;
-import ussum.homepage.infra.jpa.member.entity.MemberCode;
-
-import java.util.Arrays;
-import java.util.Optional;
-
-import static ussum.homepage.global.error.status.ErrorStatus.INVALID_CATEGORY_CODE;
-import static ussum.homepage.global.error.status.ErrorStatus.INVALID_ONGOING_STATUS;
 
 @RequiredArgsConstructor
 @Getter
@@ -36,6 +34,8 @@ public enum Category {
     RECEIVED("접수완료"),
     ANSWERED("답변완료"),
     COMPLETED("종료됨"),
+    //건의 게시판(답변완료, 답변대기)
+    PENDING("답변대기"),
 
     //감사기구 카테고리(감사계획, 감사결과, 기타)
     AUDIT_PLAN("감사계획"),
@@ -57,7 +57,8 @@ public enum Category {
     DINNER_RULES("회식세칙"),
     BUDGET_SETTLEMENT("예결산안"),
 
-    //공지사항 카테고리
+    //인권신고게시판
+    STAND_BY("접수대기"),
     //중앙 : 총학생회, 중앙운영위원회, 중앙선거관리위원회, 동아리연합회
     //단과대 : IT대학, 인문대학, 융합특성화자유전공학부, 사회과학대학, 공과대학, 경영대학, 경제통상대학, 자연과학대학, 법과대학
     STUDENT_COUNCIL("총학생회"),

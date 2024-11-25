@@ -1,5 +1,7 @@
 package ussum.homepage.application.comment.service;
 
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +18,11 @@ import ussum.homepage.domain.comment.service.PostCommentFormatter;
 import ussum.homepage.domain.comment.service.PostCommentModifier;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.member.service.MemberManager;
-import ussum.homepage.domain.post.service.PetitionPostProcessor;
+import ussum.homepage.domain.post.Board;
+import ussum.homepage.domain.post.service.factory.PostProcessorFactory;
+import ussum.homepage.domain.post.service.processor.PetitionPostProcessor;
+import ussum.homepage.domain.post.service.processor.PostProcessor;
+import ussum.homepage.infra.jpa.post.entity.BoardCode;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +33,9 @@ public class CommentService {
     private final PostCommentAppender postCommentAppender;
     private final PostCommentModifier postCommentModifier;
     private final MemberManager memberManager;
+    private final PostProcessorFactory postProcessorFactory;
     private final PetitionPostProcessor petitionPostProcessor;
+
 
     public PostCommentListResponse getCommentList(Long postId, int page, int take, String type){
         Page<PostComment> commentList = postCommentReader.getPostCommentList(setPageable(page, take), postId);
@@ -36,9 +44,11 @@ public class CommentService {
 
     @Transactional
     public PostCommentResponse createComment(Long userId, Long postId, PostCommentCreateRequest postCommentCreateRequest) {
-        String commentType = memberManager.getCommentType(userId);
+        String commentType = memberManager.getCommentType(userId,postId);
         PostComment postComment = postCommentAppender.createPostComment(postCommentCreateRequest.toDomain(userId, postId, commentType));
-        petitionPostProcessor.onAdminCommentPosted(postId, postComment.getCommentType());
+        PostProcessor postProcessor = postProcessorFactory.getProcessor(memberManager.getBoardType(postId));
+        postProcessor.onAdminCommentPosted(postId,postComment.getCommentType());
+        //petitionPostProcessor.onAdminCommentPosted(postId, postComment.getCommentType());
         return postCommentFormatter.format(postComment, userId);
     }
 

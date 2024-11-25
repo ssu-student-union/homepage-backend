@@ -1,63 +1,31 @@
 package ussum.homepage.application.post.service.dto.request;
 
-import lombok.Builder;
+import java.util.List;
+import lombok.Getter;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
-import ussum.homepage.domain.user.User;
-import ussum.homepage.infra.jpa.post.entity.Category;
 
-import java.util.List;
+@Getter
+//@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "boardCode",defaultImpl = GeneralPostCreateRequest.class)
+//@JsonSubTypes({
+//        @JsonSubTypes.Type(value = RightsPostCreateRequest.class, name = "인권신고게시판")
+//})
+public abstract class PostCreateRequest {
+    protected String title;
+    protected String content;
+    protected String category;
+    protected String thumbNailImage;
+    protected boolean isNotice;
+    protected List<Long> postFileList;
 
-public record PostCreateRequest(
-        String title,
-        String content,
-        String categoryCode,
-        String thumbNailImage,
-        boolean isNotice,
-        List<Long> postFileList
-) {
-    public Post toDomain(Board board, Long userId) {
-        String status = "새로운";
-        if (isNotice) {
-            status = "긴급공지";
-        }
-        return Post.of(
-                null,
-                title,
-                content,
-                1,
-                thumbNailImage,
-                status,
-//                OnGoingStatus,
-                null,
-                null,
-                null,
-                categoryCode,
-                userId,
-                board.getId()
-        );
+    public PostCreateRequest(String title, String content, String category, String thumbNailImage, boolean isNotice, List<Long> postFileList) {
+        this.title = title;
+        this.content = content;
+        this.category = category;
+        this.thumbNailImage = thumbNailImage;
+        this.isNotice = isNotice;
+        this.postFileList = postFileList;
     }
 
-    public Post toDomain(Long boardId, Long userId, Category category) {
-//        String status = "새로운";
-//        if (isNotice) {
-//            status = "긴급";
-//        }
-        return Post.of(
-                null,
-                title,
-                content,
-                1,
-                thumbNailImage,
-                "새로운",
-//                OnGoingStatus,
-                null,
-                null,
-                null,
-                category.getStringCategoryCode(),
-                userId,
-                boardId
-        );
-    }
-
+    public abstract Post toDomain(Board board, Long userId);
 }

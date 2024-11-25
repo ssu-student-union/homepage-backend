@@ -1,5 +1,6 @@
 package ussum.homepage.application.post.controller;
 
+import java.util.Comparator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/boards")
 public class PostController {
+    //Comparator
 //    private final PostService postService;
 
 //    @GetMapping("/{boardCode}/posts")
@@ -42,7 +44,7 @@ public class PostController {
 //    @PostMapping("/{boardCode}/posts")
 //    public ResponseEntity<ApiResponse<?>> createBoardPost(@UserId Long userId,
 //                                                          @PathVariable(name = "boardCode") String boardCode,
-//                                                          @RequestBody PostCreateRequest postCreateRequest) {
+//                                                          @RequestBody GeneralPostCreateRequest postCreateRequest) {
 //        postService.createPost(userId, boardCode,postCreateRequest);
 //        return ApiResponse.success(null);
 //    }

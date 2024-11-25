@@ -1,14 +1,11 @@
 package ussum.homepage.domain.post;
 
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import ussum.homepage.infra.jpa.post.entity.Category;
+import ussum.homepage.infra.jpa.post.entity.SuggestionTarget;
 import ussum.homepage.infra.utils.DateUtils;
-
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -23,6 +20,7 @@ public class Post {
     private String updatedAt;
     private String lastEditedAt;
     private String category;
+    private String suggestionTarget;
     private Long userId;
     private Long boardId;
 
@@ -36,10 +34,11 @@ public class Post {
                           LocalDateTime updatedAt,
                           LocalDateTime lastEditedAt,
                           String category,
+                          String suggestionTarget,
                           Long userId,
                           Long boardId) {
         return new Post(id, title, content, viewCount, thumbnailImage, status, DateUtils.formatHourMinSecToCustomString(createdAt),
                 DateUtils.formatHourMinSecToCustomString(updatedAt), DateUtils.formatHourMinSecToCustomString(lastEditedAt), category,
-                userId, boardId);
+                suggestionTarget,userId, boardId);
     }
 }

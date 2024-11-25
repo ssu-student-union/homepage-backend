@@ -16,6 +16,7 @@ import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.FileCategory;
+import ussum.homepage.infra.jpa.post.entity.SuggestionTarget;
 
 import java.util.List;
 
@@ -41,6 +42,10 @@ public class PostReader {
 
     public Page<Post> getPostListByBoardIdAndGroupCodeAndMemberCode(Long boardId, GroupCode groupCode, MemberCode memberCode, Pageable pageable ){
         return postRepository.findAllByBoardIdAndGroupCodeAndMemberCode(boardId, groupCode,memberCode, pageable);
+    }
+
+    public Page<Post> getPostListByBoardIdAndCategoryAndSuggestionTarget(Long boardId, Category category, SuggestionTarget suggestionTarget, Pageable pageable ){
+        return postRepository.findAllByBoardIdAndCategoryAndSuggestionTarget(boardId, category,suggestionTarget, pageable);
     }
 
     public Page<Post> getPostListByFileCategories(List<FileCategory> fileCategories, Pageable pageable){
@@ -79,5 +84,9 @@ public class PostReader {
 
     public Page<Post> searchPostListByBoardIdAndCategory(Long boardId, String q, Category category, Pageable pageable) {
         return postRepository.searchAllByBoardIdAndCategory(boardId, q, category, pageable);
+    }
+
+    public Page<Post> getPostListByBoardIdAndCategoryAndUserId(Long boardId, Category category, Pageable pageable, Long userId) {
+        return postRepository.searchAllByBoardIdAndCategoryAndUserId(boardId,category,pageable,userId);
     }
 }

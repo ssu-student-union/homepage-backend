@@ -2,7 +2,6 @@ package ussum.homepage.application.post.service.dto.request;
 
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
-import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.Status;
 import ussum.homepage.infra.utils.DateUtils;
 
@@ -15,7 +14,8 @@ public record PostUpdateRequest(
         String categoryCode,
         Boolean isNotice,
         String thumbnailImage,
-        List<Long> postFileList
+        List<Long> postFileList,
+        List<RightsDetailRequest> rightsDetailList
 ) {
     public Post toDomain(Post post, Board board) {
         return Post.of(
@@ -34,6 +34,7 @@ public record PostUpdateRequest(
                 DateUtils.parseHourMinSecFromCustomString(post.getUpdatedAt()),
                 LocalDateTime.now(),
                 categoryCode,
+                post.getSuggestionTarget(),
                 post.getUserId(),
                 board.getId()
         );
@@ -50,6 +51,7 @@ public record PostUpdateRequest(
                 DateUtils.parseHourMinSecFromCustomString(post.getUpdatedAt()),
                 LocalDateTime.now(),
                 categoryCode,
+                post.getSuggestionTarget(),
                 post.getUserId(),
                 6L
         );

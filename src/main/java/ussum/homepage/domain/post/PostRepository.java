@@ -7,6 +7,7 @@ import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.FileCategory;
+import ussum.homepage.infra.jpa.post.entity.SuggestionTarget;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,8 +30,10 @@ public interface PostRepository {
     //    Page<Post> findAllByGroupCodeAndMemberCodeAndSubCategory(GroupCode groupCode, MemberCode memberCode, String subCategory, Pageable pageable);
     Page<Post> findAllByFileCategories(List<FileCategory> fileCategories, Pageable pageable);
     Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boarId, GroupCode groupCode, MemberCode memberCode, Pageable pageable);
+    Page<Post> findAllByBoardIdAndCategoryAndSuggestionTarget(Long boarId, Category category, SuggestionTarget suggestionTarget, Pageable pageable);
     Page<Post> searchAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, String q, GroupCode groupCode, MemberCode memberCode, Pageable pageable);
     Page<Post> searchAllByBoardIdAndCategory(Long boardId, String q, Category category, Pageable pageable);
     Page<Post> searchAllByFileCategories(String q, List<FileCategory> fileCategories, Pageable pageable);
 
+    Page<Post> searchAllByBoardIdAndCategoryAndUserId(Long boardId, Category category, Pageable pageable, Long userId);
 }

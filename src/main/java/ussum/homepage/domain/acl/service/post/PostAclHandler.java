@@ -69,7 +69,21 @@ public class PostAclHandler {
             allowedAuthorities.add("WRITE");
         }
 
-        if (boardCode.equals("제휴게시판")) {
+        if (boardCode.equals("인권신고게시판")){
+            if (allowedAuthorities.isEmpty()){
+                deniedAuthorities.add("WRITE");
+            }
+            if (isLoggedIn) {
+                boolean canAllRead = postAclManager.hasPermission(userId, boardCode, "ALL_READ");
+                boolean canRead = postAclManager.hasPermission(userId, boardCode, "READ");
+                if (canAllRead) {
+                    allowedAuthorities.add("ALL_READ");
+                } else if (canRead) {
+                    allowedAuthorities.add("READ");
+                } else
+                    deniedAuthorities.add("ALL_READ");
+            }else deniedAuthorities.add("ALL_READ");
+        }else if (boardCode.equals("제휴게시판")) {
             if (!isLoggedIn) {
                 boolean denyRead = postAclManager.hasDenyPermissionForAnonymous(boardCode, "READ");
                 if (denyRead) {
