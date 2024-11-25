@@ -8,7 +8,7 @@ import java.util.List;
 @Getter
 public abstract class PostDetailResDto {
     protected Long postId;
-    protected String categoryName;
+    protected String category;
     protected String authorName;
     protected String title;
     protected String content;
@@ -17,9 +17,9 @@ public abstract class PostDetailResDto {
     protected Boolean isAuthor;
     protected List<String> allowedAuthorities;
 
-    protected PostDetailResDto(Long postId, String categoryName, String authorName, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor, List<String> allowedAuthorities) {
+    protected PostDetailResDto(Long postId, String category, String authorName, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor, List<String> allowedAuthorities) {
         this.postId = postId;
-        this.categoryName = categoryName;
+        this.category = category;
         this.authorName = authorName;
         this.title = title;
         this.content = content;

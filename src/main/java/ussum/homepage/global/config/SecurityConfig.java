@@ -102,7 +102,8 @@ private final CorsConfig corsConfig;
             "/admin/**",
             "/onboarding/mail",
             "/actuator",
-            "/actuator/prometheus"
+            "/actuator/prometheus",
+            "/users/user-info", // passu 정보 조회
     };
     @Bean
     public PasswordEncoder passwordEncoder() {

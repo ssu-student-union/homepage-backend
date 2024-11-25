@@ -1,5 +1,9 @@
-package ussum.homepage.domain.post.service;
+package ussum.homepage.domain.post.service.processor;
 
+import static ussum.homepage.global.error.status.ErrorStatus.POST_NOT_FOUND;
+
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -13,14 +17,9 @@ import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.utils.DateUtils;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-import static ussum.homepage.global.error.status.ErrorStatus.POST_NOT_FOUND;
-
 @Service
 @RequiredArgsConstructor
-public class PetitionPostProcessor {
+public class PetitionPostProcessor implements PostProcessor {
     private final PostRepository postRepository;
     private final PostReactionReader postReactionReader;
     private final PostCommentReader postCommentReader;
@@ -55,6 +54,7 @@ public class PetitionPostProcessor {
      * 중앙운영위원회가 댓글을 달았을 때 호출되는 메소드 (Trigger)
      */
     @Transactional
+    @Override
     public void onAdminCommentPosted(Long postId, String commentType) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostException(POST_NOT_FOUND));
@@ -96,7 +96,8 @@ public class PetitionPostProcessor {
     /**
      * '접수된' 청원에서 관리자가 댓글을 달면 '답변완료' 청원으로 변경
      */
-    private void handleReceivedStatus(Post post) {
+    @Override
+    public void handleReceivedStatus(Post post) {
         if (isAnsweredByAdmin(post)) {
             updatePostCategoryAndOngoingStatus(post,Category.ANSWERED.getStringCategoryCode());
         }
@@ -106,10 +107,11 @@ public class PetitionPostProcessor {
      * 관리자(지금은 일단 '중앙운영위원회')에 의해 답글이 달렸는지 여부를 확인하는 로직
      * 중앙집행위원회의 MemberCode는 CENTRAL_OPERATION_COMMITTEE 이다.
      */
-    private Boolean isAnsweredByAdmin(Post post) {
+    @Override
+    public Boolean isAnsweredByAdmin(Post post) {
         return postCommentReader.getCommentListWithPostId(post.getId())
                 .stream()
-                .anyMatch(postComment -> memberManager.getCommentType(postComment.getUserId()).equals("OFFICIAL"));
+                .anyMatch(postComment -> memberManager.getCommentType(postComment.getUserId(),post.getId()).equals("OFFICIAL"));
     }
 
     /**
@@ -119,7 +121,7 @@ public class PetitionPostProcessor {
         postRepository.updatePostCategory(post, Category.getEnumCategoryCodeFromStringCategoryCode(category));
     }
 
-
-
-
+    public String getBoardType() {
+        return "PETITION";
+    }
 }

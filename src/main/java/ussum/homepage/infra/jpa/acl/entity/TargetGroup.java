@@ -19,7 +19,8 @@ public enum TargetGroup {
     COLLEGE_UNION("단과대학생회"),
     CENTRAL_ORGANIZATION("중앙기구"),
     AUDIT_COMMITTEE("감사위원회"),
-    CLUB_UNION("동아리연합회");
+    CLUB_UNION("동아리연합회"),
+    STUDENT_RIGHTS_REPORT_SUBMISSION("인권신고접수");
 
     private final String stringTargetGroup;
 
