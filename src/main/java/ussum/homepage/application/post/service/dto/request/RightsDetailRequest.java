@@ -9,11 +9,10 @@ public record RightsDetailRequest(
         String studentId,
         String major,
         String personType,
-        Long postId,
-        Long rightsDetailId
+        Long postId
 ) {
     public RightsDetail toDomain(Long postId) {
 
-        return RightsDetail.of(rightsDetailId, name, phoneNumber, studentId, major, personType, postId);
+        return RightsDetail.of(name, phoneNumber, studentId, major, personType, postId);
     }
 }

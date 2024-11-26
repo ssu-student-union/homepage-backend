@@ -309,7 +309,7 @@ public class PostManageService {
                     List<RightsDetail> domainRightsDetails = rightsDetails.stream()
                             .map(request -> request.toDomain(postId))
                             .collect(Collectors.toList());
-                    postAdditionalAppender.modifyAdditionalList(domainRightsDetails);
+                    postAdditionalAppender.modifyAdditionalList(postId,domainRightsDetails);
                 });
         postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId(), FileCategory.자료집아님);
         return post.getId();

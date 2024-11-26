@@ -13,7 +13,7 @@ public interface RightsDetailRepository {
 
     Long updateRightsDetail(Long rightsDetailId, RightsDetailRequest rightsDetailRequest);
 
-    void updateRightsDetailList(List<RightsDetail> rightsDetailList);
+    void updateRightsDetailList(Long postId,List<RightsDetail> rightsDetailList);
 
     List<Long> findRightsDetailIdsByPostId(Long postId);
 }
