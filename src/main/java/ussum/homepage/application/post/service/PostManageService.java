@@ -1,5 +1,6 @@
 package ussum.homepage.application.post.service;
 
+import java.util.Collections;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -109,16 +110,16 @@ public class PostManageService {
         MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
         SuggestionTarget suggestionTargetEnum = StringUtils.hasText(suggestionTarget) ? SuggestionTarget.fromString(suggestionTarget) : null;
-        boolean notUnionUser = userId == null ? false :
+        boolean unionUser = userId == null ? false :
                 memberReader.getMembersWithUserId(userId).stream()
                         .map(Member::getGroupId)
                         .filter(groupId -> groupId != null)
                         .anyMatch(groupId -> groupId.equals(11L));
-        Page<Post> postList;
+        Page<Post> postList = null;
 
-        if ((board.getId() == 8 || board.getId() == 7) && !notUnionUser){
+        if ((board.getId() == 8 || board.getId() == 7) && !unionUser){
             postList = boardImpl.getPostListByUserId(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, userId, pageable);
-        }else postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, pageable);
+        } else postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 
