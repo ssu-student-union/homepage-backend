@@ -38,27 +38,9 @@ public class PostAdditionalAppender {
        return rightsDetailRepository.updateRightsDetail(rightsDetailId, rightsDetailRequest);
     }
     @Transactional
-    public void modifyAdditionalList(List<RightsDetail> rightsDetailList) {
-        Map<Long, List<Long>> postToRightsDetailsMap = rightsDetailList.stream()
-                .collect(Collectors.groupingBy(
-                        RightsDetail::getPostId,
-                        Collectors.mapping(RightsDetail::getRightsDetailId, Collectors.toList())
-                ));
+    public void modifyAdditionalList(Long postId, List<RightsDetail> rightsDetailList) {
 
-        //각 postId별로 rightsDetailIds 유효성 검증
-        for (Map.Entry<Long, List<Long>> entry : postToRightsDetailsMap.entrySet()) {
-            Long postId = entry.getKey();
-            List<Long> rightsDetailIds = entry.getValue();
-
-            // DB에서 해당 postId에 속한 실제 rightsDetailId 목록 조회
-            List<Long> validRightsDetailIds = rightsDetailRepository.findRightsDetailIdsByPostId(postId);
-
-            // 요청된 rightsDetailId들이 모두 유효한지 검증
-            if (!validRightsDetailIds.containsAll(rightsDetailIds)) {
-                throw new GeneralException(RIGHTS_DETAIL_ID_NOT_FOUND);
-            }
-        }
-        rightsDetailRepository.updateRightsDetailList(rightsDetailList);
+        rightsDetailRepository.updateRightsDetailList(postId,rightsDetailList);
 
     }
 }
