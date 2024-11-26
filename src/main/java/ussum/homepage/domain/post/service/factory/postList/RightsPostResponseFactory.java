@@ -17,12 +17,4 @@ public class RightsPostResponseFactory implements PostListResponseFactory{
 
         return RightsPostResponse.of(post,user);
     }
-
-    public static PostListResDto createResponse(Post post, PostReader postReader, PostReactionReader postReactionReader,
-                                         UserReader userReader,Long userId) {
-
-        User user = userReader.getUserWithId(post.getUserId());
-
-        return RightsPostResponse.of(post,user,userId);
-    }
 }

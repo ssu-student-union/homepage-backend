@@ -36,4 +36,6 @@ public interface PostRepository {
     Page<Post> searchAllByFileCategories(String q, List<FileCategory> fileCategories, Pageable pageable);
 
     Page<Post> searchAllByBoardIdAndCategoryAndUserId(Long boardId, Category category, Pageable pageable, Long userId);
+
+    Page<Post> searchAllByBoardIdAndCategoryAndUserIdTwo(Long boardId, String q, Category category, Pageable pageable, Long userId);
 }

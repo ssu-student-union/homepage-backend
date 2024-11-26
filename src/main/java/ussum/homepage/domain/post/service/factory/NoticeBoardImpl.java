@@ -31,4 +31,10 @@ public class NoticeBoardImpl implements BoardImpl {
         return postReader.searchPostListByBoardIdAndGroupCodeAndMemberCode(this.id, q, groupCode, memberCode, pageable);
     }
 
+    @Override
+    public Page<Post> searchPostListByUserId(String q, PostReader postReader, GroupCode groupCode,
+                                             MemberCode memberCode, Category category, Long userId, Pageable pageable) {
+        return null;
+    }
+
 }
