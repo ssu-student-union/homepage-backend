@@ -1,11 +1,14 @@
 package ussum.homepage.application.post.service.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 
+@Schema(description = "인권신고게시판 데이터 스키마")
 @Getter
 public class RightsPostCreateRequest extends PostCreateRequest {
     private final List<RightsDetailRequest> rightsDetailList;
