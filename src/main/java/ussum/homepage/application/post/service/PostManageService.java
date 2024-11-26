@@ -109,10 +109,11 @@ public class PostManageService {
         MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
         SuggestionTarget suggestionTargetEnum = StringUtils.hasText(suggestionTarget) ? SuggestionTarget.fromString(suggestionTarget) : null;
-        boolean notUnionUser = memberReader.getMembersWithUserId(userId).stream()
-                .map(Member::getGroupId)
-                .filter(groupId -> groupId != null)
-                .anyMatch(groupId -> groupId.equals(11L));
+        boolean notUnionUser = userId == null ? false :
+                memberReader.getMembersWithUserId(userId).stream()
+                        .map(Member::getGroupId)
+                        .filter(groupId -> groupId != null)
+                        .anyMatch(groupId -> groupId.equals(11L));
         Page<Post> postList;
 
         if ((board.getId() == 8 || board.getId() == 7) && !notUnionUser){
