@@ -1,5 +1,6 @@
 package ussum.homepage.application.post.service.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.infra.jpa.post.entity.Status;
@@ -11,6 +12,7 @@ import java.util.List;
 public record PostUpdateRequest(
         String title,
         String content,
+        @JsonAlias({"categoryCode", "category"})
         String categoryCode,
         Boolean isNotice,
         String thumbnailImage,
