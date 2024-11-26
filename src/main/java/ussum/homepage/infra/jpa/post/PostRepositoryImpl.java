@@ -620,7 +620,7 @@ public class PostRepositoryImpl implements PostRepository {
         BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
         if (userId != null) {
             whereClause.and(postEntity.userEntity.id.eq(userId));
-        }
+        }else return Page.empty();
 
         if (category != null) {
             whereClause.and(postEntity.category.eq(category));
