@@ -126,11 +126,6 @@ public class PostManageService {
         List<? extends PostListResDto> responseList = postList.getContent().stream()
                 .map(post -> {
                     PostListResponseFactory factory = PostResponseFactoryProvider.getFactory(board.getName());
-                    if (userId!=null && factory instanceof RightsPostResponseFactory) {
-                        return RightsPostResponseFactory.createResponse(post, postReader, postReactionReader, userReader, userId);
-                    } else if (userId!=null && factory instanceof SuggestionPostResponse) {
-                        return SuggestionPostResponseFactory.createResponse(post, postReader, postReactionReader, userReader, userId);
-                    }
                     return factory.createResponse(post, postReader, postReactionReader, userReader);
                 })
                 .toList();
@@ -344,8 +339,17 @@ public class PostManageService {
         GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
         MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
+        boolean unionUser = userId == null ? false :
+                memberReader.getMembersWithUserId(userId).stream()
+                        .map(Member::getGroupId)
+                        .filter(groupId -> groupId != null)
+                        .anyMatch(groupId -> groupId.equals(11L));
 
-        Page<Post> postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
+        Page<Post> postList = null;
+
+        if ((board.getId() == 8 || board.getId() == 7) && !unionUser){
+            postList = boardImpl.searchPostListByUserId(q,postReader,groupCodeEnum,memberCodeEnum,categoryEnum,userId,pageable);
+        }else postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 

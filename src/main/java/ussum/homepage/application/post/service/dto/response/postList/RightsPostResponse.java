@@ -10,19 +10,11 @@ import ussum.homepage.domain.user.User;
 @Getter
 public class RightsPostResponse extends PostListResDto{
     private final String reportName;
-    @JsonProperty("isAuthor")
-    private final boolean isAuthor;
-    @JsonIgnore
-    public boolean getAuthor() {
-        return isAuthor;
-    }
 
     @Builder
-    protected RightsPostResponse(Long postId, String title, String content, String date, String category, String reportName,
-                                 boolean isAuthor) {
+    protected RightsPostResponse(Long postId, String title, String content, String date, String category, String reportName) {
         super(postId, title, content, date, category);
         this.reportName = reportName;
-        this.isAuthor = isAuthor;
     }
 
     public static RightsPostResponse of(Post post, User user,Long userId) {
@@ -32,7 +24,6 @@ public class RightsPostResponse extends PostListResDto{
                 .date(post.getCreatedAt())
                 .category(post.getCategory())
                 .reportName(user.getName())
-                .isAuthor(userId.equals(user.getId()))
                 .build();
     }
 

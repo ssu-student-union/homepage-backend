@@ -89,4 +89,8 @@ public class PostReader {
     public Page<Post> getPostListByBoardIdAndCategoryAndUserId(Long boardId, Category category, Pageable pageable, Long userId) {
         return postRepository.searchAllByBoardIdAndCategoryAndUserId(boardId,category,pageable,userId);
     }
+
+    public Page<Post> searchPostListByBoardIdAndCategoryAndUserId(Long boardId, String q, Category category, Pageable pageable, Long userId) {
+        return postRepository.searchAllByBoardIdAndCategoryAndUserIdTwo(boardId,q,category,pageable,userId);
+    }
 }
