@@ -674,7 +674,7 @@ public Page<Post> searchAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, Stri
         BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
         if (userId != null) {
             whereClause.and(postEntity.userEntity.id.eq(userId));
-        }
+        }else return Page.empty();
 
         if (category != null) {
             whereClause.and(postEntity.category.eq(category));
@@ -700,6 +700,56 @@ public Page<Post> searchAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, Stri
                 pageable,
                 countQuery::fetchOne
         );
+    }
+
+    @Override
+    public Page<Post> searchAllByBoardIdAndCategoryAndUserIdTwo(Long boardId, String q, Category category,
+                                                                Pageable pageable, Long userId) {
+        // 기본 where 조건: 게시판 ID가 일치하는 게시물 필터링
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
+
+        // 사용자 ID 필터링 (null이면 빈 페이지 반환)
+        if (userId != null) {
+            whereClause.and(postEntity.userEntity.id.eq(userId));
+        } else {
+            return Page.empty(pageable);
+        }
+
+        // 카테고리가 지정된 경우 해당 카테고리의 게시물만 필터링
+        if (category != null) {
+            whereClause.and(postEntity.category.eq(category));
+        }
+
+        // 검색어 q가 지정된 경우, 제목에 해당 검색어가 포함된 게시물만 필터링
+        if (q != null && !q.isEmpty()) {
+            whereClause.and(postEntity.title.like("%" + q + "%"));
+        }
+
+        // 쿼리 작성: 게시물을 가져오고 페이지네이션 및 정렬 적용
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        // 실제 데이터 가져오기
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // 전체 카운트 쿼리: 페이징 정보 생성에 필요
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(whereClause);
+
+        // 페이지 객체 반환
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+
     }
 
     @Override

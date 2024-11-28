@@ -1,5 +1,6 @@
 package ussum.homepage.application.post.service;
 
+import java.util.Collections;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -109,26 +110,22 @@ public class PostManageService {
         MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
         SuggestionTarget suggestionTargetEnum = StringUtils.hasText(suggestionTarget) ? SuggestionTarget.fromString(suggestionTarget) : null;
-        boolean notUnionUser = memberReader.getMembersWithUserId(userId).stream()
-                .map(Member::getGroupId)
-                .filter(groupId -> groupId != null)
-                .anyMatch(groupId -> groupId.equals(11L));
-        Page<Post> postList;
+        boolean unionUser = userId == null ? false :
+                memberReader.getMembersWithUserId(userId).stream()
+                        .map(Member::getGroupId)
+                        .filter(groupId -> groupId != null)
+                        .anyMatch(groupId -> groupId.equals(11L));
+        Page<Post> postList = null;
 
-        if ((board.getId() == 8 || board.getId() == 7) && !notUnionUser){
+        if ((board.getId() == 8 || board.getId() == 7) && !unionUser){
             postList = boardImpl.getPostListByUserId(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, userId, pageable);
-        }else postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, pageable);
+        } else postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 
         List<? extends PostListResDto> responseList = postList.getContent().stream()
                 .map(post -> {
                     PostListResponseFactory factory = PostResponseFactoryProvider.getFactory(board.getName());
-                    if (userId!=null && factory instanceof RightsPostResponseFactory) {
-                        return RightsPostResponseFactory.createResponse(post, postReader, postReactionReader, userReader, userId);
-                    } else if (userId!=null && factory instanceof SuggestionPostResponse) {
-                        return SuggestionPostResponseFactory.createResponse(post, postReader, postReactionReader, userReader, userId);
-                    }
                     return factory.createResponse(post, postReader, postReactionReader, userReader);
                 })
                 .toList();
@@ -312,7 +309,7 @@ public class PostManageService {
                     List<RightsDetail> domainRightsDetails = rightsDetails.stream()
                             .map(request -> request.toDomain(postId))
                             .collect(Collectors.toList());
-                    postAdditionalAppender.modifyAdditionalList(domainRightsDetails);
+                    postAdditionalAppender.modifyAdditionalList(postId,domainRightsDetails);
                 });
         postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId(), FileCategory.자료집아님);
         return post.getId();
@@ -342,8 +339,17 @@ public class PostManageService {
         GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
         MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
+        boolean unionUser = userId == null ? false :
+                memberReader.getMembersWithUserId(userId).stream()
+                        .map(Member::getGroupId)
+                        .filter(groupId -> groupId != null)
+                        .anyMatch(groupId -> groupId.equals(11L));
 
-        Page<Post> postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
+        Page<Post> postList = null;
+
+        if ((board.getId() == 8 || board.getId() == 7) && !unionUser){
+            postList = boardImpl.searchPostListByUserId(q,postReader,groupCodeEnum,memberCodeEnum,categoryEnum,userId,pageable);
+        }else postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 

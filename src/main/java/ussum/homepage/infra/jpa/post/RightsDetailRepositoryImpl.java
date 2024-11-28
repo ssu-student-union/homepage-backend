@@ -69,23 +69,14 @@ public class RightsDetailRepositoryImpl implements RightsDetailRepository {
 
     @Override
     @Transactional
-    public void updateRightsDetailList(List<RightsDetail> rightsDetailList) {
-        rightsDetailList.forEach(rightsDetail -> {
-            if (rightsDetail.getRightsDetailId() == null) {
-                throw new GeneralException(RIGHTS_DETAIL_ID_NOT_FOUND);
-            }
-            PersonType personType = PersonType.getEnumPersonTypeFromStringType(rightsDetail.getPersonType());
+    public void updateRightsDetailList(Long postId,List<RightsDetail> rightsDetailList) {
+        queryFactory.delete(rightsDetailEntity)
+                .where(rightsDetailEntity.postEntity.id.eq(postId))
+                .execute();
 
-            queryFactory
-                    .update(rightsDetailEntity)
-                    .set(rightsDetailEntity.name, rightsDetail.getName())
-                    .set(rightsDetailEntity.major, rightsDetail.getMajor())
-                    .set(rightsDetailEntity.personType, personType)
-                    .set(rightsDetailEntity.studentId, rightsDetail.getStudentId())
-                    .set(rightsDetailEntity.phoneNumber, rightsDetail.getPhoneNumber())
-                    .where(rightsDetailEntity.id.eq(rightsDetail.getRightsDetailId()))
-                    .execute();
-        });
+        rightsDetailJpaRepository.saveAll(rightsDetailList.stream()
+                .map(rightsDetailMapper::toEntity)
+                .toList());
     }
 
     @Override

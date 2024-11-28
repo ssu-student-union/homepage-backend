@@ -1,15 +1,13 @@
 package ussum.homepage.application.post.service.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import lombok.Getter;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 
+@Schema(description = "게시글 생성 요청 기본 DTO")
 @Getter
-//@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "boardCode",defaultImpl = GeneralPostCreateRequest.class)
-//@JsonSubTypes({
-//        @JsonSubTypes.Type(value = RightsPostCreateRequest.class, name = "인권신고게시판")
-//})
 public abstract class PostCreateRequest {
     protected String title;
     protected String content;
