@@ -13,15 +13,22 @@ import java.util.*;
 @Component
 public class S3PreSignedUrlUtils {
     private final AmazonS3 amazonS3;
+    private final ContentTypeValidator contentTypeValidator;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Value("${cloud.aws.s3.presigned-url.expiration}")
+    private int expirationSeconds;
+
     public Map<String, String> generatePreSignedUrl(String fileName, String contentType) {
-        // URL 만료 시간 설정 (예: 5분)
+
+        contentTypeValidator.validate(contentType);
+
+        // URL 만료 시간 설정
         Date expiration = new Date();
         long expTimeMillis = expiration.getTime();
-        expTimeMillis += 1000 * 60 * 5;
+        expTimeMillis += 1000L * expirationSeconds; // 초 단위를 밀리초로 변환
         expiration.setTime(expTimeMillis);
 
         // PreSigned URL 생성을 위한 요청 객체 생성
@@ -52,14 +59,20 @@ public class S3PreSignedUrlUtils {
             List<String> contentTypes,
             String fileType
     ) {
+        int totalFiles = fileNames.size();
+
+        // 입력값 검증 추가
+        if (totalFiles != contentTypes.size()) {
+            throw new IllegalArgumentException("파일명 목록과 컨텐트 타입 목록의 크기가 일치하지 않습니다.");
+        }
+
         List<Map<String, String>> urls = new ArrayList<>();
 
-        for (int i = 0; i < fileNames.size(); i++) {
+        for (int i = 0; i < totalFiles; i++) {
             String originalFileName = fileNames.get(i);
             String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
             String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
 
-            // S3 폴더 경로 생성
             String folderPath = boardCode + "/" + userId + "/" + fileType + "/";
             String fileKey = folderPath + uniqueFileName;
 
