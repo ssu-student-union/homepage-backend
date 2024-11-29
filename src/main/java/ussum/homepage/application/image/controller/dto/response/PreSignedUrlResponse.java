@@ -1,13 +1,14 @@
 package ussum.homepage.application.image.controller.dto.response;
 
+import ussum.homepage.application.image.service.dto.PreSignedUrlInfo;
+
 import java.util.List;
 import java.util.Map;
 
 public record PreSignedUrlResponse(
-        List<Map<String, String>> preSignedUrls,
-        List<String> originalFileNames
+        List<PreSignedUrlInfo> preSignedUrls
 ) {
-    public static PreSignedUrlResponse of(List<Map<String, String>> preSignedUrls, List<String> originalFileNames) {
-        return new PreSignedUrlResponse(preSignedUrls, originalFileNames);
+    public static PreSignedUrlResponse of(List<PreSignedUrlInfo> preSignedUrls) {
+        return new PreSignedUrlResponse(preSignedUrls);
     }
 }

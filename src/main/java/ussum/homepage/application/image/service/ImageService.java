@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ussum.homepage.application.image.controller.dto.request.FileRequest;
 import ussum.homepage.application.image.controller.dto.request.FileUploadConfirmRequest;
 import ussum.homepage.application.image.controller.dto.response.PreSignedUrlResponse;
+import ussum.homepage.application.image.service.dto.PreSignedUrlInfo;
 import ussum.homepage.application.post.service.dto.response.postSave.PostFileListResponse;
 import ussum.homepage.application.post.service.dto.response.postSave.PostFileResponse;
 import ussum.homepage.domain.post.PostFile;
@@ -35,12 +36,11 @@ public class ImageService {
             List<FileRequest> files,
             List<FileRequest> images
     ) {
-        List<Map<String, String>> preSignedUrls = new ArrayList<>();
-        List<String> originalFileNames = new ArrayList<>();
+        List<PreSignedUrlInfo> preSignedUrls = new ArrayList<>();
 
         // 이미지 파일 처리
         if (!CollectionUtils.isEmpty(images)) {
-            List<Map<String, String>> imageUrls = s3PreSignedUrlUtils.generatePreSignedUrlWithPath(
+            List<PreSignedUrlInfo> imageUrls = s3PreSignedUrlUtils.generatePreSignedUrlWithPath(
                     userId,
                     boardCode,
                     images.stream().map(FileRequest::fileName).toList(),
@@ -48,12 +48,11 @@ public class ImageService {
                     "images"
             );
             preSignedUrls.addAll(imageUrls);
-            originalFileNames.addAll(images.stream().map(FileRequest::fileName).toList());
         }
 
         // 일반 파일 처리
         if (!CollectionUtils.isEmpty(files)) {
-            List<Map<String, String>> fileUrls = s3PreSignedUrlUtils.generatePreSignedUrlWithPath(
+            List<PreSignedUrlInfo> fileUrls = s3PreSignedUrlUtils.generatePreSignedUrlWithPath(
                     userId,
                     boardCode,
                     files.stream().map(FileRequest::fileName).toList(),
@@ -61,10 +60,9 @@ public class ImageService {
                     "files"
             );
             preSignedUrls.addAll(fileUrls);
-            originalFileNames.addAll(files.stream().map(FileRequest::fileName).toList());
         }
 
-        return PreSignedUrlResponse.of(preSignedUrls, originalFileNames);
+        return PreSignedUrlResponse.of(preSignedUrls);
     }
 
     @Transactional
