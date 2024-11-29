@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.springframework.util.CollectionUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -36,29 +39,29 @@ public class ImageService {
         List<String> originalFileNames = new ArrayList<>();
 
         // 이미지 파일 처리
-        if (images != null && !images.isEmpty()) {
+        if (!CollectionUtils.isEmpty(images)) {
             List<Map<String, String>> imageUrls = s3PreSignedUrlUtils.generatePreSignedUrlWithPath(
                     userId,
                     boardCode,
-                    images.stream().map(FileRequest::fileName).collect(Collectors.toList()),
-                    images.stream().map(FileRequest::contentType).collect(Collectors.toList()),
+                    images.stream().map(FileRequest::fileName).toList(),
+                    images.stream().map(FileRequest::contentType).toList(),
                     "images"
             );
             preSignedUrls.addAll(imageUrls);
-            originalFileNames.addAll(images.stream().map(FileRequest::fileName).collect(Collectors.toList()));
+            originalFileNames.addAll(images.stream().map(FileRequest::fileName).toList());
         }
 
         // 일반 파일 처리
-        if (files != null && !files.isEmpty()) {
+        if (!CollectionUtils.isEmpty(files)) {
             List<Map<String, String>> fileUrls = s3PreSignedUrlUtils.generatePreSignedUrlWithPath(
                     userId,
                     boardCode,
-                    files.stream().map(FileRequest::fileName).collect(Collectors.toList()),
-                    files.stream().map(FileRequest::contentType).collect(Collectors.toList()),
+                    files.stream().map(FileRequest::fileName).toList(),
+                    files.stream().map(FileRequest::contentType).toList(),
                     "files"
             );
             preSignedUrls.addAll(fileUrls);
-            originalFileNames.addAll(files.stream().map(FileRequest::fileName).collect(Collectors.toList()));
+            originalFileNames.addAll(files.stream().map(FileRequest::fileName).toList());
         }
 
         return PreSignedUrlResponse.of(preSignedUrls, originalFileNames);
@@ -71,7 +74,7 @@ public class ImageService {
                         .url(request.fileUrl())
                         .typeName(request.fileType())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
 
         List<PostFile> afterSaveList = postFileAppender.saveAllPostFile(postFiles);
 
@@ -81,17 +84,13 @@ public class ImageService {
                 .map(PostFile::getUrl)
                 .orElse(null);
 
-        AtomicInteger index = new AtomicInteger(0);
-        List<PostFileResponse> postFileResponses = afterSaveList.stream()
-                .map(postFile -> {
-                    int currentIndex = index.getAndIncrement();
-                    return PostFileResponse.of(
-                            postFile.getId(),
-                            postFile.getUrl(),
-                            confirmRequests.get(currentIndex).originalFileName()
-                    );
-                })
-                .collect(Collectors.toList());
+        List<PostFileResponse> postFileResponses = IntStream.range(0, afterSaveList.size())
+                .mapToObj(i -> PostFileResponse.of(
+                        afterSaveList.get(i).getId(),
+                        afterSaveList.get(i).getUrl(),
+                        confirmRequests.get(i).originalFileName()
+                ))
+                .toList();
 
         return PostFileListResponse.of(thumbnailUrl, postFileResponses);
     }
