@@ -7,12 +7,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ussum.homepage.application.image.service.dto.PreSignedUrlInfo;
+import ussum.homepage.infra.utils.s3.S3FileException;
 
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
+
+import static ussum.homepage.global.error.status.ErrorStatus.S3_VALIDATION_ERROR;
 
 @RequiredArgsConstructor
 @Component
@@ -78,5 +82,20 @@ public class S3PreSignedUrlUtils {
                     return generatePreSignedUrl(fileKey, contentTypes.get(i), originalFileName);
                 })
                 .toList();
+    }
+
+    public CompletableFuture<Boolean> doesObjectExistAsync(String fileUrl) {
+        return CompletableFuture.supplyAsync(() -> {
+            String fileKey = extractKeyFromUrl(fileUrl);
+            return amazonS3.doesObjectExist(bucket, fileKey);
+        });
+    }
+
+    private String extractKeyFromUrl(String fileUrl) {
+        try {
+            return fileUrl.substring(fileUrl.indexOf(bucket) + bucket.length() + 1);
+        } catch (IndexOutOfBoundsException e) {
+            throw new S3FileException.InvalidS3UrlException(S3_VALIDATION_ERROR);
+        }
     }
 }

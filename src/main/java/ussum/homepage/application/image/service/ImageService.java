@@ -13,15 +13,21 @@ import ussum.homepage.domain.post.PostFile;
 import ussum.homepage.domain.post.service.PostFileAppender;
 import ussum.homepage.infra.utils.S3PreSignedUrlUtils;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.springframework.util.CollectionUtils;
+import ussum.homepage.infra.utils.s3.S3FileException;
+
+import static ussum.homepage.global.error.status.ErrorStatus.FILE_NOT_FOUND;
+
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +73,21 @@ public class ImageService {
 
     @Transactional
     public PostFileListResponse confirmUpload(Long userId, List<FileUploadConfirmRequest> confirmRequests) {
+        // 모든 파일의 존재 여부를 비동기로 확인
+        List<CompletableFuture<Void>> validationFutures = confirmRequests.stream()
+                .map(request -> s3PreSignedUrlUtils.doesObjectExistAsync(request.fileUrl())
+                        .thenAccept(exists -> {
+                            if (!exists) {
+                                throw new S3FileException.FileNotFoundException(FILE_NOT_FOUND);
+                            }
+                        }))
+                .toList();
+
+        // 모든 검증 완료 대기
+        CompletableFuture.allOf(validationFutures.toArray(new CompletableFuture[0]))
+                .join();
+
+        // 이후 기존 로직 수행
         List<PostFile> postFiles = confirmRequests.stream()
                 .map(request -> PostFile.builder()
                         .url(request.fileUrl())
