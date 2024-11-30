@@ -40,6 +40,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //PostComment 관련 에러
     POST_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_COMMENT_001","댓글을 찾을 수 없습니다."),
+    POST_COMMENT_NOT_DELETE(HttpStatus.NOT_FOUND, "POST_COMMENT_002", "공식댓글은 삭제할 수 없습니다."),
 
     //PostReplyComment 관련 에러
     POST_REPLY_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_REPLY_COMMENT_001","대댓글을 찾을 수 없습니다."),
