@@ -343,7 +343,7 @@ public class PostManageService {
                 memberReader.getMembersWithUserId(userId).stream()
                         .map(Member::getGroupId)
                         .filter(groupId -> groupId != null)
-                        .anyMatch(groupId -> groupId.equals(9L));
+                        .anyMatch(groupId -> groupId.equals(9L)||groupId.equals(3L));
 
         Page<Post> postList = null;
 
