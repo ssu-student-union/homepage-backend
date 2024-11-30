@@ -55,6 +55,9 @@ public class PostAclHandler {
             if (postAclManager.hasPermission(userId, "청원게시판", "DELETE_COMMENT")) {
                 allowedAuthorities.add("DELETE_COMMENT");
             }
+            if (postAclManager.hasPermission(userId,"인권신고게시판","COMMENT")){
+                allowedAuthorities.add("COMMENT");
+            }
         }
 
         return commentListRes.validAuthorities(allowedAuthorities);
