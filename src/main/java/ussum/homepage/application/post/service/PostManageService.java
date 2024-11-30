@@ -339,17 +339,18 @@ public class PostManageService {
         GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
         MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
-        boolean unionUser = userId == null ? false :
+        boolean rightsUnion = userId == null ? false :
                 memberReader.getMembersWithUserId(userId).stream()
                         .map(Member::getGroupId)
                         .filter(groupId -> groupId != null)
-                        .anyMatch(groupId -> groupId.equals(11L));
+                        .anyMatch(groupId -> groupId.equals(9L));
 
         Page<Post> postList = null;
 
-        if ((board.getId() == 8 || board.getId() == 7) && !unionUser){
+        if (board.getId() == 8  && !rightsUnion){
             postList = boardImpl.searchPostListByUserId(q,postReader,groupCodeEnum,memberCodeEnum,categoryEnum,userId,pageable);
-        }else postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
+        }else if(board.getId() == 7){}
+        else postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 
