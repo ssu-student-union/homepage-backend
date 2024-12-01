@@ -39,6 +39,8 @@ public class QPostEntity extends EntityPathBase<PostEntity> {
 
     public final EnumPath<Status> status = createEnum("status", Status.class);
 
+    public final EnumPath<SuggestionTarget> suggestionTarget = createEnum("suggestionTarget", SuggestionTarget.class);
+
     public final StringPath thumbnailImage = createString("thumbnailImage");
 
     public final StringPath title = createString("title");

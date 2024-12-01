@@ -7,6 +7,7 @@ import ussum.homepage.infra.jpa.BaseEntity;
 @Table(name = "board")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class BoardEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
