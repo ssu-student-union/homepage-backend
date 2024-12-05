@@ -18,7 +18,8 @@ public enum BoardCode {
     PETITION("청원게시판", 5),
     DATA("자료집게시판", 6),
     SUGGESTION("건의게시판", 7),
-    RIGHTS("인권신고게시판", 8);
+    RIGHTS("인권신고게시판", 8),
+    NONE("미정",9);
 
     private final String stringBoardCode;
     private final int boardId;
