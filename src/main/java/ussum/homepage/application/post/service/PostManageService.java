@@ -1,6 +1,5 @@
 package ussum.homepage.application.post.service;
 
-import java.util.Collections;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,7 +13,6 @@ import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequ
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
-import ussum.homepage.application.post.service.dto.request.RightsDetailRequest;
 import ussum.homepage.application.post.service.dto.response.FileResponse;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
@@ -24,8 +22,9 @@ import ussum.homepage.application.post.service.dto.response.postList.*;
 import ussum.homepage.application.post.service.dto.response.postSave.*;
 
 
-import ussum.homepage.domain.acl.service.post.BoardPermission;
-import ussum.homepage.domain.acl.service.post.CustomACL;
+import ussum.homepage.domain.acl.annotation.ACLPermission;
+import ussum.homepage.domain.acl.annotation.ACLRule;
+import ussum.homepage.domain.acl.service.CustomACL;
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
@@ -51,11 +50,11 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
+import ussum.homepage.infra.jpa.acl.entity.Action;
 import ussum.homepage.infra.jpa.acl.entity.Target;
 import ussum.homepage.infra.jpa.acl.entity.Type;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
-import ussum.homepage.infra.jpa.post.PostMapper;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.FileCategory;
@@ -103,19 +102,21 @@ public class PostManageService {
             "인권신고게시판", (post, isAuthor, ignored, user, another_ignored1,categoryName, fileResponseList,postOfficialCommentResponseList,rightsDetailList) -> RightsPostDetailResponse.of(post,isAuthor,user,categoryName,fileResponseList,postOfficialCommentResponseList, rightsDetailList)
     );
 
-    @CustomACL(
-            action = "READ",
-            target = Target.EVERYONE,
-            type = Type.ALLOW,
-            boardPermissions = {
-                    @BoardPermission(
-                            boardCode = BoardCode.PARTNER,
-                            actions = {"READ"},
-                            target = Target.ANONYMOUS,
-                            type = Type.DENY
-                    )
-            }
-    )
+    @ACLRule({
+            @ACLPermission(
+                    target = Target.EVERYONE,
+                    type = Type.ALLOW,
+                    actions = {Action.READ},
+                    order = 1
+            ),
+            @ACLPermission(
+                    boardCode = BoardCode.PARTNER,
+                    target = Target.ANONYMOUS,
+                    type = Type.DENY,
+                    actions = {Action.READ},
+                    order = 0  // DENY를 먼저 체크하기 위해 order를 0으로 설정
+            )
+    })
     public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category,String suggestionTarget) {
 
         Board board = boardReader.getBoardWithBoardCode(boardCode);

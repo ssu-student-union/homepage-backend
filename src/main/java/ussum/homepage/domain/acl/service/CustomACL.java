@@ -1,9 +1,8 @@
-package ussum.homepage.domain.acl.service.post;
+package ussum.homepage.domain.acl.service;
 
 
 import ussum.homepage.infra.jpa.acl.entity.TargetGroup;
 import ussum.homepage.infra.jpa.acl.entity.Type;
-import ussum.homepage.infra.jpa.post.entity.BoardCode;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
