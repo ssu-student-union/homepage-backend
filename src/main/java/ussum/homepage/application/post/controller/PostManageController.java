@@ -9,13 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.post.service.PostManageService;
+import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
-import ussum.homepage.application.post.service.dto.request.PostUserRequest;
+import ussum.homepage.application.post.service.dto.request.RightsDetailRequest;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
+import ussum.homepage.global.config.custom.BoardRequestBody;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,15 +31,20 @@ public class PostManageController {
             요청으로 boardCode 그리고 queryParam 형식으로 , groupCode(중앙기구, 단과대학생회), memberCode(중앙운영위원회), category(필터링),page(입력 안 할시 첫번째 페이지), take(몇개 가져올지) 값을 넣으면 됩니다.
             공지사항게시판을 사용할때만 groupCode, memberCode에 값을 넣어서 사용하시면 됩니다. 
             나머지 게시판 필터링은 category에 값을 넣고 사용하시면 됩니다.
+            
+            인권신고게시판의 경우 조회 권한과 글쓰기 권한이 allowedAuthorities, deniedAuthorities에 담겨집니다. 각각 허용하는 권한과 허용하지 않는 권한이 담깁니다.
+            학생인권위원회가 조회할시 allowedAuthorities에 ALL_READ가 담겨집니다. 이외의 자치기구/비로그인 deniedAuthorities에 ALL_READ와 WRITE권한이 들어갑니다.
+            로그인의 경우 allowedAuthorities의 WRITE만 담기지만 만약 게시물 리스트의 author 필드가 true라면 게시물의 작성자로 리스트중 해당 게시물만 조회가능합니다. 
             """)
     @GetMapping("/{boardCode}/posts")
     public ResponseEntity<ApiResponse<?>> getBoardPostsList(@Parameter(hidden = true) @UserId Long userId,
                                                             @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
                                                             @PathVariable(name = "boardCode") String boardCode, @RequestParam(value = "groupCode", required = false) String groupCode,
                                                             @RequestParam(value = "memberCode",  required = false) String memberCode,
+                                                            @RequestParam(value = "suggestionTarget",  required = false) String suggestionTarget,
                                                             @RequestParam(value = "category",  required = false) String category) {
 
-        return ApiResponse.success(postManageService.getPostList(userId, boardCode, page, take, groupCode, memberCode, category));
+        return ApiResponse.success(postManageService.getPostList(userId, boardCode, page, take, groupCode, memberCode, category, suggestionTarget));
     }
 
     @Operation(summary = "자료집게시판 게시물 리스트 조회 api", description = """
@@ -62,7 +69,8 @@ public class PostManageController {
             userId를 넣고 반환되는 isAuthor 필드가 true 라면 해당 user는 본인이 작성한 게시물 임을 나타냅니다. 
             하지만 isAuthor 필드가 false 라면(비로그인 포함) 해당 user는 본인이 작성한 게시물이 아니기에 수정, 삭제를 막아야 합니다. 
             
-            + boardCode가 청원게시판일 때는 중앙운영위원회가 해당 게시물에 댓글을 작성했을 시 postOfficialCommentResponses라는 List 필드 값에 중앙운영위원회가 작성한 공식답변이 담기게 됩니다.  
+            + boardCode가 청원게시판일 때는 중앙운영위원회가 해당 게시물에 댓글을 작성했을 시 postOfficialCommentResponses라는 List 필드 값에 중앙운영위원회가 작성한 공식답변이 담기게 됩니다.
+            + 인권신고게시판일때 학생인권위원회가 해당 게시물에 댓글 달았을때에도 "officialCommentList"에 공식답변이 담기게 됩니다.  
             """)
     @GetMapping("/{boardCode}/posts/{postId}")
     public ResponseEntity<ApiResponse<?>> getBoardPost(@PathVariable(name = "boardCode") String boardCode,
@@ -83,11 +91,14 @@ public class PostManageController {
             이 컨트롤러에 있는 "/board/{boardCode}/files" api를 먼저 사용하여 리턴값으로 전달받는 값을 넣어주면 됩니다. 
             사진이나 파일이 존재하지 않을 시 빈 List로 전달해주시면 됩니다.
             isNotice는 긴급공지 사항을 나타내는 필드로 맞을시 true, 틀릴시 false를 반환하면 됩니다.
+            
+            인권신고게시판 경우 기존 json에 추가로 relatedPeople 리스트로 전달해주시면 됩니다. 리스트에는 name, major, studentId에 값을 String으로
+            넣어서 전달해주시고 personType은 신고자, 피침해자, 침해자중 선택하여 전달해주시면 됩니다.
             """)
     @PostMapping("/{boardCode}/posts")
     public ResponseEntity<ApiResponse<?>> createBoardPost(@Parameter(hidden = true) @UserId Long userId,
                                                           @PathVariable(name = "boardCode") String boardCode,
-                                                          @RequestBody PostCreateRequest postCreateRequest){
+                                                          @BoardRequestBody PostCreateRequest postCreateRequest){
         return ApiResponse.success(postManageService.createBoardPost(userId, boardCode, postCreateRequest));
     }
 
@@ -96,14 +107,12 @@ public class PostManageController {
             기본적으로 액세스 토큰을 필요로 합니다.
             요청 path에 fileCategory(카테고리 ex.총학생회칙) 값을 문자열 형태로 넣으면 됩니다.
             """)
-    @PostMapping("data/{fileCategory}/{fileType}/post")
+    @PostMapping("/data/{fileCategory}/post")
     public ResponseEntity<ApiResponse<?>> createDataPost(@Parameter(hidden = true) @UserId Long userId,
                                                          @PathVariable(name = "fileCategory") String fileCategory,
-                                                         @PathVariable(name = "fileType") String fileType,
-                                                         @RequestBody PostCreateRequest postCreateRequest) {
-        return ApiResponse.success(postManageService.createDataPost(userId, fileCategory, fileType, postCreateRequest));
+                                                         @RequestBody GeneralPostCreateRequest generalPostCreateRequest) {
+        return ApiResponse.success(postManageService.createDataPost(userId, fileCategory, generalPostCreateRequest));
     }
-
     @Operation(summary = "게시물 생성 시 파일 및 이미지 저장 api", description = """
             게시물 생성 시 파일 및 이미지 저장하는 api입니다.
             우선 이 api는 게시물 생성 api를 사용전 미리 호출하여야 합니다. 기본적으로 반환값이 저장된 파일 및 사진의 url이기 때문에
@@ -123,6 +132,17 @@ public class PostManageController {
                                                               @RequestPart(value = "files", required = false) MultipartFile[] files,
                                                               @RequestPart(value = "images", required = false) MultipartFile[] images) {
         return ApiResponse.success(postManageService.createBoardPostFile(userId, boardCode, files, images));
+    }
+
+    @Operation(summary = "자료집 게시물 생성 시 파일 및 이미지 저장 api", description = """
+            자료집 게시물 생성 시 파일 및 이미지 저장하는 api입니다.
+            """)
+    @PostMapping(value = "/data/files/{fileType}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ApiResponse<?>> createBoardDataPostFile(@Parameter(hidden = true) @UserId Long userId,
+                                                              @RequestPart(value = "files", required = false) MultipartFile[] files,
+                                                              @PathVariable(name = "fileType") String fileType) {
+        return ApiResponse.success(postManageService.createBoardDataPostFile(userId, files, fileType));
     }
 
     @Operation(summary = "게시물 단건 조회 후 파일 혹은 이미지 삭제 api", description = """
@@ -146,6 +166,16 @@ public class PostManageController {
                                                         @PathVariable(name = "postId") Long postId,
                                                         @RequestBody PostUpdateRequest postUpdateRequest) {
         return ApiResponse.success(postManageService.editBoardPost(boardCode, postId, postUpdateRequest));
+    }
+    @Operation(summary = "자료집 게시물 수정 api", description = """
+            자료집 게시물을 수정하는 api 입니다. 
+            """)
+    @PatchMapping("/data/{fileCategory}/posts/{postId}")
+    public ResponseEntity<ApiResponse<?>> editBoardDataPost(@Parameter(hidden = true) @UserId Long userId,
+                                                        @PathVariable(name = "fileCategory") String fileCategory,
+                                                            @PathVariable(name = "postId") Long postId,
+                                                        @RequestBody PostUpdateRequest postUpdateRequest) {
+        return ApiResponse.success(postManageService.editBoardDatePost(fileCategory, postId, postUpdateRequest));
     }
 
     @Operation(summary = "게시물 삭제 api", description = """

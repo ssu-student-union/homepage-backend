@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.PostCommentRepository;
+import ussum.homepage.domain.reaction.exception.PostCommentException;
 import ussum.homepage.domain.reaction.service.PostCommentReactionReader;
 import ussum.homepage.infra.jpa.comment.entity.CommentType;
 import ussum.homepage.infra.jpa.comment.entity.PostCommentEntity;
@@ -15,6 +16,7 @@ import ussum.homepage.infra.jpa.comment.repository.PostCommentJpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+import static ussum.homepage.global.error.status.ErrorStatus.POST_COMMENT_NOT_DELETE;
 import static ussum.homepage.infra.jpa.comment.entity.CommentType.GENERAL;
 import static ussum.homepage.infra.jpa.comment.entity.PostCommentEntity.updateDeletedAt;
 import static ussum.homepage.infra.jpa.comment.entity.QPostCommentEntity.postCommentEntity;
@@ -96,6 +98,9 @@ public class PostCommentRepositoryImpl implements PostCommentRepository {
 
     @Override
     public void delete(PostComment postComment){
+        if (CommentType.getEnumCommentTypeFromStringCommentType(postComment.getCommentType()).equals(CommentType.OFFICIAL)){
+            throw new PostCommentException(POST_COMMENT_NOT_DELETE);
+        }
         PostCommentEntity postCommentEntity = postCommentMapper.toEntity(postComment);
         updateDeletedAt(postCommentEntity);
         postCommentJpaRepository.save(postCommentEntity);

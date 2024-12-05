@@ -17,7 +17,7 @@ public class CSVReader {
     public FlatFileItemReader<StudentCsv> csvFileItemReader() { // 엔티티를 반환하는게 맞나?
         /* file read */
         FlatFileItemReader<StudentCsv> flatFileItemReader = new FlatFileItemReader<>();
-        flatFileItemReader.setResource(new ClassPathResource("csv/학생목록.csv"));
+        flatFileItemReader.setResource(new ClassPathResource(System.getProperty("user.dir") + "/csv/학생목록.csv"));
         flatFileItemReader.setLinesToSkip(1); // header line skip
         flatFileItemReader.setEncoding("UTF-8"); // encoding
 //        flatFileItemReader.setStrict(false);
@@ -29,14 +29,13 @@ public class CSVReader {
         /* delimitedLineTokenizer : setNames를 통해 각각의 데이터의 이름 설정 */
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer(",");
         delimitedLineTokenizer.setNames(
-                "STID",
-                "studentId",
-                "studentName",
-                "groupName",
-                "major",
-                "studentStatus",
-                "studentGroup",
-                "studentEmail"
+                "studentId", // 학번
+                "studentName", // 성명
+                "groupName", // 대학
+                "program", // 프로그램?
+                "major", // 학과(부)
+                "specificMajor", // 세부전공(건축만 존재)
+                "studentStatus" // 재학여부(재학, 휴학)
         );
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
 

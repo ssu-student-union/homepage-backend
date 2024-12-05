@@ -100,7 +100,10 @@ private final CorsConfig corsConfig;
             "/swagger-resources/**",
             "/v3/api-docs/**",
             "/admin/**",
-            "/onboarding/mail"
+            "/onboarding/mail",
+            "/actuator",
+            "/actuator/prometheus",
+            "/users/user-info", // passu 정보 조회
     };
     @Bean
     public PasswordEncoder passwordEncoder() {

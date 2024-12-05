@@ -20,7 +20,8 @@ public enum Action {
     DELETE("DELETE"),
     DELETE_COMMENT("DELETE_COMMENT"),
     COMMENT("COMMENT"),
-    REACTION("REACTION");
+    REACTION("REACTION"),
+    ALL_READ("ALL_READ");
 
     private final String stringAction;
 

@@ -41,7 +41,7 @@ public class PostAclHandler {
         postDetailRes.validAuthority(allowedAuthorities);
     }
 
-    public void applyPermissionsToCommentList(CommentListResponse commentListRes, Long userId) {
+    public CommentListResponse applyPermissionsToCommentList(CommentListResponse commentListRes, Long userId) {
         List<String> allowedAuthorities = new ArrayList<>();
         boolean isLoggedIn = userId != null;
 
@@ -55,9 +55,12 @@ public class PostAclHandler {
             if (postAclManager.hasPermission(userId, "청원게시판", "DELETE_COMMENT")) {
                 allowedAuthorities.add("DELETE_COMMENT");
             }
+            if (postAclManager.hasPermission(userId,"인권신고게시판","COMMENT")){
+                allowedAuthorities.add("COMMENT");
+            }
         }
 
-        commentListRes.validAuthority(allowedAuthorities);
+        return commentListRes.validAuthorities(allowedAuthorities);
     }
 
     private void addPermissionAuthorities(List<String> allowedAuthorities, List<String> deniedAuthorities, Long userId, String boardCode, boolean isLoggedIn) {
@@ -69,7 +72,21 @@ public class PostAclHandler {
             allowedAuthorities.add("WRITE");
         }
 
-        if (boardCode.equals("제휴게시판")) {
+        if (boardCode.equals("인권신고게시판")){
+            if (allowedAuthorities.isEmpty()){
+                deniedAuthorities.add("WRITE");
+            }
+            if (isLoggedIn) {
+                boolean canAllRead = postAclManager.hasPermission(userId, boardCode, "ALL_READ");
+                boolean canRead = postAclManager.hasPermission(userId, boardCode, "READ");
+                if (canAllRead) {
+                    allowedAuthorities.add("ALL_READ");
+                } else if (canRead) {
+                    allowedAuthorities.add("READ");
+                } else
+                    deniedAuthorities.add("ALL_READ");
+            }else deniedAuthorities.add("ALL_READ");
+        }else if (boardCode.equals("제휴게시판")) {
             if (!isLoggedIn) {
                 boolean denyRead = postAclManager.hasDenyPermissionForAnonymous(boardCode, "READ");
                 if (denyRead) {

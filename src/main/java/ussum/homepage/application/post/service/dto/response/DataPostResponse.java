@@ -19,11 +19,11 @@ public class DataPostResponse extends PostListResDto {
         this.files = files;
     }
 
-    public static DataPostResponse of(Post post, List<FileResponse> files) {
+    public static DataPostResponse of(Post post, List<FileResponse> files, String content) {
         return DataPostResponse.builder()
                 .postId(post.getId())
                 .title(post.getTitle())
-                .content(post.getContent())
+                .content(content)
                 .category(post.getCategory())
                 .date(post.getCreatedAt())
                 .isNotice(post.getTitle().equals("총학생회칙"))

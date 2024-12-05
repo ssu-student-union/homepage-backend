@@ -10,6 +10,6 @@ public interface PostFileRepository {
     Long deleteAllByUrl(List<String> urlList);
     Optional<PostFile> findById(Long id);
     List<PostFile> saveAll(List<PostFile> postFiles);
-    void updatePostIdForIds(List<Long> postFileIds, Long postId);
-    void updatePostIdAndFileCategoryForIds(List<Long> postFileIds, Long postId, FileCategory fileCategory, String fileType);
+    void updatePostIdForIds(List<Long> postFileIds, Long postId, FileCategory fileCategory);
+    void updatePostIdAndFileCategoryForIds(List<Long> postFileIds, Long postId, FileCategory fileCategory);
 }

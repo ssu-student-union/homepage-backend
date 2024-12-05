@@ -12,19 +12,17 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StudentCsv {
-    private Long STID;
     private Long studentId;
     private String studentName;
     private String groupName;
+    private String program;
     private String major;
+    private String specificMajor;
     private String studentStatus;
-    private String studentGroup; // 학생그룹의 의미
-    // 전화번호?
-    private String studentEmail;
 
-    public static StudentCsv of(Long STID, Long studentId, String studentName, String groupName,
-                                String major, String studentStatus, String studentGroup, String studentEmail) {
-        return new StudentCsv(STID, studentId, studentName, groupName,
-                major, studentStatus, studentGroup, studentEmail);
+    public static StudentCsv of(Long studentId, String studentName, String groupName,
+                                String program, String major, String specificMajor, String studentStatus) {
+        return new StudentCsv(studentId, studentName, groupName,
+                program, major, specificMajor, studentStatus);
     }
 }

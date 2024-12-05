@@ -23,11 +23,9 @@ public class QStudentCsvEntity extends EntityPathBase<StudentCsvEntity> {
 
     public final StringPath major = createString("major");
 
-    public final NumberPath<Long> STID = createNumber("STID", Long.class);
+    public final StringPath program = createString("program");
 
-    public final StringPath studentEmail = createString("studentEmail");
-
-    public final StringPath studentGroup = createString("studentGroup");
+    public final StringPath specificMajor = createString("specificMajor");
 
     public final NumberPath<Long> studentId = createNumber("studentId", Long.class);
 

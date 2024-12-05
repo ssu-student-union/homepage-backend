@@ -20,6 +20,9 @@ public enum GroupCode {
     //총학생회
     STUDENT_UNION("총학생회"),
 
+    //동아리연합회
+    CLUB_UNION("동아리연합회"),
+
     //중앙기구
     CENTRAL_ORGANIZATION("중앙기구"),
 

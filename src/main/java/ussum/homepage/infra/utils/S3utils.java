@@ -51,6 +51,24 @@ public class S3utils {
         }
         return amazonS3.getUrl(bucket, originalFilename).toString();
     }
+    public PostFileMediatorResponse uploadDataFileWithPath(Long userId, String boardCode, MultipartFile[] files, String fileType) {
+        List<Map<String, String>> uploadedFileUrls = new ArrayList<>();
+        List<String> originalFileNames = new ArrayList<>();
+
+        if (files != null && files.length > 0) {
+            PostFileMediatorResponse imageResponse = uploadFiles(userId, boardCode, files, fileType);
+            uploadedFileUrls.addAll(imageResponse.urlList());
+            originalFileNames.addAll(formatOriginalFileNames(imageResponse.originalFileNames()));
+        }
+//
+//        if (files != null && files.length > 0) {
+//            PostFileMediatorResponse fileResponse = uploadFiles(userId, boardCode, files, "files");
+//            uploadedFileUrls.addAll(fileResponse.urlList());
+//            originalFileNames.addAll(formatOriginalFileNames(fileResponse.originalFileNames()));
+//        }
+
+        return PostFileMediatorResponse.of(originalFileNames, uploadedFileUrls);
+    }
 
     public PostFileMediatorResponse uploadFileWithPath(Long userId, String boardCode, MultipartFile[] files, MultipartFile[] images) {
         List<Map<String, String>> uploadedFileUrls = new ArrayList<>();
@@ -168,8 +186,10 @@ public class S3utils {
     public void getFileToProject(String fileName)  {
         S3Object s3Object = amazonS3.getObject(bucket, fileName);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
+        String projectRootPath = System.getProperty("user.dir");
+        String filePath = projectRootPath + "/csv/" + fileName;
         try {
-            saveFile(inputStream, "**/src/main/resources/csv");
+            saveFile(inputStream, filePath);
         } catch (IOException e) {
             throw new GeneralException(ErrorStatus.S3_ERROR);
         }

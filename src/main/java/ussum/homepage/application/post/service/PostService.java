@@ -6,7 +6,7 @@
 //import org.springframework.stereotype.Service;
 //import org.springframework.transaction.annotation.Transactional;
 //
-//import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
+//import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequest;
 //import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 //import ussum.homepage.application.post.service.dto.response.*;
 //import ussum.homepage.domain.post.Board;
@@ -54,7 +54,7 @@
 ////        );
 ////    }
 //
-//    public void createPost(Long userId, String boardCode, PostCreateRequest postCreateRequest) {
+//    public void createPost(Long userId, String boardCode, GeneralPostCreateRequest postCreateRequest) {
 //        Board board = boardReader.getBoardWithBoardCode(boardCode);
 //
 //        postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode())));

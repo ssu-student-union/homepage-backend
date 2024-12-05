@@ -34,8 +34,13 @@ public enum ErrorStatus implements BaseErrorCode {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_001","게시글을 찾을 수 없습니다."),
     POST_ONGOING_STATUS_IS_NOT_UPDATED(HttpStatus.INTERNAL_SERVER_ERROR,"POST_002","게시글 진행상태를 업데이트 하지 못했습니다."),
 
+    //RightsDetail 관련 에러
+    RIGHTS_DETAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "RIGHTS_DETAIL_001", "인권게시물 세부사항을 찾을 수 없습니다."),
+    RIGHTS_DETAIL_ID_NOT_FOUND(HttpStatus.NOT_FOUND, "RIGHTS_DETAIL_002", "세부사항 ID값을 확인해주세요."),
+
     //PostComment 관련 에러
     POST_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_COMMENT_001","댓글을 찾을 수 없습니다."),
+    POST_COMMENT_NOT_DELETE(HttpStatus.NOT_FOUND, "POST_COMMENT_002", "공식댓글은 삭제할 수 없습니다."),
 
     //PostReplyComment 관련 에러
     POST_REPLY_COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_REPLY_COMMENT_001","대댓글을 찾을 수 없습니다."),
@@ -75,7 +80,9 @@ public enum ErrorStatus implements BaseErrorCode {
     WRONG_TRANSLATED_TO_KOREAN(HttpStatus.BAD_REQUEST,"ENUM_014","ONGOING_STATUS가 한국어로 잘못변환되었습니다."),
     INVALID_GROUP_CODE(HttpStatus.BAD_REQUEST,"ENUM_015","유효하지 않은 GROUPCODE입니다."),
     INVALID_FILE_CATEGORY(HttpStatus.BAD_REQUEST,"ENUM_016","유효하지 않은 FILE_CATEGORY입니다."),
-
+    INVALID_FILETYPE(HttpStatus.BAD_REQUEST,"ENUM_017","유효하지 않은 FILETYPE입니다."),
+    PERSON_TYPE_NULL(HttpStatus.BAD_REQUEST,"ENUM_18","PERSON_TYPE이 NULL입니다."),
+    INVALID_PERSON_TYPE(HttpStatus.BAD_REQUEST,"ENUM_19","유효하지 않은 PERSON_TYPE입니다."),
     /**
      * 401 Unauthorized, Token 관련 에러
      */

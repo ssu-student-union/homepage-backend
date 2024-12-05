@@ -17,10 +17,10 @@ public class PostReplyCommentResponse {
     public Boolean isAuthor;
     public Boolean isLiked;
     public Boolean isDeleted;
-    public List<String> canAuthority;
+//    public List<String> canAuthority;
 
     @Builder
-    public PostReplyCommentResponse(Long id, String authorName, String studentId, String content, String createdAt, String lastEditedAt, Integer likeCount, Boolean isAuthor, Boolean isLiked, Boolean isDeleted, List<String> canAuthority) {
+    public PostReplyCommentResponse(Long id, String authorName, String studentId, String content, String createdAt, String lastEditedAt, Integer likeCount, Boolean isAuthor, Boolean isLiked, Boolean isDeleted/*, List<String> canAuthority*/) {
         this.id = id;
         this.authorName = authorName;
         this.studentId = studentId;
@@ -31,7 +31,7 @@ public class PostReplyCommentResponse {
         this.isAuthor = isAuthor;
         this.isLiked = isLiked;
         this.isDeleted = isDeleted;
-        this.canAuthority = canAuthority;
+//        this.canAuthority = canAuthority;
     }
 
     public static PostReplyCommentResponse of(PostReplyComment postReplyComment, User user, Integer likeCount, Boolean isAuthor, Boolean isLiked) {
@@ -55,7 +55,7 @@ public class PostReplyCommentResponse {
                 .build();
     }
 
-    public void canAuthority(List<String> canAuthorityList) {
-        this.canAuthority = canAuthorityList;
-    }
+//    public void canAuthority(List<String> canAuthorityList) {
+//        this.canAuthority = canAuthorityList;
+//    }
 }

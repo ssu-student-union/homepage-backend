@@ -96,6 +96,7 @@ public class PostAclAspect {
     private Object proceedAndApplyPermissions(ProceedingJoinPoint joinPoint, Long userId, String boardCode) throws Throwable {
         Object result = joinPoint.proceed();
 
+
         if (result instanceof PostListRes) {
             return postAclHandler.applyPermissionsToPostList((PostListRes) result, userId, boardCode);
         } else if (result instanceof PostDetailRes) {
@@ -105,6 +106,7 @@ public class PostAclAspect {
         }
 
         return result;
+
     }
 
     public boolean isTargetTypeAllowOrDeny(BoardPermission[] permissions, String boardCode, Target target, Type type, Long userId) {

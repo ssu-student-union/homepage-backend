@@ -4,9 +4,12 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +48,7 @@ import static ussum.homepage.global.error.status.ErrorStatus.*;
 
 import static ussum.homepage.infra.jpa.group.entity.QGroupEntity.groupEntity;
 import static ussum.homepage.infra.jpa.member.entity.QMemberEntity.memberEntity;;
+import static ussum.homepage.infra.jpa.post.entity.BoardCode.getEnumBoardCodeFromStringBoardCode;
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.increaseViewCount;
 import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
 import static ussum.homepage.infra.jpa.post.entity.QPostFileEntity.postFileEntity;
@@ -69,6 +73,7 @@ public class PostRepositoryImpl implements PostRepository {
     private final JPAQueryFactory queryFactory;
     private final PostReplyCommentJpaRepository postReplyCommentJpaRepository;
     private final PostCommentJpaRepository postCommentJpaRepository;
+    private final EntityManager entityManager;
 
     @Override
     public Optional<Post> findById(Long postId) {
@@ -181,9 +186,13 @@ public class PostRepositoryImpl implements PostRepository {
             whereClause.and(groupEntity.groupCode.eq(groupCode));
         }
 
-//        if (whereClause.getValue() == null) {
-//            throw new IllegalArgumentException("At least one of memberCode, or groupCode must be provided");
-//        }
+        // Status 우선순위를 정의합니다.
+        NumberExpression<Integer> statusOrder = new CaseBuilder()
+                .when(postEntity.status.eq(Status.EMERGENCY_NOTICE)).then(1)
+                .when(postEntity.status.eq(Status.NEW)).then(2)
+                .when(postEntity.status.eq(Status.GENERAL)).then(3)
+                .otherwise(Integer.MAX_VALUE);
+
 
         JPAQuery<PostEntity> query = queryFactory
                 .selectFrom(postEntity)
@@ -191,6 +200,46 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
                 .leftJoin(memberEntity.groupEntity, groupEntity)
                 .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
+                .where(whereClause)
+//                .orderBy(postEntity.createdAt.desc());
+                .orderBy(statusOrder.asc(), postEntity.createdAt.desc()).distinct();
+
+
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.countDistinct())
+                .from(postEntity)
+                .leftJoin(postEntity.userEntity, userEntity)
+                .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
+                .leftJoin(memberEntity.groupEntity, groupEntity)
+                .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
+                .where(whereClause);
+
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+    }
+
+    @Override
+    public Page<Post> findAllByBoardIdAndCategoryAndSuggestionTarget(Long boardId, Category category, SuggestionTarget suggestionTarget, Pageable pageable) {
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
+
+        if (category != null) {
+            whereClause.and(postEntity.category.eq(category));
+        }
+
+        if (suggestionTarget != null) {
+            whereClause.and(postEntity.suggestionTarget.eq(suggestionTarget));
+        }
+
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
                 .where(whereClause)
                 .orderBy(postEntity.createdAt.desc());
 
@@ -213,7 +262,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Page<Post> findAllWithBoard(Pageable pageable, String boardCode) {
-        BoardEntity boardEntity = boardJpaRepository.findByBoardCode(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode))
+        BoardEntity boardEntity = boardJpaRepository.findByBoardCode(getEnumBoardCodeFromStringBoardCode(boardCode))
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
         return postJpaRepository.findAllByBoard(pageable,boardEntity).map(postMapper::toDomain);
@@ -251,26 +300,25 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Post save(Post post){
-        UserEntity userEntity = userJpaRepository.findById(post.getUserId())
-                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
-
-        BoardEntity boardEntity = boardJpaRepository.findById(post.getBoardId())
-                .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
         return postMapper.toDomain(
-                postJpaRepository.save(postMapper.toEntity(post, userEntity, boardEntity))
+                postJpaRepository.save(postMapper.toEntity(post))
         );
     }
 
     @Override
     public void delete(Post post) {
-        UserEntity userEntity = userJpaRepository.findById(post.getUserId())
-                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
+//        UserEntity userEntity = userJpaRepository.findById(post.getUserId())
+//                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
 
         BoardEntity boardEntity = boardJpaRepository.findById(post.getBoardId())
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
-        if (boardEntity.getBoardCode().equals(BoardCode.getEnumBoardCodeFromStringBoardCode("청원게시판"))) {
+        BoardCode boardCode = boardEntity.getBoardCode();
+        if (boardCode.equals(getEnumBoardCodeFromStringBoardCode("청원게시판")) ||
+                boardCode.equals(getEnumBoardCodeFromStringBoardCode("건의게시판")) ||
+                boardCode.equals(getEnumBoardCodeFromStringBoardCode("인권신고게시판"))
+        ) {
             // 게시물에 해당하는 모든 댓글 조회 및 처리
             postCommentJpaRepository.findAllByPostId(post.getId())
                     .forEach(postCommentEntity -> {
@@ -301,12 +349,12 @@ public class PostRepositoryImpl implements PostRepository {
         postReactionJpaRepository.deleteAll(postReactionEntityList);
 
         // 게시물 삭제
-        postJpaRepository.delete(postMapper.toEntity(post, userEntity, boardEntity));
+        postJpaRepository.delete(postMapper.toEntity(post));
     }
 
     @Override
     public Page<Post> findBySearchCriteria(Pageable pageable, String boardCode, String q, String categoryCode) {
-        BoardEntity boardEntity = boardJpaRepository.findByBoardCode(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode))
+        BoardEntity boardEntity = boardJpaRepository.findByBoardCode(getEnumBoardCodeFromStringBoardCode(boardCode))
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));
 
         Category enumCategoryCodeFromStringCategory = Category.getEnumCategoryCodeFromStringCategoryCode(categoryCode);
@@ -399,7 +447,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     private BooleanExpression eqBoardCode(String boardCode) {
-        return boardCode != null ? boardEntity.boardCode.eq(BoardCode.getEnumBoardCodeFromStringBoardCode(boardCode)) : null;
+        return boardCode != null ? boardEntity.boardCode.eq(getEnumBoardCodeFromStringBoardCode(boardCode)) : null;
     }
 
     @Override
@@ -425,15 +473,10 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post updatePostCategory(Long postId, String category) {
-        return postJpaRepository.findById(postId)
-                .map(postEntity -> {
-                    postEntity.updateCategory(
-                            Category.getEnumCategoryCodeFromStringCategoryCode(category)
-                    );
-                    return postMapper.toDomain(postJpaRepository.save(postEntity));
-                })
-                .orElseThrow(() -> new PostException(POST_ONGOING_STATUS_IS_NOT_UPDATED));
+    public Post updatePostCategory(Post post, Category category) {
+        PostEntity postEntity = postMapper.toEntity(post);
+        postEntity.updateCategory(category);
+        return postMapper.toDomain(postJpaRepository.save(postEntity));
     }
 
     @Override
@@ -447,9 +490,12 @@ public class PostRepositoryImpl implements PostRepository {
             whereClause.and(groupEntity.groupCode.eq(groupCode));
         }
 
-//        if (whereClause.getValue() == null) {
-//            throw new IllegalArgumentException("At least one of memberCode, or groupCode must be provided");
-//        }
+        NumberExpression<Integer> statusOrder = new CaseBuilder()
+                .when(postEntity.status.eq(Status.EMERGENCY_NOTICE)).then(1)
+                .when(postEntity.status.eq(Status.NEW)).then(2)
+                .when(postEntity.status.eq(Status.GENERAL)).then(3)
+                .otherwise(Integer.MAX_VALUE);
+
 
         // 검색어 q가 지정된 경우, 제목에 해당 검색어가 포함된 게시물만 필터링
         if (q != null && !q.isEmpty()) {
@@ -463,7 +509,9 @@ public class PostRepositoryImpl implements PostRepository {
                 .leftJoin(memberEntity.groupEntity, groupEntity)
                 .leftJoin(postFileEntity).on(postFileEntity.postEntity.eq(postEntity))
                 .where(whereClause)
-                .orderBy(postEntity.createdAt.desc());
+//                .orderBy(postEntity.createdAt.desc());
+                .orderBy(statusOrder.asc(), postEntity.createdAt.desc()).distinct();
+
 
         List<PostEntity> content = query
                 .offset(pageable.getOffset())
@@ -471,7 +519,7 @@ public class PostRepositoryImpl implements PostRepository {
                 .fetch();
 
         JPAQuery<Long> countQuery = queryFactory
-                .select(postEntity.count())
+                .select(postEntity.countDistinct())
                 .from(postEntity)
                 .leftJoin(postEntity.userEntity, userEntity)
                 .leftJoin(memberEntity).on(memberEntity.userEntity.eq(userEntity))
@@ -567,6 +615,90 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public Page<Post> searchAllByBoardIdAndCategoryAndUserId(Long boardId, Category category, Pageable pageable,
+                                                             Long userId) {
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
+        if (userId != null) {
+            whereClause.and(postEntity.userEntity.id.eq(userId));
+        }else return Page.empty();
+
+        if (category != null) {
+            whereClause.and(postEntity.category.eq(category));
+        }
+
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(whereClause);
+
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+    }
+
+    @Override
+    public Page<Post> searchAllByBoardIdAndCategoryAndUserIdTwo(Long boardId, String q, Category category,
+                                                                Pageable pageable, Long userId) {
+        // 기본 where 조건: 게시판 ID가 일치하는 게시물 필터링
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
+
+        // 사용자 ID 필터링 (null이면 빈 페이지 반환)
+        if (userId != null) {
+            whereClause.and(postEntity.userEntity.id.eq(userId));
+        } else {
+            return Page.empty(pageable);
+        }
+
+        // 카테고리가 지정된 경우 해당 카테고리의 게시물만 필터링
+        if (category != null) {
+            whereClause.and(postEntity.category.eq(category));
+        }
+
+        // 검색어 q가 지정된 경우, 제목에 해당 검색어가 포함된 게시물만 필터링
+        if (q != null && !q.isEmpty()) {
+            whereClause.and(postEntity.title.like("%" + q + "%"));
+        }
+
+        // 쿼리 작성: 게시물을 가져오고 페이지네이션 및 정렬 적용
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        // 실제 데이터 가져오기
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // 전체 카운트 쿼리: 페이징 정보 생성에 필요
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(whereClause);
+
+        // 페이지 객체 반환
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+
+    }
+
+    @Override
     public void updatePostStatusNewToGeneral(LocalDateTime dueDateForNewStatus) {
         queryFactory
                 .update(postEntity)
@@ -574,5 +706,48 @@ public class PostRepositoryImpl implements PostRepository {
                 .where(postEntity.status.eq(Status.NEW)
                         .and(postEntity.createdAt.loe(dueDateForNewStatus)))
                 .execute();
+    }
+
+    @Override
+    public void updatePostStatusEmergencyToGeneralInBatches() {
+        // 3일 전 날짜 계산
+        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+        // 한 번에 처리할 게시물 수 설정
+        int batchSize = 500;
+        // 총 처리된 게시물 수를 추적하기 위한 변수
+        long processedCount = 0;
+
+        while (true) {
+            // 배치 크기만큼의 게시물 ID를 가져옴
+            List<Long> batchIds = queryFactory
+                    .select(postEntity.id)
+                    .from(postEntity)
+                    .where(postEntity.boardEntity.id.eq(2L)  // 공지사항 게시판 ID가 1이라고 가정
+                            .and(postEntity.status.ne(Status.GENERAL))  // 상태가 GENERAL이 아닌 것
+                            .and(postEntity.createdAt.before(threeDaysAgo)))  // 3일 이전에 생성된 것
+                    .limit(batchSize)
+                    .fetch();
+
+            // 더 이상 처리할 게시물이 없으면 반복 종료
+            if (batchIds.isEmpty()) {
+                break;
+            }
+
+            // 가져온 ID에 해당하는 게시물들의 상태를 GENERAL로 업데이트
+            long updatedCount = queryFactory
+                    .update(postEntity)
+                    .set(postEntity.status, Status.GENERAL)
+                    .where(postEntity.id.in(batchIds))
+                    .execute();
+
+            // 처리된 게시물 수 누적
+            processedCount += updatedCount;
+
+            // 영속성 컨텍스트 초기화 (메모리 관리를 위해)
+            entityManager.clear();
+        }
+
+        // 총 처리된 게시물 수 출력
+        System.out.println("총 업데이트된 게시물 수: " + processedCount);
     }
 }
