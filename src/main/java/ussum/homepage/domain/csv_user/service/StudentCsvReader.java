@@ -7,6 +7,8 @@ import ussum.homepage.domain.csv_user.StudentCsv;
 import ussum.homepage.domain.csv_user.StudentCsvRepository;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
+import ussum.homepage.global.external.discord.DiscordUtil;
+import ussum.homepage.global.external.discord.dto.EventMessage;
 import ussum.homepage.infra.jpa.member.entity.MajorCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 
@@ -16,6 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StudentCsvReader {
     private final StudentCsvRepository studentCsvRepository;
+    private final DiscordUtil discordUtil;
 
     public Optional<StudentCsv> getStudentWithStudentId(Long studentId, OnBoardingRequest request) {
         return studentCsvRepository.findByStudentId(studentId)
@@ -37,11 +40,12 @@ public class StudentCsvReader {
         if (request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(studentCsv.getMajor()).getStringMajorCode())){
             major = true;
         }else{
-            // ¿¹¼úÃ¢ÀÛÇĞºÎ·Î µé¾î¿Ã½Ã ¿¹¿Ü Ã³¸®¸¦ ÇÏ±â À§ÇØ ÀÏ´Ü ÀÌ·¸°Ô ÄÚµå Ã³¸®
-            major = request.getMajorCode().equals("¹®¿¹Ã¢ÀÛÀü°ø") | studentCsv.getMajor().equals("¿µÈ­¿¹¼úÀü°ø");
+            // ï¿½ï¿½ï¿½ï¿½Ã¢ï¿½ï¿½ï¿½ĞºÎ·ï¿½ ï¿½ï¿½ï¿½Ã½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½ï¿½ ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Úµï¿½ Ã³ï¿½ï¿½
+            major = request.getMajorCode().equals("ï¿½ï¿½ï¿½ï¿½Ã¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½") | studentCsv.getMajor().equals("ï¿½ï¿½È­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
         }
 
         if(!(name && studentId && groupName && major)){
+            discordUtil.sendMessage(EventMessage.SIGN_UP_FAIL, "âŒstudentId : " + request.getStudentId());
             throw new GeneralException(ErrorStatus.INVALID_ONBOARDING_REQUEST);
         }
     }

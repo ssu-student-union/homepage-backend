@@ -108,9 +108,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
 
     //Body 에러
-    INVALID_BODY(HttpStatus.BAD_REQUEST, "BODY_ERROR", "Body가 올바르지 않습니다.");
+    INVALID_BODY(HttpStatus.BAD_REQUEST, "BODY_ERROR", "Body가 올바르지 않습니다."),
 
-
+    //DiscordError
+    INVALID_DISCORD_MESSAGE(HttpStatus.BAD_REQUEST, "DISCORD_001", "디스코드 메시지가 올바르지 않습니다.");
 
 
     private final HttpStatus httpStatus;
