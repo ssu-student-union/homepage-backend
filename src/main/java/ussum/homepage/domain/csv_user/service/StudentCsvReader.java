@@ -45,7 +45,7 @@ public class StudentCsvReader {
         }
 
         if(!(name && studentId && groupName && major)){
-            discordUtil.sendMessage(EventMessage.SIGN_UP_FAIL, "studentId : " + request.getStudentId());
+            discordUtil.sendMessage(EventMessage.SIGN_UP_FAIL, "❌studentId : " + request.getStudentId());
             throw new GeneralException(ErrorStatus.INVALID_ONBOARDING_REQUEST);
         }
     }
