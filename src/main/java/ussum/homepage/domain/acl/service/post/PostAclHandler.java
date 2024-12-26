@@ -36,6 +36,9 @@ public class PostAclHandler {
             if (boardCode.equals("청원게시판") && postAclManager.hasPermission(userId, boardCode, "REACTION")) {
                 allowedAuthorities.add("REACTION");
             }
+            if (boardCode.equals("서비스공지사항") && postAclManager.hasPermission(userId, boardCode, "EDIT")) {
+                allowedAuthorities.add("EDIT");
+            }
         }
 
         postDetailRes.validAuthority(allowedAuthorities);
