@@ -93,6 +93,11 @@ public class PostAclHandler {
                     deniedAuthorities.add("READ");
                 }
             } else allowedAuthorities.add("READ");
+        } else if (boardCode.equals("서비스공지사항")) {
+            boolean write = postAclManager.hasPermission(userId,boardCode,"WRITE");
+            if (write) {
+                allowedAuthorities.add("WRITE");
+            }else deniedAuthorities.add("WRITE");
         } else allowedAuthorities.add("READ");
     }
 }
