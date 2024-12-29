@@ -20,7 +20,8 @@ public enum TargetGroup {
     CENTRAL_ORGANIZATION("중앙기구"),
     AUDIT_COMMITTEE("감사위원회"),
     CLUB_UNION("동아리연합회"),
-    STUDENT_RIGHTS_REPORT_SUBMISSION("인권신고접수");
+    STUDENT_RIGHTS_REPORT_SUBMISSION("인권신고접수"),
+    ADMIN("관리자");
 
     private final String stringTargetGroup;
 

@@ -722,7 +722,7 @@ public class PostRepositoryImpl implements PostRepository {
             List<Long> batchIds = queryFactory
                     .select(postEntity.id)
                     .from(postEntity)
-                    .where(postEntity.boardEntity.id.eq(2L)  // 공지사항 게시판 ID가 1이라고 가정
+                    .where(postEntity.boardEntity.id.in(2L,9L)  // 공지사항 게시판 ID가 2이라고 가정
                             .and(postEntity.status.ne(Status.GENERAL))  // 상태가 GENERAL이 아닌 것
                             .and(postEntity.createdAt.before(threeDaysAgo)))  // 3일 이전에 생성된 것
                     .limit(batchSize)
