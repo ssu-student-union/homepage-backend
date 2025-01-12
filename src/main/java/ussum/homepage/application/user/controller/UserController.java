@@ -44,7 +44,7 @@ public class UserController {
     public ApiResponse<MyPageInfoResponse> getMypage(@UserId Long userId){
         return ApiResponse.onSuccess(userService.getMyPageInfo(userId));
     }
-    @PatchMapping("/mypage/{union}")
+    @PatchMapping("/mypage")
     public ApiResponse<?> updateMypage(@UserId Long userId, @RequestBody MyPageUpdateRequest myPageUpdateRequest) {
         return ApiResponse.onSuccess(userService.updateMyPageInfo(userId, myPageUpdateRequest));
     }
