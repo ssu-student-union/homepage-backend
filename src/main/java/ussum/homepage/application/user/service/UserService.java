@@ -65,4 +65,15 @@ public class UserService {
 
         return MyPageInfoResponse.of(user, member);
     }
+    public MyPageInfoResponse updateMyPageInfo(Long userId, MyPageUpdateRequest myPageUpdateRequest) {
+        if (!MyPageUpdateRequest.validate(myPageUpdateRequest)){
+            new GeneralException(ErrorStatus._FORBIDDEN);
+        }
+        User originUser = userReader.getUserWithId(userId);
+        User user = User.of(userId, null,null, originUser.getProfileImage(), myPageUpdateRequest.name(), myPageUpdateRequest.password()
+                , originUser.getAccountId(), LocalDateTime.now(), DateUtils.parseFromCustomString(originUser.getCreatedAt()), originUser.getRefreshToken());
+        user = userModifier.save(user);
+
+        return MyPageInfoResponse.of(user, memberReader.getMemberWithUserId(userId));
+    }
 }
