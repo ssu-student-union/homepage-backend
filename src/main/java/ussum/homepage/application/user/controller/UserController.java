@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ussum.homepage.application.user.service.UserService;
+import ussum.homepage.application.user.service.dto.request.MyPageUpdateRequest;
 import ussum.homepage.application.user.service.dto.request.TokenRequest;
 import ussum.homepage.application.user.service.dto.response.MyPageInfoResponse;
 import ussum.homepage.application.user.service.dto.response.UserInfoResponse;
@@ -42,5 +43,9 @@ public class UserController {
     @GetMapping("/mypage")
     public ApiResponse<MyPageInfoResponse> getMypage(@UserId Long userId){
         return ApiResponse.onSuccess(userService.getMyPageInfo(userId));
+    }
+    @PatchMapping("/mypage/{union}")
+    public ApiResponse<?> updateMypage(@UserId Long userId, @RequestBody MyPageUpdateRequest myPageUpdateRequest) {
+        return ApiResponse.onSuccess(userService.updateMyPageInfo(userId, myPageUpdateRequest));
     }
 }
