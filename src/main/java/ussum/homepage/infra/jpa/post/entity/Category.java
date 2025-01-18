@@ -34,6 +34,7 @@ public enum Category {
     RECEIVED("접수완료"),
     ANSWERED("답변완료"),
     COMPLETED("종료됨"),
+  
     //건의 게시판(답변완료, 답변대기)
     PENDING("답변대기"),
 
@@ -59,6 +60,7 @@ public enum Category {
 
     //인권신고게시판
     STAND_BY("접수대기"),
+
     //중앙 : 총학생회, 중앙운영위원회, 중앙선거관리위원회, 동아리연합회
     //단과대 : IT대학, 인문대학, 융합특성화자유전공학부, 사회과학대학, 공과대학, 경영대학, 경제통상대학, 자연과학대학, 법과대학
     STUDENT_COUNCIL("총학생회"),

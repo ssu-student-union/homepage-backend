@@ -41,5 +41,9 @@ out/
 **/src/main/resources/**
 
 
+### Log ###
+**/logs/**
+
+
 .DS_Store
 
