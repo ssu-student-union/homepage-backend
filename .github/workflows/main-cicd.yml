@@ -40,6 +40,7 @@ jobs:
       env:
         LOGBACK_CONFIG: ${{ secrets.LOGBACK }}
 
+
     - name: Gradle Caching
       uses: actions/cache@v3
       with:

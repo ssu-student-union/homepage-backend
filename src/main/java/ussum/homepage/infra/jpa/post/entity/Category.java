@@ -34,7 +34,7 @@ public enum Category {
     RECEIVED("접수완료"),
     ANSWERED("답변완료"),
     COMPLETED("종료됨"),
-
+  
     //건의 게시판(답변완료, 답변대기)
     PENDING("답변대기"),
 

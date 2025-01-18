@@ -40,8 +40,10 @@ out/
 **/src/main/resources/application.yml
 **/src/main/resources/**
 
+
 ### Log ###
 **/logs/**
+
 
 .DS_Store
 
