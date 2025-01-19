@@ -93,4 +93,9 @@ public class PostReader {
     public Page<Post> searchPostListByBoardIdAndCategoryAndUserId(Long boardId, String q, Category category, Pageable pageable, Long userId) {
         return postRepository.searchAllByBoardIdAndCategoryAndUserIdTwo(boardId,q,category,pageable,userId);
     }
+
+    public Page<Post> getMyPosts(Long userId, Pageable pageable) {
+        return postRepository.findAllByUserId(userId, pageable);
+    }
+
 }

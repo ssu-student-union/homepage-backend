@@ -35,7 +35,6 @@ import ussum.homepage.infra.jpa.reaction.entity.PostCommentReactionEntity;
 import ussum.homepage.infra.jpa.reaction.entity.PostReplyCommentReactionEntity;
 import ussum.homepage.infra.jpa.reaction.repository.PostCommentReactionJpaRepository;
 import ussum.homepage.infra.jpa.reaction.repository.PostReplyCommentReactionJpaRepository;
-import ussum.homepage.infra.jpa.user.entity.UserEntity;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
 import java.time.LocalDateTime;
@@ -749,5 +748,33 @@ public class PostRepositoryImpl implements PostRepository {
 
         // 총 처리된 게시물 수 출력
         System.out.println("총 업데이트된 게시물 수: " + processedCount);
+    }
+
+    public Page<Post> findAllByUserId(Long userId, Pageable pageable) {
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.userEntity.id.eq(userId));
+        if (userId == null) {
+           return Page.empty();
+        }
+
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(whereClause);
+
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
     }
 }
