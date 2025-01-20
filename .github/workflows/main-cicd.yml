@@ -36,9 +36,9 @@ jobs:
       run: |
         cd ./src/main/resources
         touch ./logback.xml
-        echo "LOGBACK" > ./logback.xml
+        echo "$LOGBACK" > ./logback.xml
       env:
-        LOGBACK_CONFIG: ${{ secrets.LOGBACK }}
+        LOGBACK: ${{ secrets.LOGBACK }}
 
 
     - name: Gradle Caching
