@@ -17,7 +17,8 @@ public class MemberMapper {
                 MemberCode.fromEnumOrNull(memberEntity.getMemberCode()),
                 MajorCode.fromEnumOrNull(memberEntity.getMajorCode()),
                 memberEntity.getUserEntity().getId(),
-                memberEntity.getGroupEntity() == null ? null : memberEntity.getGroupEntity().getId()
+                memberEntity.getGroupEntity() == null ? null : memberEntity.getGroupEntity().getId(),
+                memberEntity.getIsVerified()
         );
     }
 
@@ -38,7 +39,8 @@ public class MemberMapper {
                 MemberCode.getEnumMemberCodeFromStringMemberCode(member.getMemberCode()),
                 member.getMajorCode() == null ? null : MajorCode.getEnumMajorCodeFromStringMajorCode(member.getMajorCode()),
                 UserEntity.from(member.getUserId()),
-                member.getGroupId() == null ? null : GroupEntity.from(member.getGroupId())
+                member.getGroupId() == null ? null : GroupEntity.from(member.getGroupId()),
+                member.getIsVerified()
         );
     }
 }

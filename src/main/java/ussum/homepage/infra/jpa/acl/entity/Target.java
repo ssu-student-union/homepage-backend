@@ -13,6 +13,7 @@ import java.util.Optional;
 @Getter
 public enum Target {
     USER("USER"),
+    UNVERIFIED_USER("UNVERIFIED_USER"),
     EVERYONE("EVERYONE"),
     ANONYMOUS("ANONYMOUS");
 

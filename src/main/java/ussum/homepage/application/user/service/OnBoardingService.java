@@ -20,6 +20,8 @@ import ussum.homepage.domain.user.service.UserModifier;
 import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.error.exception.GeneralException;
 
+import java.util.Optional;
+
 import static ussum.homepage.global.error.status.ErrorStatus.ONBOARDING_FAIL_MAIL_ERROR;
 import static ussum.homepage.global.error.status.ErrorStatus.USER_NOT_FOUND;
 
@@ -40,11 +42,11 @@ public class OnBoardingService {
     public void saveUserOnBoarding(Long userId, OnBoardingRequest request){
 //        User user = userReader.getUserWithId(userId);
         String studentId = request.getStudentId();
-        studentCsvReader.getStudentWithStudentId(Long.valueOf(studentId), request)
-                .orElseThrow(() -> new GeneralException(USER_NOT_FOUND));
+        Optional<StudentCsv> studentCsv =  studentCsvReader.getStudentWithStudentId(Long.valueOf(studentId), request);
+        Boolean isVerified = studentCsv.isPresent();
 
         userModifier.updateOnBoardingUser(userId, request);
-        Member member = Member.createMember(false, request.getMemberCode(), request.getMajorCode(), userId);
+        Member member = Member.createMember(false, request.getMemberCode(), request.getMajorCode(), userId, isVerified);
         memberAppender.saveMember(member);
     }
 

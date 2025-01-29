@@ -27,7 +27,8 @@ public class MemberAppender {
                         request.memberCode(),
                         request.majorCode(),
                         savedUser.getId(),
-                        group.getId()
+                        group.getId(),
+                        true
                 ))
                 .toList();
 
