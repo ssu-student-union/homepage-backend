@@ -90,6 +90,7 @@ public class PostManageService {
 
     private final Map<String, PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, FileResponse, PostOfficialCommentResponse, RightsDetail,? extends PostDetailResDto>> postDetailResponseMap = Map.of(
             "공지사항게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2, another_ignored3) -> NoticePostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
+            "자료집게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2, another_ignored3) -> DataPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
             "분실물게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2, another_ignored3) -> LostPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
             "제휴게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2, another_ignored3) -> PartnerPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
             "감사기구게시판", (post, isAuthor, ignored, user, another_ignored1, categoryName, fileResponseList, another_ignored2, another_ignored3) -> AuditPostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
@@ -393,5 +394,30 @@ public class PostManageService {
         PageInfo pageInfo = PageInfo.of(simplePostDtoList);
 
         return TopLikedPostListResponse.of(simplePostDtoList.getContent(), pageInfo);
+    }
+
+    //자료집 게시판 단건 조회
+    public PostDetailRes<?> getDataPost(Long userId, Long postId) {
+        Board board = boardReader.getBoardWithBoardCode(BoardCode.DATA.getStringBoardCode());
+        Post post = postReader.getPostWithBoardCodeAndPostId(BoardCode.DATA.getStringBoardCode(), postId);
+        User user = userReader.getUserWithId(post.getUserId());
+
+        Boolean isAuthor = (userId != null && userId.equals(post.getUserId()));
+
+        List<PostFile> postFileList = postFileReader.getPostFileListByPostId(post.getId());
+        List<FileResponse> fileResponseList = postFileList.stream().map(FileResponse::of).toList();
+
+        PostDetailFunction<Post, Boolean, Boolean, User, Integer, String, FileResponse, PostOfficialCommentResponse, RightsDetail, ? extends PostDetailResDto> responseFunction = postDetailResponseMap.get(board.getName());
+
+        if (responseFunction == null) {
+            throw new GeneralException(ErrorStatus.INVALID_BOARDCODE);
+        }
+
+
+
+        PostDetailResDto response = null;
+        response = responseFunction.apply(post, isAuthor, null, user, null, post.getCategory(), fileResponseList, null,null); //분실물 게시판은 파일첨부 제외
+
+        return PostDetailRes.of(response);
     }
 }

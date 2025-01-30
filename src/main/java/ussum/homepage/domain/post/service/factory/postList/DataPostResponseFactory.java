@@ -1,6 +1,6 @@
 package ussum.homepage.domain.post.service.factory.postList;
 
-import ussum.homepage.application.post.service.dto.response.DataPostResponse;
+import ussum.homepage.application.post.service.dto.response.postList.DataPostResponse;
 import ussum.homepage.application.post.service.dto.response.FileResponse;
 import ussum.homepage.application.post.service.dto.response.postList.PostListResDto;
 import ussum.homepage.domain.post.Post;
