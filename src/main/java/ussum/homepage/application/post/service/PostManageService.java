@@ -350,8 +350,7 @@ public class PostManageService {
 
         if (board.getId() == 8  && !rightsUnion){
             postList = boardImpl.searchPostListByUserId(q,postReader,groupCodeEnum,memberCodeEnum,categoryEnum,userId,pageable);
-        }else if(board.getId() == 7){}
-        else postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
+        } else postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 
