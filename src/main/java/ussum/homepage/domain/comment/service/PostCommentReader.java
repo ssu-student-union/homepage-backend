@@ -61,4 +61,8 @@ public class PostCommentReader {
         return postCommentRepository.findAllByPostIdAndCommentType(postId, commentType);
     }
 
+    public Long getCommentCountByPostId(Long postId) {
+        return postCommentRepository.getCommentCountByPostId(postId);
+    }
+
 }

@@ -1,7 +1,8 @@
 package ussum.homepage.application.post.service;
 
-import java.util.Collections;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import ussum.homepage.application.post.service.dto.response.postList.*;
 
 import ussum.homepage.application.post.service.dto.response.postSave.*;
 
+import ussum.homepage.application.user.service.dto.response.MyPostsResponse;
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
@@ -57,9 +59,6 @@ import ussum.homepage.infra.jpa.post.entity.FileCategory;
 import ussum.homepage.infra.jpa.post.entity.SuggestionTarget;
 import ussum.homepage.infra.utils.S3utils;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -393,4 +392,20 @@ public class PostManageService {
 
         return TopLikedPostListResponse.of(simplePostDtoList.getContent(), pageInfo);
     }
+
+    public MyPostsResponse getMyPostList(Long userId, int page, int take) {
+        Pageable pageable = PageInfo.of(page, take);
+        Page<Post> postList = postReader.getMyPosts(userId, pageable);
+        PageInfo pageInfo = PageInfo.of(postList);
+
+        List<MyPostResponse> list = postList.getContent().stream()
+                .map(post -> {
+                    int commentCount = Math.toIntExact(postCommentReader.getCommentCountByPostId(post.getId()));
+                    return MyPostResponse.of(post, commentCount);
+                })
+                .toList();
+
+        return new MyPostsResponse(list, pageInfo);
+    }
+
 }
