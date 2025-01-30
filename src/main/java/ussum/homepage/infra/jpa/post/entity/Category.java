@@ -76,11 +76,8 @@ public enum Category {
     BUSINESS_SCHOOL("경영대학"),
     ECONOMICS_TRADE_SCHOOL("경제통상대학"),
     NATURAL_SCIENCES_SCHOOL("자연과학대학"),
-    LAW_SCHOOL("법과대학"),
+    LAW_SCHOOL("법과대학");
 
-    //캘린더 카테고리
-    HOLIDAY("공휴일/기념일"),
-    COLLEGE("학사");
     private final String stringCategoryCode;
     public static Category getEnumCategoryCodeFromStringCategoryCode(String stringCategoryCode) {
         return Arrays.stream(values())
