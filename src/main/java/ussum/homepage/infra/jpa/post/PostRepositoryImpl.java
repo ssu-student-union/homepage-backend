@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 import static ussum.homepage.global.error.status.ErrorStatus.*;
 
 import static ussum.homepage.infra.jpa.group.entity.QGroupEntity.groupEntity;
-import static ussum.homepage.infra.jpa.member.entity.QMemberEntity.memberEntity;;
+import static ussum.homepage.infra.jpa.member.entity.QMemberEntity.memberEntity;
 import static ussum.homepage.infra.jpa.post.entity.BoardCode.getEnumBoardCodeFromStringBoardCode;
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.increaseViewCount;
 import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
@@ -236,6 +236,36 @@ public class PostRepositoryImpl implements PostRepository {
 
         if (suggestionTarget != null) {
             whereClause.and(postEntity.suggestionTarget.eq(suggestionTarget));
+        }
+
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(whereClause);
+
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+    }
+
+    @Override
+    public Page<Post> findAllByBoardIdAndQnATarget(Long boardId, QnATarget qnaTarget, Pageable pageable) {
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
+
+        if (qnaTarget != null && qnaTarget != QnATarget.ALL) {
+            whereClause.and(postEntity.qnaTarget.eq(qnaTarget));
         }
 
         JPAQuery<PostEntity> query = queryFactory

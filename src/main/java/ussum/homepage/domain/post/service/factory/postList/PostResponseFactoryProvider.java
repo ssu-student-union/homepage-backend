@@ -16,6 +16,7 @@ public class PostResponseFactoryProvider {
         factoryMap.put("건의게시판", new SuggestionPostResponseFactory());
         factoryMap.put("인권신고게시판", new RightsPostResponseFactory());
         factoryMap.put("서비스공지사항", new ServiceNoticePostResponseFactory());
+        factoryMap.put("질의응답게시판", new QnAPostResponseFactory());
     }
 
     public static PostListResponseFactory getFactory(String boardName) {

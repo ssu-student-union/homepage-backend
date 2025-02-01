@@ -37,6 +37,7 @@ public record PostUpdateRequest(
                 LocalDateTime.now(),
                 categoryCode,
                 post.getSuggestionTarget(),
+                post.getQnaTarget(),
                 post.getUserId(),
                 board.getId()
         );
@@ -54,6 +55,7 @@ public record PostUpdateRequest(
                 LocalDateTime.now(),
                 categoryCode,
                 post.getSuggestionTarget(),
+                post.getQnaTarget(),
                 post.getUserId(),
                 6L
         );

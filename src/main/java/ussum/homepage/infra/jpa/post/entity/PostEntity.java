@@ -35,6 +35,9 @@ public class PostEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SuggestionTarget suggestionTarget;
 
+    @Enumerated(EnumType.STRING)
+    private QnATarget qnaTarget;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
@@ -47,12 +50,12 @@ public class PostEntity extends BaseEntity {
     }
 
     public static PostEntity from(Long id){
-        return new PostEntity(id, null, null, null, null, null, null, null, null, null,null);
+        return new PostEntity(id, null, null, null, null, null, null, null, null, null, null,null);
     }
 
     public static PostEntity of(Long id, String title, String content, Integer viewCount, String thumbnailImage, Status status,
-                                /*OngoingStatus ongoingStatus,*/ LocalDateTime lastEditedAt, Category category, SuggestionTarget suggestionTarget, UserEntity user, BoardEntity board) {
-        return new PostEntity(id, title, content, viewCount, thumbnailImage, status, /*ongoingStatus,*/ lastEditedAt, category, suggestionTarget, user, board);
+                                /*OngoingStatus ongoingStatus,*/ LocalDateTime lastEditedAt, Category category, SuggestionTarget suggestionTarget, QnATarget qnaTarget, UserEntity user, BoardEntity board) {
+        return new PostEntity(id, title, content, viewCount, thumbnailImage, status, /*ongoingStatus,*/ lastEditedAt, category, suggestionTarget, qnaTarget, user, board);
     }
 
     public static void increaseViewCount(PostEntity post) {

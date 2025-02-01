@@ -26,6 +26,8 @@ public class PostMapper {
         String category = Category.fromEnumOrNull(postEntity.getCategory());
         String suggestionTarget = postEntity.getSuggestionTarget() != null  ?
                 SuggestionTarget.getTargetStringFromSuggestionTarget(postEntity.getSuggestionTarget()) : null;
+        String qnaTarget = postEntity.getQnaTarget() != null ?
+                QnATarget.getTargetStringFromQnATarget(postEntity.getQnaTarget()) : null;
 
         return Post.of(
                 postEntity.getId(),
@@ -40,6 +42,7 @@ public class PostMapper {
                 postEntity.getLastEditedAt(),
                 category,
                 suggestionTarget,
+                qnaTarget,
                 postEntity.getUserEntity().getId(),
                 postEntity.getBoardEntity().getId()
         );
@@ -60,6 +63,7 @@ public class PostMapper {
                 lastEditedAt,
                 Category.fromStringOrNull(post.getCategory()),
                 SuggestionTarget.fromStringOrNull(post.getSuggestionTarget()),
+                QnATarget.fromStringOrNull(post.getQnaTarget()),
                 UserEntity.from(post.getUserId()),
                 BoardEntity.from(post.getBoardId())
         );
