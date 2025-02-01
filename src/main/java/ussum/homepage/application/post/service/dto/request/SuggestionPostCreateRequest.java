@@ -30,6 +30,7 @@ public class SuggestionPostCreateRequest extends PostCreateRequest {
                 null, null, null,
                 category,
                 suggestionTarget,
+                null,
                 userId,
                 board.getId());
     }

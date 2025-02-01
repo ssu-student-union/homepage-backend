@@ -8,6 +8,7 @@ import ussum.homepage.domain.post.service.PostReader;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
+import ussum.homepage.infra.jpa.post.entity.QnATarget;
 import ussum.homepage.infra.jpa.post.entity.SuggestionTarget;
 
 @RequiredArgsConstructor
@@ -15,7 +16,7 @@ public class NoticeBoardImpl implements BoardImpl {
     private final Long id;
 
     @Override
-    public Page<Post> getPostList(PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, SuggestionTarget suggestionTarget, Pageable pageable) {
+    public Page<Post> getPostList(PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, SuggestionTarget suggestionTarget, QnATarget qnaTarget, Pageable pageable) {
         return postReader.getPostListByBoardIdAndGroupCodeAndMemberCode(this.id, groupCode, memberCode, pageable);
     }
 

@@ -16,6 +16,7 @@ import ussum.homepage.domain.post.PostRepository;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.FileCategory;
+import ussum.homepage.infra.jpa.post.entity.QnATarget;
 import ussum.homepage.infra.jpa.post.entity.SuggestionTarget;
 
 import java.util.List;
@@ -46,6 +47,10 @@ public class PostReader {
 
     public Page<Post> getPostListByBoardIdAndCategoryAndSuggestionTarget(Long boardId, Category category, SuggestionTarget suggestionTarget, Pageable pageable ){
         return postRepository.findAllByBoardIdAndCategoryAndSuggestionTarget(boardId, category,suggestionTarget, pageable);
+    }
+
+    public Page<Post> getPostListByBoardIdAndQnATarget(Long boardId, QnATarget qnaTarget, Pageable pageable ){
+        return postRepository.findAllByBoardIdAndQnATarget(boardId,qnaTarget, pageable);
     }
 
     public Page<Post> getPostListByFileCategories(List<FileCategory> fileCategories, Pageable pageable){

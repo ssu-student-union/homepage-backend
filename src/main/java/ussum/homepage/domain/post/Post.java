@@ -21,6 +21,7 @@ public class Post {
     private String lastEditedAt;
     private String category;
     private String suggestionTarget;
+    private String qnaTarget;
     private Long userId;
     private Long boardId;
 
@@ -35,10 +36,11 @@ public class Post {
                           LocalDateTime lastEditedAt,
                           String category,
                           String suggestionTarget,
+                          String qnaTarget,
                           Long userId,
                           Long boardId) {
         return new Post(id, title, content, viewCount, thumbnailImage, status, DateUtils.formatHourMinSecToCustomString(createdAt),
                 DateUtils.formatHourMinSecToCustomString(updatedAt), DateUtils.formatHourMinSecToCustomString(lastEditedAt), category,
-                suggestionTarget,userId, boardId);
+                suggestionTarget, qnaTarget, userId, boardId);
     }
 }

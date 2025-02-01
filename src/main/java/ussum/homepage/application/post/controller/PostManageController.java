@@ -41,10 +41,11 @@ public class PostManageController {
                                                             @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take,
                                                             @PathVariable(name = "boardCode") String boardCode, @RequestParam(value = "groupCode", required = false) String groupCode,
                                                             @RequestParam(value = "memberCode",  required = false) String memberCode,
+                                                            @RequestParam(value = "category",  required = false) String category,
                                                             @RequestParam(value = "suggestionTarget",  required = false) String suggestionTarget,
-                                                            @RequestParam(value = "category",  required = false) String category) {
+                                                            @RequestParam(value = "qnaTarget", required = false) String qnaTarget) {
 
-        return ApiResponse.success(postManageService.getPostList(userId, boardCode, page, take, groupCode, memberCode, category, suggestionTarget));
+        return ApiResponse.success(postManageService.getPostList(userId, boardCode, page, take, groupCode, memberCode, category, suggestionTarget, qnaTarget));
     }
 
     @Operation(summary = "자료집게시판 게시물 리스트 조회 api", description = """
@@ -158,7 +159,7 @@ public class PostManageController {
 
 
     @Operation(summary = "게시물 수정 api", description = """
-            게시물을 수정하는 api 입니다. 
+            게시물을 수정하는 api 입니다. post
             """)
     @PatchMapping("/{boardCode}/posts/{postId}")
     public ResponseEntity<ApiResponse<?>> editBoardPost(@Parameter(hidden = true) @UserId Long userId,

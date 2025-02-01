@@ -14,6 +14,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.HandlerMapping;
 import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequest;
+import ussum.homepage.application.post.service.dto.request.QnAPostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.RightsPostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.SuggestionPostCreateRequest;
 import ussum.homepage.global.config.custom.BoardRequestBody;
@@ -52,7 +53,9 @@ public class BoardRequestBodyArgumentResolver implements HandlerMethodArgumentRe
             targetClass = RightsPostCreateRequest.class;
         } else if ("건의게시판".equals(boardCode)) {
             targetClass = SuggestionPostCreateRequest.class;
-        } else {
+        } else if ("질의응답게시판".equals(boardCode)) {
+            targetClass = QnAPostCreateRequest.class;
+        }else {
             targetClass = GeneralPostCreateRequest.class;  // 기본값 설정
         }
 

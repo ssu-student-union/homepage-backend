@@ -12,18 +12,16 @@ import ussum.homepage.infra.jpa.post.entity.QnATarget;
 import ussum.homepage.infra.jpa.post.entity.SuggestionTarget;
 
 @RequiredArgsConstructor
-public class SuggestionBoardImpl implements BoardImpl {
+public class QnABoardImpl implements BoardImpl {
     private final Long id;
 
     @Override
     public Page<Post> getPostList(PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, SuggestionTarget suggestionTarget, QnATarget qnaTarget, Pageable pageable) {
-        return postReader.getPostListByBoardIdAndCategoryAndSuggestionTarget(this.id, category, suggestionTarget, pageable);
+        return postReader.getPostListByBoardIdAndQnATarget(this.id, qnaTarget, pageable);
     }
 
     @Override
-    public Page<Post> getPostListByUserId(PostReader postReader, GroupCode groupCode, MemberCode memberCode,
-                                          Category category, SuggestionTarget suggestionTarget, Long userId,
-                                          Pageable pageable) {
+    public Page<Post> getPostListByUserId(PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, SuggestionTarget suggestionTarget, Long userId, Pageable pageable) {
         return postReader.getPostListByBoardIdAndCategoryAndUserId(this.id, category, pageable,userId);
     }
 
@@ -33,10 +31,7 @@ public class SuggestionBoardImpl implements BoardImpl {
     }
 
     @Override
-    public Page<Post> searchPostListByUserId(String q, PostReader postReader, GroupCode groupCode,
-                                             MemberCode memberCode, Category category,
-                                             Long userId, Pageable pageable) {
+    public Page<Post> searchPostListByUserId(String q, PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, Long userId, Pageable pageable) {
         return postReader.searchPostListByBoardIdAndCategoryAndUserId(this.id, q, category, pageable, userId);
     }
-
 }
