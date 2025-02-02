@@ -8,8 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,10 +30,10 @@ public class CalendarEventEntity {
     private String title;
 
     @Column(nullable = false, name = "start_date")
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(nullable = false, name = "end_date")
-    private Date endDate;
+    private LocalDate endDate;
 
     @Column(nullable = false, name = "category")
     @Enumerated(EnumType.STRING)
@@ -45,14 +45,14 @@ public class CalendarEventEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "created_at")
-    private LocalDateTime updateAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public static CalendarEventEntity from(Long id){
         return new CalendarEventEntity(id,null,null,null,null,null,null,null);
     }
 
-    public static CalendarEventEntity of(Long id, String title, Date startDate, Date endDate, Category category, Long createBy, LocalDateTime createdAt, LocalDateTime updateAt) {
+    public static CalendarEventEntity of(Long id, String title, LocalDate startDate, LocalDate endDate, Category category, Long createBy, LocalDateTime createdAt, LocalDateTime updateAt) {
         return new CalendarEventEntity(id, title, startDate, endDate, category, createBy, createdAt, updateAt);
     }
 }

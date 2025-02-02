@@ -1,11 +1,13 @@
 package ussum.homepage.infra.utils;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
 public class DateUtils {
     private static final DateTimeFormatter CUSTOM_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
     private static final DateTimeFormatter CUSTOM_HOUR_MIN_SEC_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+    private static final DateTimeFormatter YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyyMM");
 
     public static String formatToCustomString(LocalDateTime dateTime) {
         if (dateTime == null) {
@@ -33,6 +35,13 @@ public class DateUtils {
             return null;
         }
         return LocalDateTime.parse(dateString, CUSTOM_HOUR_MIN_SEC_FORMATTER);
+    }
+
+    public static YearMonth parseYearMonthFromString(String monthString) {
+        if (monthString == null || monthString.isEmpty()) {
+            return null;
+        }
+        return YearMonth.parse(monthString, YEAR_MONTH_FORMATTER);
     }
 }
 
