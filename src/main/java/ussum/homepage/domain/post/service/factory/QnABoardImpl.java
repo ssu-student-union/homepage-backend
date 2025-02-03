@@ -26,8 +26,8 @@ public class QnABoardImpl implements BoardImpl {
     }
 
     @Override
-    public Page<Post> searchPostList(String q, PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, Pageable pageable) {
-        return postReader.searchPostListByBoardIdAndCategory(this.id, q, category, pageable);
+    public Page<Post> searchPostList(String q, PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category,  QnATarget qnaTarget, Pageable pageable) {
+        return postReader.searchPostListByBoardIdAndCategoryAndQnATarget(this.id, q, category, qnaTarget, pageable);
     }
 
     @Override

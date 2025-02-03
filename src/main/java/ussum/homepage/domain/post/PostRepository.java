@@ -35,6 +35,7 @@ public interface PostRepository {
     Page<Post> findAllByBoardIdAndQnATarget(Long boarId, QnATarget qnaTarget, Pageable pageable);
     Page<Post> searchAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, String q, GroupCode groupCode, MemberCode memberCode, Pageable pageable);
     Page<Post> searchAllByBoardIdAndCategory(Long boardId, String q, Category category, Pageable pageable);
+    Page<Post> searchAllByBoardIdAndCategoryAndQnATarget(Long boardId, String q, Category category, QnATarget qnaTarget, Pageable pageable);
     Page<Post> searchAllByFileCategories(String q, List<FileCategory> fileCategories, Pageable pageable);
 
     Page<Post> searchAllByBoardIdAndCategoryAndUserId(Long boardId, Category category, Pageable pageable, Long userId);

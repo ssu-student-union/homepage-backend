@@ -28,7 +28,7 @@ public class NoticeBoardImpl implements BoardImpl {
     }
 
     @Override
-    public Page<Post> searchPostList(String q, PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, Pageable pageable) {
+    public Page<Post> searchPostList(String q, PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, QnATarget qnaTarget, Pageable pageable) {
         return postReader.searchPostListByBoardIdAndGroupCodeAndMemberCode(this.id, q, groupCode, memberCode, pageable);
     }
 

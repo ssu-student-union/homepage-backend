@@ -209,8 +209,10 @@ public class PostManageController {
                                                           @PathVariable(name = "boardCode") String boardCode,
                                                           @RequestParam(value = "groupCode", required = false) String groupCode,
                                                           @RequestParam(value = "memberCode",  required = false) String memberCode,
-                                                          @RequestParam(value = "category",  required = false) String category) {
-        return ApiResponse.success(postManageService.searchPost(userId, page, take, q, boardCode, groupCode, memberCode, category));
+                                                          @RequestParam(value = "category",  required = false) String category,
+                                                          @RequestParam(value = "qnaTarget", required = false) String qnaTarget
+    ) {
+        return ApiResponse.success(postManageService.searchPost(userId, page, take, q, boardCode, groupCode, memberCode, category, qnaTarget));
     }
 
     @Operation(summary = "검색키워드를 활용한 자료집게시판 게시물 리스트 조회 api", description = """

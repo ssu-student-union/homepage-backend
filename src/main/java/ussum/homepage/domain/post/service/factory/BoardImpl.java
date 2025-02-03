@@ -13,6 +13,6 @@ import ussum.homepage.infra.jpa.post.entity.SuggestionTarget;
 public interface BoardImpl {
     Page<Post> getPostList(PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, SuggestionTarget suggestionTarget, QnATarget qnaTarget, Pageable pageable);
     Page<Post> getPostListByUserId(PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category,SuggestionTarget suggestionTarget,Long userId, Pageable pageable);
-    Page<Post> searchPostList(String q, PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, Pageable pageable);
+    Page<Post> searchPostList(String q, PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category,  QnATarget qnATarget, Pageable pageable);
     Page<Post> searchPostListByUserId(String q,PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category,Long userId, Pageable pageable);
 }

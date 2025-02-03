@@ -28,7 +28,7 @@ public class SuggestionBoardImpl implements BoardImpl {
     }
 
     @Override
-    public Page<Post> searchPostList(String q, PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, Pageable pageable) {
+    public Page<Post> searchPostList(String q, PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, QnATarget qnATarget, Pageable pageable) {
         return postReader.searchPostListByBoardIdAndCategory(this.id, q, category, pageable);
     }
 
