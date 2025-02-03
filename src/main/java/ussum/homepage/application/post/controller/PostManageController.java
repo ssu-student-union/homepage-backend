@@ -267,7 +267,9 @@ public class PostManageController {
             마이페이지 작성 글 보기 조회 시 파라미터로 전달 받은 userId의 유저가 쓴 글 리스트를 조회하는 api입니다.
             """)
     @GetMapping("/mypost")
-    public ResponseEntity<MyPostsResponse> getMyPostList(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "take") int take, @UserId Long userId) {
+    public ResponseEntity<MyPostsResponse> getMyPostList(@Parameter(hidden = true) @UserId Long userId,
+                                                         @RequestParam(value = "page", defaultValue = "0") int page,
+                                                         @RequestParam(value = "take") int take) {
         MyPostsResponse response = postManageService.getMyPostList(userId, page, take);
         return ResponseEntity.ok(response);
     }
