@@ -2,6 +2,8 @@ package ussum.homepage.application.post.service;
 
 import java.util.Collections;
 import java.util.Optional;
+
+import io.netty.util.internal.StringUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -348,7 +350,7 @@ public class PostManageService {
         postModifier.deletePost(boardCode, postId);
     }
 
-    public PostListRes<?> searchPost(Long userId, int page, int take, String q, String boardCode, String groupCode, String memberCode, String category) {
+    public PostListRes<?> searchPost(Long userId, int page, int take, String q, String boardCode, String groupCode, String memberCode, String category, String qnaTarget) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
         //factory 사용 로직
@@ -358,6 +360,7 @@ public class PostManageService {
         GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
         MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
+        QnATarget qnaTargetEnum = StringUtils.hasText(qnaTarget) ? QnATarget.fromStringOrNull(qnaTarget) : null;
         boolean rightsUnion = userId == null ? false :
                 memberReader.getMembersWithUserId(userId).stream()
                         .map(Member::getGroupId)
@@ -368,7 +371,7 @@ public class PostManageService {
 
         if (board.getId() == 8  && !rightsUnion){
             postList = boardImpl.searchPostListByUserId(q,postReader,groupCodeEnum,memberCodeEnum,categoryEnum,userId,pageable);
-        } else postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, pageable);
+        }else postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, qnaTargetEnum, pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 
