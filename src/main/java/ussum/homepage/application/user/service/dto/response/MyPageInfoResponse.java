@@ -11,16 +11,16 @@ public record MyPageInfoResponse(
         String studentId,
         String majorCode,
         String memberCode,
-        boolean union
+        boolean isUnion
 ) {
-    public static MyPageInfoResponse of(User user, Member member){
+    public static MyPageInfoResponse of(User user, Member member, boolean isUnion){
         return MyPageInfoResponse.builder()
                 .name(user.getName())
                 .account(user.getAccountId())
                 .studentId(user.getStudentId())
                 .memberCode(member.getMemberCode())
                 .majorCode(member.getMajorCode())
-                .union(user.getStudentId() == null)
+                .isUnion(isUnion)
                 .build();
     }
 }
