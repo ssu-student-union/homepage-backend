@@ -1,7 +1,6 @@
 package ussum.homepage.application.post.service;
 
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 import io.netty.util.internal.StringUtil;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +24,7 @@ import ussum.homepage.application.post.service.dto.response.postList.*;
 
 import ussum.homepage.application.post.service.dto.response.postSave.*;
 
+import ussum.homepage.application.user.service.dto.response.MyPostsResponse;
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
@@ -57,9 +57,6 @@ import ussum.homepage.infra.jpa.post.PostMapper;
 import ussum.homepage.infra.jpa.post.entity.*;
 import ussum.homepage.infra.utils.S3utils;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -438,5 +435,20 @@ public class PostManageService {
         response = responseFunction.apply(post, isAuthor, null, user, null, null, post.getCategory(), fileResponseList, null,null); //분실물 게시판은 파일첨부 제외
 
         return PostDetailRes.of(response);
+    }
+
+    public MyPostsResponse getMyPostList(Long userId, int page, int take) {
+        Pageable pageable = PageInfo.of(page, take);
+        Page<Post> postList = postReader.getMyPosts(userId, pageable);
+        PageInfo pageInfo = PageInfo.of(postList);
+
+        List<MyPostResponse> list = postList.getContent().stream()
+                .map(post -> {
+                    int commentCount = Math.toIntExact(postCommentReader.getCommentCountByPostId(post.getId()));
+                    return MyPostResponse.of(post, commentCount);
+                })
+                .toList();
+
+        return new MyPostsResponse(list, pageInfo);
     }
 }
