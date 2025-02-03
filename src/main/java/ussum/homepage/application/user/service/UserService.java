@@ -67,7 +67,7 @@ public class UserService {
     }
     public MyPageInfoResponse updateMyPageInfo(Long userId, MyPageUpdateRequest myPageUpdateRequest) {
         if (!MyPageUpdateRequest.validate(myPageUpdateRequest)){
-            new GeneralException(ErrorStatus._FORBIDDEN);
+            throw new GeneralException(ErrorStatus._FORBIDDEN);
         }
         User originUser = userReader.getUserWithId(userId);
         User user = User.of(userId, null,null, originUser.getProfileImage(), myPageUpdateRequest.name(), myPageUpdateRequest.password()
