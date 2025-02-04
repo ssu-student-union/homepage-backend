@@ -52,7 +52,7 @@ public class PostCommentFormatter implements ussum.homepage.domain.comment.servi
 
         Boolean isAuthor = userId != null && userId.equals(postComment.getUserId());
 
-        List<Member> members = memberReader.getMembersWithUserId(userId);
+        List<Member> members = memberReader.getMembersWithUserId(postComment.getUserId());
         Optional<Member> firstMember = members.stream().findFirst();
         if (firstMember.isEmpty()) {
             throw new MemberNotFoundException(MEMBER_NOT_FOUND);

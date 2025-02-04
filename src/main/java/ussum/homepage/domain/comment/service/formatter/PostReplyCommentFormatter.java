@@ -43,7 +43,7 @@ public class PostReplyCommentFormatter implements ussum.homepage.domain.comment.
         Integer likeCount = postReplyCommentReactionManager.getLikeCountOfPostReplyComment(postReplyComment.getId());
         Boolean isAuthor = userId != null && userId.equals(postReplyComment.getUserId());
 
-        List<Member> members = memberReader.getMembersWithUserId(userId);
+        List<Member> members = memberReader.getMembersWithUserId(postReplyComment.getUserId());
         Optional<Member> firstMember = members.stream().findFirst();
         if (firstMember.isEmpty()) {
             throw new MemberNotFoundException(MEMBER_NOT_FOUND);
