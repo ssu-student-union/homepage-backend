@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class User {
     private Long id;
     private String name;
+    private String nickname;
     private String studentId;
     private String kakaoId;
     private String profileImage;
@@ -26,9 +27,9 @@ public class User {
         this.refreshToken = refreshToken;
     }
 
-    public static User of(Long id, String name, String studentId, String kakaoId, String profileImage,
+    public static User of(Long id, String name, String nickname, String studentId, String kakaoId, String profileImage,
                           String accountId, String password, LocalDateTime createdAt, LocalDateTime updatedAt, String refreshToken) {
-        return new User(id, name, studentId, kakaoId, profileImage, accountId, password, String.valueOf(createdAt), String.valueOf(updatedAt), refreshToken);
+        return new User(id, name, nickname, studentId, kakaoId, profileImage, accountId, password, String.valueOf(createdAt), String.valueOf(updatedAt), refreshToken);
     }
 
     public static User createUser(KakaoUserInfoResponseDto userInfoResponseDto) {

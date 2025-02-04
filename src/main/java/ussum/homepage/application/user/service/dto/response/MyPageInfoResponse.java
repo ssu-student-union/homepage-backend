@@ -7,6 +7,7 @@ import ussum.homepage.domain.user.User;
 @Builder
 public record MyPageInfoResponse(
         String name,
+        String nickname,
         String account,
         String studentId,
         String majorCode,
@@ -16,6 +17,7 @@ public record MyPageInfoResponse(
     public static MyPageInfoResponse of(User user, Member member, boolean isUnion){
         return MyPageInfoResponse.builder()
                 .name(user.getName())
+                .nickname(user.getNickname())
                 .account(user.getAccountId())
                 .studentId(user.getStudentId())
                 .memberCode(member.getMemberCode())

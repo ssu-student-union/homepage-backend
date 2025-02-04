@@ -93,6 +93,7 @@ public class UserService {
             throw new GeneralException(ErrorStatus.CONFIRM_PASSWORD_NOT_MATCH);
         }
 
+        user.setNickname(myPageUpdateRequest.nickname());
         user = userModifier.save(user);
 
         return MyPageInfoResponse.of(user, members.get(0), isUnion);
