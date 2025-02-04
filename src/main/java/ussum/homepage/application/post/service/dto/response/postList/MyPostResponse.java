@@ -1,5 +1,6 @@
 package ussum.homepage.application.post.service.dto.response.postList;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import ussum.homepage.domain.post.Post;
@@ -9,6 +10,8 @@ import ussum.homepage.infra.jpa.post.entity.BoardCode;
 @Getter
 public class MyPostResponse extends PostListResDto {
 
+    @JsonIgnore  // category 응답에서 제외됨
+    private final String category;
     private final int commentCount;
     private final String boardCode;
 
@@ -17,6 +20,7 @@ public class MyPostResponse extends PostListResDto {
         super(postId, title, content, date, category);
         this.commentCount = commentCount;
         this.boardCode = boardCode;
+        this.category = category;
     }
 
     public static MyPostResponse of(Post post, int commentCount) {
