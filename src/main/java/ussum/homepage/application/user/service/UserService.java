@@ -75,7 +75,9 @@ public class UserService {
         User user = userReader.getUserWithId(userId);
         List<Member> members = memberReader.getMembersWithUserId(userId); // 예외 발생 가능
         //TODO(inho): groups 테이블에서 학생자치기구 id가 11임. 임시로 하드코딩 해둠. 방법찾으면 바꿀 예정. getMyPageInfo에 쓰인 부분과 합칠 예정.
-        boolean isUnion = members.stream().anyMatch(member -> member.getGroupId() == 11);
+        boolean isUnion = members.stream()
+                .filter(member -> member.getGroupId() != null)
+                .anyMatch(member -> member.getGroupId() == 11);
 
         // 자치기구인지 확인
         if (!isUnion) {
