@@ -12,6 +12,8 @@ import ussum.homepage.application.post.service.dto.response.postList.PostListRes
 import ussum.homepage.application.post.service.dto.response.postList.PostListResDto;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.global.common.PageInfo;
+import ussum.homepage.infra.jpa.member.entity.MajorCode;
+import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.*;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 import ussum.homepage.infra.utils.DateUtils;
@@ -26,8 +28,6 @@ public class PostMapper {
         String category = Category.fromEnumOrNull(postEntity.getCategory());
         String suggestionTarget = postEntity.getSuggestionTarget() != null  ?
                 SuggestionTarget.getTargetStringFromSuggestionTarget(postEntity.getSuggestionTarget()) : null;
-        String qnaTarget = postEntity.getQnaTarget() != null ?
-                QnATarget.getTargetStringFromQnATarget(postEntity.getQnaTarget()) : null;
 
         return Post.of(
                 postEntity.getId(),
@@ -42,7 +42,8 @@ public class PostMapper {
                 postEntity.getLastEditedAt(),
                 category,
                 suggestionTarget,
-                qnaTarget,
+                postEntity.getQnaMajorCode() == null ? null : postEntity.getQnaMajorCode().getStringMajorCode(),
+                postEntity.getQnaMemberCode() == null ? null : postEntity.getQnaMemberCode().getStringMemberCode(),
                 postEntity.getUserEntity().getId(),
                 postEntity.getBoardEntity().getId()
         );
@@ -63,7 +64,8 @@ public class PostMapper {
                 lastEditedAt,
                 Category.fromStringOrNull(post.getCategory()),
                 SuggestionTarget.fromStringOrNull(post.getSuggestionTarget()),
-                QnATarget.fromStringOrNull(post.getQnaTarget()),
+                post.getQnaMajorCode() == null || post.getQnaMajorCode().isEmpty() ? null : MajorCode.getEnumMajorCodeFromStringMajorCode(post.getQnaMajorCode()),
+                post.getQnaMemberCode() == null || post.getQnaMemberCode().isEmpty() ? null :  MemberCode.getEnumMemberCodeFromStringMemberCode(post.getQnaMemberCode()),
                 UserEntity.from(post.getUserId()),
                 BoardEntity.from(post.getBoardId())
         );

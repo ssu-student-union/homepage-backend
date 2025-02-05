@@ -43,7 +43,8 @@ public class PostFactoryImpl implements PostFactory {
                         .thumbNailImage(qnaPostCreateRequest.getThumbNailImage())
                         .isNotice(qnaPostCreateRequest.isNotice())
                         .postFileList(qnaPostCreateRequest.getPostFileList())
-                        .qnaTarget(qnaPostCreateRequest.getQnaTarget())
+                        .qnaMajorCode(qnaPostCreateRequest.getQnaMajorCode())
+                        .qnaMemberCode(qnaPostCreateRequest.getQnaMemberCode())
                         .build();
             }
             default -> GeneralPostCreateRequest.builder()
