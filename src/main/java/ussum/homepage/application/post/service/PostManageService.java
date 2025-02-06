@@ -55,6 +55,7 @@ import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.status.ErrorStatus;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
+import ussum.homepage.infra.jpa.member.entity.MajorCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.PostMapper;
 import ussum.homepage.infra.jpa.post.entity.*;
@@ -104,7 +105,7 @@ public class PostManageService {
     );
     private final PostMapper postMapper;
 
-    public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category, String suggestionTarget, String qnaTarget) {
+    public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category, String suggestionTarget, String qnaMajorCode, String qnaMemberCode) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
         //factory 사용 로직
@@ -115,7 +116,8 @@ public class PostManageService {
         MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
         SuggestionTarget suggestionTargetEnum = StringUtils.hasText(suggestionTarget) ? SuggestionTarget.fromString(suggestionTarget) : null;
-        QnATarget qnaTargetEnum = StringUtils.hasText(qnaTarget) ? QnATarget.fromString(qnaTarget) : null;
+        MajorCode qnaMajorCodeEnum = StringUtils.hasText(qnaMajorCode) ? MajorCode.getEnumMajorCodeFromStringMajorCode(qnaMajorCode) : null;
+        MemberCode qnaMemberCodeEnum = StringUtils.hasText(qnaMemberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(qnaMemberCode) : null;
         boolean unionUser = userId == null ? false :
                 memberReader.getMembersWithUserId(userId).stream()
                         .map(Member::getGroupId)
@@ -125,10 +127,7 @@ public class PostManageService {
 
         if ((board.getId() == 8 || board.getId() == 7) && !unionUser){
             postList = boardImpl.getPostListByUserId(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, userId, pageable);
-        } else if (board.getId() == 10) {
-            // 질의응답게시판
-            postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, qnaTargetEnum, pageable);
-        } else postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, qnaTargetEnum, pageable);
+        } else postList = boardImpl.getPostList(postReader, groupCodeEnum, memberCodeEnum, categoryEnum, suggestionTargetEnum, qnaMajorCodeEnum, qnaMemberCodeEnum, pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 
@@ -350,7 +349,7 @@ public class PostManageService {
         postModifier.deletePost(boardCode, postId);
     }
 
-    public PostListRes<?> searchPost(Long userId, int page, int take, String q, String boardCode, String groupCode, String memberCode, String category, String qnaTarget) {
+    public PostListRes<?> searchPost(Long userId, int page, int take, String q, String boardCode, String groupCode, String memberCode, String qnaMajorCode, String qnaMemberCode, String category) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
         //factory 사용 로직
@@ -360,7 +359,8 @@ public class PostManageService {
         GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
         MemberCode memberCodeEnum = StringUtils.hasText(memberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(memberCode) : null;
         Category categoryEnum = StringUtils.hasText(category) ? Category.getEnumCategoryCodeFromStringCategoryCode(category) : null;
-        QnATarget qnaTargetEnum = StringUtils.hasText(qnaTarget) ? QnATarget.fromStringOrNull(qnaTarget) : null;
+        MajorCode qnaMajorCodeEnum =  StringUtils.hasText(qnaMajorCode) ? MajorCode.getEnumMajorCodeFromStringMajorCode(qnaMajorCode) : null;
+        MemberCode qnaMemberCodeEnum =  StringUtils.hasText(qnaMemberCode) ? MemberCode.getEnumMemberCodeFromStringMemberCode(qnaMemberCode) : null;
         boolean rightsUnion = userId == null ? false :
                 memberReader.getMembersWithUserId(userId).stream()
                         .map(Member::getGroupId)
@@ -371,7 +371,7 @@ public class PostManageService {
 
         if (board.getId() == 8  && !rightsUnion){
             postList = boardImpl.searchPostListByUserId(q,postReader,groupCodeEnum,memberCodeEnum,categoryEnum,userId,pageable);
-        }else postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, qnaTargetEnum, pageable);
+        }else postList = boardImpl.searchPostList(q, postReader, groupCodeEnum, memberCodeEnum, categoryEnum, qnaMajorCodeEnum, qnaMemberCodeEnum, pageable);
 
         PageInfo pageInfo = PageInfo.of(postList);
 

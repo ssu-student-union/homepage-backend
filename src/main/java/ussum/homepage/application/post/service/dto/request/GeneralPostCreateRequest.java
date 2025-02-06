@@ -30,6 +30,7 @@ public class GeneralPostCreateRequest extends PostCreateRequest {
                 category,
                 null,
                 null,
+                null,
                 userId,
                 board.getId());
     }
@@ -42,6 +43,7 @@ public class GeneralPostCreateRequest extends PostCreateRequest {
                 "새로운",
                 null,null,null,
                 this.category,
+                null,
                 null,
                 null,
                 userId,

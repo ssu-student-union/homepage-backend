@@ -10,13 +10,15 @@ import ussum.homepage.domain.post.Post;
 @Schema(description = "질의응답게시판 데이터 스키마")
 @Getter
 public class QnAPostCreateRequest extends PostCreateRequest {
-    private final String qnaTarget;
+    private final String qnaMajorCode;
+    private final String qnaMemberCode;
 
     @Builder
     public QnAPostCreateRequest(String title, String content, String category, String thumbNailImage,
-                                       boolean isNotice, List<Long> postFileList, String qnaTarget) {
+                                       boolean isNotice, List<Long> postFileList, String qnaMajorCode, String qnaMemberCode) {
         super(title, content, category, thumbNailImage, isNotice, postFileList);
-        this.qnaTarget = qnaTarget;
+        this.qnaMajorCode = qnaMajorCode;
+        this.qnaMemberCode = qnaMemberCode;
     }
 
     @Override
@@ -30,7 +32,8 @@ public class QnAPostCreateRequest extends PostCreateRequest {
                 null, null, null,
                 category,
                 null,
-                qnaTarget,
+                qnaMajorCode,
+                qnaMemberCode,
                 userId,
                 board.getId());
     }

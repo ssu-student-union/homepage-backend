@@ -20,6 +20,7 @@ import ussum.homepage.domain.post.exception.PostException;
 import ussum.homepage.infra.jpa.comment.repository.PostCommentJpaRepository;
 import ussum.homepage.infra.jpa.comment.repository.PostReplyCommentJpaRepository;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
+import ussum.homepage.infra.jpa.member.entity.MajorCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
 import ussum.homepage.domain.post.Post;
@@ -260,11 +261,18 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Page<Post> findAllByBoardIdAndQnATarget(Long boardId, QnATarget qnaTarget, Pageable pageable) {
+    public Page<Post> findAllByBoardIdAndQnAMajorCodeAndQnAMemberCode(Long boardId, MajorCode qnaMajorCode, MemberCode qnaMemberCode, Pageable pageable) {
         BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
 
-        if (qnaTarget != null && qnaTarget != QnATarget.ALL) {
-            whereClause.and(postEntity.qnaTarget.eq(qnaTarget));
+        // qnaMajorCode, qnaMemberCode 를 같이 사용하면 예외
+        if (qnaMajorCode != null && qnaMemberCode != null) {
+            throw new GeneralException(_FORBIDDEN);
+        }
+
+        if (qnaMajorCode != null) {
+            whereClause.and(postEntity.qnaMajorCode.eq(qnaMajorCode));
+        } else if(qnaMemberCode != null) {
+            whereClause.and(postEntity.qnaMemberCode.eq(qnaMemberCode));
         }
 
         JPAQuery<PostEntity> query = queryFactory
@@ -607,7 +615,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Page<Post> searchAllByBoardIdAndCategoryAndQnATarget(Long boardId, String q, Category category, QnATarget qnaTarget, Pageable pageable) {
+    public Page<Post> searchAllByBoardIdAndCategoryAndQnAMajorCodeAndQnAMemberCode(Long boardId, String q, Category category, MajorCode qnaMajorCode, MemberCode qnaMemberCode, Pageable pageable) {
         // 기본 where 조건: 게시판 ID가 일치하는 게시물 필터링
         BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
 
@@ -616,8 +624,15 @@ public class PostRepositoryImpl implements PostRepository {
             whereClause.and(postEntity.category.eq(category));
         }
 
-        if (qnaTarget != null && qnaTarget != QnATarget.ALL) {
-            whereClause.and(postEntity.qnaTarget.eq(qnaTarget));
+        // qnaMajorCode, qnaMemberCode 를 같이 사용하면 예외
+        if (qnaMajorCode != null && qnaMemberCode != null) {
+            throw new GeneralException(_FORBIDDEN);
+        }
+
+        if (qnaMajorCode != null) {
+            whereClause.and(postEntity.qnaMajorCode.eq(qnaMajorCode));
+        } else if(qnaMemberCode != null) {
+            whereClause.and(postEntity.qnaMemberCode.eq(qnaMemberCode));
         }
 
         // 검색어 q가 지정된 경우, 제목에 해당 검색어가 포함된 게시물만 필터링

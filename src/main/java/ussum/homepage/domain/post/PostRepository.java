@@ -4,10 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
+import ussum.homepage.infra.jpa.member.entity.MajorCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.FileCategory;
-import ussum.homepage.infra.jpa.post.entity.QnATarget;
 import ussum.homepage.infra.jpa.post.entity.SuggestionTarget;
 
 import java.time.LocalDateTime;
@@ -32,10 +32,10 @@ public interface PostRepository {
     Page<Post> findAllByFileCategories(List<FileCategory> fileCategories, Pageable pageable);
     Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boarId, GroupCode groupCode, MemberCode memberCode, Pageable pageable);
     Page<Post> findAllByBoardIdAndCategoryAndSuggestionTarget(Long boarId, Category category, SuggestionTarget suggestionTarget, Pageable pageable);
-    Page<Post> findAllByBoardIdAndQnATarget(Long boarId, QnATarget qnaTarget, Pageable pageable);
+    Page<Post> findAllByBoardIdAndQnAMajorCodeAndQnAMemberCode(Long boarId, MajorCode qnaMajorCode, MemberCode qnaMemberCode, Pageable pageable);
     Page<Post> searchAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, String q, GroupCode groupCode, MemberCode memberCode, Pageable pageable);
     Page<Post> searchAllByBoardIdAndCategory(Long boardId, String q, Category category, Pageable pageable);
-    Page<Post> searchAllByBoardIdAndCategoryAndQnATarget(Long boardId, String q, Category category, QnATarget qnaTarget, Pageable pageable);
+    Page<Post> searchAllByBoardIdAndCategoryAndQnAMajorCodeAndQnAMemberCode(Long boardId, String q, Category category, MajorCode qnaMajorCode, MemberCode qnaMemberCode, Pageable pageable);
     Page<Post> searchAllByFileCategories(String q, List<FileCategory> fileCategories, Pageable pageable);
 
     Page<Post> searchAllByBoardIdAndCategoryAndUserId(Long boardId, Category category, Pageable pageable, Long userId);
