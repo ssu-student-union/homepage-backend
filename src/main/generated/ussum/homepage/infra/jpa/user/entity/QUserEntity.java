@@ -32,6 +32,8 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final StringPath name = createString("name");
 
+    public final StringPath nickname = createString("nickname");
+
     public final StringPath password = createString("password");
 
     public final StringPath profileImage = createString("profileImage");

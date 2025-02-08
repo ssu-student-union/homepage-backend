@@ -33,6 +33,8 @@ public class QMemberEntity extends EntityPathBase<MemberEntity> {
 
     public final BooleanPath isAdmin = createBoolean("isAdmin");
 
+    public final BooleanPath isVerified = createBoolean("isVerified");
+
     public final EnumPath<MajorCode> majorCode = createEnum("majorCode", MajorCode.class);
 
     public final EnumPath<MemberCode> memberCode = createEnum("memberCode", MemberCode.class);
