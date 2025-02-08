@@ -2,6 +2,7 @@ package ussum.homepage.application.comment.service.dto.response;
 
 import lombok.Builder;
 import ussum.homepage.domain.comment.PostReplyComment;
+import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.user.User;
 
 import java.util.List;
@@ -10,6 +11,8 @@ public class PostReplyCommentResponse {
     public Long id;
     public String authorName;
     public String studentId;
+    public String department;
+    public String college;
     public String content;
     public String createdAt;
     public String lastEditedAt;
@@ -20,10 +23,12 @@ public class PostReplyCommentResponse {
 //    public List<String> canAuthority;
 
     @Builder
-    public PostReplyCommentResponse(Long id, String authorName, String studentId, String content, String createdAt, String lastEditedAt, Integer likeCount, Boolean isAuthor, Boolean isLiked, Boolean isDeleted/*, List<String> canAuthority*/) {
+    public PostReplyCommentResponse(Long id, String authorName, String studentId, String department, String college, String content, String createdAt, String lastEditedAt, Integer likeCount, Boolean isAuthor, Boolean isLiked, Boolean isDeleted/*, List<String> canAuthority*/) {
         this.id = id;
         this.authorName = authorName;
         this.studentId = studentId;
+        this.department = department;
+        this.college = college;
         this.content = content;
         this.createdAt = createdAt;
         this.lastEditedAt = lastEditedAt;
@@ -34,7 +39,7 @@ public class PostReplyCommentResponse {
 //        this.canAuthority = canAuthority;
     }
 
-    public static PostReplyCommentResponse of(PostReplyComment postReplyComment, User user, Integer likeCount, Boolean isAuthor, Boolean isLiked) {
+    public static PostReplyCommentResponse of(PostReplyComment postReplyComment, User user, Member member, Integer likeCount, Boolean isAuthor, Boolean isLiked) {
         String studentId = user.getStudentId();
         String content = postReplyComment.getContent();
         if (postReplyComment.getIsDeleted().equals(true)) {
@@ -45,6 +50,8 @@ public class PostReplyCommentResponse {
                 .id(postReplyComment.getId())
                 .authorName(user.getName())
                 .studentId(studentId)
+                .department(member.getMajorCode())
+                .college(member.getMemberCode())
                 .content(content)
                 .createdAt(postReplyComment.getCreatedAt())
                 .lastEditedAt(postReplyComment.getLastEditedAt())

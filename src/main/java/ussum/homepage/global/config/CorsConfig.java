@@ -23,6 +23,7 @@ public class CorsConfig {
         config.addAllowedOrigin("https://stu.ssu.ac.kr");
         config.addAllowedOrigin("https://dev-homepage-frontend.vercel.app");
         config.addAllowedOrigin("https://dev.sssupport.shop");
+        config.addAllowedOrigin("https://backend.sssupport.shop");
         config.addAllowedHeader("*");
         config.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         source.registerCorsConfiguration("/**",config);

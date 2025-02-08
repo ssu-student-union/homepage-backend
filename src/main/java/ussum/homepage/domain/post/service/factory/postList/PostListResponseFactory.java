@@ -2,6 +2,8 @@ package ussum.homepage.domain.post.service.factory.postList;
 
 import ussum.homepage.application.post.service.dto.response.postList.PostListResDto;
 import ussum.homepage.application.post.service.dto.response.postList.RightsPostResponse;
+import ussum.homepage.domain.member.Member;
+import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.post.Post;
 import ussum.homepage.domain.post.PostFile;
 import ussum.homepage.domain.post.service.PostReader;
@@ -12,7 +14,7 @@ import ussum.homepage.domain.user.service.UserReader;
 import java.util.List;
 
 public interface PostListResponseFactory {
-    PostListResDto createResponse(Post post, PostReader postReader, PostReactionReader postReactionReader, UserReader userReader);
+    PostListResDto createResponse(Post post, PostReader postReader, PostReactionReader postReactionReader, UserReader userReader, MemberReader memberReader);
 
     // 자료집 게시판을 위한 새로운 메서드
     default PostListResDto createDataResponse(Post post, List<PostFile> postFiles) {

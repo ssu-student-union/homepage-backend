@@ -13,6 +13,7 @@ public class UserMapper {
         return User.of(
                 userEntity.getId(),
                 userEntity.getName(),
+                userEntity.getNickname(),
                 userEntity.getStudentId(),
                 userEntity.getKakaoId(),
                 userEntity.getProfileImage(),
@@ -28,6 +29,7 @@ public class UserMapper {
         return UserEntity.of(
                 user.getId(),
                 user.getName(),
+                user.getNickname(),
                 user.getStudentId(),
                 user.getKakaoId(),
                 user.getProfileImage(),

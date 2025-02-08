@@ -20,6 +20,7 @@ import ussum.homepage.domain.post.exception.PostException;
 import ussum.homepage.infra.jpa.comment.repository.PostCommentJpaRepository;
 import ussum.homepage.infra.jpa.comment.repository.PostReplyCommentJpaRepository;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
+import ussum.homepage.infra.jpa.member.entity.MajorCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
 import ussum.homepage.domain.post.Post;
@@ -35,7 +36,6 @@ import ussum.homepage.infra.jpa.reaction.entity.PostCommentReactionEntity;
 import ussum.homepage.infra.jpa.reaction.entity.PostReplyCommentReactionEntity;
 import ussum.homepage.infra.jpa.reaction.repository.PostCommentReactionJpaRepository;
 import ussum.homepage.infra.jpa.reaction.repository.PostReplyCommentReactionJpaRepository;
-import ussum.homepage.infra.jpa.user.entity.UserEntity;
 import ussum.homepage.infra.jpa.user.repository.UserJpaRepository;
 
 import java.time.LocalDateTime;
@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 import static ussum.homepage.global.error.status.ErrorStatus.*;
 
 import static ussum.homepage.infra.jpa.group.entity.QGroupEntity.groupEntity;
-import static ussum.homepage.infra.jpa.member.entity.QMemberEntity.memberEntity;;
+import static ussum.homepage.infra.jpa.member.entity.QMemberEntity.memberEntity;
 import static ussum.homepage.infra.jpa.post.entity.BoardCode.getEnumBoardCodeFromStringBoardCode;
 import static ussum.homepage.infra.jpa.post.entity.PostEntity.increaseViewCount;
 import static ussum.homepage.infra.jpa.post.entity.QPostEntity.postEntity;
@@ -236,6 +236,43 @@ public class PostRepositoryImpl implements PostRepository {
 
         if (suggestionTarget != null) {
             whereClause.and(postEntity.suggestionTarget.eq(suggestionTarget));
+        }
+
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(whereClause);
+
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+    }
+
+    @Override
+    public Page<Post> findAllByBoardIdAndQnAMajorCodeAndQnAMemberCode(Long boardId, MajorCode qnaMajorCode, MemberCode qnaMemberCode, Pageable pageable) {
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
+
+        // qnaMajorCode, qnaMemberCode 를 같이 사용하면 예외
+        if (qnaMajorCode != null && qnaMemberCode != null) {
+            throw new GeneralException(_FORBIDDEN);
+        }
+
+        if (qnaMajorCode != null) {
+            whereClause.and(postEntity.qnaMajorCode.eq(qnaMajorCode));
+        } else if(qnaMemberCode != null) {
+            whereClause.and(postEntity.qnaMemberCode.eq(qnaMemberCode));
         }
 
         JPAQuery<PostEntity> query = queryFactory
@@ -578,6 +615,58 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public Page<Post> searchAllByBoardIdAndCategoryAndQnAMajorCodeAndQnAMemberCode(Long boardId, String q, Category category, MajorCode qnaMajorCode, MemberCode qnaMemberCode, Pageable pageable) {
+        // 기본 where 조건: 게시판 ID가 일치하는 게시물 필터링
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));
+
+        // 카테고리가 지정된 경우 해당 카테고리의 게시물만 필터링
+        if (category != null) {
+            whereClause.and(postEntity.category.eq(category));
+        }
+
+        // qnaMajorCode, qnaMemberCode 를 같이 사용하면 예외
+        if (qnaMajorCode != null && qnaMemberCode != null) {
+            throw new GeneralException(_FORBIDDEN);
+        }
+
+        if (qnaMajorCode != null) {
+            whereClause.and(postEntity.qnaMajorCode.eq(qnaMajorCode));
+        } else if(qnaMemberCode != null) {
+            whereClause.and(postEntity.qnaMemberCode.eq(qnaMemberCode));
+        }
+
+        // 검색어 q가 지정된 경우, 제목에 해당 검색어가 포함된 게시물만 필터링
+        if (q != null && !q.isEmpty()) {
+            whereClause.and(postEntity.title.like("%" + q + "%"));
+        }
+
+        // 쿼리 작성: 게시물을 가져오고 페이지네이션 및 정렬 적용
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        // 실제 데이터 가져오기
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // 전체 카운트 쿼리: 페이징 정보 생성에 필요
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(whereClause);
+
+        // 페이지 객체 반환
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+    }
+
+    @Override
     public Page<Post> searchAllByFileCategories(String q, List<FileCategory> fileCategories, Pageable pageable) {
         BooleanExpression whereClause = postEntity.boardEntity.id.eq(6L);
 
@@ -749,5 +838,33 @@ public class PostRepositoryImpl implements PostRepository {
 
         // 총 처리된 게시물 수 출력
         System.out.println("총 업데이트된 게시물 수: " + processedCount);
+    }
+
+    public Page<Post> findAllByUserId(Long userId, Pageable pageable) {
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.userEntity.id.eq(userId));
+        if (userId == null) {
+           return Page.empty();
+        }
+
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(whereClause);
+
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
     }
 }

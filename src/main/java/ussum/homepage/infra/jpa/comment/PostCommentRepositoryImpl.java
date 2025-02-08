@@ -11,6 +11,7 @@ import ussum.homepage.domain.reaction.exception.PostCommentException;
 import ussum.homepage.domain.reaction.service.PostCommentReactionReader;
 import ussum.homepage.infra.jpa.comment.entity.CommentType;
 import ussum.homepage.infra.jpa.comment.entity.PostCommentEntity;
+import ussum.homepage.infra.jpa.comment.entity.QPostCommentEntity;
 import ussum.homepage.infra.jpa.comment.repository.PostCommentJpaRepository;
 
 import java.util.List;
@@ -104,5 +105,18 @@ public class PostCommentRepositoryImpl implements PostCommentRepository {
         PostCommentEntity postCommentEntity = postCommentMapper.toEntity(postComment);
         updateDeletedAt(postCommentEntity);
         postCommentJpaRepository.save(postCommentEntity);
+    }
+
+    @Override
+    public Long getCommentCountByPostId(Long postId) {
+        QPostCommentEntity postComment = QPostCommentEntity.postCommentEntity;
+
+        return queryFactory
+                .select(postComment.count())
+                .from(postComment)
+                .where(postComment.postEntity.id.eq(postId)
+                        .and(postComment.isDeleted.eq(false))) // 삭제되지 않은 댓글만 포함
+                .fetchOne();
+
     }
 }
