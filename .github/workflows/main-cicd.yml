@@ -68,8 +68,8 @@ jobs:
         docker push ${{ secrets.DOCKER_REPO }}/blue-green
         
         
-    ## deploy.sh 파일 서버로 전달하기(복사 후 붙여넣기)
-    - name: Send deploy.sh
+    ## deploy-dev.sh 파일 서버로 전달하기(복사 후 붙여넣기)
+    - name: Send deploy-dev.sh
       uses: appleboy/scp-action@master
       with:
         username: ubuntu
@@ -80,15 +80,15 @@ jobs:
         target: "/home/ubuntu/"
         
 
-    ## docker-compose.yml 파일을 EC2 development server로 전달
-    - name: Send docker-compose.yml
+    ## docker-compose-dev.yml 파일을 EC2 development server로 전달
+    - name: Send docker-compose-dev.yml
       uses: appleboy/scp-action@master
       with:
         username: ubuntu
         host: ${{ secrets.HOST }}
         key: ${{ secrets.KEY }}
         port: 22
-        source: "./docker-compose.yml"
+        source: "./docker-compose-dev.yml"
         target: "/home/ubuntu/"
         
         

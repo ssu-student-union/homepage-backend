@@ -23,7 +23,7 @@ public class LoggingAspect {
     private final HttpServletRequest request;
     private final ObjectMapper objectMapper; // JSON 변환용
 
-    @Around("within(ussum.homepage.application.*.controller..*)")
+    @Around("within(@org.springframework.web.bind.annotation.RestController *)")
     public Object logApi(ProceedingJoinPoint joinPoint) throws Throwable {
         // 요청 정보 로깅
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -46,15 +46,24 @@ public class LoggingAspect {
             operationSummary, httpMethod, userId, requestUri, queryString, requestBody);
 
         // 실제 메소드 실행
-        Object response = joinPoint.proceed();
+        Object response;
+        long startTime = System.currentTimeMillis();
+        try {
+            response = joinPoint.proceed();
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+        long executionTime = System.currentTimeMillis() - startTime;
+
 
         // 응답 정보 로깅
         String responseBody = getResponseBody(response);
         log.info("\n----Response Log----\n"
                 + "API : {}\n"
                 + "Response Body : {}\n"
+                + "Execution Time : {}ms\n"
                 + "---------------",
-            operationSummary, responseBody);
+            operationSummary, responseBody, executionTime);
 
         return response;
     }
@@ -70,9 +79,9 @@ public class LoggingAspect {
 
     private String getRequestBody(Object[] args) {
         for (Object arg : args) {
-            if (arg != null && !(arg instanceof HttpServletRequest) && !(arg instanceof HttpServletResponse)) {
+            if (!(arg instanceof HttpServletRequest) && !(arg instanceof HttpServletResponse) && isDto(arg)) {
                 try {
-                    return objectMapper.writeValueAsString(arg);
+                    return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(arg);
                 } catch (JsonProcessingException e) {
                     log.error("Failed to serialize request body: {}", e.getMessage());
                     return "Failed to serialize request body";
@@ -82,9 +91,10 @@ public class LoggingAspect {
         return "No Request Body";
     }
 
+
     private String getResponseBody(Object response) {
         try {
-            return objectMapper.writeValueAsString(response);
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(response);
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize response body: {}", e.getMessage());
             return "Failed to serialize response body";
@@ -98,4 +108,13 @@ public class LoggingAspect {
         }
         return "Summary 없음";
     }
+
+    private boolean isDto(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        String packageName = obj.getClass().getName();
+        return packageName.startsWith("ussum.homepage") && packageName.contains(".dto");
+    }
+
 }
