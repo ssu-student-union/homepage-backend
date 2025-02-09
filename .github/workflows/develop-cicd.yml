@@ -55,8 +55,8 @@ jobs:
       - name: web docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/ussum-develop .
-          docker push ${{ secrets.DOCKER_REPO }}/ussum-develop
+          docker build -t ${{ secrets.DOCKER_REPO_DEV }}/blue-green .
+          docker push ${{ secrets.DOCKER_REPO_DEV }}/blue-green
       
 
       ## deploy.sh 파일 서버로 전달하기(복사 후 붙여넣기)
@@ -67,7 +67,7 @@ jobs:
           host: ${{ secrets.DEVELOP_HOST }}
           key: ${{ secrets.DEVELOP_KEY }}
           port: 22
-          source: "./scripts2/"
+          source: "./scripts/"
           target: "/home/ubuntu/"
 
 
@@ -91,7 +91,7 @@ jobs:
           host: ${{ secrets.DEVELOP_HOST }}
           key: ${{ secrets.DEVELOP_KEY }}
           script: |
-            sudo docker pull ${{ secrets.DOCKER_REPO }}/ussum-develop
+            sudo docker pull ${{ secrets.DOCKER_REPO_DEV }}/blue-green
             chmod 777 ./scripts/deploy.sh
             cp ./scripts/deploy.sh ./deploy.sh
             ./deploy.sh
