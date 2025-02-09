@@ -59,27 +59,27 @@ jobs:
           docker push ${{ secrets.DOCKER_REPO_DEV }}/blue-green
       
 
-      ## deploy.sh 파일 서버로 전달하기(복사 후 붙여넣기)
-      - name: Send deploy.sh
+      ## deploy-dev.sh 파일 서버로 전달하기(복사 후 붙여넣기)
+      - name: Send deploy-dev.sh
         uses: appleboy/scp-action@master
         with:
           username: ubuntu
           host: ${{ secrets.DEVELOP_HOST }}
           key: ${{ secrets.DEVELOP_KEY }}
           port: 22
-          source: "./scripts/"
+          source: "./scripts2/"
           target: "/home/ubuntu/"
 
 
-      ## docker-compose.yml 파일을 EC2 development server로 전달
-      - name: Send docker-compose.yml
+      ## docker-compose-dev.yml 파일을 EC2 development server로 전달
+      - name: Send docker-compose-dev.yml
         uses: appleboy/scp-action@master
         with:
           username: ubuntu
           host: ${{ secrets.DEVELOP_HOST }}
           key: ${{ secrets.DEVELOP_KEY }}
           port: 22
-          source: "./dev/docker-compose.yml"
+          source: "./docker-compose-dev.yml"
           target: "/home/ubuntu/"
 
 
@@ -92,9 +92,9 @@ jobs:
           key: ${{ secrets.DEVELOP_KEY }}
           script: |
             sudo docker pull ${{ secrets.DOCKER_REPO_DEV }}/blue-green
-            chmod 777 ./scripts/deploy.sh
-            cp ./scripts/deploy.sh ./deploy.sh
-            ./deploy.sh
+            chmod 777 ./scripts2/deploy-dev.sh
+            cp ./scripts2/deploy-dev.sh ./deploy-dev.sh
+            ./deploy-dev.sh
             docker image prune -f
 
 #jobs:
