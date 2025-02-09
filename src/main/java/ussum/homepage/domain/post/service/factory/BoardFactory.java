@@ -6,6 +6,8 @@ public class BoardFactory {
             return new NoticeBoardImpl(boardId);
         } else if ("건의게시판".equals(boardCode)){
             return new SuggestionBoardImpl(boardId);
+        } else if ("질의응답게시판".equals(boardCode)) {
+            return  new QnABoardImpl(boardId);
         } else {
             return new GeneralBoardImpl(boardId);
         }

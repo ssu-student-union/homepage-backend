@@ -2,7 +2,7 @@ version: '3'
 services:
   blue:
     container_name: blue
-    image: ssuitspecial/blue-green
+    image: haul123/blue-green
     expose:
       - 8080
     ports:
@@ -13,7 +13,7 @@ services:
       - /var/log/homepage:/var/log/homepage # /var/log/homepage
   green:
     container_name: green
-    image: ssuitspecial/blue-green
+    image: haul123/blue-green
     expose:
       - 8080
     ports:

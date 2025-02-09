@@ -35,6 +35,21 @@ public class PostAclManager {
             return groupHasPermission;
         }
 
+//        // 일반 사용자 중 인증 되지 않은 사용자(UNVERIFIED_USER) 신입생 권한 확인
+        boolean unverifiedUserHasPermission = checkUnverifiedUserPermission(permissions, action);
+        System.out.println("unverifiedUserHasPermission = " + unverifiedUserHasPermission);
+
+        // 인증 되지 않은 사용자 권한이 있으면 true 반환
+        if (unverifiedUserHasPermission) {
+            return true;
+        }
+
+        // 인증 되지 않은 사용자라면, 일반 사용자 권한 확인, EVERYONE 권한 확인 로직을 타면 안된다.
+        // 또한, 해당 라인부터는 members의 요소가 자치기구가 아닌, 일반 유저이기 때문에 많아야 1개일 것이다.
+        if (members.stream().noneMatch(Member::getIsVerified)) {
+            return false;
+        }
+
         // 2. 일반 사용자(USER) 권한 확인
         boolean userHasPermission = checkUserPermission(permissions, action);
         System.out.println("userHasPermission = " + userHasPermission);
@@ -88,6 +103,16 @@ public class PostAclManager {
                         })
                 );
     }
+
+    // 로그인된 인증되지 않은 사용자(UNVERIFIED_USER) 대한 권한 확인
+    private boolean checkUnverifiedUserPermission(List<PostAcl> permissions, String action) {
+        return permissions.stream()
+                .anyMatch(postAcl -> postAcl.getTarget() != null
+                        && postAcl.getAction().equals(action)
+                        && postAcl.getTarget().equals("UNVERIFIED_USER")
+                        && postAcl.getType().equals("ALLOW"));
+    }
+
 
     // 로그인된 사용자(USER)에 대한 권한 확인
     private boolean checkUserPermission(List<PostAcl> permissions, String action) {

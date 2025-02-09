@@ -1,7 +1,10 @@
 package ussum.homepage.infra.jpa.post.entity;
 import jakarta.persistence.*;
 import lombok.*;
+import ussum.homepage.domain.member.Member;
 import ussum.homepage.infra.jpa.BaseEntity;
+import ussum.homepage.infra.jpa.member.entity.MajorCode;
+import ussum.homepage.infra.jpa.member.entity.MemberCode;
 import ussum.homepage.infra.jpa.user.entity.UserEntity;
 
 import java.time.LocalDateTime;
@@ -35,6 +38,12 @@ public class PostEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SuggestionTarget suggestionTarget;
 
+    @Enumerated(EnumType.STRING)
+    private MajorCode qnaMajorCode;
+
+    @Enumerated(EnumType.STRING)
+    private MemberCode qnaMemberCode; // 단과대만 쓸 예정
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
@@ -47,12 +56,12 @@ public class PostEntity extends BaseEntity {
     }
 
     public static PostEntity from(Long id){
-        return new PostEntity(id, null, null, null, null, null, null, null, null, null,null);
+        return new PostEntity(id, null, null, null, null, null, null, null,null, null, null, null,null);
     }
 
     public static PostEntity of(Long id, String title, String content, Integer viewCount, String thumbnailImage, Status status,
-                                /*OngoingStatus ongoingStatus,*/ LocalDateTime lastEditedAt, Category category, SuggestionTarget suggestionTarget, UserEntity user, BoardEntity board) {
-        return new PostEntity(id, title, content, viewCount, thumbnailImage, status, /*ongoingStatus,*/ lastEditedAt, category, suggestionTarget, user, board);
+                                /*OngoingStatus ongoingStatus,*/ LocalDateTime lastEditedAt, Category category, SuggestionTarget suggestionTarget, MajorCode qnaMajorCode, MemberCode qnaMemberCode, UserEntity user, BoardEntity board) {
+        return new PostEntity(id, title, content, viewCount, thumbnailImage, status, /*ongoingStatus,*/ lastEditedAt, category, suggestionTarget, qnaMajorCode, qnaMemberCode, user, board);
     }
 
     public static void increaseViewCount(PostEntity post) {

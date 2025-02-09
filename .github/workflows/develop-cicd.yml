@@ -56,7 +56,6 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_REPO }}/ussum-develop:latest .
           docker push ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
-
       ## 도커 허브에서 jar파일 및 pull후에 컴포즈 up
       - name: Deploy to Dev
         uses: appleboy/ssh-action@master

@@ -3,6 +3,7 @@ package ussum.homepage.application.comment.service.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import ussum.homepage.domain.comment.PostComment;
+import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.user.User;
 
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.List;
 public class PostCommentResponse {
     public Long id;
     public String authorName;
+    public String department;
+    public String college;
     public String studentId;
     public String content;
     public String commentType;
@@ -24,9 +27,11 @@ public class PostCommentResponse {
 //    public List<String> canAuthority;
 
     @Builder
-    public PostCommentResponse(Long id, String authorName, String studentId, String content, String commentType, String createdAt, String lastEditedAt, Integer likeCount, Boolean isAuthor, Boolean isLiked, Boolean isDeleted, List<PostReplyCommentResponse> postReplyComments/*, List<String> canAuthority*/) {
+    public PostCommentResponse(Long id, String authorName, String department, String college, String studentId, String content, String commentType, String createdAt, String lastEditedAt, Integer likeCount, Boolean isAuthor, Boolean isLiked, Boolean isDeleted, List<PostReplyCommentResponse> postReplyComments/*, List<String> canAuthority*/) {
         this.id = id;
         this.authorName = authorName;
+        this.department = department;
+        this.college = college;
         this.studentId = studentId;
         this.content = content;
         this.commentType = commentType;
@@ -40,7 +45,7 @@ public class PostCommentResponse {
 //        this.canAuthority = canAuthority;
     }
 
-    public static PostCommentResponse of(PostComment postComment, User user, String commentType, Integer likeCount, Boolean isAuthor, Boolean isLiked, List<PostReplyCommentResponse> postReplyComments) {
+    public static PostCommentResponse of(PostComment postComment, User user, Member member, String commentType, Integer likeCount, Boolean isAuthor, Boolean isLiked, List<PostReplyCommentResponse> postReplyComments) {
         String studentId = user.getStudentId();
         String content = postComment.getContent();
         if (postComment.getIsDeleted().equals(true)) {
@@ -51,6 +56,8 @@ public class PostCommentResponse {
         return PostCommentResponse.builder()
                 .id(postComment.getId())
                 .authorName(user.getName())
+                .department(member.getMajorCode())
+                .college(member.getMemberCode())
                 .studentId(studentId)
                 .content(content)
                 .commentType(commentType)

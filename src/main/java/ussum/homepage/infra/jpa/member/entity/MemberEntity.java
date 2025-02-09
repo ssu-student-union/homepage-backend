@@ -32,14 +32,16 @@ public class MemberEntity extends BaseEntity {
     @JoinColumn(name = "groups_id")
     private GroupEntity groupEntity;
 
-    public static MemberEntity of(Long id, Boolean isAdmin, MemberCode memberCode, MajorCode majorCode, UserEntity userEntity, GroupEntity groupEntity) {
-        return new MemberEntity(id, isAdmin, memberCode, majorCode, userEntity, groupEntity);
+    private Boolean isVerified;
+
+    public static MemberEntity of(Long id, Boolean isAdmin, MemberCode memberCode, MajorCode majorCode, UserEntity userEntity, GroupEntity groupEntity, Boolean isVerified) {
+        return new MemberEntity(id, isAdmin, memberCode, majorCode, userEntity, groupEntity, isVerified);
     }
-    public static MemberEntity nullGroup(Long id, Boolean isAdmin, MemberCode memberCode, MajorCode majorCode, UserEntity userEntity) {
-        return new MemberEntity(id, isAdmin, memberCode, majorCode, userEntity, null);
+    public static MemberEntity nullGroup(Long id, Boolean isAdmin, MemberCode memberCode, MajorCode majorCode, UserEntity userEntity, Boolean isVerified) {
+        return new MemberEntity(id, isAdmin, memberCode, majorCode, userEntity, null, isVerified);
     }
 
     public static MemberEntity from(Long id) {
-        return new MemberEntity(id, null, null, null, null, null);
+        return new MemberEntity(id, null, null, null, null, null, null);
     }
 }

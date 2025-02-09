@@ -1,8 +1,8 @@
-package ussum.homepage.application.post.service.dto.response;
+package ussum.homepage.application.post.service.dto.response.postList;
 
 import lombok.Builder;
 import lombok.Getter;
-import ussum.homepage.application.post.service.dto.response.postList.PostListResDto;
+import ussum.homepage.application.post.service.dto.response.FileResponse;
 import ussum.homepage.domain.post.Post;
 
 import java.util.List;

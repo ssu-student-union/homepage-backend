@@ -37,7 +37,13 @@ public class QPostEntity extends EntityPathBase<PostEntity> {
 
     public final DateTimePath<java.time.LocalDateTime> lastEditedAt = createDateTime("lastEditedAt", java.time.LocalDateTime.class);
 
+    public final EnumPath<ussum.homepage.infra.jpa.member.entity.MajorCode> qnaMajorCode = createEnum("qnaMajorCode", ussum.homepage.infra.jpa.member.entity.MajorCode.class);
+
+    public final EnumPath<ussum.homepage.infra.jpa.member.entity.MemberCode> qnaMemberCode = createEnum("qnaMemberCode", ussum.homepage.infra.jpa.member.entity.MemberCode.class);
+
     public final EnumPath<Status> status = createEnum("status", Status.class);
+
+    public final EnumPath<SuggestionTarget> suggestionTarget = createEnum("suggestionTarget", SuggestionTarget.class);
 
     public final StringPath thumbnailImage = createString("thumbnailImage");
 

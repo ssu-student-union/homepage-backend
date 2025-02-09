@@ -32,6 +32,8 @@ public class RightsPostCreateRequest extends PostCreateRequest {
                 null, null, null,
                 "접수대기",
                 null,
+                null,
+                null,
                 userId,
                 board.getId());
     }

@@ -1,10 +1,7 @@
 package ussum.homepage.domain.post.service.factory;
 
 import org.springframework.stereotype.Component;
-import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequest;
-import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
-import ussum.homepage.application.post.service.dto.request.RightsPostCreateRequest;
-import ussum.homepage.application.post.service.dto.request.SuggestionPostCreateRequest;
+import ussum.homepage.application.post.service.dto.request.*;
 
 @Component
 public class PostFactoryImpl implements PostFactory {
@@ -35,6 +32,19 @@ public class PostFactoryImpl implements PostFactory {
                         .isNotice(suggestionPostCreateRequest.isNotice())
                         .postFileList(suggestionPostCreateRequest.getPostFileList())
                         .suggestionTarget(suggestionPostCreateRequest.getSuggestionTarget())
+                        .build();
+            }
+            case "질의응답게시판" ->{
+                QnAPostCreateRequest qnaPostCreateRequest = (QnAPostCreateRequest) request;
+                yield QnAPostCreateRequest.builder()
+                        .title(qnaPostCreateRequest.getTitle())
+                        .content(qnaPostCreateRequest.getContent())
+                        .category(qnaPostCreateRequest.getCategory())
+                        .thumbNailImage(qnaPostCreateRequest.getThumbNailImage())
+                        .isNotice(qnaPostCreateRequest.isNotice())
+                        .postFileList(qnaPostCreateRequest.getPostFileList())
+                        .qnaMajorCode(qnaPostCreateRequest.getQnaMajorCode())
+                        .qnaMemberCode(qnaPostCreateRequest.getQnaMemberCode())
                         .build();
             }
             default -> GeneralPostCreateRequest.builder()
