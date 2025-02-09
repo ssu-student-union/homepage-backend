@@ -79,7 +79,7 @@ jobs:
           host: ${{ secrets.DEVELOP_HOST }}
           key: ${{ secrets.DEVELOP_KEY }}
           port: 22
-          source: "./docker-compose.yml"
+          source: "./dev/docker-compose.yml"
           target: "/home/ubuntu/"
 
 
