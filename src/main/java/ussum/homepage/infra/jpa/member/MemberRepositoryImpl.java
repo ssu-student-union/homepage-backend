@@ -68,6 +68,20 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
+    public List<Member> findQnACommitteeMember(Long userId) {
+        return memberJpaRepository.findAllByUserId(userId)
+                .stream()
+                .filter(memberEntity -> {
+                    if (memberEntity.getGroupEntity() == null || memberEntity.getGroupEntity().getGroupCode() == null) {
+                        return false;
+                    }
+                    return memberEntity.getGroupEntity().getGroupCode().equals(STUDENT_GOVERNMENT_ORGANIZATION);
+                })
+                .map(memberMapper::toDomain)
+                .toList();
+    }
+
+    @Override
     public void save(Member member) {
         memberJpaRepository.save(memberMapper.toEntity(member));
     }

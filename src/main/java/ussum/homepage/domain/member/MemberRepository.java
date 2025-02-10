@@ -10,6 +10,7 @@ public interface MemberRepository {
     List<Member> findCentralOperationCommitteeMember(Long userId);
     List<Member> findStudentHumanRightsCommitteeMember(Long userId);
     List<Member> findSuggestionCommitteeMember(Long userId);
+    List<Member> findQnACommitteeMember(Long userId);
 
     void save(Member member);
     List<Member> findAllByUserId(Long userId);

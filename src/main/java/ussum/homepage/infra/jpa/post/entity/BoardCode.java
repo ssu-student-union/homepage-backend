@@ -19,7 +19,8 @@ public enum BoardCode {
     DATA("자료집게시판", 6),
     SUGGESTION("건의게시판", 7),
     RIGHTS("인권신고게시판", 8),
-    SERVICE_NOTICE("서비스공지사항",9);
+    SERVICE_NOTICE("서비스공지사항",9),
+    QNA("질의응답게시판",10);
 
     private final String stringBoardCode;
     private final int boardId;

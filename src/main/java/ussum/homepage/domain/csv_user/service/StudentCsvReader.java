@@ -37,8 +37,8 @@ public class StudentCsvReader {
         if (request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(studentCsv.getMajor()).getStringMajorCode())){
             major = true;
         }else{
-            // ¿¹¼úÃ¢ÀÛÇÐºÎ·Î µé¾î¿Ã½Ã ¿¹¿Ü Ã³¸®¸¦ ÇÏ±â À§ÇØ ÀÏ´Ü ÀÌ·¸°Ô ÄÚµå Ã³¸®
-            major = request.getMajorCode().equals("¹®¿¹Ã¢ÀÛÀü°ø") | studentCsv.getMajor().equals("¿µÈ­¿¹¼úÀü°ø");
+            // ã…‡ã…‡
+            major = request.getMajorCode().equals("ì•„ë¬´ê±°ë‚˜") | studentCsv.getMajor().equals("ì•„ë¬´ê±°ë‚˜");
         }
 
         if(!(name && studentId && groupName && major)){

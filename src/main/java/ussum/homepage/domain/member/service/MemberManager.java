@@ -54,6 +54,7 @@ public class MemberManager {
             case PETITION -> memberRepository.findCentralOperationCommitteeMember(userId);
             case SUGGESTION -> memberRepository.findStudentHumanRightsCommitteeMember(userId);
             case RIGHTS -> memberRepository.findSuggestionCommitteeMember(userId);
+            case QNA -> memberRepository.findQnACommitteeMember(userId);
             default -> new ArrayList<>();
         };
     }

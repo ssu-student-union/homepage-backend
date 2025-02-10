@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
 import ussum.homepage.infra.jpa.group.entity.GroupCode;
+import ussum.homepage.infra.jpa.member.entity.MajorCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
-import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.BoardRepository;
 import ussum.homepage.domain.post.Post;
@@ -46,6 +46,10 @@ public class PostReader {
 
     public Page<Post> getPostListByBoardIdAndCategoryAndSuggestionTarget(Long boardId, Category category, SuggestionTarget suggestionTarget, Pageable pageable ){
         return postRepository.findAllByBoardIdAndCategoryAndSuggestionTarget(boardId, category,suggestionTarget, pageable);
+    }
+
+    public Page<Post> getPostListByBoardIdAndQnAMajorCodeAndQnAMemberCode(Long boardId, MajorCode qnaMajorCode, MemberCode qnaMemberCode, Pageable pageable){
+        return postRepository.findAllByBoardIdAndQnAMajorCodeAndQnAMemberCode(boardId, qnaMajorCode, qnaMemberCode, pageable);
     }
 
     public Page<Post> getPostListByFileCategories(List<FileCategory> fileCategories, Pageable pageable){
@@ -86,6 +90,10 @@ public class PostReader {
         return postRepository.searchAllByBoardIdAndCategory(boardId, q, category, pageable);
     }
 
+    public Page<Post> searchPostListByBoardIdAndCategoryAndQnAMajorCodeAndQnAMemberCode(Long boardId, String q, Category category, MajorCode qnaMajorCode, MemberCode qnaMemberCode, Pageable pageable) {
+        return postRepository.searchAllByBoardIdAndCategoryAndQnAMajorCodeAndQnAMemberCode(boardId, q, category, qnaMajorCode, qnaMemberCode, pageable);
+    }
+
     public Page<Post> getPostListByBoardIdAndCategoryAndUserId(Long boardId, Category category, Pageable pageable, Long userId) {
         return postRepository.searchAllByBoardIdAndCategoryAndUserId(boardId,category,pageable,userId);
     }
@@ -93,4 +101,9 @@ public class PostReader {
     public Page<Post> searchPostListByBoardIdAndCategoryAndUserId(Long boardId, String q, Category category, Pageable pageable, Long userId) {
         return postRepository.searchAllByBoardIdAndCategoryAndUserIdTwo(boardId,q,category,pageable,userId);
     }
+
+    public Page<Post> getMyPosts(Long userId, Pageable pageable) {
+        return postRepository.findAllByUserId(userId, pageable);
+    }
+
 }

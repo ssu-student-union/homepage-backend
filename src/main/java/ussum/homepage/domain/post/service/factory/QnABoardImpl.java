@@ -12,30 +12,26 @@ import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.SuggestionTarget;
 
 @RequiredArgsConstructor
-public class GeneralBoardImpl implements BoardImpl {
+public class QnABoardImpl implements BoardImpl {
     private final Long id;
 
     @Override
     public Page<Post> getPostList(PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, SuggestionTarget suggestionTarget, MajorCode qnaMajorCode, MemberCode qnaMemberCode, Pageable pageable) {
-        return postReader.getPostListByBoardIdAndCategory(this.id, category, pageable);
+        return postReader.getPostListByBoardIdAndQnAMajorCodeAndQnAMemberCode(this.id, qnaMajorCode, qnaMemberCode, pageable);
     }
 
     @Override
-    public Page<Post> getPostListByUserId(PostReader postReader, GroupCode groupCode, MemberCode memberCode,
-                                          Category category, SuggestionTarget suggestionTarget, Long userId,
-                                          Pageable pageable) {
+    public Page<Post> getPostListByUserId(PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, SuggestionTarget suggestionTarget, Long userId, Pageable pageable) {
         return postReader.getPostListByBoardIdAndCategoryAndUserId(this.id, category, pageable,userId);
     }
 
     @Override
     public Page<Post> searchPostList(String q, PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, MajorCode qnaMajorCode, MemberCode qnaMemberCode, Pageable pageable) {
-        return postReader.searchPostListByBoardIdAndCategory(this.id, q, category, pageable);
+        return postReader.searchPostListByBoardIdAndCategoryAndQnAMajorCodeAndQnAMemberCode(this.id, q, category, qnaMajorCode, qnaMemberCode, pageable);
     }
 
     @Override
-    public Page<Post> searchPostListByUserId(String q, PostReader postReader, GroupCode groupCode,
-                                             MemberCode memberCode, Category category,
-                                              Long userId, Pageable pageable) {
-        return postReader.searchPostListByBoardIdAndCategoryAndUserId(this.id, q, category, pageable,userId);
+    public Page<Post> searchPostListByUserId(String q, PostReader postReader, GroupCode groupCode, MemberCode memberCode, Category category, Long userId, Pageable pageable) {
+        return postReader.searchPostListByBoardIdAndCategoryAndUserId(this.id, q, category, pageable, userId);
     }
 }

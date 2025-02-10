@@ -1,28 +1,28 @@
 package ussum.homepage.application.post.service.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.Post;
 
-@Schema(description = "인권신고게시판 데이터 스키마")
+@Schema(description = "질의응답게시판 데이터 스키마")
 @Getter
-public class RightsPostCreateRequest extends PostCreateRequest {
-    private final List<RightsDetailRequest> rightsDetailList;
+public class QnAPostCreateRequest extends PostCreateRequest {
+    private final String qnaMajorCode;
+    private final String qnaMemberCode;
 
     @Builder
-    public RightsPostCreateRequest(String title, String content, String category,String thumbNailImage, boolean isNotice,
-                                   List<Long> postFileList, List<RightsDetailRequest> rightsDetailList) {
+    public QnAPostCreateRequest(String title, String content, String category, String thumbNailImage,
+                                       boolean isNotice, List<Long> postFileList, String qnaMajorCode, String qnaMemberCode) {
         super(title, content, category, thumbNailImage, isNotice, postFileList);
-        this.rightsDetailList = rightsDetailList;
+        this.qnaMajorCode = qnaMajorCode;
+        this.qnaMemberCode = qnaMemberCode;
     }
 
     @Override
     public Post toDomain(Board board, Long userId) {
-
         return Post.of(null,
                 title,
                 content,
@@ -30,16 +30,11 @@ public class RightsPostCreateRequest extends PostCreateRequest {
                 thumbNailImage,
                 "새로운",
                 null, null, null,
-                "접수대기",
+                category,
                 null,
-                null,
-                null,
+                qnaMajorCode,
+                qnaMemberCode,
                 userId,
                 board.getId());
     }
-
-    private boolean validation(String boardCod){
-        return true;
-    }
 }
-

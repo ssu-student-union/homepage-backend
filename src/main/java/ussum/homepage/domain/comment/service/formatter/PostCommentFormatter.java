@@ -8,6 +8,9 @@ import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.PostReplyComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostReplyCommentReader;
+import ussum.homepage.domain.member.Member;
+import ussum.homepage.domain.member.exception.MemberNotFoundException;
+import ussum.homepage.domain.member.service.MemberReader;
 import ussum.homepage.domain.reaction.service.PostCommentReactionManager;
 import ussum.homepage.domain.reaction.service.PostCommentReactionReader;
 import ussum.homepage.domain.user.User;
@@ -15,11 +18,15 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.domain.user.service.formatter.UserFormatter;
 
 import java.util.List;
+import java.util.Optional;
+
+import static ussum.homepage.global.error.status.ErrorStatus.MEMBER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
 public class PostCommentFormatter implements ussum.homepage.domain.comment.service.PostCommentFormatter {
     private final UserReader userReader;
+    private final MemberReader memberReader;
     private final PostCommentReactionManager postCommentReactionManager;
     private final PostReplyCommentFormatter postReplyCommentFormatter;
     private final PostReplyCommentReader postReplyCommentReader;
@@ -45,6 +52,12 @@ public class PostCommentFormatter implements ussum.homepage.domain.comment.servi
 
         Boolean isAuthor = userId != null && userId.equals(postComment.getUserId());
 
-        return PostCommentResponse.of(postComment, user, postComment.getCommentType(), likeCountOfPostComment, isAuthor, isLiked, postReplyCommentResponses);
+        List<Member> members = memberReader.getMembersWithUserId(postComment.getUserId());
+        Optional<Member> firstMember = members.stream().findFirst();
+        if (firstMember.isEmpty()) {
+            throw new MemberNotFoundException(MEMBER_NOT_FOUND);
+        }
+
+        return PostCommentResponse.of(postComment, user, firstMember.get(), postComment.getCommentType(), likeCountOfPostComment, isAuthor, isLiked, postReplyCommentResponses);
     }
 }
