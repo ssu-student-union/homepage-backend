@@ -11,12 +11,14 @@ import java.util.List;
 @Getter
 public class NoticePostDetailResponse extends PostDetailResDto {
     private final List<FileResponse> fileResponseList;
+    private final String status;
 
     @Builder
     private NoticePostDetailResponse(Long postId, String categoryName, String authorName, String title, String content, String createdAt, String lastEditedAt, Boolean isAuthor,
-                                     List<FileResponse> fileResponseList, List<String> canAuthority) {
+                                     List<FileResponse> fileResponseList, List<String> canAuthority,String status) {
         super(postId, categoryName, authorName, title, content, createdAt, lastEditedAt, isAuthor, canAuthority);
         this.fileResponseList = fileResponseList;
+        this.status = status;
     }
 
     public static NoticePostDetailResponse of(Post post, Boolean isAuthor, User user, String categoryName, List<FileResponse> fileResponseList) {
@@ -30,6 +32,7 @@ public class NoticePostDetailResponse extends PostDetailResDto {
                 .lastEditedAt(post.getLastEditedAt())
                 .isAuthor(isAuthor)
                 .fileResponseList(fileResponseList)
+                .status(post.getStatus())
                 .build();
     }
 
