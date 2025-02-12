@@ -15,6 +15,7 @@ import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
 import ussum.homepage.application.post.service.dto.request.RightsDetailRequest;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
+import ussum.homepage.application.user.service.dto.response.CollegeAndDepartmentResponse;
 import ussum.homepage.application.user.service.dto.response.MyPostsResponse;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
@@ -273,6 +274,15 @@ public class PostManageController {
                                                          @RequestParam(value = "page", defaultValue = "0") int page,
                                                          @RequestParam(value = "take") int take) {
         MyPostsResponse response = postManageService.getMyPostList(userId, page, take);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "단과대 학과 조회 api", description = """
+            단과대 학과 리스트 조회하는 api입니다.
+            """)
+    @GetMapping("/colleges-departments")
+    public ResponseEntity<CollegeAndDepartmentResponse> getCollegeAndDepartmentList(@Parameter(hidden = true) @UserId Long userId) {
+        CollegeAndDepartmentResponse response = postManageService.getCollegeAndDepartment(userId);
         return ResponseEntity.ok(response);
     }
 }
