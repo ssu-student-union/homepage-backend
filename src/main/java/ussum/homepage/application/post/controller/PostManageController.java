@@ -281,8 +281,8 @@ public class PostManageController {
             단과대 학과 리스트 조회하는 api입니다.
             """)
     @GetMapping("/colleges-departments")
-    public ResponseEntity<CollegeAndDepartmentResponse> getCollegeAndDepartmentList(@Parameter(hidden = true) @UserId Long userId) {
+    public ApiResponse<CollegeAndDepartmentResponse> getCollegeAndDepartmentList(@Parameter(hidden = true) @UserId Long userId) {
         CollegeAndDepartmentResponse response = postManageService.getCollegeAndDepartment(userId);
-        return ResponseEntity.ok(response);
+        return ApiResponse.onSuccess(response);
     }
 }
