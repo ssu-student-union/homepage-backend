@@ -518,6 +518,6 @@ public class PostManageService {
                 "융합특성화자유전공학부"
         );
 
-        return new CollegeAndDepartmentResponse(colleges, departments);
+        return CollegeAndDepartmentResponse.of(colleges, departments);
     }
 }
