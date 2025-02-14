@@ -21,16 +21,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: application.yml 설정
-        run: |
-          cd ./src/main
-          mkdir resources
-          cd ./resources
-          touch ./application.yml
-          echo "$APPLICATION_DEVELOP" > ./application.yml
-        env:
-          APPLICATION_DEVELOP: ${{ secrets.APPLICATION_DEVELOP }}
-
       - name: Gradle Caching
         uses: actions/cache@v3
         with:
@@ -66,8 +56,11 @@ jobs:
           script: |
             sudo docker stop ussum-develop || true
             sudo docker container prune -f
+            echo "${{ secrets.APPLICATION_YML }}" | sudo tee /home/ubuntu/application.yml > /dev/null
             sudo docker pull ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
             sudo docker run -d --log-driver=syslog \
-            -e TZ=Asia/Seoul \
-            -p 8080:8080 --name ussum-develop \
-            ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
+              -e TZ=Asia/Seoul \
+              -e SPRING_CONFIG_LOCATION=file:/app/application.yml \   # Spring Boot 설정 파일 경로 지정
+              -p 8080:8080 --name ussum-develop \
+              -v /home/ubuntu/application.yml:/app/application.yml \  # application.yml 마운트
+              ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
