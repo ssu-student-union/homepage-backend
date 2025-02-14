@@ -1,9 +1,10 @@
-name: Java CI & CD with Gradle
+name: DEVELOP CI & CD
 
 on:
   push:
     branches:
       - develop
+      - feat/207-cd
 
 permissions:
   contents: read
@@ -56,7 +57,7 @@ jobs:
           script: |
             sudo docker stop ussum-develop || true
             sudo docker container prune -f
-            echo "${{ secrets.APPLICATION_YML }}" | sudo tee /home/ubuntu/application.yml > /dev/null
+            echo "${{ secrets.APPLICATION_DEVELOP }}" | sudo tee /home/ubuntu/application.yml > /dev/null
             sudo docker pull ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
             sudo docker run -d --log-driver=syslog \
             -e TZ=Asia/Seoul \
