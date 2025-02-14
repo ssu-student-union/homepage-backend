@@ -2,7 +2,7 @@ name: MAIN CI & CD
 
 on:
   push:
-    branches: [ "main", "feat/207-cd" ]
+    branches: [ "main" ]
   # pull_request:
   #   branches: [ "develop" ]
 
