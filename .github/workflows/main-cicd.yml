@@ -2,7 +2,7 @@ name: MAIN CI & CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "feat/207-cd" ]
   # pull_request:
   #   branches: [ "develop" ]
 
@@ -95,5 +95,5 @@ jobs:
           sudo docker pull ${{ secrets.DOCKER_REPO }}/blue-green
           chmod 777 ./scripts/deploy.sh
           cp ./scripts/deploy.sh ./deploy.sh
-          APPLICATION_YML="${{ secrets.APPLICATION_YML }}" ./deploy.sh  # 환경 변수로 전달
+          APPLICATION_YML="${{ secrets.APPLICATION_MAIN }}" ./deploy.sh  # 환경 변수로 전달
           docker image prune -f
