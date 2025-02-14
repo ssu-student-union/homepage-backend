@@ -1,4 +1,4 @@
-name: Java CI & CD with Gradle
+name: MAIN CI & CD
 
 on:
   push:
@@ -22,19 +22,11 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: application.yml 설정
+    - name: logback.xml 설정
       run: |
         cd ./src/main
         mkdir resources
         cd ./resources
-        touch ./application.yml
-        echo "$APPLICATION_MAIN" > ./application.yml
-      env:
-        APPLICATION_MAIN: ${{ secrets.APPLICATION_MAIN }}
-
-    - name: logback.xml 설정
-      run: |
-        cd ./src/main/resources
         touch ./logback.xml
         echo "$LOGBACK" > ./logback.xml
       env:
@@ -103,5 +95,5 @@ jobs:
           sudo docker pull ${{ secrets.DOCKER_REPO }}/blue-green
           chmod 777 ./scripts/deploy.sh
           cp ./scripts/deploy.sh ./deploy.sh
-          ./deploy.sh
+          APPLICATION_YML="${{ secrets.APPLICATION_MAIN }}" ./deploy.sh  # 환경 변수로 전달
           docker image prune -f
