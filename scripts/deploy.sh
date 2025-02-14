@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "${APPLICATION_YML}" | sudo tee /home/ubuntu/application.yml > /dev/null
+
 IS_GREEN_EXIST=$(docker ps | grep green)
 DEFAULT_CONF=" /etc/nginx/nginx.conf"
 
