@@ -13,10 +13,8 @@ import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequ
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
-import ussum.homepage.application.post.service.dto.request.RightsDetailRequest;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
 import ussum.homepage.application.user.service.dto.response.CollegeAndDepartmentResponse;
-import ussum.homepage.application.user.service.dto.response.MyPostsResponse;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
 import ussum.homepage.global.config.custom.BoardRequestBody;
@@ -270,11 +268,23 @@ public class PostManageController {
             마이페이지 작성 글 보기 조회 시 파라미터로 전달 받은 userId의 유저가 쓴 글 리스트를 조회하는 api입니다.
             """)
     @GetMapping("/mypost")
-    public ResponseEntity<MyPostsResponse> getMyPostList(@Parameter(hidden = true) @UserId Long userId,
-                                                         @RequestParam(value = "page", defaultValue = "0") int page,
-                                                         @RequestParam(value = "take") int take) {
-        MyPostsResponse response = postManageService.getMyPostList(userId, page, take);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<ApiResponse<?>> getMyPostList(@Parameter(hidden = true) @UserId Long userId,
+                                                        @RequestParam(value = "page", defaultValue = "0") int page,
+                                                        @RequestParam(value = "take") int take) {
+        return ApiResponse.success(postManageService.getMyPostList(userId, page, take));
+    }
+
+    @Operation(summary = "검색키워드를 활용한 내가 작성한 글 게시물 리스트 조회 api", description = """
+            검색키워드를 활용한 내가 작성한 글 게시물 리스트 조회 api 입니다.
+            요청인자에 q는 검색키워드를 의미하여 필수 값은 아닙니다. 
+            """)
+    @GetMapping("/mypost/search")
+    public ResponseEntity<ApiResponse<?>> searchMyPost(@Parameter(hidden = true) @UserId Long userId,
+                                                          @RequestParam(value = "page", defaultValue = "0") int page,
+                                                          @RequestParam(value = "take") int take,
+                                                          @RequestParam(value = "q",required = false) String q
+    ) {
+        return ApiResponse.success(postManageService.searchMyPost(userId, page, take, q));
     }
 
     @Operation(summary = "단과대 학과 조회 api", description = """

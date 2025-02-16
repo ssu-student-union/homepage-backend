@@ -2,10 +2,6 @@ package ussum.homepage.application.post.service;
 
 import java.util.*;
 
-import io.netty.util.internal.StringUtil;
-import java.time.LocalDateTime;
-import java.util.*;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +14,6 @@ import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequ
 import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
 import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
 import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
-import ussum.homepage.application.post.service.dto.request.RightsDetailRequest;
 import ussum.homepage.application.post.service.dto.response.FileResponse;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
@@ -28,7 +23,6 @@ import ussum.homepage.application.post.service.dto.response.postList.*;
 import ussum.homepage.application.post.service.dto.response.postSave.*;
 
 import ussum.homepage.application.user.service.dto.response.CollegeAndDepartmentResponse;
-import ussum.homepage.application.user.service.dto.response.MyPostsResponse;
 import ussum.homepage.domain.comment.PostComment;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.comment.service.PostOfficialCommentFormatter;
@@ -387,6 +381,22 @@ public class PostManageService {
 
     }
 
+    public PostListRes<?> searchMyPost(Long userId, int page, int take, String q) {
+
+        Pageable pageable = PageInfo.of(page, take);
+        Page<Post> postList = postReader.searchMyPosts(userId, q, pageable);
+        PageInfo pageInfo = PageInfo.of(postList);
+
+        List<? extends PostListResDto> responseList = postList.getContent().stream()
+                .map(post -> {
+                    int commentCount = Math.toIntExact(postCommentReader.getCommentCountByPostId(post.getId()));
+                    return MyPostResponse.of(post, commentCount);
+                })
+                .toList();
+
+        return PostListRes.of(responseList, pageInfo);
+    }
+
     public PostListRes<?> searchDataList(Long userId, int page, int take, String q, String majorCategory, String middleCategory, String subCategory) {
         Pageable pageable = PageInfo.of(page, take);
         Page<Post> postList = postReader.searchPostListByFileCategories(
@@ -441,7 +451,7 @@ public class PostManageService {
         return PostDetailRes.of(response);
     }
 
-    public MyPostsResponse getMyPostList(Long userId, int page, int take) {
+    public PostListRes<MyPostResponse> getMyPostList(Long userId, int page, int take) {
         Pageable pageable = PageInfo.of(page, take);
         Page<Post> postList = postReader.getMyPosts(userId, pageable);
         PageInfo pageInfo = PageInfo.of(postList);
@@ -453,7 +463,7 @@ public class PostManageService {
                 })
                 .toList();
 
-        return new MyPostsResponse(list, pageInfo);
+        return PostListRes.of(list, pageInfo);
     }
 
     public CollegeAndDepartmentResponse getCollegeAndDepartment(Long userId) {

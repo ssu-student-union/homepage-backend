@@ -106,4 +106,8 @@ public class PostReader {
         return postRepository.findAllByUserId(userId, pageable);
     }
 
+    public Page<Post> searchMyPosts(Long userId, String q, Pageable pageable) {
+        return postRepository.searchAllByUserId(userId, q, pageable);
+    }
+
 }
