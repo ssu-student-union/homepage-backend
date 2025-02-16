@@ -54,7 +54,7 @@ public enum ErrorStatus implements BaseErrorCode {
     POST_REACTION_IS_ALREADY_EXIST(HttpStatus.BAD_REQUEST,"POST_REACTION_001","이미 게시물반응이 존재합니다."),
     POST_REACTION_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_REACTION_002","게시물반응을 찾을 수 없습니다."),
 
-    //Category 관련 에러
+    //CalendarCategory 관련 에러
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,"CATEGORY_001","카테고리를 찾을 수 없습니다."),
 
     //ACL 관련 에러

@@ -1,11 +1,17 @@
 package ussum.homepage.application.calendar.service;
 
+import jakarta.transaction.Transactional;
 import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ussum.homepage.application.calendar.service.dto.CalenderEventResponse;
+import ussum.homepage.application.calendar.service.dto.request.CalendarEventRequest;
+import ussum.homepage.application.calendar.service.dto.response.CalendarEventCreateResponse;
+import ussum.homepage.application.calendar.service.dto.response.CalendarEventResponse;
+import ussum.homepage.domain.calender.CalendarEvent;
+import ussum.homepage.domain.calender.service.CalendarEventAppender;
 import ussum.homepage.domain.calender.service.CalenderEventReader;
+import ussum.homepage.infra.jpa.calendar_event.CalendarEventMapper;
 import ussum.homepage.infra.utils.DateUtils;
 
 @Service
@@ -13,13 +19,23 @@ import ussum.homepage.infra.utils.DateUtils;
 public class CalendarService {
 
     private final CalenderEventReader calenderReader;
+    private final CalendarEventAppender calendarEventAppender;
 
-    public List<?> getCalenders(String query) {
+    @Transactional
+    public List<?> getCalenders(String query, String category) {
         YearMonth yearMonth = DateUtils.parseYearMonthFromString(query);
-        List<? extends CalenderEventResponse> calenderResponseList = calenderReader.getCalenderEventsByYearMonth(yearMonth).stream()
-                .map(CalenderEventResponse::of)
+        List<CalendarEventResponse> calendarResponseList = calenderReader.getCalenderEventsByYearMonth(yearMonth).stream()
+                .filter(calenderEvent -> calenderEvent.getCategory().equals(category))
+                .map(CalendarEventResponse::of)
                 .toList();
 
-        return calenderResponseList;
+        return calendarResponseList;
+    }
+
+    @Transactional
+    public CalendarEventCreateResponse createCalendarSchedule(Long userId, CalendarEventRequest calendarEventRequest) {
+        CalendarEvent calendarEvent = calendarEventRequest.toDomain(userId);
+        calendarEventAppender.create(calendarEvent);
+        return CalendarEventCreateResponse.of(calendarEvent.getId(), calendarEventRequest.title());
     }
 }

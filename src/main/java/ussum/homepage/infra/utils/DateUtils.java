@@ -1,5 +1,6 @@
 package ussum.homepage.infra.utils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -10,6 +11,13 @@ public class DateUtils {
     private static final DateTimeFormatter YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyyMM");
 
     public static String formatToCustomString(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return null;
+        }
+        return dateTime.format(CUSTOM_FORMATTER);
+    }
+
+    public static String formatToCustomString2(LocalDate dateTime) {
         if (dateTime == null) {
             return null;
         }

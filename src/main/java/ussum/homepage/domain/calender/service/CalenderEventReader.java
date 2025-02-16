@@ -5,7 +5,7 @@ import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ussum.homepage.domain.calender.CalenderEvent;
+import ussum.homepage.domain.calender.CalendarEvent;
 import ussum.homepage.domain.calender.CalenderEventRepository;
 
 @Service
@@ -13,7 +13,7 @@ import ussum.homepage.domain.calender.CalenderEventRepository;
 public class CalenderEventReader {
     private final CalenderEventRepository calenderEventRepository;
 
-    public List<CalenderEvent> getCalenderEventsByYearMonth(YearMonth yearMonth) {
+    public List<CalendarEvent> getCalenderEventsByYearMonth(YearMonth yearMonth) {
         LocalDate startDate = yearMonth.atDay(1);
         LocalDate endDate = yearMonth.atEndOfMonth();
         return calenderEventRepository.findByStartDateBeforeAndEndDateAfter(yearMonth);

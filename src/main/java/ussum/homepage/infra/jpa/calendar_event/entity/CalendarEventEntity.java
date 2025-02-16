@@ -37,7 +37,7 @@ public class CalendarEventEntity {
 
     @Column(nullable = false, name = "category")
     @Enumerated(EnumType.STRING)
-    private Category category;
+    private CalendarCategory calendarCategory;
 
     @Column(nullable = false, name = "created_by")
     private Long createBy;
@@ -52,7 +52,7 @@ public class CalendarEventEntity {
         return new CalendarEventEntity(id,null,null,null,null,null,null,null);
     }
 
-    public static CalendarEventEntity of(Long id, String title, LocalDate startDate, LocalDate endDate, Category category, Long createBy, LocalDateTime createdAt, LocalDateTime updateAt) {
-        return new CalendarEventEntity(id, title, startDate, endDate, category, createBy, createdAt, updateAt);
+    public static CalendarEventEntity of(Long id, String title, LocalDate startDate, LocalDate endDate, CalendarCategory calendarCategory, Long createBy, LocalDateTime createdAt, LocalDateTime updateAt) {
+        return new CalendarEventEntity(id, title, startDate, endDate, calendarCategory, createBy, createdAt, updateAt);
     }
 }

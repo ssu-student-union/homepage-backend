@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class CalenderEvent {
+public class CalendarEvent {
     private Long id;
     private String title;
     private Long createBy;
@@ -14,7 +14,7 @@ public class CalenderEvent {
     private String startDate;
     private String endDate;
 
-    public static CalenderEvent of(Long id, String title, Long createBy, String category, String location, String startDate, String endDate) {
-        return new CalenderEvent(id, title, createBy, category, startDate, endDate);
+    public static CalendarEvent of(Long id, String title, Long createBy, String category, String startDate, String endDate) {
+        return new CalendarEvent(id, title, createBy, category, startDate, endDate);
     }
 }
