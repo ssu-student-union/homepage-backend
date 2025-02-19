@@ -61,6 +61,12 @@ public class PostAclHandler {
             if (postAclManager.hasPermission(userId,"인권신고게시판","COMMENT")){
                 allowedAuthorities.add("COMMENT");
             }
+            if (postAclManager.hasPermission(userId,"질의응답게시판","COMMENT")){
+                allowedAuthorities.add("COMMENT");
+            }
+            if (postAclManager.hasPermission(userId,"질의응답게시판","REACTION")){
+                allowedAuthorities.add("REACTION");
+            }
         }
 
         return commentListRes.validAuthorities(allowedAuthorities);
