@@ -23,12 +23,18 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class S3utils {
     private final AmazonS3 amazonS3;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @PostConstruct
+    public void checkBucket() {
+        log.info("AWS S3 Bucket Name: " + bucket);
+    }
+    
     /*
     bucket내의 파일은 하나만 존재.
      */
