@@ -25,7 +25,7 @@ public class CalendarService {
     public List<?> getCalenders(String query, String category) {
         YearMonth yearMonth = DateUtils.parseYearMonthFromString(query);
         List<CalendarEventResponse> calendarResponseList = calenderReader.getCalenderEventsByYearMonth(yearMonth).stream()
-                .filter(calenderEvent -> calenderEvent.getCategory().equals(category))
+                .filter(calenderEvent -> calenderEvent.getCalendarCategory().equals(category))
                 .map(CalendarEventResponse::of)
                 .toList();
 

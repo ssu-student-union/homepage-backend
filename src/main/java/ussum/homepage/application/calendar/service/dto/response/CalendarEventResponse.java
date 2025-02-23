@@ -16,7 +16,7 @@ public record CalendarEventResponse(
     public static CalendarEventResponse of(CalendarEvent calendarEvent) {
         return CalendarEventResponse.builder()
                 .calenderId(calendarEvent.getId())
-                .category(calendarEvent.getCategory())
+                .category(calendarEvent.getCalendarCategory())
                 .title(calendarEvent.getTitle())
                 .startTime(calendarEvent.getStartDate())
                 .endTime(calendarEvent.getEndDate())

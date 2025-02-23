@@ -35,7 +35,7 @@ public class CalendarEventEntity {
     @Column(nullable = false, name = "end_date")
     private LocalDate endDate;
 
-    @Column(nullable = false, name = "category")
+    @Column(nullable = false, name = "calendar_category")
     @Enumerated(EnumType.STRING)
     private CalendarCategory calendarCategory;
 

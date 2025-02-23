@@ -21,9 +21,9 @@ public enum CalendarCategory {
         this.categoryName = name;
     }
 
-    public static CalendarCategory getEnumCategoryCodeFromStringCategoryCode(String name) {
+    public static CalendarCategory getEnumCategoryCodeFromStringCategoryCode(String category) {
         return Arrays.stream(values())
-                .filter(boardCode -> boardCode.categoryName.equals(name))
+                .filter(value -> value.categoryName.equals(category))
                 .findFirst()
                 .orElseThrow(() -> new InvalidValueException(INVALID_CATEGORY_CODE));
     }

@@ -12,20 +12,20 @@ import ussum.homepage.infra.utils.DateUtils;
 public class CalendarEventMapper {
 
     public CalendarEvent toDomain(CalendarEventEntity calendarEventEntity){
-        String category = CalendarCategory.fromEnumOrNull(calendarEventEntity.getCalendarCategory());
+        String calendarCategory = CalendarCategory.fromEnumOrNull(calendarEventEntity.getCalendarCategory());
         String startDate = DateUtils.formatToCustomString2(calendarEventEntity.getStartDate());
         String endDate = DateUtils.formatToCustomString2(calendarEventEntity.getEndDate());
 
         return CalendarEvent.of(calendarEventEntity.getId(),
                 calendarEventEntity.getTitle(),
                 calendarEventEntity.getCreateBy(),
-                category,
+                calendarCategory,
                 startDate,
                 endDate);
     }
 
     public CalendarEventEntity toEntity(CalendarEvent calendarEvent){
-        CalendarCategory calendarCategory = CalendarCategory.getEnumCategoryCodeFromStringCategoryCode(calendarEvent.getCategory());
+        CalendarCategory calendarCategory = CalendarCategory.getEnumCategoryCodeFromStringCategoryCode(calendarEvent.getCalendarCategory());
         LocalDate startDate = LocalDate.parse(calendarEvent.getStartDate());
         LocalDate endDate = LocalDate.parse(calendarEvent.getEndDate());
 
