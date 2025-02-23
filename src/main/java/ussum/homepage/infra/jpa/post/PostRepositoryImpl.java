@@ -143,38 +143,41 @@ public class PostRepositoryImpl implements PostRepository {
 //                countQuery::fetchOne
 //        );
 //    }
-    @Override
-    public Page<Post> findAllByFileCategories(List<FileCategory> fileCategories, Pageable pageable) {
-        BooleanExpression whereClause = postEntity.boardEntity.id.eq(6L);
+        @Override
+        public Page<Post> findAllByFileCategories(List<FileCategory> fileCategories, Pageable pageable) {
+            BooleanExpression whereClause = postEntity.boardEntity.id.eq(6L);
 
-        if (fileCategories != null && !fileCategories.isEmpty()) {
-            whereClause = whereClause.and(postEntity.id.in(
-                    JPAExpressions
-                            .select(postFileEntity.postEntity.id)
-                            .from(postFileEntity)
-                            .where(postFileEntity.fileCategory.in(fileCategories))
-            ));
+            if (fileCategories != null && !fileCategories.isEmpty()) {
+                whereClause = whereClause.and(postEntity.id.in(
+                        JPAExpressions
+                                .select(postFileEntity.postEntity.id)
+                                .from(postFileEntity)
+                                .where(postFileEntity.fileCategory.in(fileCategories))
+                ));
+            }
+
+            List<PostEntity> content = queryFactory
+                    .selectFrom(postEntity)
+                    .where(whereClause)
+                    .orderBy(
+                            postEntity.status.when(Status.EMERGENCY_NOTICE).then(0).otherwise(1).asc(),
+                            postEntity.createdAt.desc()
+                    )
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
+
+            JPAQuery<Long> countQuery = queryFactory
+                    .select(postEntity.count())
+                    .from(postEntity)
+                    .where(whereClause);
+
+            return PageableExecutionUtils.getPage(
+                    content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                    pageable,
+                    countQuery::fetchOne
+            );
         }
-
-        List<PostEntity> content = queryFactory
-                .selectFrom(postEntity)
-                .where(whereClause)
-                .orderBy(postEntity.createdAt.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        JPAQuery<Long> countQuery = queryFactory
-                .select(postEntity.count())
-                .from(postEntity)
-                .where(whereClause);
-
-        return PageableExecutionUtils.getPage(
-                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
-                pageable,
-                countQuery::fetchOne
-        );
-    }
     @Override
     public Page<Post> findAllByBoardIdAndGroupCodeAndMemberCode(Long boardId, GroupCode groupCode, MemberCode memberCode, Pageable pageable) {
         BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.eq(boardId));

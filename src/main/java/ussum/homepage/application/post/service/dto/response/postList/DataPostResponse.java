@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import ussum.homepage.application.post.service.dto.response.FileResponse;
 import ussum.homepage.domain.post.Post;
+import ussum.homepage.infra.jpa.post.entity.Status;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class DataPostResponse extends PostListResDto {
                 .content(content)
                 .category(post.getCategory())
                 .date(post.getCreatedAt())
-                .isNotice(post.getTitle().equals("총학생회칙"))
+                .isNotice(post.getStatus().equals(Status.EMERGENCY_NOTICE.getStringStatus()))
                 .files(files)
                 .build();
     }
