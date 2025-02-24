@@ -689,7 +689,10 @@ public class PostRepositoryImpl implements PostRepository {
         List<PostEntity> content = queryFactory
                 .selectFrom(postEntity)
                 .where(whereClause)
-                .orderBy(postEntity.createdAt.desc())
+                .orderBy(
+                        postEntity.status.when(Status.EMERGENCY_NOTICE).then(0).otherwise(1).asc(),
+                        postEntity.createdAt.desc()
+                )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
