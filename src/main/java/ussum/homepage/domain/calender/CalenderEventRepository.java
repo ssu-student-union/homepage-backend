@@ -4,6 +4,6 @@ import java.time.YearMonth;
 import java.util.List;
 
 public interface CalenderEventRepository {
-    List<CalendarEvent> findByStartDateBeforeAndEndDateAfter(YearMonth endOfMonth);
+    List<CalendarEvent> findByStartDateAfterAndEndDateBefore(YearMonth endOfMonth);
     CalendarEvent save(CalendarEvent calendarEvent);
 }

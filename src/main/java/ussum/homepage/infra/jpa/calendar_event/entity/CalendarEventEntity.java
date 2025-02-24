@@ -29,10 +29,10 @@ public class CalendarEventEntity {
     @Column(nullable = false, name = "title")
     private String title;
 
-    @Column(nullable = false, name = "start_date")
+    @Column(nullable = false, name = "start_date", columnDefinition = "DATE")
     private LocalDate startDate;
 
-    @Column(nullable = false, name = "end_date")
+    @Column(nullable = false, name = "end_date", columnDefinition = "DATE")
     private LocalDate endDate;
 
     @Column(nullable = false, name = "calendar_category")

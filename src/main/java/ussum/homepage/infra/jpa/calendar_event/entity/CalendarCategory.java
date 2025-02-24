@@ -1,5 +1,6 @@
 package ussum.homepage.infra.jpa.calendar_event.entity;
 
+import static ussum.homepage.global.error.status.ErrorStatus.INVALID_CALENDAR_CATEGORY_CODE;
 import static ussum.homepage.global.error.status.ErrorStatus.INVALID_CATEGORY_CODE;
 
 import java.util.Arrays;
@@ -17,15 +18,15 @@ public enum CalendarCategory {
 
     private final String categoryName;
 
-    CalendarCategory(String name) {
-        this.categoryName = name;
+    CalendarCategory(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public static CalendarCategory getEnumCategoryCodeFromStringCategoryCode(String category) {
         return Arrays.stream(values())
                 .filter(value -> value.categoryName.equals(category))
                 .findFirst()
-                .orElseThrow(() -> new InvalidValueException(INVALID_CATEGORY_CODE));
+                .orElseThrow(() -> new InvalidValueException(INVALID_CALENDAR_CATEGORY_CODE));
     }
 
     public static Optional<CalendarCategory> fromString(String name) {

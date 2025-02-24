@@ -13,9 +13,9 @@ import ussum.homepage.domain.calender.CalenderEventRepository;
 public class CalenderEventReader {
     private final CalenderEventRepository calenderEventRepository;
 
-    public List<CalendarEvent> getCalenderEventsByYearMonth(YearMonth yearMonth) {
+    public List<CalendarEvent> getCalenderEventsByYearMonthWithoutCategory(YearMonth yearMonth) {
         LocalDate startDate = yearMonth.atDay(1);
         LocalDate endDate = yearMonth.atEndOfMonth();
-        return calenderEventRepository.findByStartDateBeforeAndEndDateAfter(yearMonth);
+        return calenderEventRepository.findByStartDateAfterAndEndDateBefore(yearMonth);
     }
 }

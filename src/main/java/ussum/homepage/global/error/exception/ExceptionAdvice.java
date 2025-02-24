@@ -111,27 +111,12 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * 일반 Exception을 처리
-     * 이 메소드는 처리되지 않은 다른 모든 예외를 캡처함
-     *
-     * 작동 방식: 예외의 메시지와 ErrorStatus._INTERNAL_SERVER_ERROR를 사용하여
-     * handleExceptionInternalFalse 메소드로 처리합니다.
-     */
-    @ExceptionHandler
-    public ResponseEntity<Object> exception(Exception e, WebRequest webRequest) {
-        e.printStackTrace();
-
-        return handleExceptionInternalFalse(e, ErrorStatus._INTERNAL_SERVER_ERROR, HttpHeaders.EMPTY,
-                ErrorStatus._INTERNAL_SERVER_ERROR.getHttpStatus(), webRequest, e.getMessage());
-    }
-
-    /**
      * 사용자 정의 예외 GeneralException을 처리함
      *
      * 작동 방식: GeneralException에서 ErrorReasonDto를 추출하고,
      * 이를 handleExceptionInternal 메소드로 전달함
      */
-    @ExceptionHandler(value = GeneralException.class)
+    @ExceptionHandler(value = {GeneralException.class, InvalidValueException.class})
     public ResponseEntity onThrowException(GeneralException generalException, HttpServletRequest httpServletRequest) {
 
         ErrorReasonDto errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
@@ -147,6 +132,21 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         WebRequest webRequest = new ServletWebRequest(httpServletRequest);
 
         return super.handleExceptionInternal(e, body, httpHeaders, reason.getHttpStatus(), webRequest);
+    }
+
+    /**
+     * 일반 Exception을 처리
+     * 이 메소드는 처리되지 않은 다른 모든 예외를 캡처함
+     *
+     * 작동 방식: 예외의 메시지와 ErrorStatus._INTERNAL_SERVER_ERROR를 사용하여
+     * handleExceptionInternalFalse 메소드로 처리합니다.
+     */
+    @ExceptionHandler
+    public ResponseEntity<Object> exception(Exception e, WebRequest webRequest) {
+        e.printStackTrace();
+
+        return handleExceptionInternalFalse(e, ErrorStatus._INTERNAL_SERVER_ERROR, HttpHeaders.EMPTY,
+                ErrorStatus._INTERNAL_SERVER_ERROR.getHttpStatus(), webRequest, e.getMessage());
     }
 
     private ResponseEntity<Object> handleExceptionInternalArgs(Exception e, HttpHeaders httpHeaders,

@@ -3,6 +3,7 @@ package ussum.homepage.infra.jpa.calendar_event;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +21,12 @@ public class CalenderEventRepositoryImpl implements CalenderEventRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<CalendarEvent> findByStartDateBeforeAndEndDateAfter(YearMonth endOfMonth) {
-
+    public List<CalendarEvent> findByStartDateAfterAndEndDateBefore(YearMonth endOfMonth) {
         LocalDate startOfMonth = endOfMonth.atDay(1);  // 해당 월의 첫날 (yyyy-MM-01)
-        LocalDate endOfMonthDate = endOfMonth.atEndOfMonth(); // 해당 월의 마지막 날 (yyyy-MM-dd)
+        LocalDate endOfMonthDate = endOfMonth.atEndOfMonth();; // 해당 월의 마지막 날 (yyyy-MM-dd)
 
-        return calendarEventJpaRepository.findByStartDateBeforeAndEndDateAfter(startOfMonth, endOfMonthDate)
+        System.out.println(startOfMonth+","+endOfMonthDate);
+        return calendarEventJpaRepository.findByStartDateAfterAndEndDateBefore(startOfMonth, endOfMonthDate)
                 .stream()
                 .map(calendarEventMapper::toDomain)
                 .collect(Collectors.toList());
