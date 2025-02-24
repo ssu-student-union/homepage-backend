@@ -21,8 +21,15 @@ public class DataPostResponseFactory implements PostListResponseFactory {
 
     @Override
     public PostListResDto createDataResponse(Post post, List<PostFile> postFiles) {
-        List<FileResponse> fileResponses = postFiles.stream().map(postFile -> FileResponse.of(postFile)).toList();
-        String content = postFiles.get(0).getFileCategory();
+        List<FileResponse> fileResponses = postFiles.stream()
+                .map(FileResponse::of)
+                .toList();
+
+        String content = postFiles.stream()
+                .findFirst()
+                .map(PostFile::getFileCategory)
+                .orElse(null); // 파일이 없는 경우 null로 설정
+
         return DataPostResponse.of(post, fileResponses, content);
     }
 }
