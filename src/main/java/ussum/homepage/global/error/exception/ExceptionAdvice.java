@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -116,9 +117,8 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
      * 작동 방식: GeneralException에서 ErrorReasonDto를 추출하고,
      * 이를 handleExceptionInternal 메소드로 전달함
      */
-    @ExceptionHandler(value = {GeneralException.class, InvalidValueException.class})
+    @ExceptionHandler(value = GeneralException.class)
     public ResponseEntity onThrowException(GeneralException generalException, HttpServletRequest httpServletRequest) {
-
         ErrorReasonDto errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
 
         return handleExceptionInternal(generalException, errorReasonHttpStatus, null, httpServletRequest);
@@ -141,7 +141,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
      * 작동 방식: 예외의 메시지와 ErrorStatus._INTERNAL_SERVER_ERROR를 사용하여
      * handleExceptionInternalFalse 메소드로 처리합니다.
      */
-    @ExceptionHandler
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> exception(Exception e, WebRequest webRequest) {
         e.printStackTrace();
 
