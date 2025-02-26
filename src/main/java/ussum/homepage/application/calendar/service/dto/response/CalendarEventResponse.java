@@ -7,19 +7,19 @@ import ussum.homepage.domain.calender.CalendarEvent;
 @Builder(access = AccessLevel.PRIVATE)
 public record CalendarEventResponse(
         Long calenderId,
-        String category,
+        String calendarCategory,
         String title,
-        String startTime,
-        String endTime
+        String startDate,
+        String endDate
 
 ) {
     public static CalendarEventResponse of(CalendarEvent calendarEvent) {
         return CalendarEventResponse.builder()
                 .calenderId(calendarEvent.getId())
-                .category(calendarEvent.getCalendarCategory())
+                .calendarCategory(calendarEvent.getCalendarCategory())
                 .title(calendarEvent.getTitle())
-                .startTime(calendarEvent.getStartDate())
-                .endTime(calendarEvent.getEndDate())
+                .startDate(calendarEvent.getStartDate())
+                .endDate(calendarEvent.getEndDate())
                 .build();
     }
 }
