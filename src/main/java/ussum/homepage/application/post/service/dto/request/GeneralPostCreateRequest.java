@@ -35,12 +35,16 @@ public class GeneralPostCreateRequest extends PostCreateRequest {
                 board.getId());
     }
     public Post toDomain(Long boardId, Long userId, Category category){
+        String status = "새로운";
+        if(isNotice){
+            status = "긴급공지";
+        }
         return Post.of(null,
                 title,
                 content,
                 1,
                 thumbNailImage,
-                "새로운",
+                status,
                 null,null,null,
                 this.category,
                 null,
