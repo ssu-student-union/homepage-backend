@@ -5,6 +5,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
+import ussum.homepage.application.calendar.service.dto.response.CalendarEventList;
+import ussum.homepage.application.calendar.service.dto.response.CalendarEventResponse;
 import ussum.homepage.application.comment.service.dto.response.CommentListResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.PostDetailRes;
 import ussum.homepage.application.post.service.dto.response.postList.PostListRes;
@@ -70,5 +72,13 @@ public class PostAclAspect {
         PostListRes<?> postListRes = (PostListRes<?>) result;
         postListRes = postAclHandler.applyPermissionsToPostList(postListRes, userId, "자료집게시판");
         return postListRes;
+    }
+
+    @Around(value = "execution(* ussum.homepage.application.calendar.service.CalendarService.getCalenders(..)) && args(userId,..)", argNames = "joinPoint,userId")
+    public Object validAuthorityOfCalendar(ProceedingJoinPoint joinPoint, Long userId) throws Throwable {
+        Object result = joinPoint.proceed();
+        CalendarEventList<?> calendarEventList = (CalendarEventList<?>) result;
+//        calendarEventList = postAclHandler
+        return result;
     }
 }

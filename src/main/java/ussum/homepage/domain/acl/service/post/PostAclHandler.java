@@ -2,9 +2,11 @@ package ussum.homepage.domain.acl.service.post;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ussum.homepage.application.calendar.service.dto.response.CalendarEventList;
 import ussum.homepage.application.comment.service.dto.response.CommentListResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.PostDetailRes;
 import ussum.homepage.application.post.service.dto.response.postList.PostListRes;
+import ussum.homepage.domain.post.Post;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostAclHandler {
     private final PostAclManager postAclManager;
+
+//    public CalendarEventList getCalendarEventList(CalendarEventList calendarEventList, Long userId) {
+//        List<String> allowedAuthorities = new ArrayList<>();
+//        List<String> deniedAuthorities = new ArrayList<>();
+//        boolean isLoggedIn = userId != null;
+//    }
 
     // 공통 로직: 권한 적용
     public PostListRes<?> applyPermissionsToPostList(PostListRes<?> postListRes, Long userId, String boardCode) {

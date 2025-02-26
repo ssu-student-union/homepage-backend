@@ -24,7 +24,8 @@ public class CalendarService {
     private final CalendarEventAppender calendarEventAppender;
 
     @Transactional
-    public List<?> getCalenders(String query, String category) {
+    public List<?> getCalenders(Long userId,String query, String category) {
+
         YearMonth yearMonth = DateUtils.parseYearMonthFromString(query);
         List<CalendarEventResponse> calendarResponseList = null;
 
