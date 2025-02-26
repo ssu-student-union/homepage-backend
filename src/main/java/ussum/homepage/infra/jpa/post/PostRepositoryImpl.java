@@ -357,7 +357,8 @@ public class PostRepositoryImpl implements PostRepository {
         BoardCode boardCode = boardEntity.getBoardCode();
         if (boardCode.equals(getEnumBoardCodeFromStringBoardCode("청원게시판")) ||
                 boardCode.equals(getEnumBoardCodeFromStringBoardCode("건의게시판")) ||
-                boardCode.equals(getEnumBoardCodeFromStringBoardCode("인권신고게시판"))
+                boardCode.equals(getEnumBoardCodeFromStringBoardCode("인권신고게시판")) ||
+                boardCode.equals(getEnumBoardCodeFromStringBoardCode("질의응답게시판"))
         ) {
             // 게시물에 해당하는 모든 댓글 조회 및 처리
             postCommentJpaRepository.findAllByPostId(post.getId())
