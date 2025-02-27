@@ -15,4 +15,6 @@ public interface MemberRepository {
     void save(Member member);
     List<Member> findAllByUserId(Long userId);
     Optional<Member> findByUserIdAndGroupId(Long userId, Long groupId);
+
+    void deleteByUserId(Long userId);
 }

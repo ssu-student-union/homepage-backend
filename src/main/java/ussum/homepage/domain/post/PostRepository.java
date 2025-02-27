@@ -24,6 +24,8 @@ public interface PostRepository {
     void updatePostStatusNewToGeneral(LocalDateTime dueDateOfNew);
     void updatePostStatusEmergencyToGeneralInBatches();
     void delete(Post post);
+    void deleteAllByUserId(Long userId);
+    List<Post> findAllByUserId(Long userId);
     Page<Post> findBySearchCriteria(Pageable pageable,String boardCode, String q, String categoryCode);
     Page<SimplePostResponse> findPostDtoListByBoardCode(String boardCode, Pageable pageable);
     List<Post> findAllByCategory(List<String> statuses);

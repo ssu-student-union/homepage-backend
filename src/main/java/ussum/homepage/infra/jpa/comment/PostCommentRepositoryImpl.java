@@ -119,4 +119,12 @@ public class PostCommentRepositoryImpl implements PostCommentRepository {
                 .fetchOne();
 
     }
+
+    @Override
+    public void deleteAllByUserId(Long userId) {
+        queryFactory
+                .delete(postCommentEntity)
+                .where(postCommentEntity.userEntity.id.eq(userId))
+                .execute();
+    }
 }
