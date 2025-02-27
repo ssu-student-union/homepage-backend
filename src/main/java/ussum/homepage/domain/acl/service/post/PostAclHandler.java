@@ -111,7 +111,7 @@ public class PostAclHandler {
         } else allowedAuthorities.add("READ");
     }
 
-    public CalendarEventList applyPermissionsToCalendarEventList(CalendarEventList calendarEventList, Long userId, String boardCode) {
+    public CalendarEventList<CalendarEventResponse> applyPermissionsToCalendarEventList(CalendarEventList<CalendarEventResponse> calendarEventList, Long userId, String boardCode) {
         List<String> allowedAuthorities = new ArrayList<>();
         List<String> deniedAuthorities = new ArrayList<>();
         boolean isLoggedIn = userId != null;

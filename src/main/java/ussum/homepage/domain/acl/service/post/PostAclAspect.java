@@ -10,6 +10,8 @@ import ussum.homepage.application.calendar.service.dto.response.CalendarEventRes
 import ussum.homepage.application.comment.service.dto.response.CommentListResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.PostDetailRes;
 import ussum.homepage.application.post.service.dto.response.postList.PostListRes;
+import ussum.homepage.global.error.exception.InvalidValueException;
+import ussum.homepage.global.error.status.ErrorStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +79,13 @@ public class PostAclAspect {
     @Around(value = "execution(* ussum.homepage.application.calendar.service.CalendarService.getCalenders(..)) && args(userId, .., boardCode)", argNames = "joinPoint,userId,boardCode")
     public Object validAuthorityOfSearchCalendarList(ProceedingJoinPoint joinPoint, Long userId, String boardCode) throws Throwable {
         Object result = joinPoint.proceed();
-        CalendarEventList calendarEventList = (CalendarEventList) result;
+        CalendarEventList<CalendarEventResponse> calendarEventList;
+        if (result instanceof CalendarEventList<?>) {
+            calendarEventList = (CalendarEventList<CalendarEventResponse>) result;
+        }
+        else {
+            throw new InvalidValueException(ErrorStatus.INVALID_TYPE);
+        }
         calendarEventList = postAclHandler.applyPermissionsToCalendarEventList(calendarEventList, userId, boardCode);
         return calendarEventList;
     }
