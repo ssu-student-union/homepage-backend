@@ -12,4 +12,5 @@ public interface UserRepository {
     Optional<User> findByAccountId(String accountId);
     User save(User user);
     void updateOnBoardingUser(Long userId, OnBoardingRequest request);
+    void deleteUser(Long id);
 }

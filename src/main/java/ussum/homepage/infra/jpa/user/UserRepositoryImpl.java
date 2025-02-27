@@ -50,4 +50,9 @@ public class UserRepositoryImpl implements UserRepository {
                 .where(userEntity.id.eq(userId))
                 .execute();
     }
+
+    @Override
+    public void deleteUser(Long userId) {
+        userJpaRepository.deleteById(userId);
+    }
 }

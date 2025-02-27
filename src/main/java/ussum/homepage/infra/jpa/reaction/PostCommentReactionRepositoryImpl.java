@@ -91,6 +91,11 @@ public class PostCommentReactionRepositoryImpl implements PostCommentReactionRep
                 .toList();
     }
 
+    @Override
+    public void deleteAllByUserId(Long userId) {
+        postCommentReactionJpaRepository.deleteAllByUserId(userId);
+    }
+
     private BooleanExpression eqUserId(Long userId) {
         return userId != null ? userEntity.id.eq(userId) : null;
     }

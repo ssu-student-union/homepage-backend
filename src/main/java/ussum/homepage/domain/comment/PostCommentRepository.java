@@ -18,4 +18,5 @@ public interface PostCommentRepository {
     PostComment update(PostComment postComment);
     void delete(PostComment postComment);
     Long getCommentCountByPostId(Long postId);
+    void deleteAllByUserId(Long userId);
 }

@@ -18,4 +18,8 @@ public class UserModifier {
     public void updateOnBoardingUser(Long userId, OnBoardingRequest request){
         userRepository.updateOnBoardingUser(userId, request);
     }
+
+    public void deleteUser(Long userId) {
+        userRepository.deleteUser(userId);
+    }
 }

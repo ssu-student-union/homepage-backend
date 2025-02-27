@@ -9,6 +9,7 @@ import ussum.homepage.infra.jpa.post.entity.BoardEntity;
 import ussum.homepage.infra.jpa.post.entity.Category;
 import ussum.homepage.infra.jpa.post.entity.PostEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PostJpaRepository extends JpaRepository<PostEntity,Long> {
@@ -22,6 +23,10 @@ public interface PostJpaRepository extends JpaRepository<PostEntity,Long> {
     Optional<PostEntity> findByBoardEntityAndId(BoardEntity boardEntity, Long id);
     @Query("SELECT p FROM PostEntity p WHERE p.boardEntity.id = :boardId ORDER BY p.createdAt DESC")
     Page<PostEntity> findAllByBoardId(@Param("boardId") Long boardId, Pageable pageable);
+
+    // 특정 사용자가 작성한 모든 게시글 조회 (페이징 없음)
+    @Query("SELECT p FROM PostEntity p WHERE p.userEntity.id = :userId ORDER BY p.createdAt DESC")
+    List<PostEntity> findByUserId(@Param("userId") Long userId);
 
 //    @Query("""
 //                    SELECT pe

@@ -19,4 +19,8 @@ public class PostReactionModifier {
         existingReaction.updateReaction(newReaction);
         postReactionRepository.save(existingReaction);
     }
+
+    public void deletePostReactionWithUserId(Long userId) {
+        postReactionRepository.deletePostReactionByUserId(userId);
+    }
 }
