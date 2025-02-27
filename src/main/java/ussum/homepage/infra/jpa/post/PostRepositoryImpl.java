@@ -394,6 +394,17 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public void deleteAllByUserId(Long userId) {
+        List<Post> posts = findAllByUserId(userId);
+        posts.forEach(this::delete);
+    }
+
+    @Override
+    public List<Post> findAllByUserId(Long userId) {
+        return postJpaRepository.findByUserId(userId).stream().map(postMapper::toDomain).toList();
+    }
+
+    @Override
     public Page<Post> findBySearchCriteria(Pageable pageable, String boardCode, String q, String categoryCode) {
         BoardEntity boardEntity = boardJpaRepository.findByBoardCode(getEnumBoardCodeFromStringBoardCode(boardCode))
                 .orElseThrow(() -> new GeneralException(BOARD_NOT_FOUND));

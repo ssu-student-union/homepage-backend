@@ -10,4 +10,5 @@ public interface PostReplyCommentRepository {
     PostReplyComment save(PostReplyComment postReplyComment);
     PostReplyComment update(PostReplyComment domain);
     void delete(PostReplyComment postReplyComment);
+    void deleteAllByUserId(Long userId);
 }

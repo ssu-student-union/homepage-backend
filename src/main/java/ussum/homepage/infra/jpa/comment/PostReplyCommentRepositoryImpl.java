@@ -50,4 +50,9 @@ public class PostReplyCommentRepositoryImpl implements PostReplyCommentRepositor
         updateDeletedAt(postReplyCommentEntity);
         postReplyCommentJpaRepository.save(postReplyCommentEntity);
     }
+
+    @Override
+    public void deleteAllByUserId(Long userId) {
+        postReplyCommentJpaRepository.deleteAllByUserId(userId);
+    }
 }

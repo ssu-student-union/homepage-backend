@@ -89,6 +89,15 @@ public class PostReactionRepositoryImpl implements PostReactionRepository {
         return Optional.ofNullable(result)
                 .map(postReactionMapper::toDomain);
     }
+
+    @Override
+    public void deletePostReactionByUserId(Long userId) {
+        queryFactory
+                .delete(postReactionEntity)
+                .where(postReactionEntity.userEntity.id.eq(userId))
+                .execute();
+    }
+
     private BooleanExpression eqUserId(Long userId) {
         return userId != null ? userEntity.id.eq(userId) : null;
     }
