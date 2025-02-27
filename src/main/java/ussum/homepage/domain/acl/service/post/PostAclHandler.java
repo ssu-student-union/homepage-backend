@@ -3,6 +3,7 @@ package ussum.homepage.domain.acl.service.post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ussum.homepage.application.calendar.service.dto.response.CalendarEventList;
+import ussum.homepage.application.calendar.service.dto.response.CalendarEventResponse;
 import ussum.homepage.application.comment.service.dto.response.CommentListResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.PostDetailRes;
 import ussum.homepage.application.post.service.dto.response.postList.PostListRes;
@@ -15,12 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostAclHandler {
     private final PostAclManager postAclManager;
-
-//    public CalendarEventList getCalendarEventList(CalendarEventList calendarEventList, Long userId) {
-//        List<String> allowedAuthorities = new ArrayList<>();
-//        List<String> deniedAuthorities = new ArrayList<>();
-//        boolean isLoggedIn = userId != null;
-//    }
 
     // 공통 로직: 권한 적용
     public PostListRes<?> applyPermissionsToPostList(PostListRes<?> postListRes, Long userId, String boardCode) {
@@ -110,9 +105,19 @@ public class PostAclHandler {
                     deniedAuthorities.add("READ");
                 }
             } else allowedAuthorities.add("READ");
-        } else if (boardCode.equals("서비스공지사항")) {
+        } else if (boardCode.equals("서비스공지사항")||boardCode.equals("캘린더")) {
             if (allowedAuthorities.isEmpty())
                 deniedAuthorities.add("WRITE");
         } else allowedAuthorities.add("READ");
+    }
+
+    public CalendarEventList applyPermissionsToCalendarEventList(CalendarEventList calendarEventList, Long userId, String boardCode) {
+        List<String> allowedAuthorities = new ArrayList<>();
+        List<String> deniedAuthorities = new ArrayList<>();
+        boolean isLoggedIn = userId != null;
+
+        addPermissionAuthorities(allowedAuthorities, deniedAuthorities, userId, boardCode, isLoggedIn);
+
+        return calendarEventList.validAuthorities(allowedAuthorities,deniedAuthorities);
     }
 }

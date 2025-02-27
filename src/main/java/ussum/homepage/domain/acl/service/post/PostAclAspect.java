@@ -74,11 +74,11 @@ public class PostAclAspect {
         return postListRes;
     }
 
-    @Around(value = "execution(* ussum.homepage.application.calendar.service.CalendarService.getCalenders(..)) && args(userId,..)", argNames = "joinPoint,userId")
-    public Object validAuthorityOfCalendar(ProceedingJoinPoint joinPoint, Long userId) throws Throwable {
+    @Around(value = "execution(* ussum.homepage.application.calendar.service.CalendarService.getCalenders(..)) && args(userId, .., boardCode)", argNames = "joinPoint,userId,boardCode")
+    public Object validAuthorityOfSearchCalendarList(ProceedingJoinPoint joinPoint, Long userId, String boardCode) throws Throwable {
         Object result = joinPoint.proceed();
-        CalendarEventList<?> calendarEventList = (CalendarEventList<?>) result;
-//        calendarEventList = postAclHandler
-        return result;
+        CalendarEventList calendarEventList = (CalendarEventList) result;
+        calendarEventList = postAclHandler.applyPermissionsToCalendarEventList(calendarEventList, userId, boardCode);
+        return calendarEventList;
     }
 }

@@ -31,11 +31,12 @@ public class CalendarController {
     @Operation(description = """
             일정 조회하는 API입니다. form-data 년도월, 그리고 queryParam 형식으로 calendarCategory(필터링)
             그리고 글쓰기 권한이 allowedAuthorities이나 deniedAuthorities에 담김.""")
-    @GetMapping("/calendar")
+    @GetMapping("/{boardCode}")
     public ResponseEntity<ApiResponse<?>> getCalendarMonth(@Parameter(hidden = true) @UserId Long userId,
+                                                           @PathVariable(name = "boardCode") String boardCode,
                                                            @RequestParam(value = "date") String query,
                                                            @RequestParam(value = "calendarCategory",required = false) String calendarCategory) {
-        return ApiResponse.success(calendarService.getCalenders(userId,query, calendarCategory));
+        return ApiResponse.success(calendarService.getCalenders(userId,query, calendarCategory,boardCode));
     }
 
     @PostMapping("/calendar")
