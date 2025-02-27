@@ -39,7 +39,7 @@ public class CalendarController {
         return ApiResponse.success(calendarService.getCalenders(userId,query, calendarCategory,boardCode));
     }
 
-    @PostMapping("/calendar")
+    @PostMapping("/{boardCode}")
     public ResponseEntity<ApiResponse<?>> createCalendarEvent(@Parameter(hidden = true) @UserId Long userId,
                                                               @RequestBody CalendarEventRequestDto calendarEventRequestDto) {
 

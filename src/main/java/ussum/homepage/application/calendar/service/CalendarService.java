@@ -57,7 +57,7 @@ public class CalendarService {
     @Transactional
     public CalendarEventCreateResponse createCalendarSchedule(Long userId, CalendarEventRequestDto requestDto) {
         CalendarEvent calendarEvent = requestDto.toDomain(userId);
-        calendarEventAppender.create(calendarEvent);
+        calendarEvent = calendarEventAppender.create(calendarEvent);
         return CalendarEventCreateResponse.of(calendarEvent.getId(), calendarEvent.getCalendarCategory());
     }
 }
