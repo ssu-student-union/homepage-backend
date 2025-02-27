@@ -28,4 +28,8 @@ public class PostModifier {
         postRepository.delete(postReader.getPostWithBoardCodeForEditAndDelete(boardCode, postId));
     }
 
+    public void deleteAllByUserId(Long userId) {
+        postRepository.deleteAllByUserId(userId);
+    }
+
 }

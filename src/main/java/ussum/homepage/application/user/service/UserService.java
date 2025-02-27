@@ -9,10 +9,18 @@ import org.springframework.transaction.annotation.Transactional;
 import ussum.homepage.application.user.service.dto.request.MyPageUpdateRequest;
 import ussum.homepage.application.user.service.dto.response.MyPageInfoResponse;
 import ussum.homepage.application.user.service.dto.response.UserInfoResponse;
+import ussum.homepage.domain.comment.service.PostCommentModifier;
+import ussum.homepage.domain.comment.service.PostReplyCommentModifier;
 import ussum.homepage.domain.csv_user.StudentCsv;
 import ussum.homepage.domain.csv_user.service.StudentCsvReader;
 import ussum.homepage.domain.member.Member;
+import ussum.homepage.domain.member.service.MemberManager;
+import ussum.homepage.domain.member.service.MemberModifier;
 import ussum.homepage.domain.member.service.MemberReader;
+import ussum.homepage.domain.post.service.PostModifier;
+import ussum.homepage.domain.postlike.service.PostReactionModifier;
+import ussum.homepage.domain.reaction.service.PostCommentReactionModifier;
+import ussum.homepage.domain.reaction.service.PostReplyCommentReactionModifier;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.service.UserManager;
 import ussum.homepage.domain.user.service.UserModifier;
@@ -35,6 +43,15 @@ public class UserService {
     private final UserMapper userMapper;
     private final UserManager userManager;
     private final PasswordEncoder passwordEncoder;
+    private final PostModifier postModifier;
+    private final MemberManager memberManager;
+    private final MemberModifier memberModifier;
+    private final PostCommentModifier postCommentModifier;
+    private final PostCommentReactionModifier postCommentReactionModifier;
+    private final PostReactionModifier postReactionModifier;
+    private final PostReplyCommentModifier postReplyCommentModifier;
+    private final PostReplyCommentReactionModifier postReplyCommentReactionModifier;
+
 
     /*
         * @param accessToken
@@ -100,4 +117,21 @@ public class UserService {
 
         return MyPageInfoResponse.of(user, members.get(0), isUnion);
     }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        postModifier.deleteAllByUserId(userId);
+
+        postReplyCommentReactionModifier.deletePostReplyCommentReactionWithUserId(userId);
+        postReplyCommentModifier.deletePostReplyCommentWithUserId(userId);
+
+        postCommentReactionModifier.deletePostCommentReactionWithUserId(userId);
+        postCommentModifier.deleteCommentWithUserId(userId);
+
+        postReactionModifier.deletePostReactionWithUserId(userId);
+
+        memberModifier.deleteMemberWithUserId(userId);
+        userModifier.deleteUser(userId);
+    }
+
 }

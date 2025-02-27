@@ -94,6 +94,11 @@ public class PostReplyCommentReactionRepositoryImpl implements PostReplyCommentR
         postReplyCommentReactionJpaRepository.delete(postReplyCommentReactionMapper.toEntity(postReplyCommentReaction));
     }
 
+    @Override
+    public void deleteWithUserId(Long userId) {
+        postReplyCommentReactionJpaRepository.deleteAllByUserId(userId);
+    }
+
     private BooleanExpression eqUserId(Long userId) {
         return userId != null ? userEntity.id.eq(userId) : null;
     }
