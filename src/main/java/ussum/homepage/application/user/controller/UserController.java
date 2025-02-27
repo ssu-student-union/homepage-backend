@@ -2,6 +2,7 @@ package ussum.homepage.application.user.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +49,7 @@ public class UserController {
             회원의 글, 댓글, 반응 모두 삭제하고 유저정보를 삭제합니다.
             """)
     @DeleteMapping("/delete")
-    public ApiResponse<?> deleteUser(@UserId Long userId) {
+    public ApiResponse<?> deleteUser(@Parameter(hidden = true) @UserId Long userId) {
         userService.deleteUser(userId);
         return ApiResponse.onSuccess(null);
     }
