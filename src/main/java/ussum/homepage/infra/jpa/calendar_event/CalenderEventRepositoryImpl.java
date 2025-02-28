@@ -26,7 +26,7 @@ public class CalenderEventRepositoryImpl implements CalenderEventRepository {
         LocalDate endOfMonthDate = endOfMonth.atEndOfMonth();; // 해당 월의 마지막 날 (yyyy-MM-dd)
 
         System.out.println(startOfMonth+","+endOfMonthDate);
-        return calendarEventJpaRepository.findEventsOverlappingWithPeriod(startOfMonth, endOfMonthDate)
+        return calendarEventJpaRepository.findEventsOverlappingWithPeriod(gistartOfMonth, endOfMonthDate)
                 .stream()
                 .map(calendarEventMapper::toDomain)
                 .collect(Collectors.toList());
