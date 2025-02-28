@@ -34,6 +34,7 @@ public enum ErrorStatus implements BaseErrorCode {
     //Post 관련 에러
     POST_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_001","게시글을 찾을 수 없습니다."),
     POST_ONGOING_STATUS_IS_NOT_UPDATED(HttpStatus.INTERNAL_SERVER_ERROR,"POST_002","게시글 진행상태를 업데이트 하지 못했습니다."),
+    POST_FAIL_MAIL_ERROR(HttpStatus.BAD_REQUEST, "POST_003","메일이 정상적으로 보내지지 않았습니다."),
 
     //RightsDetail 관련 에러
     RIGHTS_DETAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "RIGHTS_DETAIL_001", "인권게시물 세부사항을 찾을 수 없습니다."),
