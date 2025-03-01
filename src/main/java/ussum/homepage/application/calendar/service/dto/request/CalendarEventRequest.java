@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import ussum.homepage.domain.calender.CalendarEvent;
 
+@Builder
 public record CalendarEventRequest(
         String calendarCategory,
         String startDate,

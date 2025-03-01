@@ -11,7 +11,8 @@ import ussum.homepage.infra.jpa.calendar_event.entity.CalendarEventEntity;
 public interface CalendarEventJpaRepository extends JpaRepository<CalendarEventEntity,Long> {
     @Query("SELECT c FROM CalendarEventEntity c " +
             "WHERE (FUNCTION('DATE', c.startDate) <= :endOfMonth) " +
-            "AND (FUNCTION('DATE', c.endDate) >= :startOfMonth)")
+            "AND (FUNCTION('DATE', c.endDate) >= :startOfMonth)" +
+            "ORDER BY c.startDate ASC , c.calendarCategory")
     List<CalendarEventEntity> findEventsOverlappingWithPeriod(
             @Param("startOfMonth") LocalDate startOfMonth,
             @Param("endOfMonth") LocalDate endOfMonth);

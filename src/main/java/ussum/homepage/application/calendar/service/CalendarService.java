@@ -6,7 +6,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ussum.homepage.application.calendar.service.dto.request.CalendarEventRequest;
-import ussum.homepage.application.calendar.service.dto.request.CalendarEventRequestDto;
 import ussum.homepage.application.calendar.service.dto.response.CalendarEventCreateResponse;
 import ussum.homepage.application.calendar.service.dto.response.CalendarEventList;
 import ussum.homepage.application.calendar.service.dto.response.CalendarEventResponse;
@@ -55,7 +54,7 @@ public class CalendarService {
     }
 
     @Transactional
-    public CalendarEventCreateResponse createCalendarSchedule(Long userId, CalendarEventRequestDto requestDto) {
+    public CalendarEventCreateResponse createCalendarSchedule(Long userId, CalendarEventRequest requestDto) {
         CalendarEvent calendarEvent = requestDto.toDomain(userId);
         calendarEvent = calendarEventAppender.create(calendarEvent);
         return CalendarEventCreateResponse.of(calendarEvent.getId(), calendarEvent.getCalendarCategory());

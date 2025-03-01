@@ -21,7 +21,7 @@ public class CorsConfig {
         config.addAllowedOrigin("https://homepage-frontend-dun.vercel.app");
         config.addAllowedOrigin("https://homepage-frontend-psi.vercel.app");
         config.addAllowedOrigin("https://stu.ssu.ac.kr");
-        config.addAllowedOrigin("https://dev-homepage-frontend.vercel.app");
+        config.addAllowedOrigin("https:/dev-homepage-frontend.vercel.app");
         config.addAllowedOrigin("https://dev.sssupport.shop");
         config.addAllowedOrigin("https://backend.sssupport.shop");
         config.addAllowedOrigin("https://dev-backend.sssupport.shop");

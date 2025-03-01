@@ -12,14 +12,16 @@ import ussum.homepage.global.error.exception.InvalidValueException;
 @Getter
 public enum CalendarCategory {
     //캘린더 카테고리
-    COLLEGE("학사"),
-    STUDENT_UNION("총학생회"),
-    HOLIDAY("공휴일/기념일");
+    COLLEGE("학사", 1),
+    STUDENT_UNION("총학생회", 2),
+    HOLIDAY("공휴일/기념일", 3 );
 
     private final String categoryName;
+    private final int priority;
 
-    CalendarCategory(String categoryName) {
+    CalendarCategory(String categoryName, int priority) {
         this.categoryName = categoryName;
+        this.priority = priority;
     }
 
     public static CalendarCategory getEnumCategoryCodeFromStringCategoryCode(String category) {

@@ -30,14 +30,6 @@ public class CalenderEventRepositoryImpl implements CalenderEventRepository {
                 .stream()
                 .map(calendarEventMapper::toDomain)
                 .collect(Collectors.toList());
-
-//        return queryFactory
-//                .selectFrom(calendarEvent)
-//                .where(
-//                        calendarEvent.startDate.loe(endOfMonthDate)  // start_date <= 월의 마지막 날
-//                                .and(calendarEvent.endDate.goe(startOfMonth)) // end_date >= 월의 첫날
-//                )
-//                .fetch();
     }
 
     @Override
