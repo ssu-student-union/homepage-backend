@@ -13,6 +13,7 @@ import ussum.homepage.application.user.service.dto.request.MyPageUpdateRequest;
 import ussum.homepage.application.user.service.dto.request.TokenRequest;
 import ussum.homepage.application.user.service.dto.response.MyPageInfoResponse;
 import ussum.homepage.application.user.service.dto.response.UserInfoResponse;
+import ussum.homepage.domain.user.service.UserAnalyzer;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
 
@@ -54,5 +55,11 @@ public class UserController {
         return ApiResponse.onSuccess(null);
     }
 
+    // TODO(inho): 디스코드 컨트롤러로 빼야함
+    @GetMapping("/discord")
+    public ResponseEntity<String> getUserStatistics() {
+        String jsonMessage = userService.generateDiscordMessage();
+        return ResponseEntity.ok(jsonMessage);
+    }
 
 }
