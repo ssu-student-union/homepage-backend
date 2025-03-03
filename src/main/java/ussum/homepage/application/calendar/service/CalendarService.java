@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional;
 import java.time.YearMonth;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ussum.homepage.application.calendar.service.dto.request.CalendarEventRequest;
 import ussum.homepage.application.calendar.service.dto.request.CalendarEventUpdateRequest;
@@ -21,6 +23,7 @@ import ussum.homepage.domain.post.Board;
 import ussum.homepage.domain.post.service.BoardReader;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.service.UserReader;
+import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.global.error.exception.InvalidValueException;
 import ussum.homepage.global.error.status.ErrorStatus;
@@ -40,8 +43,11 @@ public class CalendarService {
     private final CalendarEventReader calendarEventReader;
 
     @Transactional
-    public CalendarEventList<?> getCalenders(Long userId, String query, String category, String boardCode) {
+    public CalendarEventList<?> getCalenders(Long userId, String query, String category, String boardCode, int page, int take) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
+        Pageable pageable = PageInfo.of(page,take);
+
+        Page<CalendarEvent> calendarEventList = null;
 
         if (!board.getName().equals(boardCode)) {
             throw new InvalidValueException(ErrorStatus.INVALID_BOARDCODE);
@@ -51,18 +57,18 @@ public class CalendarService {
         List<CalendarEventResponse> calendarEventResponseList = null;
 
         if (category == null) {
-            calendarEventResponseList = calenderReader.getCalenderEventsByYearMonthWithoutCategory(yearMonth).stream()
-                    .map(CalendarEventResponse::of)
-                    .toList();
+            calendarEventList = calendarEventReader.getCalenderEventsByYearMonthWithoutCategory(yearMonth,pageable);
         }else{
-             CalendarCategory calendarCategory = CalendarCategory.getEnumCategoryCodeFromStringCategoryCode(category);
-             calendarEventResponseList = calenderReader.getCalenderEventsByYearMonthWithoutCategory(yearMonth).stream()
-                    .filter(calendarEvent -> calendarEvent.getCalendarCategory().equals(category))
-                    .map(CalendarEventResponse::of)
-                    .toList();
+            CalendarCategory calendarCategory = CalendarCategory.getEnumCategoryCodeFromStringCategoryCode(category);
+            calendarEventList = calendarEventReader.getCalenderEventsByYearMonthWithCategory(yearMonth,calendarCategory,pageable);
         }
 
-        return CalendarEventList.of(calendarEventResponseList);
+        calendarEventResponseList = calendarEventList.stream()
+                .map(CalendarEventResponse::of)
+                .toList();
+
+        PageInfo pageInfo = PageInfo.of(calendarEventList);
+        return CalendarEventList.of(calendarEventResponseList, pageInfo);
     }
 
     @Transactional

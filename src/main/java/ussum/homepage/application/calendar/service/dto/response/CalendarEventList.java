@@ -4,21 +4,20 @@ import lombok.AccessLevel;
 import lombok.Builder;
 
 import java.util.List;
+import ussum.homepage.global.common.PageInfo;
 
 @Builder(access = AccessLevel.PRIVATE)
 public record CalendarEventList<T>(
         List<T> calendarEventResponseList,
         List<String> allowedAuthorities,
-        List<String> deniedAuthorities
+        List<String> deniedAuthorities,
+        PageInfo pageInfo
 ) {
-    public static <T> CalendarEventList<T> of(List<T> calendarEventResponseList) {
-        return new CalendarEventList<>(calendarEventResponseList, List.of(), List.of());
-    }
-    public static CalendarEventList<CalendarEventResponse> fromList(List<CalendarEventResponse> events) {
-        return new CalendarEventList<>(events, List.of(), List.of());
+    public static <T> CalendarEventList<T> of(List<T> calendarEventResponseList, PageInfo pageInfo) {
+        return new CalendarEventList<>(calendarEventResponseList, List.of(), List.of(),pageInfo);
     }
 
     public CalendarEventList<T> validAuthorities(List<String> allowedAuthorities, List<String> deniedAuthorities) {
-        return new CalendarEventList<>(this.calendarEventResponseList, allowedAuthorities, deniedAuthorities);
+        return new CalendarEventList<>(this.calendarEventResponseList, allowedAuthorities, deniedAuthorities,this.pageInfo);
     }
 }
