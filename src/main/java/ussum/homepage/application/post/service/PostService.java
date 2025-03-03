@@ -17,7 +17,7 @@
 //import ussum.homepage.global.common.PageInfo;
 //import ussum.homepage.infra.jpa.post.PostMapper;
 //import ussum.homepage.infra.jpa.post.dto.SimplePostDto;
-//import ussum.homepage.infra.jpa.post.entity.Category;
+//import ussum.homepage.infra.jpa.post.entity.CalendarCategory;
 //
 //import java.util.List;
 //
@@ -57,7 +57,7 @@
 //    public void createPost(Long userId, String boardCode, GeneralPostCreateRequest postCreateRequest) {
 //        Board board = boardReader.getBoardWithBoardCode(boardCode);
 //
-//        postAppender.createPost(postCreateRequest.toDomain(board, userId, Category.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode())));
+//        postAppender.createPost(postCreateRequest.toDomain(board, userId, CalendarCategory.getEnumCategoryCodeFromStringCategoryCode(postCreateRequest.categoryCode())));
 //    }
 //
 ////    public PostResponse editPost(String boardCode,Long postId, PostUpdateRequest postUpdateRequest) {

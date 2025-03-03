@@ -55,7 +55,7 @@ public enum ErrorStatus implements BaseErrorCode {
     POST_REACTION_IS_ALREADY_EXIST(HttpStatus.BAD_REQUEST,"POST_REACTION_001","이미 게시물반응이 존재합니다."),
     POST_REACTION_NOT_FOUND(HttpStatus.NOT_FOUND,"POST_REACTION_002","게시물반응을 찾을 수 없습니다."),
 
-    //Category 관련 에러
+    //CalendarCategory 관련 에러
     CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND,"CATEGORY_001","카테고리를 찾을 수 없습니다."),
 
     //ACL 관련 에러
@@ -85,6 +85,7 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_FILETYPE(HttpStatus.BAD_REQUEST,"ENUM_017","유효하지 않은 FILETYPE입니다."),
     PERSON_TYPE_NULL(HttpStatus.BAD_REQUEST,"ENUM_18","PERSON_TYPE이 NULL입니다."),
     INVALID_PERSON_TYPE(HttpStatus.BAD_REQUEST,"ENUM_19","유효하지 않은 PERSON_TYPE입니다."),
+    INVALID_CALENDAR_CATEGORY_CODE(HttpStatus.BAD_REQUEST,"ENUM_20","유효하지 않은 카테고리입니다."),
     /**
      * 401 Unauthorized, Token 관련 에러
      */

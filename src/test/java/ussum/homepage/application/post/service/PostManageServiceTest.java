@@ -27,7 +27,7 @@
 //import ussum.homepage.domain.user.service.UserReader;
 //import ussum.homepage.application.post.service.dto.response.postList.NoticePostResponse;
 //import ussum.homepage.application.post.service.dto.response.postList.PostListRes;
-//import ussum.homepage.infra.jpa.post.entity.Category;
+//import ussum.homepage.infra.jpa.post.entity.CalendarCategory;
 //
 //import java.time.LocalDateTime;
 //import java.util.List;
@@ -72,28 +72,28 @@
 //    private static Stream<Arguments> providePostData() {
 //        return Stream.of(
 //                // 공지사항 카테고리
-//                Arguments.of(Category.EMERGENCY.getStringCategoryCode(), "새로운", true),
-//                Arguments.of(Category.STUDENT_COUNCIL.getStringCategoryCode(), "진행중", false),
+//                Arguments.of(CalendarCategory.EMERGENCY.getStringCategoryCode(), "새로운", true),
+//                Arguments.of(CalendarCategory.STUDENT_COUNCIL.getStringCategoryCode(), "진행중", false),
 //
 //                // 분실물 카테고리
-//                Arguments.of(Category.LOST_STATUS.getStringCategoryCode(), "완료", false),
-//                Arguments.of(Category.LOST_REPORT.getStringCategoryCode(), "접수", false),
+//                Arguments.of(CalendarCategory.LOST_STATUS.getStringCategoryCode(), "완료", false),
+//                Arguments.of(CalendarCategory.LOST_REPORT.getStringCategoryCode(), "접수", false),
 //
 //                // 제휴안내 카테고리
-//                Arguments.of(Category.MEDICAL.getStringCategoryCode(), "새로운", false),
-//                Arguments.of(Category.CULTURE.getStringCategoryCode(), "진행중", false),
+//                Arguments.of(CalendarCategory.MEDICAL.getStringCategoryCode(), "새로운", false),
+//                Arguments.of(CalendarCategory.CULTURE.getStringCategoryCode(), "진행중", false),
 //
 //                // 청원 카테고리
-//                Arguments.of(Category.IN_PROGRESS.getStringCategoryCode(), "진행중", false),
-//                Arguments.of(Category.COMPLETED.getStringCategoryCode(), "완료", false),
+//                Arguments.of(CalendarCategory.IN_PROGRESS.getStringCategoryCode(), "진행중", false),
+//                Arguments.of(CalendarCategory.COMPLETED.getStringCategoryCode(), "완료", false),
 //
 //                // 감사기구 카테고리
-//                Arguments.of(Category.AUDIT_PLAN.getStringCategoryCode(), "새로운", false),
-//                Arguments.of(Category.AUDIT_RESULT.getStringCategoryCode(), "완료", false),
+//                Arguments.of(CalendarCategory.AUDIT_PLAN.getStringCategoryCode(), "새로운", false),
+//                Arguments.of(CalendarCategory.AUDIT_RESULT.getStringCategoryCode(), "완료", false),
 //
 //                // 단과대 카테고리
-//                Arguments.of(Category.IT_SCHOOL.getStringCategoryCode(), "새로운", false),
-//                Arguments.of(Category.BUSINESS_SCHOOL.getStringCategoryCode(), "완료", false)
+//                Arguments.of(CalendarCategory.IT_SCHOOL.getStringCategoryCode(), "새로운", false),
+//                Arguments.of(CalendarCategory.BUSINESS_SCHOOL.getStringCategoryCode(), "완료", false)
 //        );
 //    }
 //
@@ -255,7 +255,7 @@
 //    static List<Post> createMultiplePosts(int count) {
 //        return IntStream.range(0, count)
 //                .mapToObj(i -> createPost((long) i, "Title " + i, "Content " + i,
-//                        Category.values()[i % Category.values().length].getStringCategoryCode(), "Active"))
+//                        CalendarCategory.values()[i % CalendarCategory.values().length].getStringCategoryCode(), "Active"))
 //                .collect(Collectors.toList());
 //    }
 //

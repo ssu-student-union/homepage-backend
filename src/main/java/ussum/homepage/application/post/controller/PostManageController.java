@@ -35,7 +35,7 @@ public class PostManageController {
             나머지 게시판 필터링은 category에 값을 넣고 사용하시면 됩니다.
                         
             인권신고게시판의 경우 조회 권한과 글쓰기 권한이 allowedAuthorities, deniedAuthorities에 담겨집니다. 각각 허용하는 권한과 허용하지 않는 권한이 담깁니다.
-            학생인권위원회가 조회할시 allowedAuthorities에 ALL_READ가 담겨집니다. 이외의 자치기구/비로그인 deniedAuthorities에 ALL_READ와 WRITE권한이 들어갑니다.
+            학생인권위원회가 조회할시 allowedAuthorities에 ALL_READ가 담겨집니다. 이외의 자치기구/비로그인 deniedAuthorities에 ALL_READ와 WRITE권한이 들어가고 리스트가 내려가지 않습니다.
             로그인의 경우 allowedAuthorities의 WRITE만 담기지만 만약 게시물 리스트의 author 필드가 true라면 게시물의 작성자로 리스트중 해당 게시물만 조회가능합니다. 
             """)
     @GetMapping("/{boardCode}/posts")

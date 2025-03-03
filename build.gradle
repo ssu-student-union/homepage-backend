@@ -81,6 +81,7 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+
 // 컴파일 경고 처리를 위한 설정
 tasks.withType(JavaCompile) {
 	options.compilerArgs << "-Xlint:deprecation"

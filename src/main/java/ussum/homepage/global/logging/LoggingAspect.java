@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -51,7 +52,7 @@ public class LoggingAspect {
         try {
             response = joinPoint.proceed();
         } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
+            throw ExceptionUtils.throwUnchecked(throwable);
         }
         long executionTime = System.currentTimeMillis() - startTime;
 
