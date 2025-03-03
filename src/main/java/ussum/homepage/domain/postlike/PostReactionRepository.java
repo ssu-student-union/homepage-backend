@@ -8,4 +8,5 @@ public interface PostReactionRepository {
     Optional<PostReaction> findByPostIdAndUserId(Long postId, Long userId, String reaction);
     void delete(PostReaction postReaction);
     Integer countByPostIdAndReactionType(Long postId, String reactionType);
+    void deletePostReactionByUserId(Long userId);
 }

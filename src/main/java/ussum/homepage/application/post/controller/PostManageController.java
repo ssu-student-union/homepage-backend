@@ -287,6 +287,7 @@ public class PostManageController {
                                                        @RequestParam(value = "page", defaultValue = "0") int page,
                                                        @RequestParam(value = "take") int take,
                                                        @RequestParam(value = "q", required = false) String q
+
     ) {
         return ApiResponse.success(postManageService.searchMyPost(userId, page, take, q));
     }

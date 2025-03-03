@@ -85,4 +85,9 @@ public class MemberRepositoryImpl implements MemberRepository {
     public void save(Member member) {
         memberJpaRepository.save(memberMapper.toEntity(member));
     }
+
+    @Override
+    public void deleteByUserId(Long userId) {
+        memberJpaRepository.deleteAllByUserId(userId);
+    }
 }

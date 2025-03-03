@@ -21,4 +21,8 @@ public class PostCommentModifier {
     public void deleteComment(Long commentId){
         postCommentRepository.delete(postCommentReader.getPostComment(commentId));
     }
+
+    public void deleteCommentWithUserId(Long userId) {
+        postCommentRepository.deleteAllByUserId(userId);
+    }
 }

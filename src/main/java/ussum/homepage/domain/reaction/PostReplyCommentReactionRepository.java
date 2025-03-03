@@ -9,4 +9,5 @@ public interface PostReplyCommentReactionRepository {
     Optional<PostReplyCommentReaction> findByUserIdAndReplyCommentId(Long userId, Long replyCommentId);
     PostReplyCommentReaction save(PostReplyCommentReaction postReplyCommentReaction);
     void delete(PostReplyCommentReaction postReplyCommentReaction);
+    void deleteWithUserId(Long userId);
 }

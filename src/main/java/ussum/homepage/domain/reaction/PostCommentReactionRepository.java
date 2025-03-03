@@ -9,6 +9,6 @@ public interface PostCommentReactionRepository {
     List<PostCommentReaction> findAllPostCommentByCommentId(Long commentId);
     Optional<PostCommentReaction> findByCommentIdAndUserIdAndReaction(Long commentId, Long userId, String reaction);
     Optional<PostCommentReaction> findByUserIdAndCommentId(Long userId, Long commentId);
-
+    void deleteAllByUserId(Long userId);
 }
 
