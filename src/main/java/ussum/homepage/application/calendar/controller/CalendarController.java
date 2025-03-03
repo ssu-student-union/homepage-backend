@@ -9,9 +9,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import ussum.homepage.application.calendar.service.CalendarService;
 import ussum.homepage.application.calendar.service.dto.request.CalendarEventRequest;
@@ -37,6 +39,13 @@ public class CalendarController {
                                                            @RequestParam(value = "date") String query,
                                                            @RequestParam(value = "calendarCategory",required = false) String calendarCategory) {
         return ApiResponse.success(calendarService.getCalenders(userId,query, calendarCategory,boardCode));
+    }
+
+    @GetMapping("/{boardCode}/{calendarEventId}")
+    public ResponseEntity<ApiResponse<?>> getCalendarEvent(@Parameter(hidden = true) @UserId Long userId,
+                                                           @PathVariable(name = "boardCode") String boardCode,
+                                                           @PathVariable(name = "calendarEventId") Long calendarEventId){
+        return ApiResponse.success(calendarService.getCalendarEvent(userId,calendarEventId));
     }
 
     @PostMapping("/{boardCode}")

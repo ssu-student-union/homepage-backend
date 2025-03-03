@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ussum.homepage.application.calendar.service.dto.request.CalendarEventRequest;
 import ussum.homepage.application.calendar.service.dto.request.CalendarEventUpdateRequest;
 import ussum.homepage.application.calendar.service.dto.response.CalendarEventCreateResponse;
+import ussum.homepage.application.calendar.service.dto.response.CalendarEventDetailResponse;
 import ussum.homepage.application.calendar.service.dto.response.CalendarEventList;
 import ussum.homepage.application.calendar.service.dto.response.CalendarEventResponse;
 import ussum.homepage.domain.calender.CalendarEvent;
@@ -62,6 +63,14 @@ public class CalendarService {
         }
 
         return CalendarEventList.of(calendarEventResponseList);
+    }
+
+    @Transactional
+    public CalendarEventDetailResponse getCalendarEvent(Long userId, Long eventId) {
+        CalendarEvent calendarEvent = calendarEventReader.getCalendarEventByCalendarEventId(eventId);
+        boolean isAuthor = calendarEvent.getCreateBy().equals(userId);
+
+        return CalendarEventDetailResponse.of(calendarEvent, isAuthor);
     }
 
     @Transactional
