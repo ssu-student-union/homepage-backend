@@ -33,8 +33,18 @@ public class CalenderEventRepositoryImpl implements CalenderEventRepository {
     }
 
     @Override
+    public CalendarEvent findById(Long id) {
+        return calendarEventMapper.toDomain(calendarEventJpaRepository.findById(id).orElseThrow());
+    }
+
+    @Override
     public CalendarEvent save(CalendarEvent calendarEvent) {
         return calendarEventMapper.toDomain(
                 calendarEventJpaRepository.save(calendarEventMapper.toEntity(calendarEvent)));
+    }
+
+    @Override
+    public void delete(CalendarEvent calendarEvent) {
+        calendarEventJpaRepository.delete(calendarEventMapper.toEntity(calendarEvent));
     }
 }

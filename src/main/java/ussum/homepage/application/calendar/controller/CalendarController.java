@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ussum.homepage.application.calendar.service.CalendarService;
 import ussum.homepage.application.calendar.service.dto.request.CalendarEventRequest;
+import ussum.homepage.application.calendar.service.dto.request.CalendarEventUpdateRequest;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,24 @@ public class CalendarController {
 
     @PostMapping("/{boardCode}")
     public ResponseEntity<ApiResponse<?>> createCalendarEvent(@Parameter(hidden = true) @UserId Long userId,
+                                                              @PathVariable(name = "boardCode") String boardCode,
                                                               @RequestBody CalendarEventRequest calendarEventRequest) {
         return ApiResponse.success(calendarService.createCalendarSchedule(userId, calendarEventRequest));
+    }
+
+    @PatchMapping("/{boardCode}/{calendarEventId}")
+    public ResponseEntity<ApiResponse<?>> editCalendarEvent(@Parameter(hidden = true) @UserId Long userId,
+                                                            @PathVariable(name = "boardCode") String boardCode,
+                                                            @PathVariable(name = "calendarEventId") Long calendarEventId,
+                                                            @RequestBody CalendarEventUpdateRequest calendarEventUpdateRequest) {
+        return ApiResponse.success(calendarService.updateCalendarEvent(userId, calendarEventId, calendarEventUpdateRequest));
+    }
+
+    @DeleteMapping("/{boardCode}/{calendarEventId}")
+    public ResponseEntity<ApiResponse<?>> deleteCalendarEvent(@Parameter(hidden = true) @UserId Long userId,
+                                                              @PathVariable(name = "boardCode") String boardCode,
+                                                              @PathVariable(name = "calendarEventId") Long calendarEventId){
+        calendarService.deleteCalendarEvent(boardCode,calendarEventId);
+        return ApiResponse.success(null);
     }
 }

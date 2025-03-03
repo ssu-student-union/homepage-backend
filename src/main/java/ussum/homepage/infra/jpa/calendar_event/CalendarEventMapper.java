@@ -29,7 +29,7 @@ public class CalendarEventMapper {
         LocalDate startDate = LocalDate.parse(calendarEvent.getStartDate());
         LocalDate endDate = LocalDate.parse(calendarEvent.getEndDate());
 
-        return CalendarEventEntity.of(null,
+        return CalendarEventEntity.of(calendarEvent.getId(),
                 calendarEvent.getTitle(),
                 startDate,
                 endDate,

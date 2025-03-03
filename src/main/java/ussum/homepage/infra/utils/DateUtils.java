@@ -9,6 +9,7 @@ public class DateUtils {
     private static final DateTimeFormatter CUSTOM_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd");
     private static final DateTimeFormatter CUSTOM_HOUR_MIN_SEC_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
     private static final DateTimeFormatter YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyyMM");
+    private static final DateTimeFormatter CUSTOM_FORMATTER_CALENDAR = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public static String formatToCustomString(LocalDateTime dateTime) {
         if (dateTime == null) {
@@ -21,7 +22,7 @@ public class DateUtils {
         if (dateTime == null) {
             return null;
         }
-        return dateTime.format(CUSTOM_FORMATTER);
+        return dateTime.format(CUSTOM_FORMATTER_CALENDAR);
     }
 
     public static LocalDateTime parseFromCustomString(String dateString) {
