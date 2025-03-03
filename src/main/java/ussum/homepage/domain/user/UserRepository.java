@@ -2,6 +2,7 @@ package ussum.homepage.domain.user;
 
 import ussum.homepage.application.user.service.dto.request.OnBoardingRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,4 +14,8 @@ public interface UserRepository {
     User save(User user);
     void updateOnBoardingUser(Long userId, OnBoardingRequest request);
     void deleteUser(Long id);
+
+    Long findTotalUserCount();
+    Long findNewUserCountBetween(LocalDateTime start, LocalDateTime end);
+    List<MonthlySignupStats> findMonthlySignupStats(int year);
 }
