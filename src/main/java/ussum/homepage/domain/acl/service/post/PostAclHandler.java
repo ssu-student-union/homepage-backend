@@ -70,6 +70,9 @@ public class PostAclHandler {
             if (postAclManager.hasPermission(userId,"질의응답게시판","REACTION")){
                 allowedAuthorities.add("REACTION");
             }
+            if (postAclManager.hasPermission(userId,"질의응답게시판","DELETE_COMMENT")){
+                allowedAuthorities.add("DELETE_COMMENT");
+            }
         }
 
         return commentListRes.validAuthorities(allowedAuthorities);
