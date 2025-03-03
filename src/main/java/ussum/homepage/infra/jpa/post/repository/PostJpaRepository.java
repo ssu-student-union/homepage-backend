@@ -39,6 +39,6 @@ public interface PostJpaRepository extends JpaRepository<PostEntity,Long> {
 //    Page<PostEntity> findBySearchCriteria(Pageable pageable,
 //                                          @Param("board") BoardEntity board,
 //                                          @Param("q") String q,
-//                                          @Param("category") Category category);
+//                                          @Param("category") CalendarCategory category);
 
 }

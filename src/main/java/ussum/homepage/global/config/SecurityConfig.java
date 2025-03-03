@@ -86,6 +86,7 @@ private final CorsConfig corsConfig;
     };
 
     private static final String[] bothWhiteList = {
+            "/board/캘린더",
             "/board/{boardCode}/posts/{postId}", //단건 조회
             "/board/{boardCode}/posts", //전체 조회
             "/board/data/posts", //자료집 조회

@@ -11,7 +11,7 @@
 //import ussum.homepage.domain.post.Post;
 //import ussum.homepage.domain.post.PostRepository;
 //import ussum.homepage.domain.postlike.service.PostReactionReader;
-//import ussum.homepage.infra.jpa.post.entity.Category;
+//import ussum.homepage.infra.jpa.post.entity.CalendarCategory;
 //import ussum.homepage.infra.utils.DateUtils;
 //
 //import java.time.LocalDateTime;
@@ -47,7 +47,7 @@
 //        LocalDateTime createdAt = LocalDateTime.now().minusDays(10);
 //
 //        when(postRepository.findById(postId)).thenReturn(Optional.of(mockPost));
-//        when(mockPost.getCategory()).thenReturn(Category.IN_PROGRESS.getStringCategoryCode());
+//        when(mockPost.getCategory()).thenReturn(CalendarCategory.IN_PROGRESS.getStringCategoryCode());
 //        when(mockPost.getCreatedAt()).thenReturn(DateUtils.formatHourMinSecToCustomString(createdAt));
 //        when(postReactionReader.countPostReactionsByType(postId, "like")).thenReturn(99);
 //
@@ -68,13 +68,13 @@
 //        LocalDateTime createdAt = LocalDateTime.now().minusDays(10);
 //
 //        when(postRepository.findById(postId)).thenReturn(Optional.of(mockPost));
-//        when(mockPost.getCategory()).thenReturn(Category.IN_PROGRESS.getStringCategoryCode());
+//        when(mockPost.getCategory()).thenReturn(CalendarCategory.IN_PROGRESS.getStringCategoryCode());
 //        when(mockPost.getCreatedAt()).thenReturn(DateUtils.formatHourMinSecToCustomString(createdAt));
 //        when(mockPost.getId()).thenReturn(postId);
 //        when(postReactionReader.countPostReactionsByType(postId, "like")).thenReturn(100);
 //
 //        doAnswer(invocation -> {
-//            when(mockPost.getCategory()).thenReturn(Category.RECEIVED.getStringCategoryCode());
+//            when(mockPost.getCategory()).thenReturn(CalendarCategory.RECEIVED.getStringCategoryCode());
 //            return null;
 //        }).when(postRepository).updatePostCategory(postId, "접수완료");
 //
@@ -83,7 +83,7 @@
 //
 //        // then
 //        verify(postRepository, times(1)).updatePostCategory(postId, "접수완료");
-//        assertThat(mockPost.getCategory()).isEqualTo(Category.RECEIVED.getStringCategoryCode());
+//        assertThat(mockPost.getCategory()).isEqualTo(CalendarCategory.RECEIVED.getStringCategoryCode());
 //    }
 //
 //}
