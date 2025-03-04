@@ -110,6 +110,12 @@ public enum MemberCode {
     // 학생인권위원회
     STUDENT_HUMAN_RIGHTS_COMMITTEE("학생인권위원회"),
 
+    // 차세대반도체학과
+    NEXT_GENERATION_SEMICONDUCTOR_DEPARTMENT("차세대반도체학과"),
+
+    // 베어드학부대학
+    BAIRD_SCHOOL("베어드학부대학"),
+
     // 교지편집위원회
     SCHOOL_MAGAZINE_EDITORIAL_COMMITTEE("교지편집위원회"),
 

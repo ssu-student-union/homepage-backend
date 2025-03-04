@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 public class DiscordWebhookScheduler {
     private final DiscordWebhookService discordWebhookService;
 
+
     @Scheduled(cron = "0 0 0 * * ?")
     public void sendUserStatisticsPeriodically() {
         discordWebhookService.sendToDiscord();
