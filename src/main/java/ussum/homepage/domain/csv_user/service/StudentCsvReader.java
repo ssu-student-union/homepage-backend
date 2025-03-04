@@ -26,7 +26,7 @@ public class StudentCsvReader {
                     try {
                         checkStudentRight(request, studentCsv);
                     } catch (Exception e) {
-                        if (e instanceof InvalidValueException && ((InvalidValueException) e).getBaseErrorCode() == ONBOARDING_ONLY_COLLECT_NAME_STUDENT_ID_ERROR) {
+                        if (e instanceof GeneralException && ((GeneralException) e).getBaseErrorCode() == ONBOARDING_ONLY_COLLECT_NAME_STUDENT_ID_ERROR) {
                             return null;
                         } else {
                             throw e;
