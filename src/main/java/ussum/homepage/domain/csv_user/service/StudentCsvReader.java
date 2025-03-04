@@ -13,6 +13,8 @@ import ussum.homepage.infra.jpa.member.entity.MemberCode;
 
 import java.util.Optional;
 
+import static ussum.homepage.global.error.status.ErrorStatus.ONBOARDING_ONLY_COLLECT_NAME_STUDENT_ID_ERROR;
+
 @Service
 @RequiredArgsConstructor
 public class StudentCsvReader {
@@ -21,7 +23,13 @@ public class StudentCsvReader {
     public Optional<StudentCsv> getStudentWithStudentId(Long studentId, OnBoardingRequest request) {
         return studentCsvRepository.findByStudentId(studentId)
                 .map(studentCsv -> {
-                    checkStudentRight(request, studentCsv);
+                    try {
+                        checkStudentRight(request, studentCsv);
+                    } catch (Exception e) {
+                        if (e instanceof InvalidValueException && ((InvalidValueException) e).getBaseErrorCode() == ONBOARDING_ONLY_COLLECT_NAME_STUDENT_ID_ERROR) {
+                            return null;
+                        }
+                    }
                     return studentCsv;
                 });
     }
@@ -59,9 +67,14 @@ public class StudentCsvReader {
         }
 
         /// PASSU 개강행사(2025.03) 진행하면서 이름과 학번만 대조하도록 수정. 코드는 남겨둠. 유저 학과와 단과대 데이터의 신뢰성이 많이 떨어짐.
-//        if(!(name && studentId && groupName && major)){
+        //  if(!(name && studentId && groupName && major)){
         if(!(name && studentId)){
             throw new GeneralException(ErrorStatus.INVALID_ONBOARDING_REQUEST);
+        } else {
+            // 이름 학번 단과대 전공이 모두 같으면 isVerified true로 세팅하기 위함.
+            if (!(groupName && major)) {
+                throw new GeneralException(ONBOARDING_ONLY_COLLECT_NAME_STUDENT_ID_ERROR);
+            }
         }
     }
 
