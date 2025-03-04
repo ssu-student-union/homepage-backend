@@ -58,7 +58,9 @@ public class StudentCsvReader {
             }
         }
 
-        if(!(name && studentId && groupName && major)){
+        /// PASSU 개강행사(2025.03) 진행하면서 이름과 학번만 대조하도록 수정. 코드는 남겨둠. 유저 학과와 단과대 데이터의 신뢰성이 많이 떨어짐.
+//        if(!(name && studentId && groupName && major)){
+        if(!(name && studentId)){
             throw new GeneralException(ErrorStatus.INVALID_ONBOARDING_REQUEST);
         }
     }
