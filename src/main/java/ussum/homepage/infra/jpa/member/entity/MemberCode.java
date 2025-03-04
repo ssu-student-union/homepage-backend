@@ -116,6 +116,9 @@ public enum MemberCode {
     // 베어드학부대학
     BAIRD_SCHOOL("베어드학부대학"),
 
+    // 국제대학
+    INTERNATIONAL_SCHOOL("국제대학"),
+
     // 교지편집위원회
     SCHOOL_MAGAZINE_EDITORIAL_COMMITTEE("교지편집위원회"),
 
