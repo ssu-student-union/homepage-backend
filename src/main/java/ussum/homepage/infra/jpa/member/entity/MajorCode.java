@@ -183,7 +183,11 @@ public enum MajorCode {
     FREE_MAJOR_HUMANITIES_DEPARTMENT("자유전공학부(인문)"),
 
     // 자유전공학부(자연)
-    FREE_MAJOR_SCIENCES_DEPARTMENT("자유전공학부(자연)");
+    FREE_MAJOR_SCIENCES_DEPARTMENT("자유전공학부(자연)"),
+
+    // 국제대학
+    // 한국학과
+    KOREAN_STUDIES_DEPARTMENT("한국학과");
 
     private final String stringMajorCode;
     public static MajorCode getEnumMajorCodeFromStringMajorCode(String stringMajorCode) {
