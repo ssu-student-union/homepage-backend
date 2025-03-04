@@ -4,6 +4,7 @@ import lombok.Builder;
 import ussum.homepage.domain.csv_user.StudentCsv;
 import ussum.homepage.domain.member.Member;
 import ussum.homepage.domain.user.User;
+import ussum.homepage.infra.jpa.member.entity.MajorCode;
 import ussum.homepage.infra.jpa.member.entity.MemberCode;
 
 @Builder
@@ -26,7 +27,7 @@ public record UserInfoResponse(
         return UserInfoResponse.builder()
                 .name(user.getName())
                 .studentId(user.getStudentId() == null ? "null" : String.valueOf(user.getStudentId()))
-                .major(MemberCode.getEnumMemberCodeFromStringMemberCode(member.getMemberCode()).getStringMemberCode())
+                .major(MajorCode.getEnumMajorCodeFromStringMajorCode(member.getMajorCode()).getStringMajorCode())
                 .isCouncil(member.getIsAdmin())
                 .build();
     }
