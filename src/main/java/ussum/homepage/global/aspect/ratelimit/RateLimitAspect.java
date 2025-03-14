@@ -38,7 +38,8 @@ public class RateLimitAspect {
     public Object rateLimitCheck(ProceedingJoinPoint joinPoint, RateLimit rateLimit)
         throws Throwable {
         String apiPath = request.getRequestURI();
-        String key = "IP:" + apiPath;
+        String ip = request.getRemoteAddr();
+        String key = ip + ":" + apiPath;
 
         // Bucket 설정
         Supplier<BucketConfiguration> bucketConfig = getConfigSupplier(rateLimit);
