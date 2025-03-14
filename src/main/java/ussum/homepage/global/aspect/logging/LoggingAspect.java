@@ -1,4 +1,4 @@
-package ussum.homepage.global.logging;
+package ussum.homepage.global.aspect.logging;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
