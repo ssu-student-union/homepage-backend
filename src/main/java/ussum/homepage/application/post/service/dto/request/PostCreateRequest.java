@@ -16,6 +16,10 @@ public abstract class PostCreateRequest {
     protected boolean isNotice;
     protected List<Long> postFileList;
 
+    protected PostCreateRequest() {
+        // 빈 생성자
+    }
+
     public PostCreateRequest(String title, String content, String category, String thumbNailImage, boolean isNotice, List<Long> postFileList) {
         this.title = title;
         this.content = content;
