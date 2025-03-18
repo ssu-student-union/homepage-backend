@@ -18,4 +18,8 @@ public class PostReplyCommentReactionModifier {
         existingReaction.updateReplyCommentReaction(newReaction);
         postReplyCommentReactionRepository.save(existingReaction);
     }
+
+    public void deletePostReplyCommentReactionWithUserId(Long userId) {
+        postReplyCommentReactionRepository.deleteWithUserId(userId);
+    }
 }

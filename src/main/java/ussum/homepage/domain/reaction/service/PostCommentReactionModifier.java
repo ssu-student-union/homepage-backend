@@ -10,6 +10,7 @@ import ussum.homepage.domain.reaction.PostCommentReactionRepository;
 @RequiredArgsConstructor
 public class PostCommentReactionModifier {
     private final PostCommentReactionRepository postCommentReactionRepository;
+    private final PostReplyCommentReactionModifier postReplyCommentReactionModifier;
 
     public void deletePostCommentReaction(PostCommentReaction postCommentReaction) {
         postCommentReactionRepository.delete(postCommentReaction);
@@ -18,5 +19,9 @@ public class PostCommentReactionModifier {
     public void updatePostCommentReaction(PostCommentReaction existingReaction, PostCommentReaction newReaction){
         existingReaction.updateCommentReaction(newReaction);
         postCommentReactionRepository.save(existingReaction);
+    }
+
+    public void deletePostCommentReactionWithUserId(Long userId) {
+        postCommentReactionRepository.deleteAllByUserId(userId);
     }
 }

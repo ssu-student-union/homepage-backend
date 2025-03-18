@@ -5,9 +5,13 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
+import ussum.homepage.application.calendar.service.dto.response.CalendarEventList;
+import ussum.homepage.application.calendar.service.dto.response.CalendarEventResponse;
 import ussum.homepage.application.comment.service.dto.response.CommentListResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.PostDetailRes;
 import ussum.homepage.application.post.service.dto.response.postList.PostListRes;
+import ussum.homepage.global.error.exception.InvalidValueException;
+import ussum.homepage.global.error.status.ErrorStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,5 +74,19 @@ public class PostAclAspect {
         PostListRes<?> postListRes = (PostListRes<?>) result;
         postListRes = postAclHandler.applyPermissionsToPostList(postListRes, userId, "자료집게시판");
         return postListRes;
+    }
+
+    @Around(value = "execution(* ussum.homepage.application.calendar.service.CalendarService.getCalenders(..)) && args(userId, .., boardCode)", argNames = "joinPoint,userId,boardCode")
+    public Object validAuthorityOfSearchCalendarList(ProceedingJoinPoint joinPoint, Long userId, String boardCode) throws Throwable {
+        Object result = joinPoint.proceed();
+        CalendarEventList<CalendarEventResponse> calendarEventList;
+        if (result instanceof CalendarEventList<?>) {
+            calendarEventList = (CalendarEventList<CalendarEventResponse>) result;
+        }
+        else {
+            throw new InvalidValueException(ErrorStatus.INVALID_TYPE);
+        }
+        calendarEventList = postAclHandler.applyPermissionsToCalendarEventList(calendarEventList, userId, boardCode);
+        return calendarEventList;
     }
 }

@@ -2,9 +2,14 @@ package ussum.homepage.application.post.service;
 
 import java.util.*;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -22,6 +27,7 @@ import ussum.homepage.application.post.service.dto.response.postList.*;
 
 import ussum.homepage.application.post.service.dto.response.postSave.*;
 
+import ussum.homepage.application.user.service.dto.request.OnBoardingEmailRequest;
 import ussum.homepage.application.user.service.dto.response.CollegeAndDepartmentResponse;
 import ussum.homepage.application.user.service.dto.response.MyPostsResponse;
 import ussum.homepage.domain.comment.PostComment;
@@ -46,6 +52,7 @@ import ussum.homepage.domain.post.service.processor.PetitionPostProcessor;
 import ussum.homepage.domain.postlike.service.PostReactionManager;
 import ussum.homepage.domain.postlike.service.PostReactionReader;
 import ussum.homepage.domain.user.User;
+import ussum.homepage.domain.user.exception.OnBoardingMessagingException;
 import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.common.PageInfo;
 import ussum.homepage.global.error.exception.GeneralException;
@@ -61,7 +68,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static ussum.homepage.global.error.status.ErrorStatus.MEMBER_NOT_FOUND;
+import static ussum.homepage.global.error.status.ErrorStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -85,7 +92,10 @@ public class PostManageService {
     private final PostFactory postFactory;
     private final PostAdditionalAppender postAdditionalAppender;
     private final PostAdditionalReader postAdditionalReader;
+    private final JavaMailSender javaMailSender;
 
+    @Value("${spring.mail.username}")
+    private String SENDER_EMAIL_ADDRESS;
 
     private final Map<String, PostDetailFunction<Post, Boolean, Boolean, User, Member, Integer, String, FileResponse, PostOfficialCommentResponse, RightsDetail,? extends PostDetailResDto>> postDetailResponseMap = Map.of(
             "공지사항게시판", (post, isAuthor, ignored, user, another_ignored1, another_ignored2, categoryName, fileResponseList, another_ignored3, another_ignored4) -> NoticePostDetailResponse.of(post, isAuthor, user, categoryName, fileResponseList),
@@ -225,6 +235,11 @@ public class PostManageService {
         Post post = postAppender.createPost(converPostCreateRequest.toDomain(board, userId));
         postAdditionalAppender.createAdditional(converPostCreateRequest,post.getId());
         postFileAppender.updatePostIdForIds(converPostCreateRequest.getPostFileList(), post.getId(), FileCategory.자료집아님);
+
+        // TODO(inho): 임시로 유나님 계정으로 메일 보내게 함
+        if (board.getName().equals("질의응답게시판")) {
+            sendEmail("[질의응답게시판 질문] " +  postCreateRequest.getTitle() , postCreateRequest.getContent());
+        }
         return PostCreateResponse.of(post.getId(), boardCode);
     }
 
@@ -530,5 +545,21 @@ public class PostManageService {
         );
 
         return CollegeAndDepartmentResponse.of(colleges, departments);
+    }
+
+    public void sendEmail(String subject, String content) {
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+            mimeMessageHelper.setTo(SENDER_EMAIL_ADDRESS);
+            mimeMessageHelper.setFrom(SENDER_EMAIL_ADDRESS);
+//            mimeMessageHelper.setReplyTo(onBoardingEmailRequest.email());
+            mimeMessageHelper.setSubject(subject);
+            mimeMessageHelper.setText(content);
+
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException | OnBoardingMessagingException onBoardingMessagingException) {
+            throw new OnBoardingMessagingException(POST_FAIL_MAIL_ERROR);
+        }
     }
 }

@@ -3,7 +3,6 @@ package ussum.homepage.infra.jpa.member.entity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ussum.homepage.global.error.exception.InvalidValueException;
-import ussum.homepage.infra.jpa.group.entity.GroupCode;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -26,6 +25,18 @@ public enum MajorCode {
     // 금융학부
     FINANCE_DEPARTMENT("금융학부"),
 
+    // 벤처경영학과
+    VENTURE_MANAGEMENT_DEPARTMENT("벤처경영학과"),
+
+    // 혁신경영학과
+    INNOVATION_MANAGEMENT_DEPARTMENT("혁신경영학과"),
+
+    // 복지경영학과
+    WELFARE_MANAGEMENT_DEPARTMENT("복지경영학과"),
+
+    // 회계세무학과
+    ACCOUNTING_TAX_DEPARTMENT("회계세무학과"),
+
     // 경제통상대학
     // 경제학과
     ECONOMICS_DEPARTMENT("경제학과"),
@@ -38,6 +49,8 @@ public enum MajorCode {
 
     // 국제무역학과
     INTERNATIONAL_TRADE_DEPARTMENT("국제무역학과"),
+
+    TRADE_INDUSTRY_DEPARTMENT("통상산업학과"),
 
     // 공과대학
     // 화학공학과
@@ -156,8 +169,25 @@ public enum MajorCode {
     // 미디어경영학과
     MEDIA_MANAGEMENT_DEPARTMENT("미디어경영학과"),
 
+    // 정보보호학과
+    INFORMATION_SECURITY_DEPARTMENT("정보보호학과"),
+
     // 융합특성화자유전공학부
-    CONVERGENCE_DEPARTMENT("융합특성화자유전공학부");
+    CONVERGENCE_DEPARTMENT("융합특성화자유전공학부"),
+
+    // 차세대반도체학과
+    NEXT_GENERATION_SEMICONDUCTOR_DEPARTMENT("차세대반도체학과"),
+
+    // 베어드학부대학
+    // 자유전공학부(인문)
+    FREE_MAJOR_HUMANITIES_DEPARTMENT("자유전공학부(인문)"),
+
+    // 자유전공학부(자연)
+    FREE_MAJOR_SCIENCES_DEPARTMENT("자유전공학부(자연)"),
+
+    // 국제대학
+    // 한국학과
+    KOREAN_STUDIES_DEPARTMENT("한국학과");
 
     private final String stringMajorCode;
     public static MajorCode getEnumMajorCodeFromStringMajorCode(String stringMajorCode) {

@@ -2,9 +2,12 @@ package ussum.homepage.domain.acl.service.post;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ussum.homepage.application.calendar.service.dto.response.CalendarEventList;
+import ussum.homepage.application.calendar.service.dto.response.CalendarEventResponse;
 import ussum.homepage.application.comment.service.dto.response.CommentListResponse;
 import ussum.homepage.application.post.service.dto.response.postDetail.PostDetailRes;
 import ussum.homepage.application.post.service.dto.response.postList.PostListRes;
+import ussum.homepage.domain.post.Post;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +70,9 @@ public class PostAclHandler {
             if (postAclManager.hasPermission(userId,"질의응답게시판","REACTION")){
                 allowedAuthorities.add("REACTION");
             }
+            if (postAclManager.hasPermission(userId,"질의응답게시판","DELETE_COMMENT")){
+                allowedAuthorities.add("DELETE_COMMENT");
+            }
         }
 
         return commentListRes.validAuthorities(allowedAuthorities);
@@ -102,9 +108,19 @@ public class PostAclHandler {
                     deniedAuthorities.add("READ");
                 }
             } else allowedAuthorities.add("READ");
-        } else if (boardCode.equals("서비스공지사항")) {
+        } else if (boardCode.equals("서비스공지사항")||boardCode.equals("캘린더")) {
             if (allowedAuthorities.isEmpty())
                 deniedAuthorities.add("WRITE");
         } else allowedAuthorities.add("READ");
+    }
+
+    public CalendarEventList<CalendarEventResponse> applyPermissionsToCalendarEventList(CalendarEventList<CalendarEventResponse> calendarEventList, Long userId, String boardCode) {
+        List<String> allowedAuthorities = new ArrayList<>();
+        List<String> deniedAuthorities = new ArrayList<>();
+        boolean isLoggedIn = userId != null;
+
+        addPermissionAuthorities(allowedAuthorities, deniedAuthorities, userId, boardCode, isLoggedIn);
+
+        return calendarEventList.validAuthorities(allowedAuthorities,deniedAuthorities);
     }
 }

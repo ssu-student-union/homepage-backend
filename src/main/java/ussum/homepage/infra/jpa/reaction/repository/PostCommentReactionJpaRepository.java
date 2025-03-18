@@ -1,6 +1,8 @@
 package ussum.homepage.infra.jpa.reaction.repository;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import ussum.homepage.infra.jpa.comment.entity.PostCommentEntity;
 import ussum.homepage.infra.jpa.postlike.entity.Reaction;
@@ -18,4 +20,9 @@ public interface PostCommentReactionJpaRepository extends JpaRepository<PostComm
 
     @Query("SELECT r FROM PostCommentReactionEntity r WHERE r.postCommentEntity.id = :commentId")
     List<PostCommentReactionEntity> findAllByPostCommentId(Long commentId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM PostCommentReactionEntity r WHERE r.userEntity.id = :userId")
+    void deleteAllByUserId(Long userId);
 }
