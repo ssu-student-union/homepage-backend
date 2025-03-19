@@ -105,6 +105,7 @@ private final CorsConfig corsConfig;
             "/actuator",
             "/actuator/prometheus",
             "/users/user-info", // passu 정보 조회
+            "/users/discord", // 디스코드 봇 사용자 수 조회
     };
     @Bean
     public PasswordEncoder passwordEncoder() {
