@@ -118,6 +118,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
      * 이를 handleExceptionInternal 메소드로 전달함
      */
 
+    @ExceptionHandler(GeneralException.class)
     public ResponseEntity onThrowException(GeneralException generalException, HttpServletRequest httpServletRequest) {
         ErrorReasonDto errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
 
