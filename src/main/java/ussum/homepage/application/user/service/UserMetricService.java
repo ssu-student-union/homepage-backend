@@ -55,14 +55,6 @@ public class UserMetricService {
         updateSignupMetrics(); // 서버 시작 시 초기값 설정
     }
 
-    // 회원가입 시 카운트 증가
-    public void incrementUserSignup() {
-        userSignupTotal.increment();
-        todayUsers.incrementAndGet();
-        lastMonthUsers.incrementAndGet();
-        lastYearUsers.incrementAndGet();
-    }
-
     // 5분마다 DB 기간별 가입자 수 갱신
     @Scheduled(fixedRate = 300000) // 5분마다 실행
     public void updateSignupMetrics() {
