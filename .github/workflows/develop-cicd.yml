@@ -54,8 +54,11 @@ jobs:
           host: ${{ secrets.DEVELOP_HOST }}
           key: ${{ secrets.DEVELOP_KEY }}
           script: |
+            docker network create homepage-network || true
             sudo docker stop ussum-develop || true
+            docker stop redis-server || true
             sudo docker container prune -f
+            docker run -d --name redis-server --network homepage-network redis
             echo "${{ secrets.APPLICATION_DEVELOP }}" | sudo tee /home/ubuntu/application.yml > /dev/null
             sudo docker pull ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
             sudo docker run -d --log-driver=syslog \
@@ -64,4 +67,5 @@ jobs:
             -p 8080:8080 \
             --name ussum-develop \
             -v /home/ubuntu/application.yml:/app/application.yml \
+            --network homepage-network \
             "${{ secrets.DOCKER_REPO }}/ussum-develop:latest"
