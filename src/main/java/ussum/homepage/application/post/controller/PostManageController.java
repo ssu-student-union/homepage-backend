@@ -221,6 +221,20 @@ public class PostManageController {
         return ApiResponse.success(postManageService.searchPost(userId, page, take, q, boardCode, groupCode, memberCode, qnaMajorCode, qnaMemberCode, category));
     }
 
+    @Operation(summary = "검색키워드를 활용한 모든 게시판 게시물 리스트 조회 api", description = """
+            검색키워드를 활용하여 현재 사용중인 모든 게시판 게시물 리스트를 조회하는 api 입니다.
+            요청인자에 q는 검색키워드를 의미하여 필수 값은 아닙니다. 아래 설명은 게시판 별 게시물 리스트 조회와 동일합니다. 
+            q(검색 키워드)를 넣고 요청하지 않으면 아무런 값이 반환되지 않습니다. (totalElements는 0)
+            """)
+    @GetMapping("/posts/search")
+    public ResponseEntity<ApiResponse<?>> searchAllPost(@Parameter(hidden = true) @UserId Long userId,
+                                                          @RequestParam(value = "page", defaultValue = "0") int page,
+                                                          @RequestParam(value = "take") int take,
+                                                          @RequestParam(value = "q", required = false) String q
+    ) {
+        return ApiResponse.success(postManageService.searchAllPost(page, take, q));
+    }
+
     @Operation(summary = "검색키워드를 활용한 자료집게시판 게시물 리스트 조회 api", description = """
             검색키워드를 활용하여 자료집게시판 게시물 리스트 조회 시 필요한 데이터를 조회하는 api 입니다.
             queryParam 형식으로 majorCategory(대분류), middleCategory(중분류), subCategory(소분류), page(입력 안 할시 첫번째 페이지), take(몇개 가져올지) 값을 넣으면 됩니다.

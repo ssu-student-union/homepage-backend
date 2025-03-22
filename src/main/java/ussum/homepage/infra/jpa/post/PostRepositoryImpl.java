@@ -924,4 +924,42 @@ public class PostRepositoryImpl implements PostRepository {
         );
     }
 
+    public Page<Post> searchAll(String q, Pageable pageable) {
+
+        // 기본 where 조건: 현재 사용하는 게시판 내에서만 검색 (board id: 2, 6, 9, 10)
+        BooleanBuilder whereClause = new BooleanBuilder(postEntity.boardEntity.id.in(2, 6, 9, 10));
+
+        // 검색어 q가 지정된 경우, 제목, 콘텐츠에 해당 검색어가 포함된 게시물만 필터링
+        if (q != null && !q.isEmpty()) {
+            whereClause.and(postEntity.title.like("%" + q + "%").or(postEntity.content.like("%" + q + "%")));
+        } else {
+            return Page.empty();
+        }
+
+        // 쿼리 작성: 게시물을 가져오고 페이지네이션 및 정렬 적용
+        JPAQuery<PostEntity> query = queryFactory
+                .selectFrom(postEntity)
+                .where(whereClause)
+                .orderBy(postEntity.createdAt.desc());
+
+        // 실제 데이터 가져오기
+        List<PostEntity> content = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // 전체 카운트 쿼리: 페이징 정보 생성에 필요
+        JPAQuery<Long> countQuery = queryFactory
+                .select(postEntity.count())
+                .from(postEntity)
+                .where(whereClause);
+
+        // 페이지 객체 반환
+        return PageableExecutionUtils.getPage(
+                content.stream().map(postMapper::toDomain).collect(Collectors.toList()),
+                pageable,
+                countQuery::fetchOne
+        );
+    }
+
 }

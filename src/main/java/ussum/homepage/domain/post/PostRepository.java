@@ -46,4 +46,6 @@ public interface PostRepository {
 
     Page<Post> findAllByUserId(Long userId, Pageable pageable);
     Page<Post> searchAllByUserId(Long userId, String q, Pageable pageable);
+
+    Page<Post> searchAll(String q, Pageable pageable);
 }

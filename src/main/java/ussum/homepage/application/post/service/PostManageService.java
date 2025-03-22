@@ -45,6 +45,7 @@ import ussum.homepage.domain.post.RightsDetail;
 import ussum.homepage.domain.post.service.*;
 import ussum.homepage.domain.post.service.factory.BoardFactory;
 import ussum.homepage.domain.post.service.factory.BoardImpl;
+import ussum.homepage.domain.post.service.factory.GeneralBoardImpl;
 import ussum.homepage.domain.post.service.factory.PostFactory;
 import ussum.homepage.domain.post.service.factory.postList.*;
 import ussum.homepage.domain.post.service.formatter.PostDetailFunction;
@@ -396,6 +397,19 @@ public class PostManageService {
         return PostListRes.of(responseList, pageInfo);
 
     }
+
+    public PostListRes<?> searchAllPost(int page, int take, String q) {
+        Pageable pageable = PageInfo.of(page, take);
+        Page<Post> postList = postReader.searchAllPost(q, pageable);
+        PageInfo pageInfo = PageInfo.of(postList);
+
+        List<? extends PostListResDto> responseList = postList.getContent().stream()
+                .map(IntegratedSearchPostResponse::of)
+                .toList();
+
+        return PostListRes.of(responseList, pageInfo);
+    }
+
 
     public PostListRes<?> searchMyPost(Long userId, int page, int take, String q) {
 
