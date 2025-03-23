@@ -10,6 +10,10 @@ import ussum.homepage.infra.jpa.post.entity.Category;
 @Getter
 public class GeneralPostCreateRequest extends PostCreateRequest {
 
+    public GeneralPostCreateRequest() {
+        super();
+    }
+
     @Builder
     public GeneralPostCreateRequest(String title, String content, String category, String thumbNailImage, boolean isNotice, List<Long> postFileList) {
         super(title, content,category, thumbNailImage, isNotice,postFileList);
@@ -34,7 +38,7 @@ public class GeneralPostCreateRequest extends PostCreateRequest {
                 userId,
                 board.getId());
     }
-    public Post toDomain(Long boardId, Long userId, Category category){
+    public Post toDomain(Long boardId, Long userId){
         String status = "새로운";
         if(isNotice){
             status = "긴급공지";
