@@ -2,6 +2,9 @@
 
 echo "${APPLICATION_YML}" | sudo tee /home/ubuntu/application.yml > /dev/null
 
+docker-compose pull redis
+docker-compose up -d redis
+
 IS_GREEN_EXIST=$(docker ps | grep green)
 DEFAULT_CONF=" /etc/nginx/nginx.conf"
 
