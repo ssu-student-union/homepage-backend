@@ -234,7 +234,7 @@ public class PostManageService {
         PostCreateRequest converPostCreateRequest = postFactory.convert(boardCode,postCreateRequest);
         Post post = postAppender.createPost(converPostCreateRequest.toDomain(board, userId));
         postAdditionalAppender.createAdditional(converPostCreateRequest,post.getId());
-        postFileAppender.updatePostIdForIds(converPostCreateRequest.getPostFileList(), post.getId(), FileCategory.자료집아님);
+        postFileAppender.updatePostIdForIds(converPostCreateRequest.getPostFileList(), post.getId(), "자료집아님");
 
         // TODO(inho): 임시로 유나님 계정으로 메일 보내게 함
         if (board.getName().equals("질의응답게시판")) {
@@ -342,15 +342,15 @@ public class PostManageService {
                             .collect(Collectors.toList());
                     postAdditionalAppender.modifyAdditionalList(postId,domainRightsDetails);
                 });
-        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId(), FileCategory.자료집아님);
+        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId(), "자료집아님");
         return post.getId();
     }
 
     @Transactional
-    public Long editBoardDatePost(String fileCategory, Long postId, PostUpdateRequest postUpdateRequest){
+    public Long editBoardDatePost(Long postId, PostUpdateRequest postUpdateRequest){
         Post post = postReader.getPostWithId(postId);
         Post newPost = postModifier.updatePost(postUpdateRequest.toDataDomain(post));
-        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId(), FileCategory.fromString(fileCategory));
+        postFileAppender.updatePostIdForIds(postUpdateRequest.postFileList(), newPost.getId(), postUpdateRequest.fileCategory());
         return post.getId();
     }
 

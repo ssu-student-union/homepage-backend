@@ -176,12 +176,12 @@ public class PostManageController {
     @Operation(summary = "자료집 게시물 수정 api", description = """
             자료집 게시물을 수정하는 api 입니다. 
             """)
-    @PatchMapping("/data/{fileCategory}/posts/{postId}")
+    @PatchMapping("/data/posts/{postId}")
     public ResponseEntity<ApiResponse<?>> editBoardDataPost(@Parameter(hidden = true) @UserId Long userId,
-                                                            @PathVariable(name = "fileCategory") String fileCategory,
+//                                                            @PathVariable(name = "fileCategory") String fileCategory,
                                                             @PathVariable(name = "postId") Long postId,
                                                             @RequestBody PostUpdateRequest postUpdateRequest) {
-        return ApiResponse.success(postManageService.editBoardDatePost(fileCategory, postId, postUpdateRequest));
+        return ApiResponse.success(postManageService.editBoardDatePost(postId, postUpdateRequest));
     }
 
     @Operation(summary = "게시물 삭제 api", description = """
