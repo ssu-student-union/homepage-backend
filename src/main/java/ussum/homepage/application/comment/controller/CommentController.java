@@ -7,10 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ussum.homepage.application.comment.service.CommentService;
-import ussum.homepage.application.comment.service.dto.response.PostCommentListResponse;
-import ussum.homepage.application.comment.service.dto.response.PostCommentResponse;
 import ussum.homepage.application.comment.service.dto.request.PostCommentCreateRequest;
 import ussum.homepage.application.comment.service.dto.request.PostCommentUpdateRequest;
+import ussum.homepage.application.comment.service.dto.response.PostCommentResponse;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
 
