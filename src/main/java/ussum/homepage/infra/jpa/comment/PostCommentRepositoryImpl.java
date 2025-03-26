@@ -108,6 +108,13 @@ public class PostCommentRepositoryImpl implements PostCommentRepository {
     }
 
     @Override
+    public void deleteWithoutCommentType(PostComment postComment){
+        PostCommentEntity postCommentEntity = postCommentMapper.toEntity(postComment);
+        updateDeletedAt(postCommentEntity);
+        postCommentJpaRepository.save(postCommentEntity);
+    }
+
+    @Override
     public Long getCommentCountByPostId(Long postId) {
         QPostCommentEntity postComment = QPostCommentEntity.postCommentEntity;
 
