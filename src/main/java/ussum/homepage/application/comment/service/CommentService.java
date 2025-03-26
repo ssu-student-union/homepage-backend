@@ -19,6 +19,7 @@ import ussum.homepage.domain.comment.service.PostCommentModifier;
 import ussum.homepage.domain.comment.service.PostCommentReader;
 import ussum.homepage.domain.member.service.MemberManager;
 import ussum.homepage.domain.post.Board;
+import ussum.homepage.domain.post.service.PostReader;
 import ussum.homepage.domain.post.service.factory.PostProcessorFactory;
 import ussum.homepage.domain.post.service.processor.PetitionPostProcessor;
 import ussum.homepage.domain.post.service.processor.PostProcessor;
@@ -35,6 +36,7 @@ public class CommentService {
     private final MemberManager memberManager;
     private final PostProcessorFactory postProcessorFactory;
     private final PetitionPostProcessor petitionPostProcessor;
+    private final PostReader postReader;
 
 
     public PostCommentListResponse getCommentList(Long postId, int page, int take, String type){
@@ -63,7 +65,12 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long commentId){
-        postCommentModifier.deleteComment(commentId);
+        PostComment postComment = postCommentReader.getPostComment(commentId);
+        if (BoardCode.getEnumBoardCodeFromBoardId(postReader.getPostWithId(postComment.getPostId()).getBoardId()) == BoardCode.QNA) {
+            postCommentModifier.deleteCommentWithoutCommentType(commentId);
+        } else {
+            postCommentModifier.deleteComment(commentId);
+        }
     }
 
     private Pageable setPageable(int page, int take){

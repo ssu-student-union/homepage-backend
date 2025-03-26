@@ -18,8 +18,12 @@ public class PostCommentModifier {
     public PostComment updateComment(PostComment postComment, Long userId, Long commentId, PostCommentUpdateRequest postCommentUpdateRequest) {
         return postCommentRepository.update(postCommentUpdateRequest.toDomain(postComment, commentId, userId));
     }
-    public void deleteComment(Long commentId){
+    public void deleteComment(Long commentId) {
         postCommentRepository.delete(postCommentReader.getPostComment(commentId));
+    }
+
+    public void deleteCommentWithoutCommentType(Long commentId) {
+        postCommentRepository.deleteWithoutCommentType(postCommentReader.getPostComment(commentId));
     }
 
     public void deleteCommentWithUserId(Long userId) {
