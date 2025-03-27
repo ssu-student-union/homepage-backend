@@ -9,7 +9,8 @@ public record PostOfficialCommentResponse(
         String commentType,
         String createdAt,
         String lastEditedAt,
-        Boolean isAuthor
+        Boolean isAuthor,
+        Boolean isDeleted
 ) {
     public static PostOfficialCommentResponse of(PostComment postComment, String authorName, String commentType, Boolean isAuthor) {
         return new PostOfficialCommentResponse(
@@ -19,6 +20,7 @@ public record PostOfficialCommentResponse(
                 commentType,
                 postComment.getCreatedAt(),
                 postComment.getLastEditedAt(),
-                isAuthor);
+                isAuthor,
+                postComment.getIsDeleted());
     }
 }
