@@ -23,7 +23,11 @@ import ussum.homepage.domain.post.service.PostReader;
 import ussum.homepage.domain.post.service.factory.PostProcessorFactory;
 import ussum.homepage.domain.post.service.processor.PetitionPostProcessor;
 import ussum.homepage.domain.post.service.processor.PostProcessor;
+import ussum.homepage.domain.reaction.exception.PostCommentException;
+import ussum.homepage.infra.jpa.comment.entity.CommentType;
 import ussum.homepage.infra.jpa.post.entity.BoardCode;
+
+import static ussum.homepage.global.error.status.ErrorStatus.POST_COMMENT_NOT_DELETE;
 
 @Service
 @RequiredArgsConstructor
@@ -66,11 +70,12 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId){
         PostComment postComment = postCommentReader.getPostComment(commentId);
-        if (BoardCode.getEnumBoardCodeFromBoardId(postReader.getPostWithId(postComment.getPostId()).getBoardId()) == BoardCode.QNA) {
-            postCommentModifier.deleteCommentWithoutCommentType(commentId);
-        } else {
-            postCommentModifier.deleteComment(commentId);
+        if (CommentType.getEnumCommentTypeFromStringCommentType(postComment.getCommentType()).equals(CommentType.OFFICIAL)){
+            if(!(BoardCode.getEnumBoardCodeFromBoardId(postReader.getPostWithId(postComment.getPostId()).getBoardId()) == BoardCode.QNA)) {
+                throw new PostCommentException(POST_COMMENT_NOT_DELETE);
+            }
         }
+        postCommentModifier.deleteComment(commentId);
     }
 
     private Pageable setPageable(int page, int take){

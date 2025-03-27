@@ -99,16 +99,6 @@ public class PostCommentRepositoryImpl implements PostCommentRepository {
 
     @Override
     public void delete(PostComment postComment){
-        if (CommentType.getEnumCommentTypeFromStringCommentType(postComment.getCommentType()).equals(CommentType.OFFICIAL)){
-            throw new PostCommentException(POST_COMMENT_NOT_DELETE);
-        }
-        PostCommentEntity postCommentEntity = postCommentMapper.toEntity(postComment);
-        updateDeletedAt(postCommentEntity);
-        postCommentJpaRepository.save(postCommentEntity);
-    }
-
-    @Override
-    public void deleteWithoutCommentType(PostComment postComment){
         PostCommentEntity postCommentEntity = postCommentMapper.toEntity(postComment);
         updateDeletedAt(postCommentEntity);
         postCommentJpaRepository.save(postCommentEntity);
