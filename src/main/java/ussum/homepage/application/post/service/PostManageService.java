@@ -238,7 +238,7 @@ public class PostManageService {
 
         // TODO(inho): 임시로 유나님 계정으로 메일 보내게 함
         if (board.getName().equals("질의응답게시판")) {
-            sendEmail("[질의응답게시판 질문] " +  postCreateRequest.getTitle() , postCreateRequest.getContent());
+            sendEmail("[질의응답게시판 질문] " +  postCreateRequest.getTitle() , "질문 대상: " + (post.getQnaMemberCode() == null ? post.getQnaMajorCode() : "") + "\n\n" + "본문: " + postCreateRequest.getContent());
         }
         return PostCreateResponse.of(post.getId(), boardCode);
     }
