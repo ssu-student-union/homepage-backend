@@ -84,6 +84,9 @@ dependencies {
 	// MacOS netty resolver
 	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 
+	//Open Feign
+	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.4")
+
 }
 
 tasks.named('test') {
