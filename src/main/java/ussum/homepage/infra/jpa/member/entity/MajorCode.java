@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import ussum.homepage.global.error.exception.InvalidValueException;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static ussum.homepage.global.error.status.ErrorStatus.INVALID_MAJORCODE;
 
@@ -190,6 +193,7 @@ public enum MajorCode {
     KOREAN_STUDIES_DEPARTMENT("한국학과");
 
     private final String stringMajorCode;
+
     public static MajorCode getEnumMajorCodeFromStringMajorCode(String stringMajorCode) {
         return Arrays.stream(values())
                 .filter(majorCode -> majorCode.stringMajorCode.equals(stringMajorCode))
@@ -201,5 +205,58 @@ public enum MajorCode {
         return Optional.ofNullable(majorCode)
                 .map(MajorCode::getStringMajorCode)
                 .orElse(null);
+    }
+
+    public static List<String> getDepartmentsByList() {
+        return Stream.of(
+                        MajorCode.BUSINESS_ADMINISTRATION_DEPARTMENT,               // 경영학부
+                        MajorCode.ENTREPRENEURSHIP_DEPARTMENT,                      // 벤처중소기업학과
+                        MajorCode.ACCOUNTING_DEPARTMENT,                            // 회계학과
+                        MajorCode.FINANCE_DEPARTMENT,                               // 금융학부
+                        MajorCode.ECONOMICS_DEPARTMENT,                             // 경제학과
+                        MajorCode.GLOBAL_TRADE_DEPARTMENT,                          // 글로벌통상학과
+                        MajorCode.FINANCIAL_ECONOMICS_DEPARTMENT,                   // 금융경제학과
+                        MajorCode.INTERNATIONAL_TRADE_DEPARTMENT,                   // 국제무역학과
+                        MajorCode.CHEMICAL_ENGINEERING_DEPARTMENT,                  // 화학공학과
+                        MajorCode.MATERIALS_ENGINEERING_DEPARTMENT,                 // 신소재공학과
+                        MajorCode.ELECTRICAL_ENGINEERING_DEPARTMENT,                // 전기공학부
+                        MajorCode.MECHANICAL_ENGINEERING_DEPARTMENT,                // 기계공학부
+                        MajorCode.INDUSTRIAL_SYSTEMS_ENGINEERING_DEPARTMENT,        // 산업정보시스템공학과
+                        MajorCode.ARCHITECTURE_DEPARTMENT,                          // 건축학부
+                        MajorCode.LAW_DEPARTMENT,                                   // 법학과
+                        MajorCode.INTERNATIONAL_LAW_DEPARTMENT,                     // 국제법무학과
+                        MajorCode.SOCIAL_WELFARE_DEPARTMENT,                        // 사회복지학부
+                        MajorCode.PUBLIC_ADMINISTRATION_DEPARTMENT,                 // 행정학부
+                        MajorCode.POLITICAL_SCIENCE_DEPARTMENT,                     // 정치외교학과
+                        MajorCode.INFORMATION_SOCIETY_DEPARTMENT,                   // 정보사회학과
+                        MajorCode.MEDIA_COMMUNICATIONS_DEPARTMENT,                  // 언론홍보학과
+                        MajorCode.LIFELONG_EDUCATION_DEPARTMENT,                    // 평생교육학과
+                        MajorCode.CHRISTIANITY_DEPARTMENT,                          // 기독교학과
+                        MajorCode.KOREAN_LANGUAGE_DEPARTMENT,                       // 국어국문학과
+                        MajorCode.ENGLISH_DEPARTMENT,                               // 영어영문학과
+                        MajorCode.GERMAN_LANGUAGE_DEPARTMENT,                       // 독어독문학과
+                        MajorCode.FRENCH_LANGUAGE_DEPARTMENT,                       // 불어불문학과
+                        MajorCode.CHINESE_LANGUAGE_DEPARTMENT,                      // 중어중문학과
+                        MajorCode.JAPANESE_LANGUAGE_DEPARTMENT,                     // 일어일문학과
+                        MajorCode.PHILOSOPHY_DEPARTMENT,                            // 철학과
+                        MajorCode.HISTORY_DEPARTMENT,                               // 사학과
+                        MajorCode.CREATIVE_WRITING_MAJOR,                           // 문예창작전공
+                        MajorCode.FILM_ARTS_MAJOR,                                  // 영화예술전공
+                        MajorCode.SPORTS_SCIENCE_DEPARTMENT,                        // 스포츠학부
+                        MajorCode.MATHEMATICS_DEPARTMENT,                           // 수학과
+                        MajorCode.PHYSICS_DEPARTMENT,                               // 물리학과
+                        MajorCode.CHEMISTRY_DEPARTMENT,                             // 화학과
+                        MajorCode.STATISTICS_ACTUARIAL_SCIENCE_DEPARTMENT,          // 정보통계보험수리학과
+                        MajorCode.BIOMEDICAL_SCIENCES_DEPARTMENT,                   // 의생명시스템학부
+                        MajorCode.COMPUTER_SCIENCE_DEPARTMENT,                      // 컴퓨터학부
+                        MajorCode.ELECTRONICS_INFORMATION_ENGINEERING_DEPARTMENT,   // 전자정보공학부
+                        MajorCode.GLOBAL_MEDIA_DEPARTMENT,                          // 글로벌미디어학부
+                        MajorCode.SOFTWARE_ENGINEERING_DEPARTMENT,                  // 소프트웨어학부
+                        MajorCode.AI_CONVERGENCE_DEPARTMENT,                        // AI융합학부
+                        MajorCode.MEDIA_MANAGEMENT_DEPARTMENT,                      // 미디어경영학과
+                        MajorCode.CONVERGENCE_DEPARTMENT                            // 융합특성화자유전공학부
+                )
+                .map(MajorCode::getStringMajorCode)
+                .collect(Collectors.toList());
     }
 }
