@@ -121,6 +121,6 @@ public enum GroupCode {
                         GroupCode.CONVERGENCE_DEPARTMENT    //융합특성화자유전공학부
                 )
                 .map(GroupCode::getStringGroupCode)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

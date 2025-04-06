@@ -257,6 +257,6 @@ public enum MajorCode {
                         MajorCode.CONVERGENCE_DEPARTMENT                            // 융합특성화자유전공학부
                 )
                 .map(MajorCode::getStringMajorCode)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
