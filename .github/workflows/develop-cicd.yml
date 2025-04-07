@@ -10,9 +10,7 @@ permissions: # 권한 설정
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3 # Java 설정
       - name: Set up JDK 17
@@ -20,6 +18,19 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      - name: Gradle Caching # 캐싱
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build with Gradle # gradle springboot application build
+        run: ./gradlew build -x test
 
       ## 웹 이미지 빌드 및 도커허브에 push
       - name: web docker build and push
