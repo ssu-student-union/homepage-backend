@@ -3,12 +3,8 @@ FROM openjdk:17-alpine
 # 작업 타겟 공간 생성
 WORKDIR /app
 
-# Jar 파일 위치 환경변수 설정
-# Jar 파일은 Github Actions의 build 단계에서 생성된다.
-ARG JAR_FILE=./build/libs/homepage-0.0.1-SNAPSHOT.jar
-
-# Jar 파일을 컨테이너의 /app 디렉토리로 복사
-COPY ${JAR_FILE} /app/backend.jar
+# Github Actions의 build 단계에서 생성한 Jar 파일을 컨테이너의 /app 디렉토리로 복사
+COPY /build/libs/homepage-0.0.1-SNAPSHOT.jar /app/backend.jar
 
 # backend 사용자 그룹 생성
 # backend 사용자 생성 및 그룹에 추가
