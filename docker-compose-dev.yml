@@ -12,6 +12,9 @@ services:
       - "8080:8080"
     volumes:
       - /home/ubuntu/application.yml:/app/application.yml
+    healthcheck:
+      test:
+        ["CMD", "wget", "-q", "--spider", "http://localhost:8080/actuator/health"]
     networks:
       - dev-homepage-network
 
@@ -20,9 +23,11 @@ services:
     image: redis:latest
     ports:
       - "6379:6379"
+    healthcheck:
+      test:
+        ["CMD", "redis-cli", "ping"]
     networks:
       - dev-homepage-network
-
 
 networks:
   dev-homepage-network:
