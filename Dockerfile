@@ -7,13 +7,10 @@ WORKDIR /app
 # 현재 폴더 내용 싹다 복사해서 컨테이너 볼륨으로 이동
 COPY . .
 
-# gradle 실행 권한 부여
-# RUN chmod +x ./gradlew
-
 # JAR 파일 생성
 # clean을 사용하는 이유는, build만 사용하면 필요 없는 파일들이 남아있는데, clean을 사용해서 필요 없는 파일들을 빌드 후 자동으로 제거할 수 있음
 # github actions에서 gradle을 사용해서 빌드하나 여기서 하나 다를건 없는데
-# github actions보다는 docker에서 gradle을 사용하는게 더 깔끔하니까 (캐시 설정같은거 안해도 됨)
+# 무료 사용 제한 걸려있는 github actions보다는 docker에서 gradle을 사용하는게 더 깔끔하니까
 # docker에서 gradle을 사용해서 빌드하는걸 추천드립니다
 RUN ./gradlew clean build -x test
 
