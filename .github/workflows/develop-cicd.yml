@@ -3,10 +3,10 @@ name: DEVELOP CI & CD
 on:
   push:
     branches:
-      - develop
+      - refactor/266-CICD # 테스트 해야하므로 임시 브랜치 선택
 
-permissions:
-  contents: read
+permissions: # 권한 설정
+  contents: read # 레포지토리 읽기 권한
 
 jobs:
   build:
@@ -14,58 +14,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3 # Java 설정
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Gradle Caching
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-    
-        
-
-        # gradle build
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Build with Gradle
-        run: ./gradlew build -x test
-
-
       ## 웹 이미지 빌드 및 도커허브에 push
       - name: web docker build and push
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_REPO }}/ussum-develop:latest .
-          docker push ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
+#          docker push ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
       ## 도커 허브에서 jar파일 및 pull후에 컴포즈 up
-      - name: Deploy to Dev
-        uses: appleboy/ssh-action@master
-        with:
-          username: ubuntu
-          host: ${{ secrets.DEVELOP_HOST }}
-          key: ${{ secrets.DEVELOP_KEY }}
-          script: |
-            docker network create homepage-network || true
-            sudo docker stop ussum-develop || true
-            docker stop redis-server || true
-            sudo docker container prune -f
-            docker run -d --name redis-server --network homepage-network redis
-            echo "${{ secrets.APPLICATION_DEVELOP }}" | sudo tee /home/ubuntu/application.yml > /dev/null
-            sudo docker pull ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
-            sudo docker run -d --log-driver=syslog \
-            -e TZ=Asia/Seoul \
-            -e SPRING_CONFIG_LOCATION=file:/app/application.yml \
-            -p 8080:8080 \
-            --name ussum-develop \
-            -v /home/ubuntu/application.yml:/app/application.yml \
-            --network homepage-network \
-            "${{ secrets.DOCKER_REPO }}/ussum-develop:latest"
+#      - name: Deploy to Dev
+#        uses: appleboy/ssh-action@master
+#        with:
+#          username: ubuntu
+#          host: ${{ secrets.DEVELOP_HOST }}
+#          key: ${{ secrets.DEVELOP_KEY }}
+#          script: |
+#            docker network create homepage-network || true
+#            sudo docker stop ussum-develop || true
+#            docker stop redis-server || true
+#            sudo docker container prune -f
+#            docker run -d --name redis-server --network homepage-network redis
+#            echo "${{ secrets.APPLICATION_DEVELOP }}" | sudo tee /home/ubuntu/application.yml > /dev/null
+#            sudo docker pull ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
+#            sudo docker run -d --log-driver=syslog \
+#            -e TZ=Asia/Seoul \
+#            -e SPRING_CONFIG_LOCATION=file:/app/application.yml \
+#            -p 8080:8080 \
+#            --name ussum-develop \
+#            -v /home/ubuntu/application.yml:/app/application.yml \
+#            --network homepage-network \
+#            "${{ secrets.DOCKER_REPO }}/ussum-develop:latest"
