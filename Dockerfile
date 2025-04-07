@@ -4,7 +4,7 @@ FROM openjdk:17-alpine
 WORKDIR /app
 
 # Jar 파일 위치 환경변수 설정
-# Jar 파일은 Github Actions의 build 단계에서 생성된다. (아티팩트)
+# Jar 파일은 Github Actions의 build 단계에서 생성된다.
 ARG JAR_FILE=./build/libs/homepage-0.0.1-SNAPSHOT.jar
 
 # Jar 파일을 컨테이너의 /app 디렉토리로 복사
