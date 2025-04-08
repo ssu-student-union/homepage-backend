@@ -3,7 +3,7 @@ name: DEVELOP CI & CD
 on:
   push:
     branches:
-      - refactor/266-CICD # 임시
+      - develop
 
 permissions: # 권한 설정
   contents: read # 레포지토리 읽기 권한
