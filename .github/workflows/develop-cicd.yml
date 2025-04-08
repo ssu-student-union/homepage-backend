@@ -51,5 +51,5 @@ jobs:
             docker pull ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
             echo "${{ secrets.APPLICATION_DEVELOP }}" | sudo tee /home/ubuntu/application.yml > /dev/null
             
-            docker compose -f docker-compose-dev.yml stop springboot
-            docker compose -f docker-compose-dev.yml up -d springboot
+            docker compose -f docker-compose-dev.yml stop ussum-develop
+            docker compose -f docker-compose-dev.yml up -d ussum-develop
