@@ -2,6 +2,7 @@ version: '3'
 services:
 
   ussum-develop:
+    container_name: ussum-develop
     image: ${DOCKER_REPO}/ussum-develop:latest
     logging:
       driver: syslog
