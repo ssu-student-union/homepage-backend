@@ -14,14 +14,14 @@ services:
       - /home/ubuntu/application.yml:/app/application.yml
     healthcheck:
       test:
-        ["CMD", "wget", "-q", "--spider", "http://localhost:8080/actuator/health"]
+        ["CMD", "wget", "-q", "--spider", "http://localhost:8080/"]
     networks:
       - dev-homepage-network
 
   redis-server:
     container_name: redis-server
     image: redis:latest
-    ports:
+    ports:"
       - "6379:6379"
     healthcheck:
       test:
