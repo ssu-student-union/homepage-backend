@@ -53,4 +53,4 @@ jobs:
             export DOCKER_REPO=${{ secrets.DOCKER_REPO }}
             
             docker compose -f docker-compose-dev.yml stop ussum-develop
-            docker compose -f docker-compose-dev.yml up -d ussum-develop
+            docker compose -f docker-compose-dev.yml up -d
