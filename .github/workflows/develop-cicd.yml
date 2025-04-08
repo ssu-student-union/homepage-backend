@@ -63,5 +63,19 @@ jobs:
           host: ${{ secrets.DEVELOP_HOST }}
           key: ${{ secrets.DEVELOP_KEY }}
           script: |
-            docker ps -a
-            docker inspect --format='{{.State.Health.Status}}' ussum-develop
+            application_health_status=$(docker inspect --format='{{.State.Health.Status}}' ussum-develop 2>/dev/null)
+            redis_health_status=$(docker inspect --format='{{.State.Health.Status}}' redis-server 2>/dev/null)
+      
+            if [ "$application_health_status" = "healthy" ]; then
+              echo "💪🏻 SpringBoot Container is healthy"
+            else
+              echo "👻 SpringBoot Container is $application_health_status"
+              exit 1
+            fi
+      
+            if [ "$redis_health_status" = "healthy" ]; then
+              echo "💪🏻 Redis Container is healthy"
+            else
+              echo "👻 Redis Container is $redis_health_status"
+              exit 1
+            fi
