@@ -1,0 +1,13 @@
+.gradle/
+build/classes
+build/generated
+build/resolvedMainClassName
+build/resources
+build/tmp
+out/
+.idea/
+.vscode/
+.github/
+.git/
+.gitignore
+

@@ -61,15 +61,15 @@ jobs:
         
         
     ## deploy-dev.sh 파일 서버로 전달하기(복사 후 붙여넣기)
-    - name: Send deploy-dev.sh
-      uses: appleboy/scp-action@master
-      with:
-        username: ubuntu
-        host: ${{ secrets.HOST }}
-        key: ${{ secrets.KEY }}
-        port: 22
-        source: "./scripts/"
-        target: "/home/ubuntu/"
+#    - name: Send deploy-dev.sh
+#      uses: appleboy/scp-action@master
+#      with:
+#        username: ubuntu
+#        host: ${{ secrets.HOST }}
+#        key: ${{ secrets.KEY }}
+#        port: 22
+#        source: "./scripts/"
+#        target: "/home/ubuntu/"
         
 
     ## docker-compose-dev.yml 파일을 EC2 development server로 전달
