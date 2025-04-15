@@ -65,7 +65,7 @@ jobs:
           script: |
             # Wait for the containers to be healthy
             echo "Waiting for containers to be healthy..."
-            sleep 30
+            sleep 120
             
             application_health_status=$(docker inspect --format='{{.State.Health.Status}}' ussum-develop 2>/dev/null)
             redis_health_status=$(docker inspect --format='{{.State.Health.Status}}' redis-server 2>/dev/null)
