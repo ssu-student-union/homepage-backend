@@ -96,6 +96,7 @@ private final CorsConfig corsConfig;
     };
 
     private static final String[] whiteList = {
+            "/health", // Health Check 전용
             "/auth/**",
             "/swagger-ui/**",
             "/swagger-resources/**",
