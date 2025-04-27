@@ -23,8 +23,8 @@ public class healthController {
 
     @GetMapping("/")
     @Operation(summary = "main cicd용 헬스체크")
-    public ResponseEntity<Void> healthForCicd() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> healthForCicd() {
+        return ResponseEntity.ok("ok");
     }
 
 }
