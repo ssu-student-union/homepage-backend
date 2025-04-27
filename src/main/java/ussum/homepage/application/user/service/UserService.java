@@ -62,7 +62,6 @@ public class UserService {
      */
     public UserInfoResponse getUserInfo(String accessToken) {
         Long userId = provider.getSubject(accessToken);
-        log.info("##### userId ##### : " + userId);
         User user = userReader.getUserWithId(userId);
 
         // 자치기구 계정의 경우 studentId가 null이므로

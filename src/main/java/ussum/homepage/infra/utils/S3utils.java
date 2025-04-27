@@ -131,13 +131,10 @@ public class S3utils {
 
             String folderPath = boardCode + "/" + userId + "/" + fileType + "/";
             String fileKey = folderPath + uniqueFileName;
-            ObjectMetadata metadata  = new ObjectMetadata();
-            metadata.setContentLength(file.getSize());
-            metadata.setContentDisposition("attachment; filename=\"" + fileName + "\"");
 
             try {
                 File convertedFile = convertMultiPartToFile(file);
-                amazonS3.putObject(new PutObjectRequest(bucket, fileKey, new FileInputStream(convertedFile), metadata));
+                amazonS3.putObject(new PutObjectRequest(bucket, fileKey, convertedFile));
                 convertedFile.delete(); // 임시 파일 삭제
 
                 String fileUrl = amazonS3.getUrl(bucket, fileKey).toString();
