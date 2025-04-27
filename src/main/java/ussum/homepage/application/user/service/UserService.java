@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,7 @@ import ussum.homepage.global.jwt.JwtTokenProvider;
 import ussum.homepage.infra.jpa.user.UserMapper;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -60,18 +62,24 @@ public class UserService {
      */
     public UserInfoResponse getUserInfo(String accessToken) {
         Long userId = provider.getSubject(accessToken);
+        log.info("##### userId ##### : " + userId);
         User user = userReader.getUserWithId(userId);
 
+        // 자치기구 계정의 경우 studentId가 null이므로
         if (user.getStudentId() != null) {
             Optional<StudentCsv> optionalStudentCsv = studentCsvReader.getStudentWithStudentId(Long.valueOf(user.getStudentId()));
+            // 재학생인지 확인
             if (optionalStudentCsv.isPresent()) {
                 StudentCsv studentCsv = optionalStudentCsv.get();
                 List<Member> members = memberReader.getMembersWithUserId(userId);
                 Member member = members.isEmpty() ? null : members.get(0);
                 return UserInfoResponse.of(studentCsv, member);
             }
+            else {
+                throw new GeneralException(ErrorStatus.USER_NOT_CURRENT);
+            }
         }
-
+        // 재학생이 아닌 모든 경우의 유저 정보
         List<Member> members = memberReader.getMembersWithUserId(userId);
         Member member = members.isEmpty() ? null : members.get(0);
         return UserInfoResponse.of(user, member);

@@ -2,6 +2,7 @@ package ussum.homepage.infra.utils;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
+import java.io.FileInputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -130,10 +131,13 @@ public class S3utils {
 
             String folderPath = boardCode + "/" + userId + "/" + fileType + "/";
             String fileKey = folderPath + uniqueFileName;
+            ObjectMetadata metadata  = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentDisposition("attachment; filename=\"" + fileName + "\"");
 
             try {
                 File convertedFile = convertMultiPartToFile(file);
-                amazonS3.putObject(new PutObjectRequest(bucket, fileKey, convertedFile));
+                amazonS3.putObject(new PutObjectRequest(bucket, fileKey, new FileInputStream(convertedFile), metadata));
                 convertedFile.delete(); // 임시 파일 삭제
 
                 String fileUrl = amazonS3.getUrl(bucket, fileKey).toString();
