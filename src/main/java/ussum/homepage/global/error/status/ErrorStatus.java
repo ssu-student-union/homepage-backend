@@ -21,6 +21,7 @@ public enum ErrorStatus implements BaseErrorCode {
     ACCOUNT_ID_NOT_MATCH(HttpStatus.NOT_FOUND, "USER_002", "해당 아이디로 사용자를 찾을 수 없습니다."),
     PASSWORD_NOT_MATCH(HttpStatus.NOT_FOUND, "USER_003", "해당 비밀번호로 사용자를 찾을 수 없습니다."),
     CONFIRM_PASSWORD_NOT_MATCH(HttpStatus.NOT_FOUND, "USER_004", "비밀번호가 일치하지 않습니다."),
+    USER_NOT_CURRENT(HttpStatus.NOT_FOUND, "USER_005", "재학생이 아닙니다."),
 
     //Group 관련 에러
     GROUP_NOT_FOUND(HttpStatus.NOT_FOUND,"GROUP_001","그룹을 찾을 수 없습니다."),
@@ -111,6 +112,8 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_S3_URL(HttpStatus.BAD_REQUEST,"S3_002","유효하지 않은 S3 파일 URL입니다."),
     URL_DELETE_ERROR(HttpStatus.BAD_REQUEST,"S3_003","S3 파일 삭제에 실패했습니다."),
 
+    //파일에러
+    FILE_NOT_FOUND(HttpStatus.NOT_FOUND,"FILE_001","파일을 찾을 수 없습니다."),
 
     //Body 에러
     INVALID_BODY(HttpStatus.BAD_REQUEST, "BODY_ERROR", "Body가 올바르지 않습니다.");

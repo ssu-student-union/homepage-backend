@@ -28,6 +28,12 @@ public class AdminController {
         return ApiResponse.success(null);
     }
 
+    @PostMapping("csv-update")
+    public ResponseEntity<ApiResponse<?>> updateUserInfoByCsv(@RequestParam("fileName") String fileName) {
+        adminService.updateUserInfoByCsv(fileName);
+        return ApiResponse.success(null);
+    }
+
     @PostMapping("council-signIn")
     public ResponseEntity<ApiResponse<?>> councilSignIn(@RequestBody CouncilSignInRequest request) {
         adminService.councilSignIn(request);

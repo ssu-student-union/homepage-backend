@@ -27,7 +27,7 @@ public record UserInfoResponse(
     }
 
     public static UserInfoResponse of(User user, Member member) {
-        
+        //재학생이 아닌경우 member에서 찾기
         String target = "null";
         // 자치기구 계정의 경우 MajorCode가 null이라 MemberCode로 내려가게 함
         try {

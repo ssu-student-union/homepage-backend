@@ -1,20 +1,35 @@
 version: '3'
 services:
-  blue:
-    container_name: blue
-    image: qogustj50/blue-green
-    expose:
-      - 8080
-    ports:
-      - 8081:8080
+
+  ussum-develop:
+    container_name: ussum-develop
+    image: ${DOCKER_REPO}/ussum-develop:latest
+    logging:
+      driver: syslog
     environment:
       - TZ=Asia/Seoul
-  green:
-    container_name: green
-    image: qogustj50/blue-green
-    expose:
-      - 8080
+      - SPRING_CONFIG_LOCATION=file:/app/application.yml
     ports:
-      - 8082:8080
-    environment:
-      - TZ=Asia/Seoul
+      - "8080:8080"
+    volumes:
+      - /home/ubuntu/application.yml:/app/application.yml
+    healthcheck:
+      test:
+        ["CMD", "wget", "-q", "--spider", "http://localhost:8080/health"]
+    networks:
+      - dev-homepage-network
+
+  redis-server:
+    container_name: redis-server
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test:
+        ["CMD", "redis-cli", "ping"]
+    networks:
+      - dev-homepage-network
+
+networks:
+  dev-homepage-network:
+    driver: bridge

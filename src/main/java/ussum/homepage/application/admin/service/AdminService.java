@@ -1,6 +1,9 @@
 package ussum.homepage.application.admin.service;
 
+import java.io.File;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,14 +14,16 @@ import ussum.homepage.domain.group.service.GroupReader;
 import ussum.homepage.domain.member.service.MemberAppender;
 import ussum.homepage.domain.user.User;
 import ussum.homepage.domain.user.service.UserAppender;
+import ussum.homepage.global.error.exception.GeneralException;
+import ussum.homepage.global.error.status.ErrorStatus;
 import ussum.homepage.infra.csvBatch.JobLauncherRunner;
 import ussum.homepage.infra.utils.S3utils;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class AdminService {
     private final S3utils s3utils;
     private final JobLauncherRunner runner;
@@ -36,6 +41,16 @@ public class AdminService {
         runner.runJob(); // batch job 실행
 
         // runJob이후 resources/csv 경로에 학생목록.csv파일이 생성됨, 코드로 삭제해야하나?
+    }
+
+    public void updateUserInfoByCsv(String FileName) {
+        String filePath = System.getProperty("user.dir") + "/csv/" + FileName;
+        File file = new File(filePath);
+
+        if (!file.exists() || !file.isFile()) {
+            throw new GeneralException(ErrorStatus.FILE_NOT_FOUND);
+        }
+        runner.runJob(); // batch job 실행
     }
 
     public void councilSignIn(CouncilSignInRequest request){
