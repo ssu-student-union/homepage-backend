@@ -32,7 +32,7 @@ public class QnAPostDetailResponse extends PostDetailResDto {
                                            List<PostOfficialCommentResponse> officialCommentList) {
         return QnAPostDetailResponse.builder()
                 .postId(post.getId())
-                .authorName(user.getName())
+                .authorName(member.getIsAdmin() ? user.getName() : User.maskedName(user.getName()))
                 .categoryName(categoryName)
                 .title(post.getTitle())
                 .content(post.getContent())

@@ -48,7 +48,7 @@ public class PostReplyCommentResponse {
         }
         return PostReplyCommentResponse.builder()
                 .id(postReplyComment.getId())
-                .authorName(user.getName())
+                .authorName(member.getIsAdmin() ? user.getName() : User.maskedName(user.getName()))
                 .studentId(studentId)
                 .department(member.getMajorCode())
                 .college(member.getMemberCode())
