@@ -46,4 +46,30 @@ public class User {
                 .name(request.councilName())
                 .build();
     }
+
+    /**
+     * 이름을 마스킹합니다.
+     *
+     * - 한 글자: 그대로 리턴           // ex) "이"   → "이"
+     * - 두 글자: 첫 글자만 남기고 * 1개  // ex) "이진" → "이*"
+     * - 세 글자 이상: 첫/마지막 글자만 남기고 나머지 * 처리
+     *   ex) "장인호"   → "장*호"
+     *   ex) "김영철수" → "김***수"
+     */
+    public static String maskedName(String name) {
+        if (name == null || name.isEmpty()) {
+            return name;
+        }
+        int len = name.length();
+        if (len == 1) {
+            return name;
+        }
+        if (len == 2) {
+            // 두 글자일 땐 뒤 한 글자만 마스킹
+            return name.charAt(0) + "*";
+        }
+        // 세 글자 이상
+        String stars = "*".repeat(len - 2);
+        return name.charAt(0) + stars + name.charAt(len - 1);
+    }
 }
