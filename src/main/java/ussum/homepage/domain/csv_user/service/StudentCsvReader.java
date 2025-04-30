@@ -53,15 +53,15 @@ public class StudentCsvReader {
                 major = true;
             }else{
                 // ㅇㅇ
-                major = request.getMajorCode().equals("아무거나") | studentCsv.getMajor().equals("아무거나");
+                major = request.getMajorCode().equals("아무거나") | request.getMajorCode().equals("아무거나");
             }
         } catch (Exception e) {
             if (e instanceof InvalidValueException) {
-                if (request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(studentCsv.getProgram()).getStringMajorCode())){
+                if (request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(request.getMajorCode()).getStringMajorCode())){
                     major = true;
                 }else{
                     // ㅇㅇ
-                    major = request.getMajorCode().equals("아무거나") | studentCsv.getMajor().equals("아무거나");
+                    major = request.getMajorCode().equals("아무거나") | request.getMajorCode().equals("아무거나");
                 }
             } else {
                 throw e;  // 다른 예외는 다시 던지기
