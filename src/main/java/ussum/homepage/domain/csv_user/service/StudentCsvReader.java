@@ -49,7 +49,7 @@ public class StudentCsvReader {
 
         // TODO(inho): csv의 단과대 학과 구조랑 MajorCode, MemberCode의 구조가 달라서 예외 처리 로직 추가
         try {
-            if (request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(studentCsv.getMajor()).getStringMajorCode())){
+            if (request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(request.getMajorCode()).getStringMajorCode())){
                 major = true;
             }else{
                 // ㅇㅇ
