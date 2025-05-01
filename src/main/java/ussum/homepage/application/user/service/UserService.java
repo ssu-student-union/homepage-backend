@@ -61,6 +61,7 @@ public class UserService {
         * 메소드 수정 필요
      */
     public UserInfoResponse getUserInfo(String accessToken) {
+        provider.validateAccessToken(accessToken);
         Long userId = provider.getSubject(accessToken);
         User user = userReader.getUserWithId(userId);
 

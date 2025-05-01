@@ -40,6 +40,8 @@ public class StudentCsvReader {
         return studentCsvRepository.findByStudentId(studentId);
     }
 
+    /// 재학생 명단 체크해서 온보딩 중 학생 데이터 확인 => 재학생이 아닌 경우?
+    /// 단과대 개편이 있을 시, 레거시 데이터는 이관하는게 맞나? 유지하는게 맞나?
     private void checkStudentRight(OnBoardingRequest request, StudentCsv studentCsv){
         boolean name = request.getName().equals(studentCsv.getStudentName());
         boolean studentId = request.getStudentId().equals(studentCsv.getStudentId().toString());
