@@ -87,6 +87,14 @@ dependencies {
 	//Open Feign
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.4")
 
+
+	// google sheet
+	implementation 'com.google.apis:google-api-services-sheets:v4-rev516-1.23.0'
+	implementation 'com.google.auth:google-auth-library-oauth2-http:0.20.0'
+
+	// netty macOs
+	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
+
 }
 
 tasks.named('test') {
