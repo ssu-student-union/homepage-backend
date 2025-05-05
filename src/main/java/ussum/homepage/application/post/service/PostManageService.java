@@ -93,6 +93,7 @@ public class PostManageService {
     private final PostAdditionalAppender postAdditionalAppender;
     private final PostAdditionalReader postAdditionalReader;
     private final JavaMailSender javaMailSender;
+    private final GoogleSheetsReader googleSheetsService;
 
     @Value("${spring.mail.username}")
     private String SENDER_EMAIL_ADDRESS;
@@ -236,10 +237,20 @@ public class PostManageService {
         postAdditionalAppender.createAdditional(converPostCreateRequest,post.getId());
         postFileAppender.updatePostIdForIds(converPostCreateRequest.getPostFileList(), post.getId(), "자료집아님");
 
-        // TODO(inho): 임시로 유나님 계정으로 메일 보내게 함
         if (board.getName().equals("질의응답게시판")) {
-            sendEmail("[질의응답게시판 질문] " +  postCreateRequest.getTitle() , "질문 대상: " + (post.getQnaMemberCode() == null ? post.getQnaMajorCode() : "") + "\n\n" + "본문: " + postCreateRequest.getContent());
+            String targetCode = post.getQnaMemberCode() == null ? post.getQnaMajorCode() : "";
+            String email;
+            try {
+                email = googleSheetsService.getEmailsFromSheet(targetCode);
+            } catch (Exception e) {
+                email = SENDER_EMAIL_ADDRESS;
+            }
+            sendEmail("[질의응답게시판 질문] " +  postCreateRequest.getTitle(),
+                        "질문 대상: " + targetCode + "\n\n" + "본문: " + postCreateRequest.getContent(),
+                        email);
+
         }
+
         return PostCreateResponse.of(post.getId(), boardCode);
     }
 
@@ -547,11 +558,11 @@ public class PostManageService {
         return CollegeAndDepartmentResponse.of(colleges, departments);
     }
 
-    public void sendEmail(String subject, String content) {
+    public void sendEmail(String subject, String content, String email) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
-            mimeMessageHelper.setTo(SENDER_EMAIL_ADDRESS);
+            mimeMessageHelper.setTo(email);
             mimeMessageHelper.setFrom(SENDER_EMAIL_ADDRESS);
 //            mimeMessageHelper.setReplyTo(onBoardingEmailRequest.email());
             mimeMessageHelper.setSubject(subject);
