@@ -116,9 +116,10 @@ public enum ErrorStatus implements BaseErrorCode {
     FILE_NOT_FOUND(HttpStatus.NOT_FOUND,"FILE_001","파일을 찾을 수 없습니다."),
 
     //Body 에러
-    INVALID_BODY(HttpStatus.BAD_REQUEST, "BODY_ERROR", "Body가 올바르지 않습니다.");
+    INVALID_BODY(HttpStatus.BAD_REQUEST, "BODY_ERROR", "Body가 올바르지 않습니다."),
 
-
+    // google sheet 에러
+    GOOGLE_SHEET_NOT_FOUND(HttpStatus.NOT_FOUND, "GOOGLE_SHEET_001", "구글시트에서 이메일을 찾을 수 없습니다.");
 
 
     private final HttpStatus httpStatus;
