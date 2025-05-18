@@ -84,7 +84,9 @@ public class ExceptionAlertAspect {
             operationSummary, requestURI, entity.getStatusCode().value(),
             ((ApiResponse<?>) body).getMessage());
 
-        discordEventHandler.send(message);
+        if(!((ApiResponse<?>) body).getCode().startsWith("USER")) {
+            discordEventHandler.send(message);
+        }
         return response;
     }
 }
