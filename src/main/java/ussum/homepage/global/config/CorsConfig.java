@@ -17,12 +17,9 @@ public class CorsConfig {
         config.addAllowedOrigin("http://localhost:5173");
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("https://sssupport.shop");
-        config.addAllowedOrigin("https://ssu-student-union.github.io");
-        config.addAllowedOrigin("https://homepage-frontend-dun.vercel.app");
-        config.addAllowedOrigin("https://homepage-frontend-psi.vercel.app");
         config.addAllowedOrigin("https://stu.ssu.ac.kr");
-        config.addAllowedOrigin("https:/dev-homepage-frontend.vercel.app");
         config.addAllowedOrigin("https://dev.sssupport.shop");
+        config.addAllowedOrigin("https://dev-preview.sssupport.shop");
         config.addAllowedOrigin("https://backend.sssupport.shop");
         config.addAllowedOrigin("https://dev-backend.sssupport.shop");
         config.addAllowedHeader("*");
