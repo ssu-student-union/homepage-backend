@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,8 +42,8 @@ public class UserController {
     }
 
     @GetMapping("/mypage")
-    public ApiResponse<MyPageInfoResponse> getMypage(@UserId Long userId) {
-        return ApiResponse.onSuccess(userService.getMyPageInfo(userId));
+    public ResponseEntity<ApiResponse<?>> getMypage(@UserId Long userId) {
+        return ApiResponse.success(userService.getMyPageInfo(userId));
     }
 
     @PatchMapping("/mypage")
