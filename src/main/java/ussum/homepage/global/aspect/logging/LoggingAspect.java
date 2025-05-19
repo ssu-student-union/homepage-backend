@@ -34,7 +34,7 @@ public class LoggingAspect {
         String operationSummary = httpUtils.getOperationSummary(methodSignature.getMethod());
         String queryString = request.getQueryString();
 
-        if(requestUri.contains("/v3/api")) return null;
+//        if(requestUri.contains("/v3/api")) return null;
 
         log.info("""
             
@@ -63,8 +63,9 @@ public class LoggingAspect {
 
 
         // 응답 정보 로깅
-        assert responseBody != null;
-        log.info("""
+        if(!requestUri.contains("/v3/api")) {
+            assert responseBody != null;
+            log.info("""
                 
                 ----Response Log----
                 API : {}
@@ -72,7 +73,9 @@ public class LoggingAspect {
                 Status Code : {}
                 Execution Time : {}ms
                 """,
-            operationSummary, requestUri, responseBody.getStatusCode().value(), executionTime);
+                operationSummary, requestUri, responseBody.getStatusCode().value(), executionTime);
+        }
+
 
         return response;
     }

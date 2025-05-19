@@ -100,8 +100,15 @@ private final CorsConfig corsConfig;
             "/health", // Health Check 전용
             "/auth/**",
             "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/swagger-ui/index.html#/",
+            "/swagger",
+            "/swagger.json/v3/api-docs",
+            "/swagger.json",
             "/swagger-resources/**",
             "/v3/api-docs/**",
+            "/api-docs/**",
+            "/api-docs",
             "/admin/**",
             "/onboarding/mail",
             "/actuator",
@@ -118,7 +125,7 @@ private final CorsConfig corsConfig;
     public WebSecurityCustomizer webSecurityCustomizer() {
         //Security Filter Chain을 거치지 않음
         return web -> web.ignoring()
-                .requestMatchers(HttpMethod.GET, getWhiteList)
+//                .requestMatchers(HttpMethod.GET, getWhiteList)
                 .requestMatchers(whiteList);
     }
     @Bean
