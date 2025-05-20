@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ussum.homepage.application.user.service.UserService;
 import ussum.homepage.application.user.service.dto.request.MyPageUpdateRequest;
-import ussum.homepage.application.user.service.dto.response.MyPageInfoResponse;
-import ussum.homepage.application.user.service.dto.response.UserInfoResponse;
 import ussum.homepage.global.ApiResponse;
 import ussum.homepage.global.config.auth.UserId;
 
@@ -34,11 +32,11 @@ public class UserController {
         PASSU 정보 조회 API입니다. Authorization 헤더로 토큰 보내면 됩니다.
         """)
     @GetMapping("/user-info")
-    public ApiResponse<UserInfoResponse> getUserInfo(
+    public ResponseEntity<ApiResponse<?>> getUserInfo(
         @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
         String accessToken = authorizationHeader.replace("Bearer ", ""); // Bearer 제거
         log.info("##### userId ##### : " + accessToken);
-        return ApiResponse.onSuccess(userService.getUserInfo(accessToken));
+        return ApiResponse.success(userService.getUserInfo(accessToken));
     }
 
     @GetMapping("/mypage")
@@ -47,9 +45,9 @@ public class UserController {
     }
 
     @PatchMapping("/mypage")
-    public ApiResponse<?> updateMypage(@UserId Long userId,
+    public ResponseEntity<ApiResponse<?>> updateMypage(@UserId Long userId,
         @RequestBody MyPageUpdateRequest myPageUpdateRequest) {
-        return ApiResponse.onSuccess(userService.updateMyPageInfo(userId, myPageUpdateRequest));
+        return ApiResponse.success(userService.updateMyPageInfo(userId, myPageUpdateRequest));
     }
 
     @Operation(summary = "회원 탈퇴 api", description = """
@@ -57,8 +55,8 @@ public class UserController {
         회원의 글, 댓글, 반응 모두 삭제하고 유저정보를 삭제합니다.
         """)
     @DeleteMapping("/delete")
-    public ApiResponse<?> deleteUser(@Parameter(hidden = true) @UserId Long userId) {
+    public ResponseEntity<ApiResponse<?>> deleteUser(@Parameter(hidden = true) @UserId Long userId) {
         userService.deleteUser(userId);
-        return ApiResponse.onSuccess(null);
+        return ApiResponse.success(null);
     }
 }
