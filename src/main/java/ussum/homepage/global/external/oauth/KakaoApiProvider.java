@@ -23,6 +23,7 @@ public class KakaoApiProvider {
     @Value("${oauth2.kakao.client_id}")
     private String clientId;
 
+    //TODO(상욱): 추후 기능/보안상 문제 없다면 환경 변수 삭제
     @Value("${oauth2.kakao.redirect_uri}")
     private String redirectUri;
 
@@ -35,7 +36,7 @@ public class KakaoApiProvider {
     @Value("${oauth2.kakao.authorize_uri}")
     private String authorize_uri;
 
-    public String getKakaoLogin(){
+    public String getKakaoLogin(String redirectUri){
         String authUrl = authorize_uri +
                 "?client_id=" + clientId +
                 "&redirect_uri="+ redirectUri +
@@ -43,7 +44,7 @@ public class KakaoApiProvider {
         return authUrl;
     }
 
-    public String getAccessToken(String code) {
+    public String getAccessToken(String code, String redirectUri) {
         UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(tokenUri)
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("client_id", clientId)
