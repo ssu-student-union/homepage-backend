@@ -1,5 +1,6 @@
 package ussum.homepage.application.user.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import ussum.homepage.domain.user.service.UserReader;
 import ussum.homepage.global.external.oauth.KakaoApiProvider;
 import ussum.homepage.global.jwt.JwtTokenInfo;
 import ussum.homepage.global.jwt.JwtTokenProvider;
+import ussum.homepage.infra.utils.HttpUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,14 +45,14 @@ public class OAuthService {
 
 
     @Transactional
-    public String getKakaoLogin(){
-        String authUrl = kakaoApiProvider.getKakaoLogin();
-        return authUrl;
+    public String getKakaoLogin(HttpServletRequest request) {
+        String baseUrl = clientBaseURLBuilder(request);
+        return kakaoApiProvider.getKakaoLogin(baseUrl + "/auth/callback");
     }
 
     @Transactional
-    public UserOAuthResponse signIn(String code) {
-        String kakaoToken = kakaoApiProvider.getAccessToken(code);
+    public UserOAuthResponse signIn(String code, String origin) {
+        String kakaoToken = kakaoApiProvider.getAccessToken(code, origin + "/auth/callback");
         KakaoUserInfoResponseDto userInfo = kakaoApiProvider.getUserInfo(kakaoToken);
         Optional<User> optionalUser = userReader.getUserWithKakaoId(Long.toString(userInfo.getId()));
         if (optionalUser.isPresent()) {
@@ -111,4 +113,16 @@ public class OAuthService {
         return provider.issueToken(user);
     }
 
+    private String clientBaseURLBuilder(HttpServletRequest request) {
+        String scheme = request.getScheme();
+        String serverName = request.getServerName();
+        int serverPort = request.getServerPort();
+
+        String portString = "";
+        if (scheme.equals("https") && serverPort != 443 ||
+                scheme.equals("http") && serverPort != 80) {
+            portString = ":" + serverPort;
+        }
+        return scheme + "://" + serverName + portString;
+    }
 }

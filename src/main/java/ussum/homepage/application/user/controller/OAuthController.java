@@ -1,6 +1,7 @@
 package ussum.homepage.application.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,10 @@ import ussum.homepage.application.user.service.OAuthService;
 import ussum.homepage.application.user.service.dto.request.CouncilLoginRequest;
 import ussum.homepage.global.ApiResponse;
 
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Map;
+
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 @RestController
@@ -16,13 +21,13 @@ public class OAuthController {
     private final OAuthService oAuthService;
 
     @GetMapping("/oauth")
-    public void LoginPage(HttpServletResponse response) throws Exception{
-        response.sendRedirect(oAuthService.getKakaoLogin());
+    public void LoginPage(HttpServletResponse response, HttpServletRequest request) throws Exception{
+        response.sendRedirect(oAuthService.getKakaoLogin(request));
     }
 
     @GetMapping("/callback")
-    public ResponseEntity<ApiResponse<?>> callback(@RequestParam("code") String code){
-        return ApiResponse.success(oAuthService.signIn(code));
+    public ResponseEntity<ApiResponse<?>> callback(@RequestParam("code") String code, HttpServletRequest request){
+        return ApiResponse.success(oAuthService.signIn(code, request.getHeader("origin")));
     }
 
     @Operation(summary = "학생자치기구 로그인 api", description = """
