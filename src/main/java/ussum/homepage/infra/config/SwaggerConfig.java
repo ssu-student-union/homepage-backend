@@ -22,6 +22,9 @@ public class SwaggerConfig {
     private static final String BEARER_TOKEN_PREFIX = "Bearer";
     private static final String JWT = "JWT";
 
+    @Value("${spring.server-url}")
+    private String springUrl;
+
     @Bean
     public OpenAPI openAPI() {
         SecurityRequirement securityRequirement = new SecurityRequirement().addList(JWT);
@@ -32,6 +35,7 @@ public class SwaggerConfig {
                 .bearerFormat(JWT)
         );
         return new OpenAPI()
+                .addServersItem(new Server().url(springUrl))
                 .components(new Components())
                 .info(new Info())
                 .addSecurityItem(securityRequirement)
