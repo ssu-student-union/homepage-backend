@@ -116,7 +116,7 @@ public class PostManageService {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
         //factory 사용 로직
-        BoardImpl boardImpl = BoardFactory.createBoard(boardCode, board.getId());
+        BoardImpl boardImpl = BoardFactory.createBoard(board.getName(), board.getId());
         Pageable pageable = PageInfo.of(page, take);
 
         GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
@@ -375,7 +375,7 @@ public class PostManageService {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
 
         //factory 사용 로직
-        BoardImpl boardImpl = BoardFactory.createBoard(boardCode, board.getId());
+        BoardImpl boardImpl = BoardFactory.createBoard(board.getName(), board.getId());
         Pageable pageable = PageInfo.of(page, take);
 
         GroupCode groupCodeEnum = StringUtils.hasText(groupCode) ? GroupCode.getEnumGroupCodeFromStringGroupCode(groupCode) : null;
