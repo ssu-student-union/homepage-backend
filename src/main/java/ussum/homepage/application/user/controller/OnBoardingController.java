@@ -16,7 +16,7 @@ import ussum.homepage.global.config.custom.RateLimit;
 @RequiredArgsConstructor
 @RequestMapping("/onboarding")
 @RestController
-@RateLimit(capacity = 10, refillTokens = 10, refillDuration = 1)  // 1분에 10개 요청 제한
+//@RateLimit(capacity = 10, refillTokens = 10, refillDuration = 1)  // 1분에 10개 요청 제한
 @Tag(name = "on-boarding", description = "온보딩 api, 온보딩 실패 시 메일로 문의하는 api")
 public class OnBoardingController {
     private final OnBoardingService onBoardingService;

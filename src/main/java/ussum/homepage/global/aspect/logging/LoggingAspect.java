@@ -75,7 +75,6 @@ public class LoggingAspect {
                 """,
             operationSummary, requestUri, responseBody.getStatusCode().value(),executionTime);
         }
-
         
         return response;
     }

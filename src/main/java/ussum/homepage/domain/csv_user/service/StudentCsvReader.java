@@ -40,6 +40,8 @@ public class StudentCsvReader {
         return studentCsvRepository.findByStudentId(studentId);
     }
 
+    /// 재학생 명단 체크해서 온보딩 중 학생 데이터 확인 => 재학생이 아닌 경우?
+    /// 단과대 개편이 있을 시, 레거시 데이터는 이관하는게 맞나? 유지하는게 맞나?
     private void checkStudentRight(OnBoardingRequest request, StudentCsv studentCsv){
         boolean name = request.getName().equals(studentCsv.getStudentName());
         boolean studentId = request.getStudentId().equals(studentCsv.getStudentId().toString());
@@ -49,19 +51,19 @@ public class StudentCsvReader {
 
         // TODO(inho): csv의 단과대 학과 구조랑 MajorCode, MemberCode의 구조가 달라서 예외 처리 로직 추가
         try {
-            if (request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(studentCsv.getMajor()).getStringMajorCode())){
+            if (request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(request.getMajorCode()).getStringMajorCode())){
                 major = true;
             }else{
                 // ㅇㅇ
-                major = request.getMajorCode().equals("아무거나") | studentCsv.getMajor().equals("아무거나");
+                major = request.getMajorCode().equals("아무거나") | request.getMajorCode().equals("아무거나");
             }
         } catch (Exception e) {
             if (e instanceof InvalidValueException) {
-                if (request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(studentCsv.getProgram()).getStringMajorCode())){
+                if (request.getMajorCode().equals(MajorCode.getEnumMajorCodeFromStringMajorCode(request.getMajorCode()).getStringMajorCode())){
                     major = true;
                 }else{
                     // ㅇㅇ
-                    major = request.getMajorCode().equals("아무거나") | studentCsv.getMajor().equals("아무거나");
+                    major = request.getMajorCode().equals("아무거나") | request.getMajorCode().equals("아무거나");
                 }
             } else {
                 throw e;  // 다른 예외는 다시 던지기

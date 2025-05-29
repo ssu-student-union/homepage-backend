@@ -35,7 +35,9 @@ public class UserController {
     public ResponseEntity<ApiResponse<?>> getUserInfo(
         @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
         String accessToken = authorizationHeader.replace("Bearer ", ""); // Bearer 제거
+
         log.info("##### userId ##### : " + accessToken);
+
         return ApiResponse.success(userService.getUserInfo(accessToken));
     }
 
