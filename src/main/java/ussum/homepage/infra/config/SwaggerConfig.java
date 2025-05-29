@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,6 +21,10 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
     private static final String BEARER_TOKEN_PREFIX = "Bearer";
     private static final String JWT = "JWT";
+
+    @Value("${spring.server-url}")
+    private String springUrl;
+
     @Bean
     public OpenAPI openAPI() {
         SecurityRequirement securityRequirement = new SecurityRequirement().addList(JWT);
@@ -30,7 +35,7 @@ public class SwaggerConfig {
                 .bearerFormat(JWT)
         );
         return new OpenAPI()
-                .addServersItem(new Server().url("https://backend.sssupport.shop"))
+                .addServersItem(new Server().url(springUrl))
                 .components(new Components())
                 .info(new Info())
                 .addSecurityItem(securityRequirement)
