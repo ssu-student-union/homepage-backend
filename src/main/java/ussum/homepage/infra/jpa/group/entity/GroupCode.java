@@ -6,7 +6,10 @@ import org.springframework.util.StringUtils;
 import ussum.homepage.global.error.exception.InvalidValueException;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static ussum.homepage.global.error.status.ErrorStatus.INVALID_GROUP_CODE;
 import static ussum.homepage.global.error.status.ErrorStatus.INVALID_MAJORCODE;
@@ -103,5 +106,21 @@ public enum GroupCode {
         return Optional.ofNullable(groupCode)
                 .map(GroupCode::getStringGroupCode)
                 .orElse(null);
+    }
+
+    public static List<String> getCollegesByList() {
+        return Stream.of(
+                        GroupCode.BUSINESS_SCHOOL,          //경영대학
+                        GroupCode.ECONOMICS_TRADE_SCHOOL,   //경제통상대학
+                        GroupCode.ENGINEERING_SCHOOL,       //공과대학
+                        GroupCode.LAW_SCHOOL,               //법과대학
+                        GroupCode.SOCIAL_SCIENCES_SCHOOL,   //사회과학대학
+                        GroupCode.HUMANITIES_SCHOOL,        //인문대학
+                        GroupCode.NATURAL_SCIENCES_SCHOOL,  //자연과학대학
+                        GroupCode.IT_SCHOOL,                //IT대학
+                        GroupCode.CONVERGENCE_DEPARTMENT    //융합특성화자유전공학부
+                )
+                .map(GroupCode::getStringGroupCode)
+                .toList();
     }
 }
