@@ -3,6 +3,7 @@ package ussum.homepage.infra.utils;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import java.io.FileInputStream;
+import java.net.URLEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -125,6 +126,7 @@ public class S3utils {
         List<String> originalFileNames = new ArrayList<>();
 
         for (MultipartFile file : files) {
+            //파일 이름 포맷팅 전 이름
             String fileName = file.getOriginalFilename();
             String fileExtension = fileName.substring(fileName.lastIndexOf("."));
             String uniqueFileName = UUID.randomUUID().toString() + fileExtension;
@@ -134,7 +136,12 @@ public class S3utils {
 
             try {
                 File convertedFile = convertMultiPartToFile(file);
-                amazonS3.putObject(new PutObjectRequest(bucket, fileKey, convertedFile));
+
+                //파일 이름 메타데이터 설정
+                ObjectMetadata metadata = new ObjectMetadata();
+                String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8.toString());
+                metadata.setContentDisposition("attachment; filename*=UTF-8''" + encodedFileName);
+                amazonS3.putObject(new PutObjectRequest(bucket, fileKey, convertedFile).withMetadata(metadata));
                 convertedFile.delete(); // 임시 파일 삭제
 
                 String fileUrl = amazonS3.getUrl(bucket, fileKey).toString();
