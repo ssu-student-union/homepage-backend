@@ -503,7 +503,7 @@ public class PostManageService {
                 "인문대학",
                 "자연과학대학",
                 "IT대학",
-                "융합특성화자유전공학부"
+                "자유전공학부"
         );
 
         List<String> departments = List.of(
@@ -552,7 +552,7 @@ public class PostManageService {
                 "소프트웨어학부",
                 "AI융합학부",
                 "미디어경영학과",
-                "융합특성화자유전공학부"
+                "자유전공학부"
         );
 
         return CollegeAndDepartmentResponse.of(colleges, departments);

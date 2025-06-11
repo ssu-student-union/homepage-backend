@@ -105,7 +105,7 @@ public enum MemberCode {
     IT_SCHOOL("IT대학"),
 
     // 융합특성화자유전공학부
-    CONVERGENCE_DEPARTMENT("융합특성화자유전공학부"),
+    CONVERGENCE_DEPARTMENT("자유전공학부"),
 
     // 학생인권위원회
     STUDENT_HUMAN_RIGHTS_COMMITTEE("학생인권위원회"),

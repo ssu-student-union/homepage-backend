@@ -173,7 +173,7 @@ public enum MajorCode {
     INFORMATION_SECURITY_DEPARTMENT("정보보호학과"),
 
     // 융합특성화자유전공학부
-    CONVERGENCE_DEPARTMENT("융합특성화자유전공학부"),
+    CONVERGENCE_DEPARTMENT("자유전공학부"),
 
     // 차세대반도체학과
     NEXT_GENERATION_SEMICONDUCTOR_DEPARTMENT("차세대반도체학과"),
