@@ -75,7 +75,7 @@ public enum GroupCode {
     IT_SCHOOL("IT대학"),
 
     //융합특성화자유전공학부
-    CONVERGENCE_DEPARTMENT("융합특성화자유전공학부");
+    CONVERGENCE_DEPARTMENT("자유전공학부");
 
     private final String stringGroupCode;
 
