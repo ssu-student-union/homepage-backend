@@ -69,7 +69,7 @@ public enum Category {
 
     IT_SCHOOL("IT대학"),
     HUMANITIES_SCHOOL("인문대학"),
-    CONVERGENCE_DEPARTMENT("융합특성화자유전공학부"),
+    CONVERGENCE_DEPARTMENT("자유전공학부"),
     SOCIAL_SCIENCES_SCHOOL("사회과학대학"),
     ENGINEERING_SCHOOL("공과대학"),
     BUSINESS_SCHOOL("경영대학"),
