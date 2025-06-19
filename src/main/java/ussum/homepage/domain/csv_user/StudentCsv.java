@@ -19,10 +19,11 @@ public class StudentCsv {
     private String major;
     private String specificMajor;
     private String studentStatus;
+    private boolean paidUnionFee;
 
     public static StudentCsv of(Long studentId, String studentName, String groupName,
-                                String program, String major, String specificMajor, String studentStatus) {
+                                String program, String major, String specificMajor, String studentStatus, boolean paidUnionFee) {
         return new StudentCsv(studentId, studentName, groupName,
-                program, major, specificMajor, studentStatus);
+                program, major, specificMajor, studentStatus, paidUnionFee);
     }
 }

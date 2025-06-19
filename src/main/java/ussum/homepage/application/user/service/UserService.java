@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ussum.homepage.application.user.service.dto.request.MyPageUpdateRequest;
 import ussum.homepage.application.user.service.dto.response.MyPageInfoResponse;
+import ussum.homepage.application.user.service.dto.response.PassuUserInfoResponse;
 import ussum.homepage.application.user.service.dto.response.UserInfoResponse;
 import ussum.homepage.domain.comment.service.PostCommentModifier;
 import ussum.homepage.domain.comment.service.PostReplyCommentModifier;
@@ -60,29 +61,21 @@ public class UserService {
         * @param accessToken
         * 메소드 수정 필요
      */
-    public UserInfoResponse getUserInfo(String accessToken) {
+    public PassuUserInfoResponse getUserInfo(String accessToken) {
         provider.validateAccessToken(accessToken);
         Long userId = provider.getSubject(accessToken);
         User user = userReader.getUserWithId(userId);
 
+        List<Member> members = memberReader.getMembersWithUserId(userId);
+        Member member = members.isEmpty() ? null : members.get(0);
+
         // 자치기구 계정의 경우 studentId가 null이므로
         if (user.getStudentId() != null) {
             Optional<StudentCsv> optionalStudentCsv = studentCsvReader.getStudentWithStudentId(Long.valueOf(user.getStudentId()));
-            // 재학생인지 확인
-            if (optionalStudentCsv.isPresent()) {
-                StudentCsv studentCsv = optionalStudentCsv.get();
-                List<Member> members = memberReader.getMembersWithUserId(userId);
-                Member member = members.isEmpty() ? null : members.get(0);
-                return UserInfoResponse.of(studentCsv, member);
-            }
-            else {
-                throw new GeneralException(ErrorStatus.USER_NOT_CURRENT);
-            }
+            return PassuUserInfoResponse.of(optionalStudentCsv, user, member);
         }
         // 재학생이 아닌 모든 경우의 유저 정보
-        List<Member> members = memberReader.getMembersWithUserId(userId);
-        Member member = members.isEmpty() ? null : members.get(0);
-        return UserInfoResponse.of(user, member);
+        return PassuUserInfoResponse.of(user, member);
     }
 
     public MyPageInfoResponse getMyPageInfo(Long userId) {

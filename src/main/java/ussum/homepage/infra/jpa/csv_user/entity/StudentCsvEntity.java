@@ -19,9 +19,10 @@ public class StudentCsvEntity {
     private String major;
     private String specificMajor;
     private String studentStatus;
+    private boolean paidUnionFee;
 
     public static StudentCsvEntity of(Long studentId, String studentName, String groupName,
-                                      String program, String major, String specificMajor, String studentStatus) {
+                                      String program, String major, String specificMajor, String studentStatus, boolean paidUnionFee) {
         return StudentCsvEntity.builder()
                 .studentId(studentId)
                 .studentName(studentName)
@@ -30,6 +31,7 @@ public class StudentCsvEntity {
                 .major(major)
                 .specificMajor(specificMajor)
                 .studentStatus(studentStatus)
+                .paidUnionFee(paidUnionFee)
                 .build();
     }
 }
