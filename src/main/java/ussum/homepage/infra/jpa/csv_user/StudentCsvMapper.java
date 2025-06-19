@@ -15,7 +15,8 @@ public class StudentCsvMapper {
                 csvData.getProgram(),
                 csvData.getMajor(),
                 csvData.getSpecificMajor(),
-                csvData.getStudentStatus()
+                csvData.getStudentStatus(),
+                csvData.isPaidUnionFee()
         );
     }
 
@@ -27,7 +28,8 @@ public class StudentCsvMapper {
                 studentCsv.getGroupName(),
                 studentCsv.getMajor(),
                 studentCsv.getSpecificMajor(),
-                studentCsv.getStudentStatus()
+                studentCsv.getStudentStatus(),
+                studentCsv.isPaidUnionFee()
         );
     }
 }

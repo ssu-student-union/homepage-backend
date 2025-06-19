@@ -7,7 +7,7 @@ import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.core.io.FileSystemResource;
 import ussum.homepage.domain.csv_user.StudentCsv;
 
@@ -36,13 +36,26 @@ public class CSVReader {
                 "program", // 프로그램?
                 "major", // 학과(부)
                 "specificMajor", // 세부전공(건축만 존재)
-                "studentStatus" // 재학여부(재학, 휴학)
+                "studentStatus", // 재학여부(재학, 휴학)
+                "paidUnionFee " // 학생회비 납부 여부
         );
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
+
+        // "Y/N" → boolean 커스텀 컨버터
+        DefaultConversionService conversionService = new DefaultConversionService();
+        conversionService.addConverter(String.class, Boolean.class, s -> {
+            if (s == null) return null;
+            return switch (s.trim().toUpperCase()) {
+                case "Y", "YES", "TRUE", "1" -> true;
+                case "N", "NO",  "FALSE", "0" -> false;
+                default -> throw new RuntimeException("CSV를 DB에 넣던 중에 에러가 발생했습니다.");
+            };
+        });
 
         /* beanWrapperFieldSetMapper : Tokenizer에서 가지고온 데이터들을 VO로 바인드하는 역할 */
         BeanWrapperFieldSetMapper<StudentCsv> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
         beanWrapperFieldSetMapper.setTargetType(StudentCsv.class);
+        beanWrapperFieldSetMapper.setConversionService(conversionService);
 
         defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);
 

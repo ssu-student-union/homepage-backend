@@ -23,7 +23,7 @@ public class CSVWriter implements ItemWriter<StudentCsv> {
 
         chunk.forEach(studentCsvDto -> {
             StudentCsvEntity data = ussum.homepage.infra.jpa.csv_user.entity.StudentCsvEntity.of(studentCsvDto.getStudentId(), studentCsvDto.getStudentName(), studentCsvDto.getGroupName(),
-                    studentCsvDto.getProgram(), studentCsvDto.getMajor(), studentCsvDto.getSpecificMajor(), studentCsvDto.getStudentStatus());
+                    studentCsvDto.getProgram(), studentCsvDto.getMajor(), studentCsvDto.getSpecificMajor(), studentCsvDto.getStudentStatus(), studentCsvDto.isPaidUnionFee());
             students.add(data);
         });
         csvRepository.saveAll(students);
