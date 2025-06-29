@@ -65,6 +65,6 @@ jobs:
         run: |
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
-            --targets '[{"Key":"InstanceIds","Values":["${{ secrets.INSTANCE_ID }}"]}]'
-            --parameters 'commands=["cd /home/ssm-user && docker pull '${{ secrets.ECR_REPOSITORY }}' && docker compose -f docker-compose.yml down backend && docker compose -f docker-compose.yml up -d backend"]'
+            --targets '[{"Key":"InstanceIds","Values":["${{ secrets.INSTANCE_ID }}"]}]' \
+            --parameters 'commands=["cd /home/ssm-user","docker pull '${{ secrets.ECR_REPOSITORY }}'","IMAGE='${{ secrets.ECR_REPOSITORY }}' docker compose -f docker-compose.yml down backend","IMAGE='${{ secrets.ECR_REPOSITORY }}' docker compose -f docker-compose.yml up -d backend"]' \
             --region ${{ secrets.AWS_REGION }}

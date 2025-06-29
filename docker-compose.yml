@@ -10,7 +10,7 @@ services:
 
   backend:
     container_name: spring-boot
-    image: 941377121690.dkr.ecr.ap-northeast-2.amazonaws.com/homepage-backend-registry:latest
+    image: ${IMAGE}
     ports:
       - 8080:8080
     environment:
