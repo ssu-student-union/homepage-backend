@@ -1,28 +1,27 @@
 version: '3'
 services:
-  blue:
-    container_name: blue
-    image: haul123/blue-green
-    expose:
-      - 8080
+
+  redis:
+    image: redis
+    container_name: redis-server
+    restart: always
+    networks:
+      - homepage-network
+
+  backend:
+    container_name: spring-boot
+    image: 941377121690.dkr.ecr.ap-northeast-2.amazonaws.com/homepage-backend-registry:latest
     ports:
-      - 8081:8080
+      - 8080:8080
     environment:
       - TZ=Asia/Seoul
       - SPRING_CONFIG_LOCATION=file:/app/application.yml
     volumes:
       - /var/log/homepage:/var/log/homepage # /var/log/homepage
-      - /home/ubuntu/application.yml:/app/application.yml
-  green:
-    container_name: green
-    image: haul123/blue-green
-    expose:
-      - 8080
-    ports:
-      - 8082:8080
-    environment:
-      - TZ=Asia/Seoul
-      - SPRING_CONFIG_LOCATION=file:/app/application.yml
-    volumes:
-      - /var/log/homepage:/var/log/homepage # /var/log/homepage
-      - /home/ubuntu/application.yml:/app/application.yml
+      - /home/ssm-user/application.yml:/app/application.yml
+    networks:
+      - homepage-network
+
+networks:
+  homepage-network:
+    driver: bridge

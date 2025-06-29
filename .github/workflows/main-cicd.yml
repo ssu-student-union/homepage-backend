@@ -3,97 +3,68 @@ name: MAIN CI & CD
 on:
   push:
     branches: [ "main" ]
-  # pull_request:
-  #   branches: [ "develop" ]
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: logback.xml 설정
-      run: |
-        cd ./src/main
-        mkdir resources
-        cd ./resources
-        touch ./logback.xml
-        echo "$LOGBACK" > ./logback.xml
-      env:
-        LOGBACK: ${{ secrets.LOGBACK }}
+      - name: logback.xml 설정
+        run: |
+          cd ./src/main
+          mkdir resources
+          cd ./resources
+          touch ./logback.xml
+          echo "$LOGBACK" > ./logback.xml
+        env:
+          LOGBACK: ${{ secrets.LOGBACK }}
 
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-    
 
-    - name: Gradle Caching
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-    
-    
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      # gradle build
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      - name: Build with Gradle
+        run: |
+          chmod +x gradlew
+          ./gradlew build -x test
 
-    - name: Build with Gradle
-      run: ./gradlew build -x test
-      
-        
-    ## 웹 이미지 빌드 및 도커허브에 push
-    - name: web docker build and push
-      run: |
-        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-        docker build -t ${{ secrets.DOCKER_REPO }}/blue-green .
-        docker push ${{ secrets.DOCKER_REPO }}/blue-green
-        
-        
-    ## deploy-dev.sh 파일 서버로 전달하기(복사 후 붙여넣기)
-#    - name: Send deploy-dev.sh
-#      uses: appleboy/scp-action@master
-#      with:
-#        username: ubuntu
-#        host: ${{ secrets.HOST }}
-#        key: ${{ secrets.KEY }}
-#        port: 22
-#        source: "./scripts/"
-#        target: "/home/ubuntu/"
-        
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.AWS_BACKEND_ROLE_ARN }}
+          role-session-name: ${{ github.actor }}-${{ github.run_id }} # Unique session name 설정
+          aws-region: ${{ secrets.AWS_REGION }}
 
-    ## docker-compose-dev.yml 파일을 EC2 development server로 전달
-    - name: Send docker-compose-dev.yml
-      uses: appleboy/scp-action@master
-      with:
-        username: ubuntu
-        host: ${{ secrets.HOST }}
-        key: ${{ secrets.KEY }}
-        port: 22
-        source: "./docker-compose-dev.yml"
-        target: "/home/ubuntu/"
-        
-        
-    ## 도커 허브에서 jar파일 및 pull후에 컴포즈 up
-    - name: Deploy to Dev
-      uses: appleboy/ssh-action@master
-      with:
-        username: ubuntu
-        host: ${{ secrets.HOST }}
-        key: ${{ secrets.KEY }}
-        script: |
-          sudo docker pull ${{ secrets.DOCKER_REPO }}/blue-green
-          chmod 777 ./scripts/deploy.sh
-          cp ./scripts/deploy.sh ./deploy.sh
-          APPLICATION_YML="${{ secrets.APPLICATION_MAIN }}" ./deploy.sh  # 환경 변수로 전달
-          docker image prune -f
+      - name: Docker image build
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
+            | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+          docker build -t ${{ secrets.ECR_REPOSITORY }} .
+          docker push ${{ secrets.ECR_REPOSITORY }}
+
+      - name: Use session manager to deploy
+        run: |
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets '[{"Key":"InstanceIds","Values":["${{ secrets.INSTANCE_ID }}"]}]'
+            --parameters 'commands=["cd /home/ssm-user && docker pull '${{ secrets.ECR_REPOSITORY }}' && docker compose -f docker-compose.yml down backend && docker compose -f docker-compose.yml up -d backend"]'
+            --region ${{ secrets.AWS_REGION }}
