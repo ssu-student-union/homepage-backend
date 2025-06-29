@@ -53,6 +53,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_BACKEND_ROLE_ARN }}
           role-session-name: ${{ github.actor }}-${{ github.run_id }} # Unique session name 설정
           aws-region: ${{ secrets.AWS_REGION }}
+          audience: sts.amazonaws.com
 
       - name: Docker image build
         run: |
