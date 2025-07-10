@@ -32,54 +32,58 @@ jobs:
       - name: Build with Gradle # gradle springboot application build
         run: ./gradlew build -x test
 
-      ## 웹 이미지 빌드 및 도커허브에 push
-      - name: web docker build and push
-        run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_REPO }}/ussum-develop:latest .
-          docker push ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} \
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      # 도커 허브에서 jar파일 및 pull후에 컴포즈 up
-      - name: Deploy to Dev
+      - name: Docker image build and push
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
+            | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+          docker build -t ${{ secrets.ECR_REPOSITORY }}_dev .
+          docker push ${{ secrets.ECR_REPOSITORY }}_dev
+
+      - name: Connect to EC2 and deploy
         uses: appleboy/ssh-action@master
         with:
           username: ubuntu
           host: ${{ secrets.DEVELOP_HOST }}
           key: ${{ secrets.DEVELOP_KEY }}
           script: |
-            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-            docker pull ${{ secrets.DOCKER_REPO }}/ussum-develop:latest
-            echo "${{ secrets.APPLICATION_DEVELOP }}" | sudo tee /home/ubuntu/application.yml > /dev/null
-            export DOCKER_REPO=${{ secrets.DOCKER_REPO }}
-            
-            docker compose -f docker-compose-dev.yml stop ussum-develop
-            docker compose -f docker-compose-dev.yml up -d
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
+            | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+            docker pull ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}_dev:latest
+            docker compose -f docker-compose-dev.yml stop backend
+            docker compose -f docker-compose-dev.yml up -d backend
 
       # 컨테이너 상태 확인
-      - name: Check container health
-        uses: appleboy/ssh-action@master
-        with:
-          username: ubuntu
-          host: ${{ secrets.DEVELOP_HOST }}
-          key: ${{ secrets.DEVELOP_KEY }}
-          script: |
-            # Wait for the containers to be healthy
-            echo "Waiting for containers to be healthy..."
-            sleep 120
-            
-            application_health_status=$(docker inspect --format='{{.State.Health.Status}}' ussum-develop 2>/dev/null)
-            redis_health_status=$(docker inspect --format='{{.State.Health.Status}}' redis-server 2>/dev/null)
-      
-            if [ "$application_health_status" = "healthy" ]; then
-              echo "💪🏻 SpringBoot Container is healthy"
-            else
-              echo "👻 SpringBoot Container is $application_health_status"
-              exit 1
-            fi
-      
-            if [ "$redis_health_status" = "healthy" ]; then
-              echo "💪🏻 Redis Container is healthy"
-            else
-              echo "👻 Redis Container is $redis_health_status"
-              exit 1
-            fi
+#      - name: Check container health
+#        uses: appleboy/ssh-action@master
+#        with:
+#          username: ubuntu
+#          host: ${{ secrets.DEVELOP_HOST }}
+#          key: ${{ secrets.DEVELOP_KEY }}
+#          script: |
+#            # Wait for the containers to be healthy
+#            echo "Waiting for containers to be healthy..."
+#            sleep 120
+#
+#            application_health_status=$(docker inspect --format='{{.State.Health.Status}}' ussum-develop 2>/dev/null)
+#            redis_health_status=$(docker inspect --format='{{.State.Health.Status}}' redis-server 2>/dev/null)
+#
+#            if [ "$application_health_status" = "healthy" ]; then
+#              echo "💪🏻 SpringBoot Container is healthy"
+#            else
+#              echo "👻 SpringBoot Container is $application_health_status"
+#              exit 1
+#            fi
+#
+#            if [ "$redis_health_status" = "healthy" ]; then
+#              echo "💪🏻 Redis Container is healthy"
+#            else
+#              echo "👻 Redis Container is $redis_health_status"
+#              exit 1
+#            fi

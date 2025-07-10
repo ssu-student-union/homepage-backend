@@ -22,8 +22,6 @@ public class CorsConfig {
         config.addAllowedOrigin("https://dev-preview.sssupport.shop");
         config.addAllowedOrigin("https://backend.sssupport.shop");
         config.addAllowedOrigin("https://dev-backend.sssupport.shop");
-        config.addAllowedOrigin("https://staging.sssupport.shop");
-        config.addAllowedOrigin("https://staging-backend.sssupport.shop");
         config.addAllowedHeader("*");
         config.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         source.registerCorsConfiguration("/**",config);
