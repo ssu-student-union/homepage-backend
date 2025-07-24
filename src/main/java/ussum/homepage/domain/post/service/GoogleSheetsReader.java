@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import ussum.homepage.global.error.exception.GeneralException;
 import ussum.homepage.infra.jpa.sheet_email.entity.CollegeDepartmentEmailEntity;
 
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Optional;
@@ -32,40 +34,43 @@ public class GoogleSheetsReader {
     private String SPREADSHEET_ID;
     @Value("${google-sheet.range}")
     private String RANGE;
+
+    @Value("${google-sheet.credentials}")
+    private String credentialsJson;
+
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 
-//    private final CollegeDepartmentEmailJpaRepository repository;
-
     public String getEmailsFromSheet(String deptName) throws GeneralSecurityException, IOException {
-        Credential credential = GoogleCredential.fromStream(new FileInputStream("src/main/resources/ssu-it-support.json"))
-                .createScoped(List.of("https://www.googleapis.com/auth/spreadsheets.readonly"));
 
-        Sheets sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, credential)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
+        try (InputStream inputStream = new ByteArrayInputStream(credentialsJson.getBytes(StandardCharsets.UTF_8))) {
+            Credential credential = GoogleCredential
+                    .fromStream(inputStream)
+                    .createScoped(List.of("https://www.googleapis.com/auth/spreadsheets.readonly"));
 
-        ValueRange response = sheetsService.spreadsheets().values().get(SPREADSHEET_ID, RANGE).execute();
+            Sheets sheetsService = new Sheets.Builder(GoogleNetHttpTransport.newTrustedTransport(), JSON_FACTORY, credential)
+                    .setApplicationName(APPLICATION_NAME)
+                    .build();
 
-        List<List<Object>> values = response.getValues();
+            ValueRange response = sheetsService.spreadsheets().values().get(SPREADSHEET_ID, RANGE).execute();
 
-        if (values == null || values.isEmpty()) {
-            throw new GeneralException(GOOGLE_SHEET_NOT_FOUND);
+            List<List<Object>> values = response.getValues();
+
+            if (values == null || values.isEmpty()) {
+                throw new GeneralException(GOOGLE_SHEET_NOT_FOUND);
+            }
+
+            List<CollegeDepartmentEmailEntity> emailEntities = values.stream()
+                    .map(row -> CollegeDepartmentEmailEntity.of(
+                            getStringOrNull(row, 0), // Name
+                            getStringOrNull(row, 1)  // Email
+                    ))
+                    .collect(Collectors.toList());
+
+            String targetEmail = findEmailByName(emailEntities, deptName);
+
+            return targetEmail;
+
         }
-
-        List<CollegeDepartmentEmailEntity> emailEntities = values.stream()
-                .map(row -> CollegeDepartmentEmailEntity.of(
-                        getStringOrNull(row, 0), // Name
-                        getStringOrNull(row, 1)  // Email
-                ))
-                .collect(Collectors.toList());
-
-        String targetEmail = findEmailByName(emailEntities, deptName);
-
-        return targetEmail;
-
-        // 기존 데이터 삭제 후 새 데이터 저장
-//        repository.deleteAll();
-//        repository.saveAll(emailEntities);
     }
 
 
