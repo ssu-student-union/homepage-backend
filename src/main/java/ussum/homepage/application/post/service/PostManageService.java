@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -558,6 +559,7 @@ public class PostManageService {
         return CollegeAndDepartmentResponse.of(colleges, departments);
     }
 
+    @Async("mailTaskExecutor")
     public void sendEmail(String subject, String content, String email) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
