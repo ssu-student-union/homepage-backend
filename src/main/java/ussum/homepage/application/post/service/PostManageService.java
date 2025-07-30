@@ -2,12 +2,14 @@ package ussum.homepage.application.post.service;
 
 import java.util.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import ussum.homepage.application.comment.service.dto.response.PostOfficialCommentResponse;
-import ussum.homepage.application.post.service.dto.request.GeneralPostCreateRequest;
-import ussum.homepage.application.post.service.dto.request.PostCreateRequest;
-import ussum.homepage.application.post.service.dto.request.PostFileDeleteRequest;
-import ussum.homepage.application.post.service.dto.request.PostUpdateRequest;
+import ussum.homepage.application.post.service.dto.request.*;
 import ussum.homepage.application.post.service.dto.response.FileResponse;
 import ussum.homepage.application.post.service.dto.response.SimplePostResponse;
 import ussum.homepage.application.post.service.dto.response.TopLikedPostListResponse;
@@ -111,6 +110,10 @@ public class PostManageService {
             "질의응답게시판", (post, isAuthor, ignored, user, member, another_ignored1, categoryName, another_ignored2, postOfficialCommentResponseList, another_ignored3) -> QnAPostDetailResponse.of(post, isAuthor, user, member, categoryName, postOfficialCommentResponseList)
     );
     private final PostMapper postMapper;
+
+    // 메일 전송
+    private final RedisTemplate<String,String> redisTemplate;
+    private final ObjectMapper objectMapper;
 
     public PostListRes<?> getPostList(Long userId, String boardCode, int page, int take, String groupCode, String memberCode, String category, String suggestionTarget, String qnaMajorCode, String qnaMemberCode) {
         Board board = boardReader.getBoardWithBoardCode(boardCode);
@@ -245,9 +248,19 @@ public class PostManageService {
             } catch (Exception e) {
                 email = SENDER_EMAIL_ADDRESS;
             }
-            sendEmail("[질의응답게시판 질문] " +  postCreateRequest.getTitle(),
-                        "질문 대상: " + targetCode + "\n\n" + "본문: " + postCreateRequest.getContent(),
-                        email);
+
+//            sendEmail("[질의응답게시판 질문] " +  postCreateRequest.getTitle(),
+//                        "질문 대상: " + targetCode + "\n\n" + "본문: " + postCreateRequest.getContent(),
+//                        email);
+
+            EmailRequest event = new EmailRequest(email, "[질의응답게시판 질문] " +  postCreateRequest.getTitle(), "질문 대상: " + targetCode + "\n\n" + "본문: " + postCreateRequest.getContent());
+	    String payload = null;
+	    try {
+		payload = objectMapper.writeValueAsString(event);
+	    } catch (Exception e) {
+		throw new GeneralException(POST_FAIL_MAIL_ERROR);
+	    }
+	    redisTemplate.convertAndSend("emailQueue", payload);
 
         }
 
