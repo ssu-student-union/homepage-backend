@@ -43,8 +43,8 @@ jobs:
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
             | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
-          docker build -t ${{ secrets.ECR_REPOSITORY }}_dev .
-          docker push ${{ secrets.ECR_REPOSITORY }}_dev
+          docker build -t ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest_dev .
+          docker push ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest_dev
 
       - name: Connect to EC2 and deploy
         uses: appleboy/ssh-action@master
@@ -58,32 +58,3 @@ jobs:
             docker pull ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}:latest_dev
             docker compose -f docker-compose-dev.yml stop backend
             docker compose -f docker-compose-dev.yml up -d backend
-
-      # 컨테이너 상태 확인
-#      - name: Check container health
-#        uses: appleboy/ssh-action@master
-#        with:
-#          username: ubuntu
-#          host: ${{ secrets.DEVELOP_HOST }}
-#          key: ${{ secrets.DEVELOP_KEY }}
-#          script: |
-#            # Wait for the containers to be healthy
-#            echo "Waiting for containers to be healthy..."
-#            sleep 120
-#
-#            application_health_status=$(docker inspect --format='{{.State.Health.Status}}' ussum-develop 2>/dev/null)
-#            redis_health_status=$(docker inspect --format='{{.State.Health.Status}}' redis-server 2>/dev/null)
-#
-#            if [ "$application_health_status" = "healthy" ]; then
-#              echo "💪🏻 SpringBoot Container is healthy"
-#            else
-#              echo "👻 SpringBoot Container is $application_health_status"
-#              exit 1
-#            fi
-#
-#            if [ "$redis_health_status" = "healthy" ]; then
-#              echo "💪🏻 Redis Container is healthy"
-#            else
-#              echo "👻 Redis Container is $redis_health_status"
-#              exit 1
-#            fi
